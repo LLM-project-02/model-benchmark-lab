@@ -99,7 +99,7 @@ def test_real_training_changes_backbone_and_head_then_reloads_identical_logits(t
         assert evidence["changed"] == {"backbone": True, "head": True}
         assert not (run / "training_evidence.json").exists()
         assert (run / "baseline.joblib").exists()
-        assert len((run / "epochs.jsonl").read_text().splitlines()) == 2
+        assert len((run / "epochs.jsonl").read_text(encoding="utf-8").splitlines()) == 2
     bundle = load_classifier(learner_dir)
     output = predict_text("배송 문의", bundle)
     assert output["label"] in labels
@@ -121,7 +121,7 @@ def test_selection_uses_validation_and_first_tie(trained_runs):
     _, learner_dir, _, _, _ = trained_runs
     for name in ("run-a", "run-b"):
         path = learner_dir / name / "validation_metrics.json"
-        metrics = json.loads(path.read_text())
+        metrics = json.loads(path.read_text(encoding="utf-8"))
         metrics["macro_f1"] = 0.75
         path.write_text(json.dumps(metrics), encoding="utf-8")
     result = select_model(learner_dir, ["run-b", "run-a"])
@@ -143,7 +143,7 @@ def test_final_test_preserves_existing_result_without_locking_other_steps(traine
 def test_wrong_label_order_is_rejected(trained_runs):
     _, learner_dir, _, _, selection = trained_runs
     path = learner_dir / selection["run_name"] / "config.json"
-    config = json.loads(path.read_text())
+    config = json.loads(path.read_text(encoding="utf-8"))
     config["labels"] = list(reversed(config["labels"]))
     path.write_text(json.dumps(config), encoding="utf-8")
     with pytest.raises(ValueError, match="라벨 순서"):
@@ -184,9 +184,9 @@ def test_original_data_verification_checks_hashes_without_reading_test(tmp_path)
 
 def test_same_configuration_is_a_verification_issue_not_a_loading_dependency(trained_runs):
     _, learner_dir, _, _, _ = trained_runs
-    config_a = json.loads((learner_dir / "run-a" / "config.json").read_text())
+    config_a = json.loads((learner_dir / "run-a" / "config.json").read_text(encoding="utf-8"))
     path_b = learner_dir / "run-b" / "config.json"
-    config_b = json.loads(path_b.read_text())
+    config_b = json.loads(path_b.read_text(encoding="utf-8"))
     config_b["learning_rate"] = config_a["learning_rate"]
     path_b.write_text(json.dumps(config_b), encoding="utf-8")
     select_model(learner_dir, ["run-a", "run-b"])
@@ -274,7 +274,7 @@ def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors
         assert summary["efficiency"]["model_size_bytes"] > 0
         assert summary["reloaded_predictions_match"] is True
         if name != "baseline":
-            epochs = [json.loads(line) for line in (run / "epochs.jsonl").read_text().splitlines()]
+            epochs = [json.loads(line) for line in (run / "epochs.jsonl").read_text(encoding="utf-8").splitlines()]
             assert metrics["macro_f1"] == max(epoch["validation_macro_f1"] for epoch in epochs)
     result = select_model(learner_dir, ["baseline", "run-a", "run-b"])
     comparison = json.loads((learner_dir / "model_comparison.json").read_text(encoding="utf-8"))
