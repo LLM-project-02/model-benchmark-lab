@@ -25,7 +25,7 @@ flowchart LR
 | # | 발제문 | 하는 일 | 명령 | 기준 결과 |
 |---|---|---|---|---|
 | 1 | 준비 | 환경 점검 | `uv run python steps/check_environment.py` | GPU True, Ollama 모델 목록 |
-| 2 | 준비 | 테스트 | `uv run python -m pytest` | 38 passed |
+| 2 | 준비 | 테스트 | `uv run python -m pytest` | 52 passed |
 | 3 | STEP 3 | 데이터 읽기 | `uv run python steps/step01_read_data.py` | 360행, 라벨별 120 |
 | 4 | STEP 3 | 분할 검사 | `uv run python steps/step02_check_data.py` | 중복 검사 통과 |
 | 5 | STEP 4 | 베이스라인 학습 | `uv run python steps/step03_train_baseline.py` | macro F1 0.9833 |
@@ -54,6 +54,7 @@ Copy-Item .env.example .env
 ```
 
 - `.env`를 열어 `OPENAI_API_KEY=` 뒤에 **본인 키**를 넣습니다. `.env`는 `.gitignore`에 있어서 커밋되지 않습니다.
+- 같은 `.env`의 `LEARNER=` 뒤에 **내 결과 폴더 이름**(예: `learner02`)을 적습니다. 팀원끼리 겹치지 않게 정하고, 비우면 `learner01`입니다.
 - 터미널 앞에 `(project2-kit)` 같은 다른 환경 이름이 보여도 괜찮습니다. `uv run`은 이 폴더의 `.venv`를 씁니다.
 
 ## 1. 🔧 환경 점검
@@ -69,7 +70,7 @@ uv run python -m pytest
 | GPU | `GPU 사용 가능: True`, `NVIDIA GeForce RTX 5060 Laptop GPU` |
 | Ollama | 목록에 `qwen3:4b-instruct-2507-q4_K_M` 포함 |
 | OpenAI 키 | `OpenAI 키 설정: True` (키를 넣었을 때) |
-| 테스트 | `38 passed` |
+| 테스트 | `52 passed` |
 
 > ⚠️ `uv run pytest`는 Windows 앱 제어 정책에 막힐 수 있습니다. **`uv run python -m pytest`** 로 실행하세요.
 
@@ -196,6 +197,7 @@ uv run python steps/step11_evaluate_final.py
 - 🔒 test 평가를 마치면 **step05로 모델 선택을 바꿀 수 없습니다.** 서비스(step06·step10)도 test에서 평가한 모델만 불러옵니다. 그래서 성능 보고와 실제 서비스 모델이 항상 같습니다.
 - `test_metrics.json`에는 평가한 모델(`selected_learner`, `selected_run`)과 데이터 지문(`data_sha256`, `test_sha256`)이 함께 남습니다.
 - 발제문 원칙: test 점수를 보고 모델이나 설정을 다시 고르지 않습니다. 팀이 후보와 설정을 **확정한 뒤에** 실행하세요.
+- 👥 잠금은 `LEARNER` 폴더마다 따로 걸립니다. 팀원이 각자 자기 폴더에서 step11을 돌리면 test를 여러 번 보게 되므로, **팀이 최종 선정한 폴더에서 한 사람이 한 번만** 실행합니다.
 
 ## 8. 🧹 확인 후 정리
 
@@ -205,7 +207,7 @@ uv run python steps/step11_evaluate_final.py
 Remove-Item -Recurse artifacts
 ```
 
-실제 실험 기록을 남길 때는 각자 `steps/lesson_settings.py`의 `LEARNER`를 본인 폴더 이름(예: `learner02`)으로 정하고 실행합니다. 결과는 `artifacts/step_by_step/<주제>/<LEARNER>/`에 저장됩니다. 학습 기록은 커밋되고, 모델 가중치는 `.gitignore`로 제외됩니다.
+실제 실험 기록을 남길 때는 각자 `.env`에 `LEARNER=learner02`처럼 본인 폴더 이름을 적고 실행합니다. 코드 파일은 고치지 않으므로 팀원끼리 설정이 부딪히지 않습니다. 비워 두면 `learner01`입니다. 결과는 `artifacts/step_by_step/<주제>/<LEARNER>/`에 저장됩니다. 학습 기록은 커밋되고, 모델 가중치는 `.gitignore`로 제외됩니다.
 
 ---
 
@@ -221,6 +223,7 @@ Remove-Item -Recurse artifacts
 | step05 → `데이터 지문(data_sha256)이 없는 실험입니다` | 지문 기록 기능이 생기기 전에 만든 예전 결과 | `Remove-Item -Recurse artifacts` 후 step03부터 다시 실행 |
 | step05 → `같은 데이터 ... 로 학습한 실험끼리 비교하세요` | 후보 중 일부가 다른 데이터(내용이 바뀐 train 등)로 학습됨 | 모두 같은 데이터로 다시 학습. 팀원 실험을 섞을 때 데이터 파일을 수정하지 않았는지 확인 |
 | step04 → `기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다` | step03 이후 데이터 파일이 바뀜 | step03부터 다시 실행 |
+| step05 → `학습이 끝나지 않은 실험입니다(중간에 멈춤)` | step04가 마지막 epoch 전에 멈춤(Ctrl+C, 창 닫힘 등) | 그 실험 폴더를 지우거나 `RUN_NAME`을 새 이름으로 바꿔 다시 학습 |
 | step05 → `test 최종 평가를 마친 뒤에는 모델 선택을 바꾸지 않습니다` | 이미 step11을 실행함 (의도된 잠금) | 원칙상 바꾸지 않음. 꼭 필요하면 `test_metrics.json`, `test_errors.csv`를 지우고 이유를 README에 기록 |
 
 ## 📌 이번 확인에서 본 것 (발표·분석 참고)

@@ -75,6 +75,9 @@ def verify_run(run_dir):
         raise ValueError("본체와 분류층이 모두 학습되었는지 확인하세요.")
     epochs = [json.loads(line) for line in
               (run_dir / "epochs.jsonl").read_text(encoding="utf-8").splitlines()]
+    # 중간에 멈춘 학습은 설정한 epoch 수만큼 기록이 없고 완료 표시도 없다.
+    if summary.get("completed") is not True or len(epochs) != config["epochs"]:
+        raise ValueError("학습이 끝나지 않은 실험입니다(중간에 멈춤).")
     best = max(epochs, key=lambda row: row["validation_macro_f1"])
     metrics = read_json(run_dir / "validation_metrics.json")
     if (summary["selection_split"] != "validation" or summary["best_epoch"] != best["epoch"]

@@ -12,7 +12,9 @@ load_dotenv(ROOT / ".env", override=False)  # .env 값을 환경 변수로 읽�
 
 # 문의는 inquiries, 문서는 documents입니다. 한 주제를 골라 끝까지 사용합니다.
 DATASET = "inquiries"
-LEARNER = "learner01"  # 학습자별 결과 폴더 이름
+# 팀원별 결과 폴더 이름. 각자 .env에 LEARNER=learner02처럼 적는다(.env는 커밋되지 않음).
+# 이 파일을 고치지 않으므로 팀원끼리 설정이 부딪히지 않는다. 비어 있으면 learner01을 쓴다.
+LEARNER = os.getenv("LEARNER", "").strip() or "learner01"
 CLASSIFIER_MODEL = "klue/bert-base"  # Hugging Face에서 받는 한국어 BERT
 
 # 주제와 학습자별 폴더에 학습 결과를 보관합니다.

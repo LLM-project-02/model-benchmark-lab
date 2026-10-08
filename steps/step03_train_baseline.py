@@ -118,6 +118,7 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         "cpu_inference_ms_per_text": inference_seconds / len(validation) * 1000,
         "reloaded_predictions_match": reloaded == [labels[index] for index in predictions],
         "sklearn_version": sklearn.__version__,
+        "completed": True,  # 학습·저장·재로드 확인까지 끝났다는 표시
     }
     (output / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"

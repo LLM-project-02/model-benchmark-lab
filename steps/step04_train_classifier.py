@@ -83,6 +83,20 @@ def preview_training_batch(rows, tokenizer, dataset, collator):
     }
 
 
+def window_sample_counts(dataset_size, batch_size, accumulation_steps):
+    """배치마다 그 배치가 속한 누적 구간의 전체 문장 수를 돌려준다.
+
+    마지막 배치는 문장이 적을 수 있다. 배치 평균 loss를 배치 수로만 나누면 작은 배치의
+    문장이 더 크게 반영되므로, 문장 수로 가중해 누적 구간 전체의 문장 평균이 되게 한다.
+    """
+    sizes = [min(batch_size, dataset_size - start) for start in range(0, dataset_size, batch_size)]
+    counts = []
+    for window_start in range(0, len(sizes), accumulation_steps):
+        window = sizes[window_start:window_start + accumulation_steps]
+        counts.extend([sum(window)] * len(window))
+    return counts
+
+
 def validate_model(model, loader, device, labels):
     model.eval()  # 평가 모드 (dropout 끔)
     predictions, actual = [], []
@@ -231,6 +245,7 @@ def run_training(
 
     # 4. train에서 loss를 계산하고, 누적 구간 끝에서 가중치를 갱신한다.
     best_score, updates = -1.0, 0
+    window_samples = window_sample_counts(len(train_dataset), batch_size, accumulation_steps)
     started = time.perf_counter()
     for epoch in range(1, epochs + 1):
         model.train()  # 학습 모드 (dropout 켬)
@@ -238,15 +253,13 @@ def run_training(
         total_train_loss, count = 0.0, 0
         for index, batch in enumerate(train_loader):
             batch = {key: value.to(device) for key, value in batch.items()}
-            # 현재 배치가 속한 누적 구간의 시작 위치와 크기
-            window_start = (index // accumulation_steps) * accumulation_steps
-            window_size = min(accumulation_steps, len(train_loader) - window_start)
+            batch_count = batch["labels"].shape[0]
             with torch.autocast(device_type=device.type, dtype=dtype, enabled=use_cuda):
                 output = model(**batch)
-                # 마지막 누적 구간은 배치 수가 적을 수 있다.
-                loss = output.loss / window_size
+                # 배치 평균 loss에 문장 수를 곱하고 누적 구간의 전체 문장 수로 나눈다.
+                # 마지막 배치나 누적 구간이 작아도 모든 문장이 같은 비중으로 반영된다.
+                loss = output.loss * batch_count / window_samples[index]
             scaler.scale(loss).backward()  # 기울기 계산. 갱신 전까지 계속 더해진다
-            batch_count = batch["labels"].shape[0]
             total_train_loss += output.loss.item() * batch_count
             count += batch_count
             # 누적 구간이 끝났거나 마지막 배치일 때만 가중치를 갱신한다.
@@ -287,6 +300,7 @@ def run_training(
                 "optimizer_steps_at_checkpoint": updates,
                 "selection_split": "validation",
                 "max_length": max_length,
+                "completed": False,  # 모든 epoch가 끝나야 True가 된다
             }
             for filename, value in (
                 ("training_summary.json", summary),
@@ -315,6 +329,9 @@ def run_training(
         labels[index] for index in best_predictions
     ]
     summary["torch_version"] = torch.__version__
+    # 중간에 멈춘 실험은 completed가 False로 남아 step05 비교에서 빠진다.
+    summary["completed"] = True
+    summary["epochs_completed"] = epochs
     (output_dir / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )

@@ -9,11 +9,12 @@ uv run python steps/step07_call_models.py
 import json
 import os
 import time
+from typing import Annotated
 
 import httpx
 import lesson_settings as lesson
 from openai import OpenAI
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, StringConstraints, ValidationError
 
 # 먼저 ollama로 실행한 뒤 provider만 바꾸어 같은 입력을 확인한다.
 PROVIDER = "ollama"  # "ollama"(로컬, 무료) 또는 "openai"(유료)
@@ -33,12 +34,20 @@ TIMEOUT_SECONDS = lesson.TIMEOUT_SECONDS
 TEMPERATURE = 0.2  # 낮을수록 답변이 덜 무작위
 
 
+# 앞뒤 공백을 뺀 뒤에도 글자가 남아야 한다. "   " 같은 답변은 형식 오류다.
+NonBlankText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
 class AnswerPayload(BaseModel):
     """응답 문자열이 가져야 할 필드와 타입을 정한다."""
 
     model_config = ConfigDict(extra="forbid")  # 정해진 필드 외 추가 필드 금지
-    answer: str = Field(min_length=1)  # 빈 문자열 불가
-    next_steps: list[str]
+    answer: NonBlankText  # 빈 문자열이나 공백만 있는 답변 불가
+    next_steps: list[NonBlankText]  # 빈 배열은 허용, 공백만 있는 항목은 불가
+
+
+class GenerationFailed(RuntimeError):
+    """HTTP 요청은 성공했지만 제공업체가 응답 본문에 실패를 알린 경우."""
 
 
 def valid_output(text):
@@ -103,6 +112,10 @@ def call_openai(prompt):
             max_output_tokens=MAX_OUTPUT_TOKENS,
             store=False,  # 요청·응답을 OpenAI에 저장하지 않음
         )
+    # 본문 상태가 failed·cancelled이면 생성 실패다. 정상 호출로 집계하지 않도록 오류로 기록한다.
+    # incomplete(토큰 한도 등)는 답변 일부가 있으므로 미완료 응답으로 남긴다.
+    if response.status in ("failed", "cancelled"):
+        raise GenerationFailed(f"OpenAI 응답 상태: {response.status}")
 
     # output_text는 SDK가 텍스트 출력들을 모은 값이다.
     # 사용량이 없으면 0으로 바꾸지 않고 알 수 없음인 None을 남긴다.

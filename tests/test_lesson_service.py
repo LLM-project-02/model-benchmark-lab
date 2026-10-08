@@ -145,6 +145,8 @@ def test_missing_key_and_provider_failures_never_become_fake_answers(monkeypatch
     '{"answer":"답변","next_steps":"확인"}',
     '{"answer":"","next_steps":[]}',
     '{"answer":"답변","next_steps":[],"extra":1}',
+    '{"answer":"   ","next_steps":[]}',  # 공백뿐인 답변
+    '{"answer":"답변","next_steps":["  "]}',  # 공백뿐인 행동 항목
 ])
 def test_output_schema_rejects_invalid_structure(raw):
     assert models.valid_output(raw) is False
@@ -404,3 +406,24 @@ def test_api_status_tells_whether_the_answer_is_usable(service_stub, monkeypatch
     for complete, valid, expected in ((False, False, "incomplete"), (True, False, "invalid_format")):
         result = {"error": None, "generation_complete": complete, "output_format_valid": valid}
         assert api.answer_status(result) == expected
+
+
+@pytest.mark.parametrize("status", ["failed", "cancelled"])
+def test_openai_failed_body_is_recorded_as_error_not_success(monkeypatch, status):
+    def handler(request):
+        return httpx.Response(200, json={
+            "id": "resp_failed", "object": "response", "created_at": 1, "status": status,
+            "model": models.OPENAI_MODEL, "output": [],
+            "error": {"code": "server_error", "message": "private-detail"},
+        })
+
+    monkeypatch.setenv("OPENAI_API_KEY", "lesson-test-placeholder")
+    monkeypatch.setattr(models, "OpenAI", lambda **kwargs: RealOpenAI(
+        api_key="lesson-test-placeholder", base_url="https://lesson.invalid/v1",
+        http_client=httpx.Client(transport=httpx.MockTransport(handler)), **kwargs))
+    result = models.call_model("openai", "입력")
+    assert result["error"] == "GenerationFailed"  # HTTP 200이어도 실패로 집계
+    assert result["text"] == "" and result["generation_complete"] is False
+    assert "private-detail" not in json.dumps(result)
+    summary = comparison.summarize_provider([result], "openai")
+    assert summary["errors"] == 1 and summary["mean_latency_seconds_success_only"] is None

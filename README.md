@@ -108,7 +108,8 @@ uv run python steps/check_environment.py
 
 | 설정 | 위치 | 설명 |
 |---|---|---|
-| `DATASET`, `LEARNER`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제, 팀원별 결과 폴더, 사전학습 모델 ID |
+| `DATASET`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 사전학습 모델 ID |
+| `LEARNER` | .env (각자) | 내 실험 결과 폴더 이름(예: `learner02`). 비우면 `learner01` |
 | `RUN_NAME`, `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 실험 이름과 학습 설정 (실험마다 RUN_NAME을 새로) |
 | `RUN_NAMES` | steps/step05_select_model.py | 비교 후보. 기본값 `["baseline", "lr2e5"]`, 동점이면 앞 후보 선택, 다른 팀원 실험은 `"learner02/lr5e5"` |
 | `INPUT_PATH`, `OUTPUT_NAME` | steps/step09_compare.py | 개발 입력 → 최종 비교 입력 전환, 결과 폴더 이름 |
@@ -173,3 +174,8 @@ TODO: 팀원마다 직접 수행한 작업, 결과 위치(`artifacts/.../<LEARNE
 - 생성 비교 기록과 사람 채점표에 `rubric_note` 포함. 프롬프트에는 넣지 않음 (step09)
 - 생성 비교 요약에 완료율·사용 가능 비율 추가. 오류율은 호출 실패만 뜻함을 명시 (step09)
 - API 응답에 답변 사용 가능 여부(`status`) 추가. HTTP 200이어도 잘리거나 형식이 틀린 답변을 구분 (step10)
+- 동시 요청이 같은 BERT 토크나이저를 함께 쓰다 충돌(`Already borrowed`, HTTP 500)하던 문제를 잠금으로 해결 (step06)
+- 기울기 누적에서 문장 수로 가중해 크기가 다른 마지막 배치도 같은 비중으로 반영 (step04). 기본 설정(360행, 배치 4)의 결과는 그대로
+- 중간에 멈춘 학습은 `completed: false`로 남겨 비교·검수에서 제외 (step03, step04, step05, verify_learning)
+- OpenAI 응답 본문이 `failed`·`cancelled`이면 HTTP 200이어도 호출 실패로 집계 (step07)
+- 공백뿐인 답변이나 행동 항목은 JSON 형식 오류로 판정 (step07)

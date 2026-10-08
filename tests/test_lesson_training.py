@@ -21,7 +21,12 @@ sys.path.insert(0, str(STEPS.parent / "scripts"))
 from step01_read_data import read_rows
 from step02_check_data import check_splits
 from step03_train_baseline import train_baseline
-from step04_train_classifier import TextDataset, preview_training_batch, run_training
+from step04_train_classifier import (
+    TextDataset,
+    preview_training_batch,
+    run_training,
+    window_sample_counts,
+)
 from step05_select_model import select_model
 from step06_predict import load_classifier, predict_text
 from step11_evaluate_final import evaluate_final
@@ -318,3 +323,55 @@ def test_selection_is_locked_after_final_evaluation(trained_runs):
     path.write_text(json.dumps(changed), encoding="utf-8")
     with pytest.raises(ValueError, match="test 평가에 쓴 모델"):
         load_classifier(learner_dir)
+
+
+def test_gradient_accumulation_weights_every_sentence_equally():
+    # 10문장, 배치 4, 2배치 누적: 배치 크기 [4, 4, 2] -> 구간 [8문장, 2문장]
+    assert window_sample_counts(10, 4, 2) == [8, 8, 2]
+    assert window_sample_counts(9, 4, 4) == [9, 9, 9]  # 마지막 배치 1문장도 구간 전체로 나눔
+    counts = window_sample_counts(360, 4, 4)  # 프로젝트 기본 설정: 모든 배치가 4문장
+    assert counts[0] == 16 and counts[-2:] == [8, 8] and len(counts) == 90
+    # 배치 평균 x 문장 수 / 구간 문장 수를 더하면 구간 전체의 문장 평균과 같아야 한다.
+    losses = [[1.0, 1.0, 1.0, 1.0], [1.0, 1.0, 1.0, 1.0], [5.0, 5.0]]
+    weighted = sum(sum(batch) / len(batch) * len(batch) / count
+                   for batch, count in zip(losses[:2], window_sample_counts(10, 4, 2)[:2]))
+    assert weighted == pytest.approx(1.0)
+    last = sum(losses[2]) / 2 * 2 / window_sample_counts(10, 4, 2)[2]
+    assert last == pytest.approx(5.0)
+
+
+def test_interrupted_training_is_not_compared_or_verified(trained_runs):
+    _, learner_dir, _, _, _ = trained_runs
+    path = learner_dir / "run-b" / "training_summary.json"
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    assert summary["completed"] is True and summary["epochs_completed"] == 2
+    summary["completed"] = False  # 마지막 epoch 전에 멈춘 실험과 같은 상태
+    path.write_text(json.dumps(summary), encoding="utf-8")
+    with pytest.raises(ValueError, match="끝나지 않은"):
+        select_model(learner_dir, ["run-a", "run-b"])
+    with pytest.raises(ValueError, match="끝나지 않은"):
+        verify_run(learner_dir / "run-b")
+
+
+def test_concurrent_requests_share_the_classifier_safely(trained_runs):
+    import threading
+
+    _, learner_dir, labels, _, _ = trained_runs
+    bundle = load_classifier(learner_dir)
+    errors, start = [], threading.Barrier(8)
+
+    def worker(index):
+        start.wait()  # 8개 스레드가 동시에 시작해 같은 토크나이저를 쓴다
+        for repeat in range(40):
+            try:
+                text = "배송 문의" if (index + repeat) % 2 else "환불 " * 40  # 자르기 설정이 번갈아 바뀜
+                assert predict_text(text, bundle)["label"] in labels
+            except Exception as exc:  # noqa: BLE001 - 어떤 오류든 기록해 실패로 본다
+                errors.append(f"{type(exc).__name__}: {exc}")
+
+    threads = [threading.Thread(target=worker, args=(index,)) for index in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert errors == []

@@ -81,6 +81,11 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
         summary_path = run / "training_summary.json"
         summary = (json.loads(summary_path.read_text(encoding="utf-8"))
                    if summary_path.exists() else {})
+        # 중간에 멈춘 학습은 마지막 epoch까지 돌지 않았으므로 완료된 실험과 비교하지 않는다.
+        if summary.get("completed") is not True:
+            raise ValueError(
+                f"학습이 끝나지 않은 실험입니다(중간에 멈춤). 폴더를 지우거나 새 RUN_NAME으로 "
+                f"다시 학습하세요: {run}")
         candidates.append({
             "run_name": run_name, "run_learner": run_learner, "kind": kind,
             "model": config.get("model", "tfidf_char_ngram+logistic_regression"),

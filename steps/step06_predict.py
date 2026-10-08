@@ -7,6 +7,7 @@ uv run python steps/step06_predict.py
 """
 
 import json
+import threading
 import time
 from pathlib import Path
 
@@ -20,6 +21,9 @@ SAMPLE_TEXT = {
     "inquiries": "배송 조회 화면의 상태가 이틀째 그대로입니다. 제가 먼저 확인할 방법을 알려 주세요.",
     "documents": "다음 주 월요일 오전 10시에 시스템 점검을 진행합니다. 점검 중에는 로그인이 제한됩니다.",
 }[DATASET]  # 현재 주제의 예시 문장 하나 선택
+# FastAPI는 요청을 여러 스레드에서 동시에 처리한다. Hugging Face 고속 토크나이저는 호출마다
+# 자르기 설정을 바꾸므로 동시에 쓰면 "Already borrowed" 오류가 난다. 예측을 한 번에 하나씩 한다.
+PREDICT_LOCK = threading.Lock()
 
 
 def run_kind(config):
@@ -96,16 +100,17 @@ def predict_text(text: str, bundle: dict) -> dict:
         probabilities = bundle["model"].predict_proba([text])[0]  # 라벨 번호 순서의 확률
         truncated = False
     else:
-        # 자르기 전 토큰 수를 확인해야 정보가 잘렸는지를 알 수 있다.
         tokenizer = bundle["tokenizer"]
-        raw = tokenizer(text, truncation=False, return_attention_mask=False)
-        truncated = len(raw["input_ids"]) > bundle["max_length"]  # 잘렸으면 결과에 표시
-        features = tokenizer(
-            text, truncation=True, max_length=bundle["max_length"], return_tensors="pt"
-        )
-        with torch.inference_mode():  # 기울기 계산 없이 예측만
-            logits = bundle["model"](**features).logits  # 문장 한 개의 점수: [1, 라벨 수]
-            probabilities = logits.softmax(dim=-1)[0]  # 점수 -> 확률 (합계 1)
+        with PREDICT_LOCK:  # 동시 요청이 같은 토크나이저를 함께 쓰지 않게 한다
+            # 자르기 전 토큰 수를 확인해야 정보가 잘렸는지를 알 수 있다.
+            raw = tokenizer(text, truncation=False, return_attention_mask=False)
+            truncated = len(raw["input_ids"]) > bundle["max_length"]  # 잘렸으면 결과에 표시
+            features = tokenizer(
+                text, truncation=True, max_length=bundle["max_length"], return_tensors="pt"
+            )
+            with torch.inference_mode():  # 기울기 계산 없이 예측만
+                logits = bundle["model"](**features).logits  # 문장 한 개의 점수: [1, 라벨 수]
+                probabilities = logits.softmax(dim=-1)[0]  # 점수 -> 확률 (합계 1)
     index = int(probabilities.argmax())  # 확률이 가장 높은 라벨 번호
     return {
         "label": bundle["labels"][index],
