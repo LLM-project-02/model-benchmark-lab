@@ -4,61 +4,32 @@ VS Code 터미널에서 project2-kit 폴더를 기준으로 실행한다.
 uv run python steps/step03_train_baseline.py
 """
 
-import csv
 import json
 import time
 from pathlib import Path
 
 import joblib
 import sklearn
+from classification_efficiency import cpu_rss_mib, measure_saved_run, measurement_environment
+from classification_evaluation import (
+    classification_scores,
+    evaluation_report,
+    save_errors,
+    save_evaluation,
+)
 from lesson_settings import DATASET, LEARNER_DIR, ROOT
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 from sklearn.pipeline import make_pipeline
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
-from step06_predict import measure_reload
 
 DATA_DIR = ROOT / "data" / DATASET
 NGRAM_RANGE = (2, 5)  # 2~5글자 문자 조각을 특징으로 사용
 SEED = 42  # 재현을 위한 난수 고정값
 
-
-def classification_scores(actual, predicted, labels):
-    # 0, 1, 2를 항상 같은 라벨 순서로 해석한다.
-    ids = list(range(len(labels)))
-    return {
-        "accuracy": float(accuracy_score(actual, predicted)),  # 전체 중 맞힌 비율
-        # macro_f1: 라벨별 F1의 단순 평균
-        "macro_f1": float(
-            f1_score(actual, predicted, labels=ids, average="macro", zero_division=0)
-        ),
-        "per_class": classification_report(
-            actual, predicted, labels=ids, target_names=labels, output_dict=True, zero_division=0
-        ),
-        "confusion_matrix": confusion_matrix(actual, predicted, labels=ids).tolist(),
-        "confusion_matrix_axes": {"rows": "actual", "columns": "predicted", "labels": labels},
-    }
-
-
-def save_errors(path, rows, predictions, labels):
-    with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
-        writer = csv.DictWriter(
-            stream, fieldnames=["id", "text", "actual", "predicted", "group_id"]
-        )
-        writer.writeheader()
-        for row, prediction in zip(rows, predictions, strict=True):
-            if row["label"] != labels[prediction]:  # 틀린 예측만 기록
-                writer.writerow(
-                    {
-                        "id": row["id"],
-                        "text": row["text"],
-                        "actual": row["label"],
-                        "predicted": labels[prediction],
-                        "group_id": row["group_id"],
-                    }
-                )
+# 기존 step03 import 경로를 다른 단계·외부 스크립트에서도 계속 사용할 수 있다.
+__all__ = ["classification_scores", "save_errors", "train_baseline"]
 
 
 def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED):
@@ -79,11 +50,14 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
         LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed),
     )
+    rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
     model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train])
     train_seconds = time.perf_counter() - started  # 학습 시간(초)
+    rss_after_training = cpu_rss_mib()
     # 학습에 쓰지 않은 validation으로 성능을 잰다.
     predictions = model.predict([row["text"] for row in validation]).tolist()
+    probabilities = model.predict_proba([row["text"] for row in validation]).tolist()
     actual = [label2id[row["label"]] for row in validation]
     metrics = classification_scores(actual, predictions, labels)
 
@@ -101,11 +75,24 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         (output / filename).write_text(
             json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-    # 틀린 문장을 모아 두면 어떤 유형에서 실수하는지 볼 수 있다.
-    save_errors(output / "validation_errors.csv", validation, predictions, labels)
-
     # 저장한 파일을 서비스와 같은 방식으로 다시 불러와 예측 시간과 결과를 확인한다.
-    reloaded, inference_seconds = measure_reload(output, validation)
+    reloaded, _, efficiency = measure_saved_run(output, validation)
+    efficiency.update({"train_seconds": train_seconds, "training_device": "cpu",
+                       "training_scope": "pipeline.fit only; excludes loading and validation",
+                       "training_environment": measurement_environment(),
+                       "cpu_rss_before_training_mib": rss_before_training,
+                       "cpu_rss_after_training_mib": rss_after_training,
+                       "peak_gpu_memory_allocated_mb": None,
+                       "peak_gpu_memory_reserved_mb": None,
+                       "gpu_memory_reason": "CPU training; GPU not used"})
+    metrics = evaluation_report(validation, predictions, labels, probabilities,
+                                model_name="tfidf_char_ngram+logistic_regression",
+                                experiment_id=f"{learner_dir.name}/baseline", dataset=data_dir.name,
+                                probability_source="sklearn.predict_proba (uncalibrated)",
+                                efficiency=efficiency)
+    metrics["prediction_device"] = "cpu"
+    metrics["data_sha256"] = config["data_sha256"]
+    save_evaluation(output, metrics)
     summary = {
         "method": "tfidf_char_ngram_logistic_regression",
         "selection_split": "validation",
@@ -115,8 +102,9 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         "device": "cpu",
         "peak_gpu_memory_allocated_mb": None,  # GPU를 쓰지 않는다
         "peak_gpu_memory_reserved_mb": None,
-        "cpu_inference_ms_per_text": inference_seconds / len(validation) * 1000,
-        "reloaded_predictions_match": reloaded == [labels[index] for index in predictions],
+        "cpu_inference_ms_per_text": efficiency["inference_mean_ms_per_sample"],
+        "reloaded_predictions_match": reloaded == predictions,
+        "efficiency": efficiency,
         "sklearn_version": sklearn.__version__,
         "completed": True,  # 학습·저장·재로드 확인까지 끝났다는 표시
     }

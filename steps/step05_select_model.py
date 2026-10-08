@@ -8,6 +8,7 @@ import csv
 import json
 from pathlib import Path
 
+from classification_comparison import build_comparison, save_comparison
 from lesson_settings import LEARNER_DIR
 from step06_predict import run_kind
 
@@ -51,6 +52,7 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
     if len(set(run_names)) < 2:
         raise ValueError("서로 다른 실험을 두 개 이상 준비하세요.")
     candidates = []
+    entries = []
     data_versions = set()  # (주제, 라벨 순서, 파일 지문)이 모두 같아야 공정한 비교다
     for name in run_names:
         parts = name.split("/")  # "lr2e5" 또는 "learner02/lr5e5"
@@ -92,11 +94,16 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
             "validation_accuracy": metrics["accuracy"], "validation_macro_f1": score,
             **{field: summary.get(field) for field in SUMMARY_FIELDS},  # 없으면 None
         })
+        entries.append({"run": f"{run_learner}/{run_name}", "dataset": dataset,
+                        "model_name": candidates[-1]["model"], "metrics": metrics,
+                        "efficiency": summary.get("efficiency", {})})
         print(run_learner, run_name, kind, "validation macro F1:", round(score, 4))
 
     if len(data_versions) != 1:
         raise ValueError(
             "같은 데이터(주제, 라벨 순서, train·validation 내용)로 학습한 실험끼리 비교하세요.")
+    # 상세 예측 데이터도 동일한지 선정 파일을 쓰기 전에 검사한다.
+    build_comparison(entries)
     # 선택에 test 점수를 사용하지 않는다. 동점이면 RUN_NAMES의 앞 후보가 남는다.
     best = max(candidates, key=lambda candidate: candidate["validation_macro_f1"])
     selection = {**best, "selected_by": "validation_macro_f1",
@@ -107,7 +114,7 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
     # step06 이후 단계는 selected.json에 적힌 실험을 불러온다.
     (learner_dir / "selected.json").write_text(
         json.dumps(selection, ensure_ascii=False, indent=2), encoding="utf-8")
-    write_comparison(learner_dir / "model_comparison.csv", candidates, best)
+    save_comparison(learner_dir, entries, candidates, best)
     print("선택한 실험:", best["run_name"])
     print("비교표:", learner_dir / "model_comparison.csv")
     return selection

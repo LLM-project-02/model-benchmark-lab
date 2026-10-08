@@ -118,11 +118,16 @@ uv run python steps/check_environment.py
 
 ## 결과 위치
 
+분류 지표 정의, 확률·효율 측정 범위, 모델별 오류 비교, 상세 파일 구조와 실행 방법은
+[분류 평가 문서](docs/CLASSIFICATION_EVALUATION.md)를 참고하세요.
+
 `artifacts/step_by_step/<DATASET>/<LEARNER>/`
 
 - `baseline/`, `<RUN_NAME>/`: 설정, epoch별 기록, validation 지표와 오분류
 - `<실험>/training_summary.json`: 학습 시간, GPU 최대 메모리, CPU 추론 시간(ms/문장), 저장 모델 재로드 후 예측 일치 여부
-- `model_comparison.csv`: 후보별 validation 지표·시간·메모리 비교표
+- `model_comparison.csv`, `.json`, `.md`, `.png`: 후보별 validation 지표·시간·메모리 비교표
+- `model_differences.csv`, `model_error_comparison.csv`: 모델 쌍별 지표 차이와 공동/서로 다른 오류
+- `<실험>/validation_predictions.csv`, `validation_summary.md`, `validation_confusion_matrix*.png`: 전체 예측·확률과 클래스별 상세 평가
 - `selected.json`: 선택한 실험
 - `test_metrics.json`, `test_errors.csv`: 최종 평가
 - `comparisons/<OUTPUT_NAME>/`: 생성 비교 원본 응답(`results.jsonl`), 사람 채점(`human_scores.csv`), 요약(`summary.json`: 오류율, 응답 시간, 토큰 합계, Ollama 모델 로딩 시간, 예상 비용)

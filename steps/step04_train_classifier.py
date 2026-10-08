@@ -13,11 +13,12 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from classification_efficiency import cpu_rss_mib, measure_saved_run, measurement_environment
+from classification_evaluation import evaluation_report, save_evaluation
 from lesson_settings import CLASSIFIER_MODEL, DATASET, LEARNER_DIR, ROOT
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
 from step03_train_baseline import classification_scores, save_errors
-from step06_predict import measure_reload
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, DataCollatorWithPadding
 
@@ -97,9 +98,9 @@ def window_sample_counts(dataset_size, batch_size, accumulation_steps):
     return counts
 
 
-def validate_model(model, loader, device, labels):
+def validate_model(model, loader, device, labels, *, return_probabilities=False):
     model.eval()  # 평가 모드 (dropout 끔)
-    predictions, actual = [], []
+    predictions, actual, probabilities = [], [], []
     total_loss, count = 0.0, 0
     # 검증에서는 정답으로 점수를 계산하지만 가중치를 업데이트하지 않는다.
     with torch.inference_mode():
@@ -110,8 +111,12 @@ def validate_model(model, loader, device, labels):
             total_loss += output.loss.item() * batch_size  # 배치 평균 loss -> 합계
             count += batch_size
             predictions.extend(output.logits.argmax(-1).cpu().tolist())  # 점수가 가장 큰 라벨
+            probabilities.extend(output.logits.float().softmax(-1).cpu().tolist())
             actual.extend(batch["labels"].cpu().tolist())
-    return classification_scores(actual, predictions, labels), total_loss / count, predictions
+    result = (classification_scores(actual, predictions, labels, probabilities,
+                                    probability_source="transformer.softmax_logits (uncalibrated)"),
+              total_loss / count, predictions)
+    return (*result, probabilities) if return_probabilities else result
 
 
 def run_training(
@@ -246,6 +251,9 @@ def run_training(
     # 4. train에서 loss를 계산하고, 누적 구간 끝에서 가중치를 갱신한다.
     best_score, updates = -1.0, 0
     window_samples = window_sample_counts(len(train_dataset), batch_size, accumulation_steps)
+    rss_before_training = cpu_rss_mib()
+    if use_cuda:
+        torch.cuda.synchronize(device)
     started = time.perf_counter()
     for epoch in range(1, epochs + 1):
         model.train()  # 학습 모드 (dropout 켬)
@@ -273,8 +281,8 @@ def run_training(
                 updates += 1
 
         # 5. validation으로 현재 모델을 평가한다. 검증 함수에는 backward가 없다.
-        metrics, validation_loss, predictions = validate_model(
-            model, validation_loader, device, labels
+        metrics, validation_loss, predictions, probabilities = validate_model(
+            model, validation_loader, device, labels, return_probabilities=True
         )
         record = {
             "epoch": epoch,
@@ -291,6 +299,7 @@ def run_training(
         # 6. 더 높은 validation 점수를 얻었을 때만 가중치를 저장한다.
         if metrics["macro_f1"] > best_score:
             best_score, best_predictions = metrics["macro_f1"], predictions
+            best_probabilities = probabilities
             checkpoint = output_dir / "checkpoint"
             model.save_pretrained(checkpoint, safe_serialization=True)  # 가중치와 설정 저장
             tokenizer.save_pretrained(checkpoint)  # 예측 때 같은 토크나이저를 쓰도록
@@ -313,7 +322,10 @@ def run_training(
 
     # 7. 학습 시간과 GPU 메모리를 기록하고, 저장한 가중치를 서비스와 같은 방식으로 다시 불러와
     # 같은 예측이 나오는지와 CPU 추론 시간을 확인한다.
+    if use_cuda:
+        torch.cuda.synchronize(device)
     summary["train_seconds"] = time.perf_counter() - started  # epoch별 검증 시간 포함
+    rss_after_training = cpu_rss_mib()
     summary["device"] = str(device)
     summary["gpu_name"] = torch.cuda.get_device_name(device) if use_cuda else None
     summary["peak_gpu_memory_allocated_mb"] = (
@@ -323,11 +335,28 @@ def run_training(
     summary["peak_gpu_memory_reserved_mb"] = (
         torch.cuda.max_memory_reserved(device) / 2**20 if use_cuda else None
     )
-    reloaded, inference_seconds = measure_reload(output_dir, validation_rows)
-    summary["cpu_inference_ms_per_text"] = inference_seconds / len(validation_rows) * 1000
-    summary["reloaded_predictions_match"] = reloaded == [
-        labels[index] for index in best_predictions
-    ]
+    reloaded, _, efficiency = measure_saved_run(output_dir, validation_rows)
+    efficiency.update({"train_seconds": summary["train_seconds"], "training_device": str(device),
+                       "training_scope": "epoch loop including validation and checkpoint I/O; "
+                       "excludes initial model loading and tokenization",
+                       "training_environment": measurement_environment(device),
+                       "cpu_rss_before_training_mib": rss_before_training,
+                       "cpu_rss_after_training_mib": rss_after_training,
+                       "peak_gpu_memory_allocated_mb": summary["peak_gpu_memory_allocated_mb"],
+                       "peak_gpu_memory_reserved_mb": summary["peak_gpu_memory_reserved_mb"],
+                       "gpu_memory_scope": "PyTorch peak since reset before model loading; training + validation",
+                       "gpu_memory_reason": None if use_cuda else "CPU training; GPU not used"})
+    metrics = evaluation_report(validation_rows, best_predictions, labels, best_probabilities,
+                                model_name=str(model_name),
+                                experiment_id=f"{learner_dir.name}/{run_name}", dataset=data_dir.name,
+                                probability_source="transformer.softmax_logits (uncalibrated)",
+                                efficiency=efficiency)
+    metrics["prediction_device"] = str(device)
+    metrics["data_sha256"] = fingerprint
+    save_evaluation(output_dir, metrics)
+    summary["cpu_inference_ms_per_text"] = efficiency["inference_mean_ms_per_sample"]
+    summary["reloaded_predictions_match"] = reloaded == best_predictions
+    summary["efficiency"] = efficiency
     summary["torch_version"] = torch.__version__
     # 중간에 멈춘 실험은 completed가 False로 남아 step05 비교에서 빠진다.
     summary["completed"] = True
