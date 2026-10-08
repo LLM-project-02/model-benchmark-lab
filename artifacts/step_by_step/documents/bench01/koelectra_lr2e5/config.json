@@ -1,0 +1,24 @@
+{
+  "kind": "transformer",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "1fd431ea10292e25170411cc7a2554a2d5ca326cb87059e6843ca76132ce381b",
+    "validation.csv": "161e99db5e292d123d9865f79bb00d4e7773fd86f49d0fe43430039dd2770b5a",
+    "labels.json": "de705c249063b62c6ed3bad6bda03d20338050cc3f886d42a8c3487c48223fe9"
+  },
+  "learner": "bench01",
+  "run_name": "koelectra_lr2e5",
+  "model": "monologg/koelectra-small-v3-discriminator",
+  "learning_rate": 2e-05,
+  "epochs": 3,
+  "batch_size": 4,
+  "accumulation_steps": 4,
+  "max_length": 192,
+  "seed": 42,
+  "device": "cuda",
+  "labels": [
+    "announcement",
+    "manual",
+    "minutes"
+  ]
+}
