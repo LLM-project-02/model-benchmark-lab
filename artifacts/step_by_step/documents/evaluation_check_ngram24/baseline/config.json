@@ -1,0 +1,19 @@
+{
+  "kind": "baseline",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "2985147ac957181c1668cf83bd8851775ad5385151db99a6e5f9b1aa7a07aa44",
+    "validation.csv": "37c34ecf9f10b2e51bfcaf98bf07f81e43bef4008222b5d1a6d6f9c7f69c7612",
+    "labels.json": "36a6564c9840fad3056be544cd1b928e6b968544431a964b6ccceaa995e1a962"
+  },
+  "labels": [
+    "announcement",
+    "manual",
+    "minutes"
+  ],
+  "ngram_range": [
+    2,
+    4
+  ],
+  "seed": 42
+}

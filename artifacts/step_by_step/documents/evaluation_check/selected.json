@@ -1,0 +1,46 @@
+{
+  "run_name": "baseline",
+  "run_learner": "evaluation_check",
+  "kind": "baseline",
+  "model": "tfidf_char_ngram+logistic_regression",
+  "validation_accuracy": 0.95,
+  "validation_macro_f1": 0.9499687304565354,
+  "train_seconds": 0.7232203589999244,
+  "cpu_inference_ms_per_text": 0.7228333333197648,
+  "peak_gpu_memory_reserved_mb": null,
+  "reloaded_predictions_match": true,
+  "selected_by": "validation_macro_f1",
+  "tie_break": "RUN_NAMES에 먼저 적은 후보",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "2985147ac957181c1668cf83bd8851775ad5385151db99a6e5f9b1aa7a07aa44",
+    "validation.csv": "37c34ecf9f10b2e51bfcaf98bf07f81e43bef4008222b5d1a6d6f9c7f69c7612",
+    "labels.json": "36a6564c9840fad3056be544cd1b928e6b968544431a964b6ccceaa995e1a962"
+  },
+  "candidates": [
+    {
+      "run_name": "baseline",
+      "run_learner": "evaluation_check",
+      "kind": "baseline",
+      "model": "tfidf_char_ngram+logistic_regression",
+      "validation_accuracy": 0.95,
+      "validation_macro_f1": 0.9499687304565354,
+      "train_seconds": 0.7232203589999244,
+      "cpu_inference_ms_per_text": 0.7228333333197648,
+      "peak_gpu_memory_reserved_mb": null,
+      "reloaded_predictions_match": true
+    },
+    {
+      "run_name": "baseline",
+      "run_learner": "evaluation_check_ngram24",
+      "kind": "baseline",
+      "model": "tfidf_char_ngram+logistic_regression",
+      "validation_accuracy": 0.95,
+      "validation_macro_f1": 0.9499687304565354,
+      "train_seconds": 0.35520492299997386,
+      "cpu_inference_ms_per_text": 0.5979006833172207,
+      "peak_gpu_memory_reserved_mb": null,
+      "reloaded_predictions_match": true
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "baseline",
+  "dataset": "inquiries",
+  "data_sha256": {
+    "train.csv": "9d3e2c10a12e19a1f63eba6e1e07cc6549b04dc6f2c60392e220362ce5f384ff",
+    "validation.csv": "9427165a6146ee900e1f650661791caf8ca1d147bd344384460e5eff369c060d",
+    "labels.json": "a39d51204ed0092270c4e017d2a0eb2844b6084c42dbc069114cdd0e8c42e1f3"
+  },
+  "labels": [
+    "shipping",
+    "refund",
+    "account"
+  ],
+  "ngram_range": [
+    2,
+    4
+  ],
+  "seed": 42
+}

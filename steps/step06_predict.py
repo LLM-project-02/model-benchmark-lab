@@ -13,6 +13,7 @@ from pathlib import Path
 
 import joblib
 import torch
+from experiment_storage import run_identity
 from lesson_settings import DATASET, LEARNER_DIR, MAX_INPUT_CHARS
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
@@ -43,6 +44,8 @@ def load_run(run) -> dict:
         "run_name": run.name,
         "kind": kind,
         "device": "cpu",
+        # 새 결과는 UUID, 이전 결과는 DATASET/LEARNER/RUN_NAME으로 식별한다.
+        "run_id": run_identity(run, config),
     }
     bundle = {"kind": kind, "labels": labels, "identity": identity, "run_dir": run}
 
@@ -83,12 +86,21 @@ def load_classifier(learner_dir=LEARNER_DIR) -> dict:
     run_learner = selected.get("run_learner", learner_dir.name)  # 다른 팀원 실험일 수도 있음
     # test 최종 평가를 했다면 평가한 모델과 서비스 모델이 같아야 성능 보고가 맞는다.
     test_path = learner_dir / "test_metrics.json"
+    tested = None
     if test_path.exists():
         tested = json.loads(test_path.read_text(encoding="utf-8"))
         tested_run = (tested.get("selected_learner", run_learner), tested["selected_run"])
         if tested_run != (run_learner, selected["run_name"]):
             raise ValueError("test 평가에 쓴 모델과 selected.json의 모델이 다릅니다. 선택을 되돌리세요.")
-    return load_run(learner_dir.parent / run_learner / selected["run_name"])
+    bundle = load_run(learner_dir.parent / run_learner / selected["run_name"])
+    # 경로 이름이 같아도 다른 RUN으로 바뀐 모델에 기존 Test 점수를 연결하지 않는다.
+    if (tested is not None and tested.get("selected_run_id") is not None
+            and tested["selected_run_id"] != bundle["identity"]["run_id"]):
+        raise ValueError("test 평가에 쓴 모델의 RUN ID와 저장 모델이 다릅니다.")
+    # RUN ID 없는 이전 selected.json은 기존 경로 검사로 계속 지원한다.
+    if (selected.get("run_id") is not None and selected["run_id"] != bundle["identity"]["run_id"]):
+        raise ValueError("선택한 RUN ID와 저장 모델의 RUN ID가 다릅니다.")
+    return bundle
 
 
 def predict_text(text: str, bundle: dict) -> dict:

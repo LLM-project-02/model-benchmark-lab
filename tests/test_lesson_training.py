@@ -258,6 +258,39 @@ def test_baseline_competes_and_can_be_served_and_evaluated(trained_runs):
     assert report["classifier"] == report["baseline"]
 
 
+def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors(trained_runs):
+    # 기존 학습 fixture로 상세 보고·최고 epoch·오류 비교·최종 평가 연결을 함께 확인한다.
+    data_dir, learner_dir, labels, _, selection = trained_runs
+    for name in ("baseline", "run-a", "run-b"):
+        run = learner_dir / name
+        metrics = json.loads((run / "validation_metrics.json").read_text(encoding="utf-8"))
+        summary = json.loads((run / "training_summary.json").read_text(encoding="utf-8"))
+        assert metrics["sample_count"] == 6 and metrics["probability_metrics"]["supported"]
+        assert sum(metrics["support"].values()) == 6
+        assert len(metrics["predictions"]) == 6
+        assert metrics["confusion_matrix_axes"]["labels"] == labels
+        assert summary["efficiency"]["inference_device"] == "cpu"
+        assert summary["efficiency"]["model_load_seconds"] >= 0
+        assert summary["efficiency"]["parameter_count"] > 0
+        assert summary["efficiency"]["model_size_bytes"] > 0
+        assert summary["reloaded_predictions_match"] is True
+        if name != "baseline":
+            # 상세 확률 보고도 마지막 epoch가 아닌 최고 Validation 점수에 대응해야 한다.
+            epochs = [json.loads(line) for line in (run / "epochs.jsonl").read_text().splitlines()]
+            assert metrics["macro_f1"] == max(epoch["validation_macro_f1"] for epoch in epochs)
+    result = select_model(learner_dir, ["baseline", "run-a", "run-b"])
+    comparison = json.loads((learner_dir / "model_comparison.json").read_text(encoding="utf-8"))
+    assert len(comparison["pairs"]) == 3
+    assert all(pair["prediction_comparison"]["supported"] for pair in comparison["pairs"])
+    assert result["selected_by"] == selection["selected_by"] == "validation_macro_f1"
+    assert comparison["pairs"][0]["training_conditions_match"] is False
+    final = evaluate_final(data_dir, learner_dir)
+    assert final["classifier"]["probability_metrics"]["supported"]
+    assert final["classifier"]["efficiency"]["warmup_samples"] == 0
+    assert (learner_dir / "test_classifier_summary.md").exists()
+    assert (learner_dir / "test_baseline_confusion_matrix_normalized.png").exists()
+
+
 def test_training_records_time_memory_and_reload_check(trained_runs):
     _, learner_dir, _, _, _ = trained_runs
     baseline = json.loads(

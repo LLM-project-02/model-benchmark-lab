@@ -4,68 +4,49 @@ VS Code 터미널에서 project2-kit 폴더를 기준으로 실행한다.
 uv run python steps/step03_train_baseline.py
 """
 
-import csv
 import json
 import time
 from pathlib import Path
 
 import joblib
 import sklearn
+from classification_efficiency import cpu_rss_mib, measure_saved_run, measurement_environment
+from classification_evaluation import (
+    classification_scores,
+    evaluation_report,
+    save_errors,
+    save_evaluation,
+)
+from experiment_storage import (
+    atomic_json,
+    finish_run,
+    new_run_metadata,
+    publish_baseline,
+    reserve_run,
+    validate_name,
+)
 from lesson_settings import DATASET, LEARNER_DIR, ROOT
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 from sklearn.pipeline import make_pipeline
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
-from step06_predict import measure_reload
 
 DATA_DIR = ROOT / "data" / DATASET
 NGRAM_RANGE = (2, 5)  # 2~5글자 문자 조각을 특징으로 사용
 SEED = 42  # 재현을 위한 난수 고정값
+RUN_NAME = None  # CLI: None이면 lr_주요설정_YYYYMMDD_HHMMSS를 자동 생성. 명시 이름도 지원.
+
+# 기존 step03 import 경로를 다른 단계·외부 스크립트에서도 계속 사용할 수 있다.
+__all__ = ["classification_scores", "save_errors", "train_baseline"]
 
 
-def classification_scores(actual, predicted, labels):
-    # 0, 1, 2를 항상 같은 라벨 순서로 해석한다.
-    ids = list(range(len(labels)))
-    return {
-        "accuracy": float(accuracy_score(actual, predicted)),  # 전체 중 맞힌 비율
-        # macro_f1: 라벨별 F1의 단순 평균
-        "macro_f1": float(
-            f1_score(actual, predicted, labels=ids, average="macro", zero_division=0)
-        ),
-        "per_class": classification_report(
-            actual, predicted, labels=ids, target_names=labels, output_dict=True, zero_division=0
-        ),
-        "confusion_matrix": confusion_matrix(actual, predicted, labels=ids).tolist(),
-        "confusion_matrix_axes": {"rows": "actual", "columns": "predicted", "labels": labels},
-    }
-
-
-def save_errors(path, rows, predictions, labels):
-    with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
-        writer = csv.DictWriter(
-            stream, fieldnames=["id", "text", "actual", "predicted", "group_id"]
-        )
-        writer.writeheader()
-        for row, prediction in zip(rows, predictions, strict=True):
-            if row["label"] != labels[prediction]:  # 틀린 예측만 기록
-                writer.writerow(
-                    {
-                        "id": row["id"],
-                        "text": row["text"],
-                        "actual": row["label"],
-                        "predicted": labels[prediction],
-                        "group_id": row["group_id"],
-                    }
-                )
-
-
-def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED):
+def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED,
+                   *, run_name="baseline"):
+    # 이전 Python 호출은 baseline을 유지. CLI와 run_name=None 호출은 실행마다 자동 이름을 만든다.
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
-    output = learner_dir / "baseline"
-    if output.exists():
-        raise FileExistsError(f"기준 모델이 이미 있습니다: {output}")
+    if run_name is not None and (learner_dir / validate_name(run_name)).exists():
+        raise FileExistsError(f"기준 모델이 이미 있습니다: {learner_dir / run_name}")
     labels = read_labels(data_dir)
     train = read_rows(data_dir / "train.csv")
     validation = read_rows(data_dir / "validation.csv")
@@ -79,33 +60,63 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
         LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed),
     )
+    output, stamp = reserve_run(learner_dir, "lr", f"ngram{ngram_range[0]}-{ngram_range[1]}_seed{seed}",
+                                run_name)
+    # Test는 읽지 않고 train·validation·labels 지문과 실제 estimator 설정을 기록한다.
+    fingerprint = data_fingerprint(data_dir)
+    metadata = new_run_metadata(
+        output, stamp, model_id="sklearn.TfidfVectorizer+sklearn.LogisticRegression",
+        hyperparameters={"vectorizer": model[0].get_params(), "classifier": model[1].get_params()},
+        seed=seed, dataset=data_dir.name, data_sha256=fingerprint)
+    atomic_json(output / "run_metadata.json", metadata)
+    # 학습 시간은 fit만 포함한다. 저장·검증·모델 로딩 시간은 제외한다.
+    rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
     model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train])
     train_seconds = time.perf_counter() - started  # 학습 시간(초)
+    rss_after_training = cpu_rss_mib()
     # 학습에 쓰지 않은 validation으로 성능을 잰다.
     predictions = model.predict([row["text"] for row in validation]).tolist()
+    probabilities = model.predict_proba([row["text"] for row in validation]).tolist()
     actual = [label2id[row["label"]] for row in validation]
     metrics = classification_scores(actual, predictions, labels)
 
-    output.mkdir(parents=True)
     joblib.dump(model, output / "baseline.joblib")  # 벡터화+분류기 파이프라인을 통째로 저장
     config = {
         "kind": "baseline",  # step05·step06이 사전학습 모델과 구분하는 값
         "dataset": data_dir.name,
-        "data_sha256": data_fingerprint(data_dir),  # 어떤 데이터로 학습했는지 증명
+        "data_sha256": fingerprint,  # 어떤 데이터로 학습했는지 증명
         "labels": labels,
         "ngram_range": list(ngram_range),
         "seed": seed,
+        "run_name": output.name, "run_id": metadata["run_id"],
+        "model_id": metadata["model_id"], "created_at": metadata["created_at"],
+        "hyperparameters": metadata["hyperparameters"],
     }
     for filename, value in (("config.json", config), ("validation_metrics.json", metrics)):
         (output / filename).write_text(
             json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-    # 틀린 문장을 모아 두면 어떤 유형에서 실수하는지 볼 수 있다.
-    save_errors(output / "validation_errors.csv", validation, predictions, labels)
-
     # 저장한 파일을 서비스와 같은 방식으로 다시 불러와 예측 시간과 결과를 확인한다.
-    reloaded, inference_seconds = measure_reload(output, validation)
+    reloaded, _, efficiency = measure_saved_run(output, validation)
+    efficiency.update({"train_seconds": train_seconds, "training_device": "cpu",
+                       "training_scope": "pipeline.fit only; excludes loading and validation",
+                       "training_environment": measurement_environment(),
+                       "cpu_rss_before_training_mib": rss_before_training,
+                       "cpu_rss_after_training_mib": rss_after_training,
+                       "peak_gpu_memory_allocated_mb": None,
+                       "peak_gpu_memory_reserved_mb": None,
+                       "gpu_memory_reason": "CPU training; GPU not used"})
+    # 지표는 원래 Validation 예측으로, 효율은 저장 모델의 재로드 추론으로 기록한다.
+    metrics = evaluation_report(validation, predictions, labels, probabilities,
+                                model_name="tfidf_char_ngram+logistic_regression",
+                                experiment_id=f"{learner_dir.name}/{output.name}", dataset=data_dir.name,
+                                probability_source="sklearn.predict_proba (uncalibrated)",
+                                efficiency=efficiency)
+    metrics["prediction_device"] = "cpu"
+    metrics["data_sha256"] = config["data_sha256"]
+    metrics["run_id"] = metadata["run_id"]
+    save_evaluation(output, metrics)
     summary = {
         "method": "tfidf_char_ngram_logistic_regression",
         "selection_split": "validation",
@@ -115,14 +126,19 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         "device": "cpu",
         "peak_gpu_memory_allocated_mb": None,  # GPU를 쓰지 않는다
         "peak_gpu_memory_reserved_mb": None,
-        "cpu_inference_ms_per_text": inference_seconds / len(validation) * 1000,
-        "reloaded_predictions_match": reloaded == [labels[index] for index in predictions],
+        "cpu_inference_ms_per_text": efficiency["inference_mean_ms_per_sample"],
+        "reloaded_predictions_match": reloaded == predictions,
+        "efficiency": efficiency,
         "sklearn_version": sklearn.__version__,
         "completed": True,  # 학습·저장·재로드 확인까지 끝났다는 표시
+        "run_id": metadata["run_id"], "run_name": output.name,
     }
     (output / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    finish_run(output, metadata)
+    # 완료한 실행만 step04의 기본 기준 모델로 사용되도록 포인터를 갱신한다.
+    publish_baseline(learner_dir, output, config)
     print("기준 모델 validation macro F1:", round(metrics["macro_f1"], 4))
     print("학습 시간(초):", round(train_seconds, 2),
           "/ CPU 추론(ms/문장):", round(summary["cpu_inference_ms_per_text"], 2))
@@ -131,7 +147,13 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
 
 
 def main():
-    train_baseline()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-name", default=RUN_NAME)
+    args = parser.parse_args()
+    # 기존 Python API의 baseline 기본값과 달리 CLI는 None으로 자동 이름을 사용한다.
+    train_baseline(run_name=args.run_name)
 
 
 if __name__ == "__main__":
