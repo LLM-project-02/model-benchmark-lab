@@ -13,10 +13,12 @@ from step06_predict import load_run
 
 
 def cpu_rss_mib():
+    # 프로세스 전체 RSS 스냅샷이며, 모델 전용 메모리나 최대값은 아니다.
     return psutil.Process().memory_info().rss / 2**20
 
 
 def measurement_environment(device="cpu"):
+    # 장치·스레드·패키지 버전을 남겨 측정 조건이 다른 결과를 구분한다.
     cpu_name = platform.processor() or platform.machine()
     if platform.system() == "Linux":
         for line in Path("/proc/cpuinfo").read_text(encoding="utf-8").splitlines():
@@ -42,12 +44,14 @@ def predict_scored(text, bundle):
     model = bundle["model"]
     if bundle["kind"] == "baseline":
         if not hasattr(model, "predict_proba"):
+            # 확률 없는 모델은 예측 라벨만 반환한다. 별도 softmax 보정을 하지 않는다.
             return {"prediction": int(model.predict([text])[0]), "probabilities": None}
         scores = model.predict_proba([text])[0]
     else:
         features = bundle["tokenizer"](
             text, truncation=True, max_length=bundle["max_length"], return_tensors="pt")
         with torch.inference_mode():
+            # labels 없이 forward하며, softmax 점수의 calibration은 보장하지 않는다.
             scores = model(**features).logits.softmax(-1)[0].cpu().numpy()
     return {"prediction": int(np.argmax(scores)), "probabilities": scores.tolist()}
 
@@ -57,6 +61,7 @@ def benchmark_predict(predict, texts, *, warmup=1, repeats=1):
     if not texts or warmup < 0 or repeats < 1:
         raise ValueError("입력은 비어 있지 않아야 하며 warmup>=0, repeats>=1이어야 합니다.")
     for index in range(warmup):
+        # 첫 호출 준비 비용은 순수 추론 시간에서 제외한다.
         predict(texts[index % len(texts)])
     durations, pass_seconds, first_results = [], [], None
     for _ in range(repeats):
@@ -72,6 +77,7 @@ def benchmark_predict(predict, texts, *, warmup=1, repeats=1):
         elif results != first_results:
             raise ValueError("반복 추론 결과가 달라졌습니다. 평가 모드와 결정성을 확인하세요.")
     seconds = statistics.mean(pass_seconds)
+    # 중앙값은 실제 샘플별 시간으로 구한다. 전체 시간/샘플 수로 대체하지 않는다.
     return first_results, {"inference_device": "cpu", "inference_batch_size": 1,
                            "warmup_samples": warmup, "measurement_repeats": repeats,
                            "sample_count": len(texts), "inference_total_seconds": seconds,
@@ -85,6 +91,7 @@ def benchmark_predict(predict, texts, *, warmup=1, repeats=1):
 
 
 def model_resources(bundle):
+    # LR은 계수·절편, transformer는 본체·분류층 전체를 세고 정의도 기록한다.
     model = bundle["model"]
     if bundle["kind"] == "baseline":
         classifier = model[-1]
@@ -95,6 +102,7 @@ def model_resources(bundle):
         count = sum(parameter.numel() for parameter in model.parameters())
         paths = [path for path in (Path(bundle["run_dir"]) / "checkpoint").rglob("*")
                  if path.is_file()]
+        # BERT 실험에 복사한 기준 LR은 BERT 모델 크기에 포함하지 않는다.
         definition = "all backbone and classification head parameters"
     size = sum(path.stat().st_size for path in paths)
     return {"parameter_count": count, "parameter_count_definition": definition,
@@ -115,11 +123,13 @@ def measure_loaded_bundle(bundle, rows, *, warmup=1, repeats=1):
                        "environment": measurement_environment(), **model_resources(bundle)})
     probabilities = [result["probabilities"] for result in results]
     if any(value is None for value in probabilities):
+        # 일부 샘플의 확률이 없으면 확률 평가 전체를 미지원으로 처리한다.
         probabilities = None
     return [result["prediction"] for result in results], probabilities, efficiency
 
 
 def measure_saved_run(run, rows, *, warmup=1, repeats=1):
+    # 로딩 타이머와 추론 타이머를 분리해 파일 읽기 시간을 섞지 않는다.
     before = cpu_rss_mib()
     started = time.perf_counter()
     bundle = load_run(run)  # 기존 로더의 라벨 검사·local_files_only·CPU eval 모드를 재사용

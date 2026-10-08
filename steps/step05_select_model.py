@@ -33,6 +33,7 @@ SUMMARY_FIELDS = [
 
 
 def write_comparison(path, candidates, best):
+    # 이전 호출자를 위한 간단 CSV API. 현재 step05는 공통 상세 exporter를 사용한다.
     # README와 발표 자료에 옮길 비교표. 값은 읽기 쉽게 반올림한다.
     fields = ["run", "kind", "model", "validation_accuracy", "validation_macro_f1",
               *SUMMARY_FIELDS, "selected"]
@@ -59,6 +60,7 @@ def _select_model(learner_dir, run_names):
             "test 최종 평가를 마친 뒤에는 모델 선택을 바꾸지 않습니다. 꼭 다시 골라야 하면 "
             "test_metrics.json과 test_errors.csv를 지우고 그 이유를 README에 기록하세요.")
     if run_names is None:
+        # 완료된 실험만 이름순으로 탐색한다. --runs 순서는 동점 우선순위가 된다.
         run_names = [path.name for path in sorted(learner_dir.iterdir()) if path.is_dir()
                      and (path / "config.json").exists()
                      and (path / "validation_metrics.json").exists()
@@ -90,6 +92,7 @@ def _select_model(learner_dir, run_names):
                 f"데이터 지문(data_sha256)이 없는 실험입니다. step03·step04를 다시 실행하세요: {run}")
         dataset = config["dataset"]
         run_id = run_identity(run, config)
+        # 같은 실행을 run, learner/run 두 이름으로 중복 비교하지 않는다.
         if run_id in run_ids:
             raise ValueError("같은 RUN ID를 중복 후보로 비교하지 않습니다.")
         run_ids.add(run_id)
@@ -110,6 +113,7 @@ def _select_model(learner_dir, run_names):
             **{field: summary.get(field) for field in SUMMARY_FIELDS},  # 없으면 None
         })
         entries.append({"run": f"{run_learner}/{run_name}", "dataset": dataset,
+                        # 당시 설정·측정값을 복사해 향후 비교에서 재확인할 수 있게 한다.
                         "model_name": candidates[-1]["model"], "metrics": metrics,
                         "efficiency": summary.get("efficiency", {}), "run_id": run_id,
                         "data_sha256": fingerprint, "config": config,
@@ -129,6 +133,7 @@ def _select_model(learner_dir, run_names):
                  "dataset": dataset, "data_sha256": fingerprint,  # 모든 후보가 같은 값
                  "candidates": candidates}
     previous = read_json(learner_dir / "selected.json") if (learner_dir / "selected.json").exists() else None
+    # 이전 선택을 먼저 읽고, 비교마다 새로운 ID·원본 저장 위치를 확보한다.
     comparison_dir, stamp = reserve_comparison(learner_dir)
     comparison_id = comparison_dir.name
     selection.update({"comparison_id": comparison_id, "selection_id": comparison_id,
@@ -146,6 +151,7 @@ def _select_model(learner_dir, run_names):
     atomic_json(comparison_dir / "model_comparison.json", report)
     atomic_json(comparison_dir / "selected.json", selection)
     atomic_json(comparison_dir / "comparison_metadata.json", {**metadata, "completed": True})
+    # 같은 모델을 다시 선택해도 비교 실행과 이전/현재 선택은 이력에 남긴다.
     history = {"selection_id": comparison_id, "selected_at": stamp["created_at"],
                "previous_selection": previous, "selection": selection,
                "model_changed": previous is None or (previous.get("run_learner"), previous["run_name"])
@@ -161,6 +167,7 @@ def _select_model(learner_dir, run_names):
 
 
 def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
+    # 최종 Test 평가와 같은 잠금을 사용해 선택 도중 모델이 바뀌지 않게 한다.
     with selection_lock(learner_dir):
         return _select_model(Path(learner_dir), run_names)
 

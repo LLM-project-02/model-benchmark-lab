@@ -22,11 +22,13 @@ from test_lesson_training import make_local_inputs
 
 @pytest.fixture
 def fixed_clock(monkeypatch):
+    # UTC 01:02:03 = 한국 10:02:03. 같은 초의 중복 이름을 재현한다.
     monkeypatch.setattr("experiment_storage.now_utc", lambda: datetime(2026, 10, 8, 1, 2, 3, tzinfo=UTC))
 
 
 @pytest.fixture
 def storage_runs(tmp_path, fixed_clock):
+    # 원본 실험과 분리된 임시 데이터·로컬 모델로 실제 LR을 두 번 학습한다.
     torch.set_num_threads(1)
     data_dir, model_dir, labels = make_local_inputs(tmp_path)
     learner = tmp_path / "artifacts" / "inquiries" / "learner01"
@@ -41,6 +43,7 @@ def storage_runs(tmp_path, fixed_clock):
 
 
 def snapshot(path):
+    # 파일 존재뿐 아니라 내용도 바뀌지 않았는지 SHA-256으로 확인한다.
     return {str(file.relative_to(path)): hashlib.sha256(file.read_bytes()).hexdigest()
             for file in path.rglob("*") if file.is_file()}
 
@@ -86,6 +89,7 @@ def test_different_lr_settings_and_explicit_names_are_recorded(storage_runs):
 
 
 def test_auto_directory_reservation_is_safe_under_concurrent_calls(tmp_path, fixed_clock):
+    # 동시에 같은 이름을 요청해도 mkdir 예약으로 각각 다른 폴더를 받아야 한다.
     with ThreadPoolExecutor(max_workers=8) as pool:
         paths = list(pool.map(lambda _: reserve_run(tmp_path, "org/bert", "lr2e-5")[0], range(12)))
     assert len({path.name for path in paths}) == 12
@@ -106,6 +110,7 @@ def test_repeated_comparisons_keep_immutable_snapshots_and_selection_history(sto
     folder = learner / first["comparison_path"]
     before = snapshot(folder)
     second = select_model(learner, list(reversed(names)))
+    # 동일 점수에서 후보 순서를 뒤집어 선택 변경과 이전 비교 보존을 함께 확인한다.
     assert second["run_name"] == names[1]
     assert first["comparison_id"] != second["comparison_id"]
     assert second["comparison_id"].endswith("_02")
@@ -130,6 +135,7 @@ def test_repeated_comparisons_keep_immutable_snapshots_and_selection_history(sto
 
 
 def test_existing_legacy_root_results_and_selection_are_preserved(storage_runs):
+    # 새 버전의 최신 뷰와 달리, 이미 존재하던 루트 결과는 바이트 그대로 보존한다.
     _, learner, names, _, _ = storage_runs
     old_files = {"model_comparison.csv": b"legacy csv\r\n", "model_comparison.json": b'{"old":true}',
                  "model_comparison.md": b"old markdown", "model_comparison.png": b"old image",
@@ -159,6 +165,7 @@ def test_failed_comparison_does_not_change_current_selection(storage_runs, monke
         raise OSError("disk write failed")
 
     monkeypatch.setattr(step05_select_model, "save_comparison", fail)
+    # 출력 도중 실패해도 이전 선택·원본은 유지하고 미완료 비교만 남겨야 한다.
     with pytest.raises(OSError, match="disk write failed"):
         select_model(learner, names)
     assert (learner / "selected.json").read_bytes() == before
@@ -196,12 +203,14 @@ def test_new_run_ids_and_test_lock_cannot_be_rebound_to_another_model(storage_ru
     config_path = learner / selected["run_name"] / "config.json"
     config = read_json(config_path)
     config["run_id"] = "different-model-at-the-same-path"
+    # 경로가 같아도 다른 RUN ID에 기존 Test 보고서를 연결하면 거부해야 한다.
     atomic_json(config_path, config)
     with pytest.raises(ValueError, match="test 평가에 쓴 모델의 RUN ID"):
         load_classifier(learner)
 
 
 def test_legacy_runs_without_new_metadata_can_still_load_select_and_evaluate(storage_runs):
+    # 새 필드를 제거해 UUID·메타데이터 없는 이전 결과의 로딩 경로를 재현한다.
     data_dir, learner, names, _, _ = storage_runs
     for name in names:
         config_path = learner / name / "config.json"
@@ -224,6 +233,7 @@ def test_auto_candidate_discovery_and_duplicate_run_references(storage_runs):
 
 
 def test_auto_bert_runs_use_exact_baseline_reference_and_preserve_legacy_baseline(storage_runs, monkeypatch):
+    # 외부 다운로드 없이 tiny BERT를 반복 학습해 기본/명시 LR 참조와 결과 보존을 확인한다.
     data_dir, learner, names, model_dir, labels = storage_runs
     monkeypatch.setenv("HF_HUB_OFFLINE", "1")
     monkeypatch.setenv("TRANSFORMERS_OFFLINE", "1")

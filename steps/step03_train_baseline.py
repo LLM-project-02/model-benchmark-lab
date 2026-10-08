@@ -62,12 +62,14 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     )
     output, stamp = reserve_run(learner_dir, "lr", f"ngram{ngram_range[0]}-{ngram_range[1]}_seed{seed}",
                                 run_name)
+    # Test는 읽지 않고 train·validation·labels 지문과 실제 estimator 설정을 기록한다.
     fingerprint = data_fingerprint(data_dir)
     metadata = new_run_metadata(
         output, stamp, model_id="sklearn.TfidfVectorizer+sklearn.LogisticRegression",
         hyperparameters={"vectorizer": model[0].get_params(), "classifier": model[1].get_params()},
         seed=seed, dataset=data_dir.name, data_sha256=fingerprint)
     atomic_json(output / "run_metadata.json", metadata)
+    # 학습 시간은 fit만 포함한다. 저장·검증·모델 로딩 시간은 제외한다.
     rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
     model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train])
@@ -105,6 +107,7 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
                        "peak_gpu_memory_allocated_mb": None,
                        "peak_gpu_memory_reserved_mb": None,
                        "gpu_memory_reason": "CPU training; GPU not used"})
+    # 지표는 원래 Validation 예측으로, 효율은 저장 모델의 재로드 추론으로 기록한다.
     metrics = evaluation_report(validation, predictions, labels, probabilities,
                                 model_name="tfidf_char_ngram+logistic_regression",
                                 experiment_id=f"{learner_dir.name}/{output.name}", dataset=data_dir.name,
@@ -134,6 +137,7 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     finish_run(output, metadata)
+    # 완료한 실행만 step04의 기본 기준 모델로 사용되도록 포인터를 갱신한다.
     publish_baseline(learner_dir, output, config)
     print("기준 모델 validation macro F1:", round(metrics["macro_f1"], 4))
     print("학습 시간(초):", round(train_seconds, 2),
@@ -148,6 +152,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-name", default=RUN_NAME)
     args = parser.parse_args()
+    # 기존 Python API의 baseline 기본값과 달리 CLI는 None으로 자동 이름을 사용한다.
     train_baseline(run_name=args.run_name)
 
 

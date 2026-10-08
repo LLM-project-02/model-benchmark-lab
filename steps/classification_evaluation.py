@@ -17,6 +17,7 @@ from sklearn.metrics import (
     precision_recall_fscore_support,
 )
 
+# JSON·CSV·Markdown에서 같은 지표 이름과 순서를 사용한다.
 SCORE_FIELDS = (
     "accuracy", "macro_precision", "macro_recall", "macro_f1", "weighted_precision",
     "weighted_recall", "weighted_f1", "micro_f1", "balanced_accuracy", "mcc",
@@ -34,6 +35,7 @@ CAUTIONS = [
 
 
 def _targets(actual, predicted, labels):
+    # 정답·예측 번호는 labels.json 순서에 대응해야 한다.
     if not labels or len(set(labels)) != len(labels):
         raise ValueError("중복 없는 라벨 목록이 필요합니다.")
     actual, predicted = np.asarray(actual), np.asarray(predicted)
@@ -53,15 +55,18 @@ def probability_scores(actual, predicted, labels, probabilities=None, *, source=
     if ece_bins < 1 or not isinstance(ece_bins, int):
         raise ValueError("ECE bin 수는 양의 정수여야 합니다.")
     if probabilities is None:
+        # 확률 미지원 모델도 분류 지표는 계산하고, 확률 지표는 null로 남긴다.
         return {"supported": False, "source": source,
                 "reason": unavailable_reason or "모델이 클래스별 확률을 제공하지 않습니다.",
                 "log_loss": None, "brier_score": None, "ece": None, "bins": []}
     scores = np.asarray(probabilities, dtype=float)
+    # decision_function 같은 임의 점수를 확률로 취급하지 않는다.
     if (scores.shape != (len(actual), len(labels)) or not np.all(np.isfinite(scores))
             or np.any(scores < 0) or np.any(scores > 1)
             or not np.allclose(scores.sum(axis=1), 1, rtol=0, atol=1e-6)):
         raise ValueError("확률은 [샘플, labels 순서]의 유한한 0~1 값이며 행 합계가 1이어야 합니다.")
     confidence = scores[np.arange(len(actual)), predicted]
+    # 정답 클래스의 점수가 아니라 실제 예측한 클래스의 신뢰도를 평가한다.
     correct = actual == predicted
     # [0, 1/bins), ..., [(bins-1)/bins, 1]: 확률 1도 마지막 bin에 포함한다.
     bin_ids = np.minimum((confidence * ece_bins).astype(int), ece_bins - 1)
@@ -72,6 +77,7 @@ def probability_scores(actual, predicted, labels, probabilities=None, *, source=
         mean_confidence = float(confidence[mask].mean()) if count else None
         accuracy = float(correct[mask].mean()) if count else None
         if count:
+            # ECE: 각 구간의 정확도·평균 신뢰도 차이를 샘플 비율로 가중한다.
             ece += count / len(actual) * abs(accuracy - mean_confidence)
         bins.append({"lower": index / ece_bins, "upper": (index + 1) / ece_bins,
                      "support": count, "accuracy": accuracy, "mean_confidence": mean_confidence})
@@ -97,17 +103,20 @@ def classification_scores(actual, predicted, labels, probabilities=None, *, prob
     ids = list(range(len(labels)))
     matrix = confusion_matrix(actual, predicted, labels=ids)
     support = matrix.sum(axis=1)
+    # 행=정답, 열=예측. 정답이 없는 클래스의 정규화 행은 0으로 유지한다.
     normalized = np.divide(matrix, support[:, None], out=np.zeros_like(matrix, dtype=float),
                            where=support[:, None] != 0)
     report = classification_report(actual, predicted, labels=ids, target_names=labels,
                                    output_dict=True, zero_division=0)
     metrics = {"accuracy": float(accuracy_score(actual, predicted))}
     for average in ("macro", "weighted"):
+        # Macro는 클래스 동일 비중, Weighted는 정답 Support 비중이다.
         precision, recall, f1, _ = precision_recall_fscore_support(
             actual, predicted, labels=ids, average=average, zero_division=0)
         metrics.update({f"{average}_precision": float(precision),
                         f"{average}_recall": float(recall), f"{average}_f1": float(f1)})
     for index, label in enumerate(labels):
+        # 각 클래스를 양성, 나머지를 음성으로 보는 one-vs-rest 건수다.
         tp = int(matrix[index, index])
         fp = int(matrix[:, index].sum()) - tp
         fn = int(support[index]) - tp
@@ -138,6 +147,7 @@ def prediction_records(rows, predictions, labels, probabilities=None, *, model_n
     _targets(actual, predictions, labels)
     probability_scores(np.asarray(actual), np.asarray(predictions), labels, probabilities)
     if len({row["id"] for row in rows}) != len(rows):
+        # ID 중복은 모델 간 동일 문장 비교를 모호하게 만든다.
         raise ValueError("평가 데이터 ID가 중복됩니다.")
     records = []
     for index, (row, prediction) in enumerate(zip(rows, predictions, strict=True)):
@@ -154,6 +164,7 @@ def prediction_records(rows, predictions, labels, probabilities=None, *, model_n
 
 
 def error_analysis(records, labels):
+    # 혼동 조합은 실제→예측 방향을 유지하고, 길이는 원문 문자 수를 사용한다.
     errors = [row for row in records if row["actual"] != row["predicted"]]
     pairs = []
     for actual in labels:
@@ -169,6 +180,7 @@ def error_analysis(records, labels):
         score = (classification_scores([labels.index(row["actual"]) for row in subset],
                                        [labels.index(row["predicted"]) for row in subset], labels)
                  if subset else None)
+        # 빈 길이 구간은 점수 0이 아니라 미측정(None)으로 표시한다.
         bins.append({"min_chars": lower, "max_chars_exclusive": upper, "support": len(subset),
                      "accuracy": score["accuracy"] if score else None,
                      "macro_f1": score["macro_f1"] if score else None})
@@ -179,6 +191,7 @@ def error_analysis(records, labels):
 def evaluation_report(rows, predictions, labels, probabilities=None, *, model_name="unknown",
                       experiment_id="unknown", dataset="unknown", split="validation",
                       probability_source=None, efficiency=None, unavailable_reason=None):
+    # 모델별 어댑터의 예측을 공통 지표·문장 기록·오류 분석으로 묶는다.
     metrics = classification_scores([labels.index(row["label"]) for row in rows], predictions,
                                     labels, probabilities, probability_source=probability_source,
                                     unavailable_reason=unavailable_reason)
@@ -196,11 +209,13 @@ def evaluation_report(rows, predictions, labels, probabilities=None, *, model_na
 
 
 def write_json(path, value):
+    # NaN/Infinity가 들어간 유효하지 않은 JSON은 저장하지 않는다.
     Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False),
                           encoding="utf-8")
 
 
 def write_csv(path, rows, fields):
+    # Excel용 UTF-8 BOM. 클래스 확률 같은 객체는 한 셀의 JSON으로 보관한다.
     with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
@@ -210,6 +225,7 @@ def write_csv(path, rows, fields):
 
 
 def save_errors(path, rows, predictions, labels, probabilities=None, **metadata):
+    # 기존 step03의 오분류 저장 API도 같은 문장 기록 형식을 재사용한다.
     records = prediction_records(rows, predictions, labels, probabilities, **metadata)
     write_csv(path, [row for row in records if row["actual"] != row["predicted"]], PREDICTION_FIELDS)
 
@@ -219,6 +235,7 @@ def _display(value):
 
 
 def evaluation_markdown(report):
+    # 이미 계산한 보고서만 표시하며, 누락된 측정값을 만들어 넣지 않는다.
     labels = report["confusion_matrix_axes"]["labels"]
     lines = [f"# {report['model_name']} — {report['split']}", "",
              (f"데이터셋: {report['dataset']} / 실험: {report['experiment_id']} / "
@@ -251,6 +268,7 @@ def evaluation_markdown(report):
 
 
 def save_evaluation(output_dir, report, *, prefix="validation"):
+    # 덮어쓰기 방지는 호출자의 고유 실행 경로/Test 잠금에서 담당한다.
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     records = report["predictions"]
@@ -261,6 +279,7 @@ def save_evaluation(output_dir, report, *, prefix="validation"):
     (output / f"{prefix}_summary.md").write_text(evaluation_markdown(report), encoding="utf-8")
     # plt는 지표 계산에 필요하지 않으므로 저장 단계에서만 불러온다.
     import matplotlib
+    # GUI가 없는 서버에서도 PNG를 생성한다.
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
@@ -281,4 +300,5 @@ def save_evaluation(output_dir, report, *, prefix="validation"):
                     color="white" if values[row, col] > values.max() / 2 else "black")
         fig.tight_layout()
         fig.savefig(output / f"{prefix}_confusion_matrix{suffix}.png", dpi=160)
+        # 반복 실험에서 그림 객체가 메모리에 쌓이지 않도록 닫는다.
         plt.close(fig)

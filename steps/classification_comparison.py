@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 from classification_evaluation import CAUTIONS, SCORE_FIELDS, _display, write_csv, write_json
 
+# 이전 CSV 열을 유지하면서 상세 효율 값과 측정 조건을 함께 내보낸다.
 EFFICIENCY_FIELDS = (
     "train_seconds", "model_load_seconds", "inference_total_seconds",
     "inference_mean_ms_per_sample", "inference_median_ms_per_sample",
@@ -34,6 +35,7 @@ def compare_predictions(report_a, report_b):
             or report_a["evaluation_sha256"] != report_b["evaluation_sha256"]):
         raise ValueError("같은 데이터셋·라벨·validation 예측을 비교하세요.")
     records_a, records_b = report_a["predictions"], report_b["predictions"]
+    # 지문 외에 문장별 원문·정답·순서도 검사해 잘못 연결된 기록을 거부한다.
     identity_keys = ("id", "text", "actual", "group_id")
     if (len(records_a) != len(records_b)
             or any(any(a[key] != b[key] for key in identity_keys)
@@ -48,6 +50,7 @@ def compare_predictions(report_a, report_b):
                     if correct_a else "b_correct_a_wrong")
         counts[category] += 1
         if category != "both_correct":
+            # 둘 다 정답인 경우는 건수만 남기고, 확인할 오류 사례만 CSV에 넣는다.
             records.append({"model_a": report_a["model_name"], "model_b": report_b["model_name"],
                             "category": category, "id": a["id"], "text": a["text"],
                             "actual": a["actual"], "text_length": a["text_length"],
@@ -62,6 +65,7 @@ def compare_predictions(report_a, report_b):
 
 
 def _delta(a, b):
+    # 모든 차이는 B−A이며, 한쪽이 미측정이면 차이도 미측정이다.
     return b - a if a is not None and b is not None else None
 
 
@@ -80,6 +84,7 @@ def pairwise_differences(a, b):
     if a["metrics"].get("predictions") is not None and b["metrics"].get("predictions") is not None:
         errors = compare_predictions(a["metrics"], b["metrics"])
     else:
+        # 이전 지표 파일에 문장별 예측이 없어도 점수 비교는 계속 지원한다.
         errors = {"supported": False, "reason": "기존 실험에 전체 예측 기록이 없어 오류 쌍을 비교할 수 없습니다."}
     return {"model_a": a["run"], "model_b": b["run"], "direction": "B minus A",
             "metric_deltas": {key: _delta(a["metrics"].get(key), b["metrics"].get(key))
@@ -99,6 +104,7 @@ def pairwise_differences(a, b):
 
 
 def build_comparison(entries):
+    # 동일 주제·라벨·Validation을 확인한 뒤 모든 모델 쌍을 비교한다.
     if len(entries) < 2:
         raise ValueError("두 개 이상의 모델이 필요합니다.")
     versions = set()
@@ -119,6 +125,7 @@ def build_comparison(entries):
 
 
 def save_comparison(output_dir, entries, candidates, best):
+    # 저장 위치의 고유성은 step05가 보장하며, 이 함수는 형식별 출력을 담당한다.
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     report = build_comparison(entries)
@@ -132,6 +139,7 @@ def save_comparison(output_dir, entries, candidates, best):
               *CONDITION_FIELDS]
     rows = []
     for entry, candidate in zip(entries, candidates, strict=True):
+        # 이전 summary 값은 보존하고 새 상세 기록이 있으면 해당 값을 사용한다.
         probability = entry["metrics"].get("probability_metrics", {})
         rows.append({**candidate, "run": entry["run"], "selected": "yes" if candidate is best else "",
                      **{f"validation_{key}": entry["metrics"].get(key) for key in SCORE_FIELDS},
@@ -142,6 +150,7 @@ def save_comparison(output_dir, entries, candidates, best):
                      "probability_supported": probability.get("supported")})
     write_csv(output / "model_comparison.csv", rows, fields)
     pair_rows, errors = [], []
+    # 전체 지표표와 쌍별 차이·오류 사례를 각각 별도 CSV로 저장한다.
     for pair in report["pairs"]:
         pair_rows.append({"model_a": pair["model_a"], "model_b": pair["model_b"],
                           **pair["metric_deltas"], **pair["efficiency_deltas"],
@@ -198,6 +207,7 @@ def save_comparison(output_dir, entries, candidates, best):
     fig, ax = plt.subplots(figsize=(max(7, len(entries) * 2), 4))
     indices = np.arange(len(entries))
     plot_fields = ("accuracy", "macro_f1", "weighted_f1", "balanced_accuracy")
+    # 기존 로그에 없는 지표는 막대를 생략한다. 0점으로 그리지 않는다.
     for offset, key in enumerate(plot_fields):
         available = [(i, entry["metrics"].get(key)) for i, entry in enumerate(entries)
                      if entry["metrics"].get(key) is not None]

@@ -18,6 +18,7 @@ LABELS = ["a", "b", "c"]
 
 
 def rows_for(actual):
+    # 쉼표·줄바꿈 원문을 넣어 CSV 저장 시 텍스트가 보존되는지도 검증한다.
     return [{"id": str(i), "text": f"원문, {i}\n두 번째 줄", "label": LABELS[label], "group_id": f"g{i}"}
             for i, label in enumerate(actual)]
 
@@ -46,6 +47,7 @@ def test_metrics_and_one_vs_rest_counts_match_hand_calculation():
 
 
 def test_imbalance_and_never_predicted_classes_are_finite():
+    # b는 정답만 있고 c는 정답에도 없다. Macro와 Balanced 평균 범위가 달라진다.
     actual, predicted = [0] * 9 + [1], [0] * 10
     result = classification_scores(actual, predicted, LABELS)
     assert result["accuracy"] == .9
@@ -62,6 +64,7 @@ def test_imbalance_and_never_predicted_classes_are_finite():
 
 
 def test_log_loss_brier_and_ece_match_hand_calculation():
+    # 두 샘플의 수작업 계산과 비교한다. Brier는 클래스별 오차를 합산하는 정의다.
     probabilities = [[.8, .2], [.6, .4]]
     result = classification_scores([0, 1], [0, 0], ["yes", "no"], probabilities,
                                    probability_source="custom", ece_bins=2)["probability_metrics"]
@@ -111,6 +114,7 @@ def test_unsupported_probability_is_explicit_and_predictions_still_saved(tmp_pat
 
 
 def test_predict_adapter_does_not_require_probabilities_or_receive_targets():
+    # predict만 가진 모델을 통해 확률 미지원·정답 미전달 계약을 확인한다.
     class HardClassifier:
         def predict(self, texts):
             assert texts == ["원문"]
@@ -143,6 +147,7 @@ def test_artifact_roundtrip_keeps_text_probability_order_and_actual_plot_values(
 
 
 def make_reports():
+    # 공동 정답·공동 오류·A만 정답·B만 정답이 각각 하나씩 나오게 구성한다.
     rows = rows_for([0, 1, 2, 0])
     return (evaluation_report(rows, [0, 0, 1, 0], LABELS, experiment_id="LR", dataset="inquiries"),
             evaluation_report(rows, [1, 1, 1, 0], LABELS, experiment_id="BERT", dataset="inquiries"))
@@ -174,6 +179,7 @@ def test_mismatched_evaluation_rows_and_test_comparison_are_rejected(change):
 
 
 def test_comparison_saves_metrics_deltas_errors_and_preserves_legacy_columns(tmp_path):
+    # 테스트 효율 수치는 저장 형식 검증용이며 실제 실험 결과로 사용하지 않는다.
     a, b = make_reports()
     entries = [{"run": report["experiment_id"], "dataset": "inquiries", "metrics": report,
                 "efficiency": {"train_seconds": i + 1, "model_size_mib": i + .5}}
@@ -203,6 +209,7 @@ def test_comparison_saves_metrics_deltas_errors_and_preserves_legacy_columns(tmp
 
 
 def test_old_metric_logs_remain_comparable_without_inventing_missing_values():
+    # 상세 예측 없는 이전 로그는 점수 비교만 지원하고 누락된 값은 None으로 남겨야 한다.
     a, b = make_reports()
     for report in (a, b):
         report.pop("predictions")
@@ -216,6 +223,7 @@ def test_old_metric_logs_remain_comparable_without_inventing_missing_values():
 
 
 def test_length_bins_boundaries_and_empty_bins_are_not_invented():
+    # 50·800자 경계가 올바른 구간에 들어가고 빈 구간에 점수를 만들지 않는지 확인한다.
     rows = rows_for([0, 1, 2])
     for row, length in zip(rows, [49, 50, 800], strict=True):
         row["text"] = "가" * length
@@ -252,6 +260,7 @@ def test_benchmark_warmup_repeats_and_median_are_measured(monkeypatch):
 
 
 def test_legacy_scoring_and_error_saving_imports_remain_available(tmp_path):
+    # 공통 모듈로 옮긴 뒤에도 기존 step03 import 경로가 동작해야 한다.
     from step03_train_baseline import classification_scores as legacy_scores
     from step03_train_baseline import save_errors
 

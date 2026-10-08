@@ -110,6 +110,7 @@ def window_sample_counts(dataset_size, batch_size, accumulation_steps):
 
 
 def validate_model(model, loader, device, labels, *, return_probabilities=False):
+    # 기본 반환 3개는 유지하고, 상세 보고가 필요할 때만 확률을 추가 반환한다.
     model.eval()  # 평가 모드 (dropout 끔)
     predictions, actual, probabilities = [], [], []
     total_loss, count = 0.0, 0
@@ -122,6 +123,7 @@ def validate_model(model, loader, device, labels, *, return_probabilities=False)
             total_loss += output.loss.item() * batch_size  # 배치 평균 loss -> 합계
             count += batch_size
             predictions.extend(output.logits.argmax(-1).cpu().tolist())  # 점수가 가장 큰 라벨
+            # 정답은 loss·지표에만 쓰이며 예측 점수는 logits에서 얻는다.
             probabilities.extend(output.logits.float().softmax(-1).cpu().tolist())
             actual.extend(batch["labels"].cpu().tolist())
     result = (classification_scores(actual, predictions, labels, probabilities,
@@ -161,6 +163,7 @@ def run_training(
     train_rows = read_rows(data_dir / "train.csv")
     validation_rows = read_rows(data_dir / "validation.csv")
     check_splits({"train": train_rows, "validation": validation_rows}, labels)
+    # 최신 LR을 기본으로 쓰되, 이전 baseline/과 명시 실행도 지원한다.
     baseline_dir = resolve_baseline(learner_dir, baseline_run)
     if not (baseline_dir / "baseline.joblib").exists():
         raise RuntimeError("먼저 step03_train_baseline.py에서 기준 모델을 학습하세요.")
@@ -176,6 +179,7 @@ def run_training(
         raise ValueError("학습이 끝나지 않은 기준 모델입니다.")
     output_dir, stamp = reserve_run(
         learner_dir, model_name, f"lr{learning_rate:g}_bs{batch_size}_ep{epochs}", run_name)
+    # 실제 예약된 이름(_02 등 포함)을 이후 설정·평가 기록에 일관되게 사용한다.
     run_name = output_dir.name
     metadata = new_run_metadata(
         output_dir, stamp, model_id=model_name, seed=seed, dataset=data_dir.name,
@@ -185,6 +189,7 @@ def run_training(
                          "optimizer": "AdamW", "weight_decay": 0.01, "warmup_fraction": 0.1,
                          "max_grad_norm": 1.0, "device": str(device)})
     metadata["baseline_source"] = {
+        # 기준 LR이 나중에 바뀌어도 이 실험에서 사용한 RUN을 추적할 수 있다.
         "run_id": run_identity(baseline_dir, baseline_config),
         "run_learner": baseline_dir.parent.name, "run_name": baseline_dir.name,
         "data_sha256": baseline_config["data_sha256"]}
@@ -210,6 +215,7 @@ def run_training(
         local_files_only=local_files_only,
     )
     metadata["model_revision"] = getattr(model.config, "_commit_hash", None)
+    # 원격 revision을 추정하지 않는다. 로컬 초기 모델은 파일 지문으로 식별한다.
     metadata["model_revision_reason"] = (None if metadata["model_revision"]
                                          else "로더가 원격 revision을 제공하지 않음; 로컬 모델은 파일 지문 기록")
     if Path(model_name).is_dir():
@@ -288,6 +294,7 @@ def run_training(
         json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     # 최종 평가에서 같은 기준 모델을 비교할 수 있게 실험 폴더에 함께 보관한다.
+    # 이후 LR을 새로 학습해도 이 실험의 기준 모델 복사본은 바뀌지 않는다.
     shutil.copy2(baseline_dir / "baseline.joblib", output_dir / "baseline.joblib")
     shutil.copy2(baseline_dir / "validation_metrics.json", output_dir / "baseline_validation.json")
 
@@ -295,6 +302,7 @@ def run_training(
     best_score, updates = -1.0, 0
     window_samples = window_sample_counts(len(train_dataset), batch_size, accumulation_steps)
     rss_before_training = cpu_rss_mib()
+    # GPU 비동기 작업은 학습 타이머의 시작·종료 경계에서 동기화한다.
     if use_cuda:
         torch.cuda.synchronize(device)
     started = time.perf_counter()
@@ -343,6 +351,7 @@ def run_training(
         if metrics["macro_f1"] > best_score:
             best_score, best_predictions = metrics["macro_f1"], predictions
             best_probabilities = probabilities
+            # 마지막 epoch가 아닌 저장한 최고 epoch의 예측·확률로 최종 보고한다.
             checkpoint = output_dir / "checkpoint"
             model.save_pretrained(checkpoint, safe_serialization=True)  # 가중치와 설정 저장
             tokenizer.save_pretrained(checkpoint)  # 예측 때 같은 토크나이저를 쓰도록
@@ -379,6 +388,7 @@ def run_training(
         torch.cuda.max_memory_reserved(device) / 2**20 if use_cuda else None
     )
     reloaded, _, efficiency = measure_saved_run(output_dir, validation_rows)
+    # GPU 학습 기록과 CPU 단일 문장 추론 기록은 서로 다른 측정 범위다.
     efficiency.update({"train_seconds": summary["train_seconds"], "training_device": str(device),
                        "training_scope": "epoch loop including validation and checkpoint I/O; "
                        "excludes initial model loading and tokenization",

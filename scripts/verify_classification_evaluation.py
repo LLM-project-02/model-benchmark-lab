@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# 직접 실행해도 steps의 기존 학습·평가 함수를 가져올 수 있게 한다.
 sys.path.insert(0, str(ROOT / "steps"))
 
 from step01_read_data import data_fingerprint, read_labels
@@ -26,12 +27,15 @@ def verify(output_root, learner):
                 raise FileExistsError(f"기존 결과가 있습니다. --learner를 바꾸세요: {target}")
     for topic in ("inquiries", "documents"):
         data_dir = ROOT / "data" / topic
+        # 데이터 지문을 전후 비교해 원본 분할·라벨을 수정하지 않았는지 확인한다.
         before = data_fingerprint(data_dir)
         learner_dir = output_root / topic / learner
         for name, ngrams in ((learner, (2, 5)), (f"{learner}_ngram24", (2, 4))):
+            # 실제 LR 두 설정을 학습한다. 기존 Python API의 baseline/ 경로를 사용한다.
             scores = train_baseline(data_dir, output_root / topic / name, ngram_range=ngrams)
             assert scores["confusion_matrix_axes"]["labels"] == read_labels(data_dir)
             assert scores["probability_metrics"]["supported"]
+        # 같은 주제의 Validation만 비교하며, Test 최종 평가는 실행하지 않는다.
         select_model(learner_dir, ["baseline", f"{learner}_ngram24/baseline"])
         assert before == data_fingerprint(data_dir)
         assert not (learner_dir / "test_metrics.json").exists()
