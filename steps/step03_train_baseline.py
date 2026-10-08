@@ -17,6 +17,14 @@ from classification_evaluation import (
     save_errors,
     save_evaluation,
 )
+from experiment_storage import (
+    atomic_json,
+    finish_run,
+    new_run_metadata,
+    publish_baseline,
+    reserve_run,
+    validate_name,
+)
 from lesson_settings import DATASET, LEARNER_DIR, ROOT
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -27,16 +35,18 @@ from step02_check_data import check_splits
 DATA_DIR = ROOT / "data" / DATASET
 NGRAM_RANGE = (2, 5)  # 2~5글자 문자 조각을 특징으로 사용
 SEED = 42  # 재현을 위한 난수 고정값
+RUN_NAME = None  # CLI: None이면 lr_주요설정_YYYYMMDD_HHMMSS를 자동 생성. 명시 이름도 지원.
 
 # 기존 step03 import 경로를 다른 단계·외부 스크립트에서도 계속 사용할 수 있다.
 __all__ = ["classification_scores", "save_errors", "train_baseline"]
 
 
-def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED):
+def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED,
+                   *, run_name="baseline"):
+    # 이전 Python 호출은 baseline을 유지. CLI와 run_name=None 호출은 실행마다 자동 이름을 만든다.
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
-    output = learner_dir / "baseline"
-    if output.exists():
-        raise FileExistsError(f"기준 모델이 이미 있습니다: {output}")
+    if run_name is not None and (learner_dir / validate_name(run_name)).exists():
+        raise FileExistsError(f"기준 모델이 이미 있습니다: {learner_dir / run_name}")
     labels = read_labels(data_dir)
     train = read_rows(data_dir / "train.csv")
     validation = read_rows(data_dir / "validation.csv")
@@ -50,6 +60,14 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
         LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed),
     )
+    output, stamp = reserve_run(learner_dir, "lr", f"ngram{ngram_range[0]}-{ngram_range[1]}_seed{seed}",
+                                run_name)
+    fingerprint = data_fingerprint(data_dir)
+    metadata = new_run_metadata(
+        output, stamp, model_id="sklearn.TfidfVectorizer+sklearn.LogisticRegression",
+        hyperparameters={"vectorizer": model[0].get_params(), "classifier": model[1].get_params()},
+        seed=seed, dataset=data_dir.name, data_sha256=fingerprint)
+    atomic_json(output / "run_metadata.json", metadata)
     rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
     model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train])
@@ -61,15 +79,17 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     actual = [label2id[row["label"]] for row in validation]
     metrics = classification_scores(actual, predictions, labels)
 
-    output.mkdir(parents=True)
     joblib.dump(model, output / "baseline.joblib")  # 벡터화+분류기 파이프라인을 통째로 저장
     config = {
         "kind": "baseline",  # step05·step06이 사전학습 모델과 구분하는 값
         "dataset": data_dir.name,
-        "data_sha256": data_fingerprint(data_dir),  # 어떤 데이터로 학습했는지 증명
+        "data_sha256": fingerprint,  # 어떤 데이터로 학습했는지 증명
         "labels": labels,
         "ngram_range": list(ngram_range),
         "seed": seed,
+        "run_name": output.name, "run_id": metadata["run_id"],
+        "model_id": metadata["model_id"], "created_at": metadata["created_at"],
+        "hyperparameters": metadata["hyperparameters"],
     }
     for filename, value in (("config.json", config), ("validation_metrics.json", metrics)):
         (output / filename).write_text(
@@ -87,11 +107,12 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
                        "gpu_memory_reason": "CPU training; GPU not used"})
     metrics = evaluation_report(validation, predictions, labels, probabilities,
                                 model_name="tfidf_char_ngram+logistic_regression",
-                                experiment_id=f"{learner_dir.name}/baseline", dataset=data_dir.name,
+                                experiment_id=f"{learner_dir.name}/{output.name}", dataset=data_dir.name,
                                 probability_source="sklearn.predict_proba (uncalibrated)",
                                 efficiency=efficiency)
     metrics["prediction_device"] = "cpu"
     metrics["data_sha256"] = config["data_sha256"]
+    metrics["run_id"] = metadata["run_id"]
     save_evaluation(output, metrics)
     summary = {
         "method": "tfidf_char_ngram_logistic_regression",
@@ -107,10 +128,13 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
         "efficiency": efficiency,
         "sklearn_version": sklearn.__version__,
         "completed": True,  # 학습·저장·재로드 확인까지 끝났다는 표시
+        "run_id": metadata["run_id"], "run_name": output.name,
     }
     (output / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    finish_run(output, metadata)
+    publish_baseline(learner_dir, output, config)
     print("기준 모델 validation macro F1:", round(metrics["macro_f1"], 4))
     print("학습 시간(초):", round(train_seconds, 2),
           "/ CPU 추론(ms/문장):", round(summary["cpu_inference_ms_per_text"], 2))
@@ -119,7 +143,12 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
 
 
 def main():
-    train_baseline()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-name", default=RUN_NAME)
+    args = parser.parse_args()
+    train_baseline(run_name=args.run_name)
 
 
 if __name__ == "__main__":

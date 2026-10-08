@@ -15,6 +15,16 @@ import numpy as np
 import torch
 from classification_efficiency import cpu_rss_mib, measure_saved_run, measurement_environment
 from classification_evaluation import evaluation_report, save_evaluation
+from experiment_storage import (
+    atomic_json,
+    finish_run,
+    new_run_metadata,
+    read_json,
+    reserve_run,
+    resolve_baseline,
+    run_identity,
+    validate_name,
+)
 from lesson_settings import CLASSIFIER_MODEL, DATASET, LEARNER_DIR, ROOT
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
@@ -25,7 +35,8 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Data
 # 두 번째 실험은 RUN_NAME과 LEARNING_RATE를 함께 바꾼다.
 # 다른 조건을 고정해야 학습률에 따른 차이를 비교할 수 있다.
 DATA_DIR = ROOT / "data" / DATASET
-RUN_NAME = "lr2e5"  # 결과 폴더 이름 (실험마다 다르게)
+RUN_NAME = None  # None이면 모델명_주요설정_YYYYMMDD_HHMMSS 자동 생성. 명시 이름도 지원.
+BASELINE_RUN = None  # None이면 latest_baseline.json 사용, 없으면 이전 baseline/ 경로 사용.
 LEARNING_RATE = 2e-5  # 한 번 갱신할 때 가중치를 바꾸는 크기
 EPOCHS = 3  # train 전체를 몇 번 반복할지
 BATCH_SIZE = 4  # 한 번에 모델에 넣는 문장 수
@@ -132,13 +143,13 @@ def run_training(
     seed=SEED,
     device_name=DEVICE,
     local_files_only=False,
+    baseline_run=BASELINE_RUN,
 ):
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
     if min(epochs, batch_size, accumulation_steps, max_length) < 1 or not 0 < learning_rate < 1:
         raise ValueError("학습 횟수와 크기는 양수, 학습률은 0과 1 사이여야 합니다.")
-    output_dir = learner_dir / run_name
-    if output_dir.exists():
-        raise FileExistsError(f"기존 실험을 덮어쓰지 않습니다. RUN_NAME을 바꾸세요: {output_dir}")
+    if run_name is not None and (learner_dir / validate_name(run_name)).exists():
+        raise FileExistsError(f"기존 실험을 덮어쓰지 않습니다. RUN_NAME을 바꾸세요: {learner_dir / run_name}")
     device = torch.device(device_name)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA를 사용할 수 없습니다. GPU 환경 또는 DEVICE 설정을 확인하세요.")
@@ -150,7 +161,7 @@ def run_training(
     train_rows = read_rows(data_dir / "train.csv")
     validation_rows = read_rows(data_dir / "validation.csv")
     check_splits({"train": train_rows, "validation": validation_rows}, labels)
-    baseline_dir = learner_dir / "baseline"
+    baseline_dir = resolve_baseline(learner_dir, baseline_run)
     if not (baseline_dir / "baseline.joblib").exists():
         raise RuntimeError("먼저 step03_train_baseline.py에서 기준 모델을 학습하세요.")
     # step11은 이 실험 폴더에 복사한 기준 모델과 함께 평가하므로 같은 데이터로 학습했어야 한다.
@@ -158,6 +169,26 @@ def run_training(
     baseline_config = json.loads((baseline_dir / "config.json").read_text(encoding="utf-8"))
     if baseline_config.get("data_sha256") != fingerprint:
         raise RuntimeError("기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다. step03을 다시 실행하세요.")
+    if baseline_config.get("kind", "baseline") != "baseline":
+        raise ValueError("BASELINE_RUN은 LR 기준 모델 실험이어야 합니다.")
+    baseline_summary = read_json(baseline_dir / "training_summary.json")
+    if baseline_summary.get("completed") is not True:
+        raise ValueError("학습이 끝나지 않은 기준 모델입니다.")
+    output_dir, stamp = reserve_run(
+        learner_dir, model_name, f"lr{learning_rate:g}_bs{batch_size}_ep{epochs}", run_name)
+    run_name = output_dir.name
+    metadata = new_run_metadata(
+        output_dir, stamp, model_id=model_name, seed=seed, dataset=data_dir.name,
+        data_sha256=fingerprint,
+        hyperparameters={"learning_rate": learning_rate, "epochs": epochs, "batch_size": batch_size,
+                         "accumulation_steps": accumulation_steps, "max_length": max_length,
+                         "optimizer": "AdamW", "weight_decay": 0.01, "warmup_fraction": 0.1,
+                         "max_grad_norm": 1.0, "device": str(device)})
+    metadata["baseline_source"] = {
+        "run_id": run_identity(baseline_dir, baseline_config),
+        "run_learner": baseline_dir.parent.name, "run_name": baseline_dir.name,
+        "data_sha256": baseline_config["data_sha256"]}
+    atomic_json(output_dir / "run_metadata.json", metadata)
 
     # 난수를 고정해 같은 설정이면 같은 결과가 나오게 한다.
     random.seed(seed)
@@ -178,6 +209,16 @@ def run_training(
         label2id={label: index for index, label in enumerate(labels)},
         local_files_only=local_files_only,
     )
+    metadata["model_revision"] = getattr(model.config, "_commit_hash", None)
+    metadata["model_revision_reason"] = (None if metadata["model_revision"]
+                                         else "로더가 원격 revision을 제공하지 않음; 로컬 모델은 파일 지문 기록")
+    if Path(model_name).is_dir():
+        import hashlib
+
+        metadata["initial_model_files_sha256"] = {
+            str(path.relative_to(model_name)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(Path(model_name).rglob("*")) if path.is_file()}
+    atomic_json(output_dir / "run_metadata.json", metadata)
     # 본체를 고정하지 않는다. optimizer에는 본체와 분류층의 파라미터가 모두 들어간다.
     for parameter in model.parameters():
         parameter.requires_grad_(True)  # 학습 대상으로 지정
@@ -224,7 +265,6 @@ def run_training(
     dtype = torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported() else torch.float16
     scaler = torch.amp.GradScaler("cuda", enabled=use_cuda and dtype == torch.float16)
 
-    output_dir.mkdir(parents=True)
     config = {
         "kind": "transformer",  # step05·step06이 기준 모델과 구분하는 값
         "dataset": data_dir.name,
@@ -240,6 +280,9 @@ def run_training(
         "seed": seed,
         "device": str(device),
         "labels": labels,
+        "run_id": metadata["run_id"], "model_id": str(model_name),
+        "created_at": metadata["created_at"], "model_revision": metadata["model_revision"],
+        "hyperparameters": metadata["hyperparameters"], "baseline_source": metadata["baseline_source"],
     }
     (output_dir / "config.json").write_text(
         json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -353,6 +396,7 @@ def run_training(
                                 efficiency=efficiency)
     metrics["prediction_device"] = str(device)
     metrics["data_sha256"] = fingerprint
+    metrics["run_id"] = metadata["run_id"]
     save_evaluation(output_dir, metrics)
     summary["cpu_inference_ms_per_text"] = efficiency["inference_mean_ms_per_sample"]
     summary["reloaded_predictions_match"] = reloaded == best_predictions
@@ -361,9 +405,11 @@ def run_training(
     # 중간에 멈춘 실험은 completed가 False로 남아 step05 비교에서 빠진다.
     summary["completed"] = True
     summary["epochs_completed"] = epochs
+    summary["run_id"] = metadata["run_id"]
     (output_dir / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    finish_run(output_dir, metadata)
     print(json.dumps({key: summary[key] for key in (
         "train_seconds", "peak_gpu_memory_reserved_mb", "cpu_inference_ms_per_text",
         "reloaded_predictions_match")}, ensure_ascii=False))
@@ -372,7 +418,13 @@ def run_training(
 
 
 def main():
-    run_training()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--run-name", default=RUN_NAME)
+    parser.add_argument("--baseline-run", default=BASELINE_RUN)
+    args = parser.parse_args()
+    run_training(run_name=args.run_name, baseline_run=args.baseline_run)
 
 
 if __name__ == "__main__":

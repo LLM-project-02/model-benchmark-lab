@@ -110,8 +110,10 @@ uv run python steps/check_environment.py
 |---|---|---|
 | `DATASET`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 사전학습 모델 ID |
 | `LEARNER` | .env (각자) | 내 실험 결과 폴더 이름(예: `learner02`). 비우면 `learner01` |
-| `RUN_NAME`, `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 실험 이름과 학습 설정 (실험마다 RUN_NAME을 새로) |
-| `RUN_NAMES` | steps/step05_select_model.py | 비교 후보. 기본값 `["baseline", "lr2e5"]`, 동점이면 앞 후보 선택, 다른 팀원 실험은 `"learner02/lr5e5"` |
+| `RUN_NAME` | steps/step03_train_baseline.py, steps/step04_train_classifier.py | 기본 None: 모델명·주요 설정·한국 시각으로 자동 생성. `--run-name`으로 명시 가능 |
+| `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 기존 학습 설정 유지 |
+| `BASELINE_RUN` | steps/step04_train_classifier.py | 최신 완료 LR 포인터 사용, 없으면 기존 baseline/. `--baseline-run`으로 명시 가능 |
+| `RUN_NAMES` | steps/step05_select_model.py | 기본 None: 완료된 실험 자동 탐색. `--runs`로 후보·동점 우선순위 명시. 다른 팀원은 learner/run 형식 |
 | `INPUT_PATH`, `OUTPUT_NAME` | steps/step09_compare.py | 개발 입력 → 최종 비교 입력 전환, 결과 폴더 이름 |
 | `DEFAULT_PROVIDER` | steps/step10_serve_api.py | 서비스 기본 생성 모델. 비교 후 선정한 제공자로 변경 |
 | `OPENAI_INPUT_USD_PER_1M` 등 | .env | 상용 API 단가. 적으면 step09 요약에 예상 비용 계산 |
@@ -120,15 +122,19 @@ uv run python steps/check_environment.py
 
 분류 지표 정의, 확률·효율 측정 범위, 모델별 오류 비교, 상세 파일 구조와 실행 방법은
 [분류 평가 문서](docs/CLASSIFICATION_EVALUATION.md)를 참고하세요.
+자동 실행 이름·비교 원본 보관·선택 이력·이전 경로 호환성은
+[실험 저장 및 이력 관리 문서](docs/EXPERIMENT_STORAGE.md)에 설명되어 있습니다.
 
 `artifacts/step_by_step/<DATASET>/<LEARNER>/`
 
-- `baseline/`, `<RUN_NAME>/`: 설정, epoch별 기록, validation 지표와 오분류
+- `<RUN_NAME>/` (이전 `baseline/`도 지원): 설정, epoch별 기록, validation 지표와 오분류
+- `<RUN_NAME>/run_metadata.json`: 고유 RUN ID, 모델 ID, 설정·seed·데이터 지문·실행 시각·코드 지문
 - `<실험>/training_summary.json`: 학습 시간, GPU 최대 메모리, CPU 추론 시간(ms/문장), 저장 모델 재로드 후 예측 일치 여부
-- `model_comparison.csv`, `.json`, `.md`, `.png`: 후보별 validation 지표·시간·메모리 비교표
-- `model_differences.csv`, `model_error_comparison.csv`: 모델 쌍별 지표 차이와 공동/서로 다른 오류
+- `classification_comparisons/<비교 ID>/`: 비교 JSON·CSV·Markdown·PNG와 차이/오류 CSV, 사용한 RUN 설정 스냅샷
+- `latest_comparison.json`: 최신 비교 폴더 포인터. 기존 루트 비교 파일은 보존하며 새로 만든 호환용 파일만 최신 뷰로 갱신
+- `latest_baseline.json`: 최신 완료 LR 실행 포인터
 - `<실험>/validation_predictions.csv`, `validation_summary.md`, `validation_confusion_matrix*.png`: 전체 예측·확률과 클래스별 상세 평가
-- `selected.json`: 선택한 실험
+- `selected.json`: 현재 선택한 실험, `selection_history/<선택 ID>.json`: 이전/현재 선택 이력
 - `test_metrics.json`, `test_errors.csv`: 최종 평가
 - `comparisons/<OUTPUT_NAME>/`: 생성 비교 원본 응답(`results.jsonl`), 사람 채점(`human_scores.csv`), 요약(`summary.json`: 오류율, 응답 시간, 토큰 합계, Ollama 모델 로딩 시간, 예상 비용)
 
@@ -140,7 +146,7 @@ Ollama가 쓰는 GPU 메모리는 생성 호출 직후 `uv run python steps/chec
 
 ### 분류 모델 비교 (validation)
 
-TODO: `artifacts/step_by_step/<DATASET>/<LEARNER>/model_comparison.csv` 표를 옮기고, 선정한 모델과 이유(성능·시간·자원)를 적습니다.
+TODO: `latest_comparison.json`이 가리키는 `classification_comparisons/<비교 ID>/model_comparison.csv` 표를 옮기고, 선정한 모델과 이유(성능·시간·자원)를 적습니다.
 
 ### 분류 모델 최종 평가 (test)
 

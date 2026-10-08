@@ -283,4 +283,5 @@ Desktop.ini
 # 8. Project2 step-by-step outputs
 # 학습·비교 기록(metrics, epochs, comparisons)은 커밋하고 모델 가중치·토크나이저만 제외한다.
 artifacts/**/checkpoint/
+artifacts/**/.selection.lock
 .uv-cache/

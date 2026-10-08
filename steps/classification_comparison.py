@@ -123,7 +123,7 @@ def save_comparison(output_dir, entries, candidates, best):
     output.mkdir(parents=True, exist_ok=True)
     report = build_comparison(entries)
     write_json(output / "model_comparison.json", report)
-    fields = ["run", "kind", "model", *[f"validation_{key}" for key in SCORE_FIELDS],
+    fields = ["run", "run_id", "dataset", "kind", "model", *[f"validation_{key}" for key in SCORE_FIELDS],
               "train_seconds", "cpu_inference_ms_per_text", "peak_gpu_memory_reserved_mb",
               "reloaded_predictions_match", "selected",
               *[key for key in EFFICIENCY_FIELDS

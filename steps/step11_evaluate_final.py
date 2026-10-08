@@ -12,6 +12,7 @@ from pathlib import Path
 import joblib
 from classification_efficiency import cpu_rss_mib, measure_loaded_bundle
 from classification_evaluation import evaluation_report, save_evaluation
+from experiment_storage import atomic_json, selection_lock
 from lesson_settings import DATA_DIR, LEARNER_DIR
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
@@ -19,7 +20,7 @@ from step03_train_baseline import save_errors
 from step06_predict import load_classifier
 
 
-def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
+def _evaluate_final(data_dir, learner_dir):
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
     metrics_path = learner_dir / "test_metrics.json"
     if metrics_path.exists():  # test 평가는 한 번만 한다
@@ -79,8 +80,11 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
               "selected_run": bundle["run_dir"].name, "selected_kind": bundle["kind"],
               "split": "test", "data_sha256": fingerprint,
               "test_sha256": hashlib.sha256((data_dir / "test.csv").read_bytes()).hexdigest(),
-              "classifier": classifier_report, "baseline": baseline_report}
-    metrics_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+              "classifier": classifier_report, "baseline": baseline_report,
+              "selected_run_id": bundle["identity"]["run_id"],
+              "selection_id": json.loads((learner_dir / "selected.json").read_text(encoding="utf-8"))
+              .get("selection_id"), "dataset": data_dir.name}
+    atomic_json(metrics_path, report)
     save_errors(learner_dir / "test_errors.csv", test_rows, predictions, labels, probabilities,
                 model_name=classifier_report["model_name"],
                 experiment_id=classifier_report["experiment_id"], dataset=data_dir.name, split="test")
@@ -90,6 +94,11 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
     print("기준 모델 test macro F1:", round(report["baseline"]["macro_f1"], 4))
     print("저장 위치:", metrics_path)
     return report
+
+
+def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
+    with selection_lock(learner_dir):
+        return _evaluate_final(data_dir, learner_dir)
 
 
 def main():
