@@ -218,3 +218,64 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ==========================================
+# Model Benchmark Lab - Additional Rules
+# ==========================================
+
+# 1. Environment variables & credentials
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.pem
+*.key
+
+# 2. Trained models & checkpoints
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.gguf
+*.h5
+*.keras
+*.pkl
+*.pickle
+*.joblib
+pytorch_model.bin
+checkpoints/
+checkpoint-*/
+models/checkpoints/
+models/weights/
+
+# 3. Dataset files
+data/raw/
+data/processed/
+data/private/
+datasets/
+
+# 4. Hugging Face & ML cache
+.cache/
+hf_cache/
+transformers_cache/
+huggingface_cache/
+
+# 5. Experiment tracking & training logs
+logs/
+runs/
+wandb/
+mlruns/
+lightning_logs/
+tensorboard/
+events.out.tfevents.*
+
+# 6. Local IDE settings
+.idea/
+.vscode/settings.json
+
+# 7. Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
