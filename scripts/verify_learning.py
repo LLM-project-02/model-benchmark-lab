@@ -110,6 +110,9 @@ def verify_selection(learner_dir):
             raise ValueError("선택 당시 기록과 실험 점수가 다릅니다.")
         if candidate.get("kind") == "baseline":  # 기준 모델은 n-gram 범위가 설정이다
             settings.add(("baseline", tuple(config["ngram_range"]), config["seed"]))
+        elif candidate.get("kind") == "classical":  # 전통 ML은 분류기와 n-gram 범위가 설정이다
+            settings.add(("classical", config["model"], tuple(config["ngram_range"]),
+                          config["seed"]))
         else:
             settings.add(tuple(config[key] for key in (
                 "model", "learning_rate", "epochs", "batch_size", "accumulation_steps",
@@ -134,7 +137,7 @@ def main():
               else data_snapshot(DATA_DIR),
               "selection": verify_selection(LEARNER_DIR), "runs": []}
     for candidate in selection["candidates"]:
-        if candidate.get("kind") == "baseline":  # 가중치 변경 검사는 사전학습 모델에만 해당한다
+        if candidate.get("kind") != "transformer":  # 가중치 변경 검사는 사전학습 모델에만 해당한다
             continue
         run = LEARNER_DIR.parent / candidate["run_learner"] / candidate["run_name"]
         report["runs"].append(verify_run(run))

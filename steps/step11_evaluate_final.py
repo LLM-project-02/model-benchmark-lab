@@ -16,7 +16,7 @@ from lesson_settings import DATA_DIR, LEARNER_DIR
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
 from step03_train_baseline import save_errors
-from step06_predict import load_classifier
+from step06_predict import SKLEARN_FILES, load_classifier
 
 
 def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
@@ -59,7 +59,7 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
         test_rows, predictions, labels, probabilities, dataset=data_dir.name, split="test",
         model_name=selected_config.get("model", "tfidf_char_ngram+logistic_regression"),
         experiment_id=f"{bundle['identity']['learner']}/{bundle['run_dir'].name}",
-        probability_source="sklearn.predict_proba" if bundle["kind"] == "baseline"
+        probability_source="sklearn.predict_proba" if bundle["kind"] in SKLEARN_FILES
         else "transformer.softmax_logits", efficiency=efficiency)
     if bundle["kind"] == "baseline":
         # 선택한 모델이 기준 모델 자체이면 기존 classifier==baseline 계약을 유지하고 재추론하지 않는다.

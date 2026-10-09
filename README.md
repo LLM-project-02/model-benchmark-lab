@@ -93,6 +93,7 @@ uv run python steps/check_environment.py
 | step01_read_data.py | 데이터와 라벨 읽기 |
 | step02_check_data.py | 빈 값, 라벨, 분할 간 중복 검사 |
 | step03_train_baseline.py | TF-IDF + 로지스틱 회귀 학습·검증 |
+| step03b_train_classical.py | (선택) 같은 TF-IDF로 LinearSVC·MultinomialNB 학습·검증. step03 다음에 실행 |
 | step04_train_classifier.py | 사전학습 모델 파인튜닝·검증 (GPU) |
 | step05_select_model.py | 기준 모델과 사전학습 모델을 같은 validation 점수로 비교·선택, 비교표 작성 |
 | step06_predict.py | 저장한 분류기를 다시 불러와 예측 |
@@ -110,6 +111,7 @@ uv run python steps/check_environment.py
 |---|---|---|
 | `DATASET`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 사전학습 모델 ID |
 | `LEARNER` | .env (각자) | 내 실험 결과 폴더 이름(예: `learner02`). 비우면 `learner01` |
+| `CLASSIFIER` | steps/step03b_train_classical.py | `"linear_svc"` 또는 `"multinomial_nb"`. 결과 폴더 이름도 같음. LinearSVC는 확률을 주지 않아 train 안에서 group_id로 나눈 교차 검증으로 시그모이드 보정 |
 | `RUN_NAME`, `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 실험 이름과 학습 설정 (실험마다 RUN_NAME을 새로) |
 | `RUN_NAMES` | steps/step05_select_model.py | 비교 후보. 기본값 `["baseline", "lr2e5"]`, 동점이면 앞 후보 선택, 다른 팀원 실험은 `"learner02/lr5e5"` |
 | `INPUT_PATH`, `OUTPUT_NAME` | steps/step09_compare.py | 개발 입력 → 최종 비교 입력 전환, 결과 폴더 이름 |

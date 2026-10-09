@@ -21,6 +21,7 @@ sys.path.insert(0, str(STEPS.parent / "scripts"))
 from step01_read_data import read_rows
 from step02_check_data import check_splits
 from step03_train_baseline import train_baseline
+from step03b_train_classical import train_classical
 from step04_train_classifier import (
     TextDataset,
     preview_training_batch,
@@ -256,6 +257,46 @@ def test_baseline_competes_and_can_be_served_and_evaluated(trained_runs):
     report = evaluate_final(data_dir, learner_dir)
     assert report["selected_kind"] == "baseline"
     assert report["classifier"] == report["baseline"]
+
+
+def test_classical_models_compete_and_keep_logistic_regression_as_baseline(trained_runs):
+    data_dir, learner_dir, labels, _, _ = trained_runs
+    for name in ("linear_svc", "multinomial_nb"):
+        train_classical(data_dir, learner_dir, classifier_name=name)
+        run = learner_dir / name
+        config = json.loads((run / "config.json").read_text(encoding="utf-8"))
+        summary = json.loads((run / "training_summary.json").read_text(encoding="utf-8"))
+        assert config["kind"] == "classical" and config["model"].endswith(name)
+        assert (run / "model.joblib").exists() and (run / "baseline.joblib").exists()
+        assert summary["completed"] is True and summary["reloaded_predictions_match"] is True
+        assert summary["efficiency"]["parameter_count"] > 0
+    calibration = json.loads((learner_dir / "linear_svc" / "config.json").read_text(encoding="utf-8"))
+    assert calibration["probability_calibration"] == "sigmoid"
+    with pytest.raises(FileExistsError):  # 같은 이름으로 다시 학습하면 덮어쓰지 않는다
+        train_classical(data_dir, learner_dir, classifier_name="linear_svc")
+    with pytest.raises(ValueError):
+        train_classical(data_dir, learner_dir, classifier_name="random_forest")
+
+    for name, score in (("baseline", 0.5), ("linear_svc", 1.0)):  # LinearSVC가 선택되는 상황
+        path = learner_dir / name / "validation_metrics.json"
+        metrics = json.loads(path.read_text(encoding="utf-8"))
+        metrics["macro_f1"] = score
+        path.write_text(json.dumps(metrics), encoding="utf-8")
+    selection = select_model(learner_dir, ["baseline", "linear_svc", "multinomial_nb", "run-a"])
+    assert selection["run_name"] == "linear_svc"
+    assert [row["kind"] for row in selection["candidates"]] == [
+        "baseline", "classical", "classical", "transformer"]
+    assert verify_selection(learner_dir)["different_configurations"] == 4
+
+    bundle = load_classifier(learner_dir)
+    output = predict_text("환불 문의", bundle)
+    assert output["label"] in labels and 0 <= output["confidence"] <= 1
+    assert output["model"]["kind"] == "classical" and output["truncated"] is False
+    report = evaluate_final(data_dir, learner_dir)
+    assert report["selected_kind"] == "classical"
+    # 최종 평가의 기준 모델은 선택한 모델이 아니라 로지스틱 회귀다.
+    assert report["classifier"]["model_name"] == "tfidf_char_ngram+linear_svc"
+    assert report["baseline"]["model_name"] == "tfidf_char_ngram+logistic_regression"
 
 
 def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors(trained_runs):

@@ -1,6 +1,7 @@
 """선택한 분류기의 토크나이저와 가중치를 불러와 새 문장을 분류한다.
 
-step05에서 기준 모델(TF-IDF + 로지스틱 회귀)과 사전학습 모델 중 무엇을 골랐든 같은 방식으로 쓴다.
+step05에서 기준 모델(TF-IDF + 로지스틱 회귀), 다른 전통 ML 모델(step03b), 사전학습 모델 중
+무엇을 골랐든 같은 방식으로 쓴다.
 
 VS Code 터미널에서 project2-kit 폴더를 기준으로 실행한다.
 uv run python steps/step06_predict.py
@@ -26,9 +27,22 @@ SAMPLE_TEXT = {
 PREDICT_LOCK = threading.Lock()
 
 
+# TF-IDF + scikit-learn 파이프라인으로 저장한 실험 종류와 그 파일 이름
+# baseline: step03 로지스틱 회귀, classical: step03b의 다른 전통 머신러닝 분류기
+SKLEARN_FILES = {"baseline": "baseline.joblib", "classical": "model.joblib"}
+
+
 def run_kind(config):
     # step03 기준 모델은 kind가 baseline이다. kind가 없는 이전 기록은 model 키로 구분한다.
     return config.get("kind") or ("transformer" if "model" in config else "baseline")
+
+
+def weights_path(run, kind):
+    """실험 종류별로 서비스에 쓰는 가중치 파일 위치."""
+    run = Path(run)
+    if kind in SKLEARN_FILES:
+        return run / SKLEARN_FILES[kind]
+    return run / "checkpoint" / "model.safetensors"
 
 
 def load_run(run) -> dict:
@@ -46,11 +60,11 @@ def load_run(run) -> dict:
     }
     bundle = {"kind": kind, "labels": labels, "identity": identity, "run_dir": run}
 
-    if kind == "baseline":
-        path = run / "baseline.joblib"
+    if kind in SKLEARN_FILES:
+        path = weights_path(run, kind)
         if not path.exists():
-            raise FileNotFoundError(f"저장된 기준 모델이 없습니다: {path}")
-        model = joblib.load(path)  # step03에서 저장한 벡터화+분류기 파이프라인
+            raise FileNotFoundError(f"저장된 모델 파일이 없습니다: {path}")
+        model = joblib.load(path)  # step03·step03b에서 저장한 벡터화+분류기 파이프라인
         # 학습 때 라벨 번호 0, 1, 2...를 모두 배웠는지 확인한다.
         if [int(value) for value in model.classes_] != list(range(len(labels))):
             raise ValueError("학습 기록과 기준 모델의 라벨 순서가 다릅니다.")
@@ -95,7 +109,7 @@ def predict_text(text: str, bundle: dict) -> dict:
     if not isinstance(text, str) or not text.strip() or len(text) > MAX_INPUT_CHARS:
         raise ValueError(f"입력은 공백이 아닌 1~{MAX_INPUT_CHARS}자 문자열이어야 합니다.")
     text = text.strip()
-    if bundle["kind"] == "baseline":
+    if bundle["kind"] in SKLEARN_FILES:
         # 문자 n-gram은 입력 길이 제한이 없으므로 잘리지 않는다.
         probabilities = bundle["model"].predict_proba([text])[0]  # 라벨 번호 순서의 확률
         truncated = False

@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import psutil
 import torch
-from step06_predict import load_run
+from step06_predict import SKLEARN_FILES, load_run, weights_path
 
 
 def cpu_rss_mib():
@@ -40,7 +40,7 @@ def predict_scored(text, bundle):
     """
     text = text.strip()
     model = bundle["model"]
-    if bundle["kind"] == "baseline":
+    if bundle["kind"] in SKLEARN_FILES:
         if not hasattr(model, "predict_proba"):
             return {"prediction": int(model.predict([text])[0]), "probabilities": None}
         scores = model.predict_proba([text])[0]
@@ -84,13 +84,26 @@ def benchmark_predict(predict, texts, *, warmup=1, repeats=1):
                            "excludes model loading, warmup, metrics, artifact I/O, service input checks"}
 
 
+def sklearn_parameter_count(classifier):
+    """학습된 분류기의 숫자 파라미터 수. TF-IDF 어휘와 IDF는 세지 않는다."""
+    if hasattr(classifier, "calibrated_classifiers_"):  # 보정된 분류기: 원래 분류기 + 보정기
+        return sum(sklearn_parameter_count(item.estimator)
+                   + 2 * len(item.calibrators)  # 시그모이드 보정기는 a, b 두 값
+                   for item in classifier.calibrated_classifiers_)
+    if hasattr(classifier, "coef_"):  # 로지스틱 회귀, LinearSVC
+        return int(classifier.coef_.size + classifier.intercept_.size)
+    if hasattr(classifier, "feature_log_prob_"):  # 나이브 베이즈
+        return int(classifier.feature_log_prob_.size + classifier.class_log_prior_.size)
+    raise ValueError(f"파라미터 수를 셀 수 없는 분류기입니다: {type(classifier).__name__}")
+
+
 def model_resources(bundle):
     model = bundle["model"]
-    if bundle["kind"] == "baseline":
-        classifier = model[-1]
-        count = int(classifier.coef_.size + classifier.intercept_.size)
-        paths = [Path(bundle["run_dir"]) / "baseline.joblib"]
-        definition = "LR coefficients + intercepts; TF-IDF vocabulary/IDF excluded"
+    if bundle["kind"] in SKLEARN_FILES:
+        count = sklearn_parameter_count(model[-1])
+        paths = [weights_path(bundle["run_dir"], bundle["kind"])]
+        definition = (f"{type(model[-1]).__name__} learned parameters; "
+                      "TF-IDF vocabulary/IDF excluded")
     else:
         count = sum(parameter.numel() for parameter in model.parameters())
         paths = [path for path in (Path(bundle["run_dir"]) / "checkpoint").rglob("*")
@@ -99,8 +112,8 @@ def model_resources(bundle):
     size = sum(path.stat().st_size for path in paths)
     return {"parameter_count": count, "parameter_count_definition": definition,
             "model_size_bytes": size, "model_size_mib": size / 2**20,
-            "model_size_scope": "baseline.joblib" if bundle["kind"] == "baseline"
-            else "checkpoint/ weights + config + tokenizer; excludes copied baseline"}
+            "model_size_scope": SKLEARN_FILES.get(
+                bundle["kind"], "checkpoint/ weights + config + tokenizer; excludes copied baseline")}
 
 
 def measure_loaded_bundle(bundle, rows, *, warmup=1, repeats=1):

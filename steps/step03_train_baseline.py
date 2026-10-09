@@ -29,14 +29,30 @@ NGRAM_RANGE = (2, 5)  # 2~5글자 문자 조각을 특징으로 사용
 SEED = 42  # 재현을 위한 난수 고정값
 
 # 기존 step03 import 경로를 다른 단계·외부 스크립트에서도 계속 사용할 수 있다.
-__all__ = ["classification_scores", "save_errors", "train_baseline"]
+__all__ = ["classification_scores", "save_errors", "train_baseline", "train_sklearn_run"]
 
 
 def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM_RANGE, seed=SEED):
+    # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
+    classifier = LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed)
+    return train_sklearn_run(
+        classifier, data_dir=data_dir, learner_dir=learner_dir, run_name="baseline",
+        kind="baseline", method="tfidf_char_ngram_logistic_regression",
+        model_name="tfidf_char_ngram+logistic_regression",
+        probability_source="sklearn.predict_proba (uncalibrated)",
+        ngram_range=ngram_range, seed=seed)
+
+
+def train_sklearn_run(classifier, *, data_dir, learner_dir, run_name, kind, method, model_name,
+                      probability_source, ngram_range=NGRAM_RANGE, seed=SEED, model_file=None,
+                      fit_params=None, extra_config=None, before_save=None):
+    """문자 TF-IDF + scikit-learn 분류기를 학습·저장·평가한다. step03b도 이 함수를 쓴다."""
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
-    output = learner_dir / "baseline"
+    output = learner_dir / run_name
     if output.exists():
-        raise FileExistsError(f"기준 모델이 이미 있습니다: {output}")
+        name = "기준 모델이" if kind == "baseline" else "실험 결과가"
+        raise FileExistsError(f"{name} 이미 있습니다: {output}")
+    model_file = model_file or f"{kind}.joblib"
     labels = read_labels(data_dir)
     train = read_rows(data_dir / "train.csv")
     validation = read_rows(data_dir / "validation.csv")
@@ -47,12 +63,14 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     model = make_pipeline(
         # 문장을 문자 n-gram TF-IDF 벡터로 바꾼다.
         TfidfVectorizer(analyzer="char", ngram_range=ngram_range, min_df=1),
-        # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
-        LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed),
+        classifier,
     )
+    # fit_params는 train 행으로 fit 인자를 만든다(예: group_id로 나눈 보정용 교차 검증).
+    fit_kwargs = fit_params(train) if fit_params else {}
     rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
-    model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train])
+    model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train],
+              **fit_kwargs)
     train_seconds = time.perf_counter() - started  # 학습 시간(초)
     rss_after_training = cpu_rss_mib()
     # 학습에 쓰지 않은 validation으로 성능을 잰다.
@@ -62,19 +80,22 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     metrics = classification_scores(actual, predictions, labels)
 
     output.mkdir(parents=True)
-    joblib.dump(model, output / "baseline.joblib")  # 벡터화+분류기 파이프라인을 통째로 저장
+    joblib.dump(model, output / model_file)  # 벡터화+분류기 파이프라인을 통째로 저장
     config = {
-        "kind": "baseline",  # step05·step06이 사전학습 모델과 구분하는 값
+        "kind": kind,  # step05·step06이 사전학습 모델과 구분하는 값
         "dataset": data_dir.name,
         "data_sha256": data_fingerprint(data_dir),  # 어떤 데이터로 학습했는지 증명
         "labels": labels,
         "ngram_range": list(ngram_range),
         "seed": seed,
+        **(extra_config or {}),
     }
     for filename, value in (("config.json", config), ("validation_metrics.json", metrics)):
         (output / filename).write_text(
             json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8"
         )
+    if before_save:  # 예: step11 비교용 기준 모델을 실험 폴더에 복사
+        before_save(output)
     # 저장한 파일을 서비스와 같은 방식으로 다시 불러와 예측 시간과 결과를 확인한다.
     reloaded, _, efficiency = measure_saved_run(output, validation)
     efficiency.update({"train_seconds": train_seconds, "training_device": "cpu",
@@ -86,15 +107,15 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
                        "peak_gpu_memory_reserved_mb": None,
                        "gpu_memory_reason": "CPU training; GPU not used"})
     metrics = evaluation_report(validation, predictions, labels, probabilities,
-                                model_name="tfidf_char_ngram+logistic_regression",
-                                experiment_id=f"{learner_dir.name}/baseline", dataset=data_dir.name,
-                                probability_source="sklearn.predict_proba (uncalibrated)",
+                                model_name=model_name,
+                                experiment_id=f"{learner_dir.name}/{run_name}", dataset=data_dir.name,
+                                probability_source=probability_source,
                                 efficiency=efficiency)
     metrics["prediction_device"] = "cpu"
     metrics["data_sha256"] = config["data_sha256"]
     save_evaluation(output, metrics)
     summary = {
-        "method": "tfidf_char_ngram_logistic_regression",
+        "method": method,
         "selection_split": "validation",
         "train_rows": len(train),
         "features": len(model[0].vocabulary_),  # train에서 만든 문자 n-gram 수
@@ -111,7 +132,8 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     (output / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print("기준 모델 validation macro F1:", round(metrics["macro_f1"], 4))
+    name = "기준 모델" if kind == "baseline" else model_name
+    print(f"{name} validation macro F1:", round(metrics["macro_f1"], 4))
     print("학습 시간(초):", round(train_seconds, 2),
           "/ CPU 추론(ms/문장):", round(summary["cpu_inference_ms_per_text"], 2))
     print("저장 위치:", output)

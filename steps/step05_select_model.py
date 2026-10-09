@@ -10,9 +10,9 @@ from pathlib import Path
 
 from classification_comparison import build_comparison, save_comparison
 from lesson_settings import LEARNER_DIR
-from step06_predict import run_kind
+from step06_predict import run_kind, weights_path
 
-# step03 기준 모델은 "baseline", step04 실험은 RUN_NAME으로 적는다.
+# step03 기준 모델은 "baseline", step03b·step04 실험은 RUN_NAME으로 적는다.
 # 다른 팀원의 실험은 "learner02/lr5e5"처럼 적는다.
 # 동점이면 앞에 적은 후보를 고른다. 점수가 같을 때 쓸 모델(예: 더 가볍고 빠른 모델)을 앞에 둔다.
 RUN_NAMES = ["baseline", "lr2e5"]
@@ -65,10 +65,9 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
         run = learner_dir.parent / run_learner / run_name
         config = json.loads((run / "config.json").read_text(encoding="utf-8"))
         metrics = json.loads((run / "validation_metrics.json").read_text(encoding="utf-8"))
-        kind = run_kind(config)  # baseline 또는 transformer
-        # 서비스에 쓰려면 기준 모델은 joblib 파일, 사전학습 모델은 checkpoint 가중치가 있어야 한다.
-        weights = (run / "baseline.joblib" if kind == "baseline"
-                   else run / "checkpoint" / "model.safetensors")
+        kind = run_kind(config)  # baseline, classical 또는 transformer
+        # 서비스에 쓰려면 전통 ML은 joblib 파일, 사전학습 모델은 checkpoint 가중치가 있어야 한다.
+        weights = weights_path(run, kind)
         if not weights.exists():
             raise FileNotFoundError(f"저장된 가중치가 없습니다: {run}")
         score = metrics["macro_f1"]
