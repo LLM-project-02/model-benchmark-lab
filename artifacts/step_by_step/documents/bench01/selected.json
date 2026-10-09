@@ -1,12 +1,12 @@
 {
-  "run_name": "lr2e5",
+  "run_name": "roberta_lr2e5",
   "run_learner": "bench01",
   "kind": "transformer",
-  "model": "klue/bert-base",
-  "validation_accuracy": 0.9833333333333333,
-  "validation_macro_f1": 0.9833333333333334,
-  "train_seconds": 15.170605099992827,
-  "cpu_inference_ms_per_text": 23.400237499542225,
+  "model": "klue/roberta-base",
+  "validation_accuracy": 0.9916666666666667,
+  "validation_macro_f1": 0.991665364379851,
+  "train_seconds": 14.659606900066137,
+  "cpu_inference_ms_per_text": 22.345379164714057,
   "peak_gpu_memory_reserved_mb": 2338.0,
   "reloaded_predictions_match": true,
   "selected_by": "validation_macro_f1",
@@ -31,6 +31,42 @@
       "reloaded_predictions_match": true
     },
     {
+      "run_name": "linear_svc",
+      "run_learner": "bench01",
+      "kind": "classical",
+      "model": "tfidf_char_ngram+linear_svc",
+      "validation_accuracy": 0.95,
+      "validation_macro_f1": 0.9499687304565354,
+      "train_seconds": 0.12051489995792508,
+      "cpu_inference_ms_per_text": 0.6914558315960069,
+      "peak_gpu_memory_reserved_mb": null,
+      "reloaded_predictions_match": true
+    },
+    {
+      "run_name": "multinomial_nb",
+      "run_learner": "bench01",
+      "kind": "classical",
+      "model": "tfidf_char_ngram+multinomial_nb",
+      "validation_accuracy": 0.9333333333333333,
+      "validation_macro_f1": 0.932709713197518,
+      "train_seconds": 0.06539660005364567,
+      "cpu_inference_ms_per_text": 0.5383633348780373,
+      "peak_gpu_memory_reserved_mb": null,
+      "reloaded_predictions_match": true
+    },
+    {
+      "run_name": "koelectra_lr2e5",
+      "run_learner": "bench01",
+      "kind": "transformer",
+      "model": "monologg/koelectra-small-v3-discriminator",
+      "validation_accuracy": 0.9,
+      "validation_macro_f1": 0.8998469739829433,
+      "train_seconds": 12.894395799958147,
+      "cpu_inference_ms_per_text": 7.519509166013449,
+      "peak_gpu_memory_reserved_mb": 300.0,
+      "reloaded_predictions_match": true
+    },
+    {
       "run_name": "lr2e5",
       "run_learner": "bench01",
       "kind": "transformer",
@@ -39,6 +75,18 @@
       "validation_macro_f1": 0.9833333333333334,
       "train_seconds": 15.170605099992827,
       "cpu_inference_ms_per_text": 23.400237499542225,
+      "peak_gpu_memory_reserved_mb": 2338.0,
+      "reloaded_predictions_match": true
+    },
+    {
+      "run_name": "roberta_lr2e5",
+      "run_learner": "bench01",
+      "kind": "transformer",
+      "model": "klue/roberta-base",
+      "validation_accuracy": 0.9916666666666667,
+      "validation_macro_f1": 0.991665364379851,
+      "train_seconds": 14.659606900066137,
+      "cpu_inference_ms_per_text": 22.345379164714057,
       "peak_gpu_memory_reserved_mb": 2338.0,
       "reloaded_predictions_match": true
     }

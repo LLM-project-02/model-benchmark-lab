@@ -15,18 +15,35 @@ from step06_predict import run_kind, weights_path
 # step03 기준 모델은 "baseline", step03b·step04 실험은 RUN_NAME으로 적는다.
 # 다른 팀원의 실험은 "learner02/lr5e5"처럼 적는다.
 # 동점이면 앞에 적은 후보를 고른다. 점수가 같을 때 쓸 모델(예: 더 가볍고 빠른 모델)을 앞에 둔다.
-RUN_NAMES = ["baseline", "lr2e5"]
+RUN_NAMES = [
+    "baseline",
+    "linear_svc",
+    "multinomial_nb",
+    "koelectra_lr2e5",
+    "lr2e5",
+    "roberta_lr2e5",
+]
+
 # step03·step04가 training_summary.json에 남긴 시간·메모리·재로드 기록
 SUMMARY_FIELDS = [
-    "train_seconds", "cpu_inference_ms_per_text", "peak_gpu_memory_reserved_mb",
+    "train_seconds",
+    "cpu_inference_ms_per_text",
+    "peak_gpu_memory_reserved_mb",
     "reloaded_predictions_match",
 ]
 
 
 def write_comparison(path, candidates, best):
     # README와 발표 자료에 옮길 비교표. 값은 읽기 쉽게 반올림한다.
-    fields = ["run", "kind", "model", "validation_accuracy", "validation_macro_f1",
-              *SUMMARY_FIELDS, "selected"]
+    fields = [
+        "run",
+        "kind",
+        "model",
+        "validation_accuracy",
+        "validation_macro_f1",
+        *SUMMARY_FIELDS,
+        "selected",
+    ]
     with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
@@ -36,7 +53,11 @@ def write_comparison(path, candidates, best):
             row["selected"] = "yes" if candidate is best else ""
             for key in ("validation_accuracy", "validation_macro_f1"):
                 row[key] = round(candidate[key], 4)
-            for key in ("train_seconds", "cpu_inference_ms_per_text", "peak_gpu_memory_reserved_mb"):
+            for key in (
+                "train_seconds",
+                "cpu_inference_ms_per_text",
+                "peak_gpu_memory_reserved_mb",
+            ):
                 if candidate[key] is not None:  # 기록이 없으면 빈칸으로 둔다
                     row[key] = round(candidate[key], 2)
             writer.writerow(row)
@@ -48,7 +69,8 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
     if (learner_dir / "test_metrics.json").exists():
         raise FileExistsError(
             "test 최종 평가를 마친 뒤에는 모델 선택을 바꾸지 않습니다. 꼭 다시 골라야 하면 "
-            "test_metrics.json과 test_errors.csv를 지우고 그 이유를 README에 기록하세요.")
+            "test_metrics.json과 test_errors.csv를 지우고 그 이유를 README에 기록하세요."
+        )
     if len(set(run_names)) < 2:
         raise ValueError("서로 다른 실험을 두 개 이상 준비하세요.")
     candidates = []
@@ -76,43 +98,63 @@ def select_model(learner_dir=LEARNER_DIR, run_names=RUN_NAMES):
         fingerprint = config.get("data_sha256")
         if fingerprint is None:
             raise ValueError(
-                f"데이터 지문(data_sha256)이 없는 실험입니다. step03·step04를 다시 실행하세요: {run}")
+                f"데이터 지문(data_sha256)이 없는 실험입니다. step03·step04를 다시 실행하세요: {run}"
+            )
         dataset = config["dataset"]
         data_versions.add((dataset, tuple(config["labels"]), tuple(sorted(fingerprint.items()))))
         summary_path = run / "training_summary.json"
-        summary = (json.loads(summary_path.read_text(encoding="utf-8"))
-                   if summary_path.exists() else {})
+        summary = (
+            json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
+        )
         # 중간에 멈춘 학습은 마지막 epoch까지 돌지 않았으므로 완료된 실험과 비교하지 않는다.
         if summary.get("completed") is not True:
             raise ValueError(
                 f"학습이 끝나지 않은 실험입니다(중간에 멈춤). 폴더를 지우거나 새 RUN_NAME으로 "
-                f"다시 학습하세요: {run}")
-        candidates.append({
-            "run_name": run_name, "run_learner": run_learner, "kind": kind,
-            "model": config.get("model", "tfidf_char_ngram+logistic_regression"),
-            "validation_accuracy": metrics["accuracy"], "validation_macro_f1": score,
-            **{field: summary.get(field) for field in SUMMARY_FIELDS},  # 없으면 None
-        })
-        entries.append({"run": f"{run_learner}/{run_name}", "dataset": dataset,
-                        "model_name": candidates[-1]["model"], "metrics": metrics,
-                        "efficiency": summary.get("efficiency", {})})
+                f"다시 학습하세요: {run}"
+            )
+        candidates.append(
+            {
+                "run_name": run_name,
+                "run_learner": run_learner,
+                "kind": kind,
+                "model": config.get("model", "tfidf_char_ngram+logistic_regression"),
+                "validation_accuracy": metrics["accuracy"],
+                "validation_macro_f1": score,
+                **{field: summary.get(field) for field in SUMMARY_FIELDS},  # 없으면 None
+            }
+        )
+        entries.append(
+            {
+                "run": f"{run_learner}/{run_name}",
+                "dataset": dataset,
+                "model_name": candidates[-1]["model"],
+                "metrics": metrics,
+                "efficiency": summary.get("efficiency", {}),
+            }
+        )
         print(run_learner, run_name, kind, "validation macro F1:", round(score, 4))
 
     if len(data_versions) != 1:
         raise ValueError(
-            "같은 데이터(주제, 라벨 순서, train·validation 내용)로 학습한 실험끼리 비교하세요.")
+            "같은 데이터(주제, 라벨 순서, train·validation 내용)로 학습한 실험끼리 비교하세요."
+        )
     # 상세 예측 데이터도 동일한지 선정 파일을 쓰기 전에 검사한다.
     build_comparison(entries)
     # 선택에 test 점수를 사용하지 않는다. 동점이면 RUN_NAMES의 앞 후보가 남는다.
     best = max(candidates, key=lambda candidate: candidate["validation_macro_f1"])
-    selection = {**best, "selected_by": "validation_macro_f1",
-                 "tie_break": "RUN_NAMES에 먼저 적은 후보",
-                 "dataset": dataset, "data_sha256": fingerprint,  # 모든 후보가 같은 값
-                 "candidates": candidates}
+    selection = {
+        **best,
+        "selected_by": "validation_macro_f1",
+        "tie_break": "RUN_NAMES에 먼저 적은 후보",
+        "dataset": dataset,
+        "data_sha256": fingerprint,  # 모든 후보가 같은 값
+        "candidates": candidates,
+    }
     learner_dir.mkdir(parents=True, exist_ok=True)
     # step06 이후 단계는 selected.json에 적힌 실험을 불러온다.
     (learner_dir / "selected.json").write_text(
-        json.dumps(selection, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps(selection, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     save_comparison(learner_dir, entries, candidates, best)
     print("선택한 실험:", best["run_name"])
     print("비교표:", learner_dir / "model_comparison.csv")
