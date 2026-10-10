@@ -42,26 +42,56 @@ def make_local_inputs(folder):
     (data_dir / "labels.json").write_text(json.dumps({"labels": labels}), encoding="utf-8")
     for split, count in (("train", 4), ("validation", 2), ("test", 1)):
         with (data_dir / f"{split}.csv").open("w", encoding="utf-8-sig", newline="") as stream:
-            writer = csv.DictWriter(stream, fieldnames=["id", "text", "label", "group_id", "source"])
+            writer = csv.DictWriter(
+                stream, fieldnames=["id", "text", "label", "group_id", "source"]
+            )
             writer.writeheader()
             for index, label in enumerate(labels):
                 for number in range(count):
-                    writer.writerow({"id": f"{split}-{label}-{number}",
-                                     "text": f"{['배송', '환불', '계정'][index]} 문의 {split} {number}",
-                                     "label": label, "group_id": f"{split}-{label}-{number}",
-                                     "source": "local-test"})
+                    writer.writerow(
+                        {
+                            "id": f"{split}-{label}-{number}",
+                            "text": f"{['배송', '환불', '계정'][index]} 문의 {split} {number}",
+                            "label": label,
+                            "group_id": f"{split}-{label}-{number}",
+                            "source": "local-test",
+                        }
+                    )
     model_dir = folder / "local-bert"
     model_dir.mkdir()
-    words = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]",
-             "배송", "환불", "계정", "문의", "train", "validation", "test", "0", "1", "2", "3"]
+    words = [
+        "[PAD]",
+        "[UNK]",
+        "[CLS]",
+        "[SEP]",
+        "[MASK]",
+        "배송",
+        "환불",
+        "계정",
+        "문의",
+        "train",
+        "validation",
+        "test",
+        "0",
+        "1",
+        "2",
+        "3",
+    ]
     vocab_path = model_dir / "vocab.txt"
     vocab_path.write_text("\n".join(words), encoding="utf-8")
     BertTokenizerFast(vocab_file=str(vocab_path), do_lower_case=False).save_pretrained(model_dir)
     torch.manual_seed(23)
-    config = BertConfig(vocab_size=len(words), hidden_size=16, num_hidden_layers=1,
-                        num_attention_heads=2, intermediate_size=32,
-                        max_position_embeddings=64, num_labels=3,
-                        hidden_dropout_prob=0.0, attention_probs_dropout_prob=0.0)
+    config = BertConfig(
+        vocab_size=len(words),
+        hidden_size=16,
+        num_hidden_layers=1,
+        num_attention_heads=2,
+        intermediate_size=32,
+        max_position_embeddings=64,
+        num_labels=3,
+        hidden_dropout_prob=0.0,
+        attention_probs_dropout_prob=0.0,
+    )
     BertForSequenceClassification(config).save_pretrained(model_dir, safe_serialization=True)
     return data_dir, model_dir, labels
 
@@ -82,10 +112,19 @@ def trained_runs(tmp_path, monkeypatch):
     before = data_snapshot(data_dir)
     train_baseline(data_dir, learner_dir)
     for name, learning_rate in (("run-a", 0.005), ("run-b", 0.01)):
-        run_training(data_dir, learner_dir, run_name=name, model_name=str(model_dir),
-                     learning_rate=learning_rate, epochs=2, batch_size=4,
-                     accumulation_steps=2, max_length=32, device_name="cpu",
-                     local_files_only=True)
+        run_training(
+            data_dir,
+            learner_dir,
+            run_name=name,
+            model_name=str(model_dir),
+            learning_rate=learning_rate,
+            epochs=2,
+            batch_size=4,
+            accumulation_steps=2,
+            max_length=32,
+            device_name="cpu",
+            local_files_only=True,
+        )
     selection = select_model(learner_dir, ["run-a", "run-b"])
     assert data_snapshot(data_dir) == before
     test_path.write_bytes(held_out)
@@ -111,7 +150,8 @@ def test_real_training_changes_backbone_and_head_then_reloads_identical_logits(t
 
     # 같은 저장 폴더를 직접 읽은 모델과 단계별 복원 함수의 결과를 비교한다.
     direct = BertForSequenceClassification.from_pretrained(
-        bundle["run_dir"] / "checkpoint", local_files_only=True).eval()
+        bundle["run_dir"] / "checkpoint", local_files_only=True
+    ).eval()
     with torch.inference_mode():
         features = bundle["tokenizer"]("배송 문의", return_tensors="pt")
         assert torch.equal(bundle["model"](**features).logits, direct(**features).logits)
@@ -172,8 +212,11 @@ def test_existing_training_output_is_not_overwritten(trained_runs):
 def test_original_data_verification_checks_hashes_without_reading_test(tmp_path):
     data_dir, _, _ = make_local_inputs(tmp_path)
     hashes = data_snapshot(data_dir)
-    manifest = {"topics": {"inquiries": {"files": {
-        name: {"sha256": digest} for name, digest in hashes.items()}}}}
+    manifest = {
+        "topics": {
+            "inquiries": {"files": {name: {"sha256": digest} for name, digest in hashes.items()}}
+        }
+    }
     (data_dir.parent / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     (data_dir / "test.csv").unlink()
     assert verify_original_data(data_dir) == hashes
@@ -217,7 +260,8 @@ def test_preview_does_not_consume_random_state_or_modify_inputs(tmp_path, capsys
     before_torch = torch.get_rng_state().clone()
     before_python = random.getstate()
     preview = preview_training_batch(
-        rows, tokenizer, dataset, DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8))
+        rows, tokenizer, dataset, DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8)
+    )
     assert torch.equal(before_torch, torch.get_rng_state())
     assert before_python == random.getstate()
     assert before_features == dict(dataset.features)
@@ -270,7 +314,9 @@ def test_classical_models_compete_and_keep_logistic_regression_as_baseline(train
         assert (run / "model.joblib").exists() and (run / "baseline.joblib").exists()
         assert summary["completed"] is True and summary["reloaded_predictions_match"] is True
         assert summary["efficiency"]["parameter_count"] > 0
-    calibration = json.loads((learner_dir / "linear_svc" / "config.json").read_text(encoding="utf-8"))
+    calibration = json.loads(
+        (learner_dir / "linear_svc" / "config.json").read_text(encoding="utf-8")
+    )
     assert calibration["probability_calibration"] == "sigmoid"
     with pytest.raises(FileExistsError):  # 같은 이름으로 다시 학습하면 덮어쓰지 않는다
         train_classical(data_dir, learner_dir, classifier_name="linear_svc")
@@ -285,7 +331,11 @@ def test_classical_models_compete_and_keep_logistic_regression_as_baseline(train
     selection = select_model(learner_dir, ["baseline", "linear_svc", "multinomial_nb", "run-a"])
     assert selection["run_name"] == "linear_svc"
     assert [row["kind"] for row in selection["candidates"]] == [
-        "baseline", "classical", "classical", "transformer"]
+        "baseline",
+        "classical",
+        "classical",
+        "transformer",
+    ]
     assert verify_selection(learner_dir)["different_configurations"] == 4
 
     bundle = load_classifier(learner_dir)
@@ -315,7 +365,10 @@ def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors
         assert summary["efficiency"]["model_size_bytes"] > 0
         assert summary["reloaded_predictions_match"] is True
         if name != "baseline":
-            epochs = [json.loads(line) for line in (run / "epochs.jsonl").read_text(encoding="utf-8").splitlines()]
+            epochs = [
+                json.loads(line)
+                for line in (run / "epochs.jsonl").read_text(encoding="utf-8").splitlines()
+            ]
             assert metrics["macro_f1"] == max(epoch["validation_macro_f1"] for epoch in epochs)
     result = select_model(learner_dir, ["baseline", "run-a", "run-b"])
     comparison = json.loads((learner_dir / "model_comparison.json").read_text(encoding="utf-8"))
@@ -333,14 +386,16 @@ def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors
 def test_training_records_time_memory_and_reload_check(trained_runs):
     _, learner_dir, _, _, _ = trained_runs
     baseline = json.loads(
-        (learner_dir / "baseline" / "training_summary.json").read_text(encoding="utf-8"))
+        (learner_dir / "baseline" / "training_summary.json").read_text(encoding="utf-8")
+    )
     assert baseline["train_seconds"] >= 0
     assert baseline["cpu_inference_ms_per_text"] >= 0
     assert baseline["reloaded_predictions_match"] is True
     assert baseline["peak_gpu_memory_reserved_mb"] is None
     for name in ("run-a", "run-b"):
         summary = json.loads(
-            (learner_dir / name / "training_summary.json").read_text(encoding="utf-8"))
+            (learner_dir / name / "training_summary.json").read_text(encoding="utf-8")
+        )
         assert summary["train_seconds"] >= 0
         assert summary["cpu_inference_ms_per_text"] >= 0
         assert isinstance(summary["reloaded_predictions_match"], bool)
@@ -383,7 +438,9 @@ def test_selection_is_locked_after_final_evaluation(trained_runs):
     data_dir, learner_dir, _, _, selection = trained_runs
     report = evaluate_final(data_dir, learner_dir)
     assert (report["selected_learner"], report["selected_run"]) == (
-        "learner01", selection["run_name"])
+        "learner01",
+        selection["run_name"],
+    )
     assert report["data_sha256"] == selection["data_sha256"]
     assert len(report["test_sha256"]) == 64
     with pytest.raises(FileExistsError, match="test 최종 평가"):
@@ -405,8 +462,10 @@ def test_gradient_accumulation_weights_every_sentence_equally():
     assert counts[0] == 16 and counts[-2:] == [8, 8] and len(counts) == 90
     # 배치 평균 x 문장 수 / 구간 문장 수를 더하면 구간 전체의 문장 평균과 같아야 한다.
     losses = [[1.0, 1.0, 1.0, 1.0], [1.0, 1.0, 1.0, 1.0], [5.0, 5.0]]
-    weighted = sum(sum(batch) / len(batch) * len(batch) / count
-                   for batch, count in zip(losses[:2], window_sample_counts(10, 4, 2)[:2]))
+    weighted = sum(
+        sum(batch) / len(batch) * len(batch) / count
+        for batch, count in zip(losses[:2], window_sample_counts(10, 4, 2)[:2])
+    )
     assert weighted == pytest.approx(1.0)
     last = sum(losses[2]) / 2 * 2 / window_sample_counts(10, 4, 2)[2]
     assert last == pytest.approx(5.0)
@@ -436,7 +495,9 @@ def test_concurrent_requests_share_the_classifier_safely(trained_runs):
         start.wait()  # 8개 스레드가 동시에 시작해 같은 토크나이저를 쓴다
         for repeat in range(40):
             try:
-                text = "배송 문의" if (index + repeat) % 2 else "환불 " * 40  # 자르기 설정이 번갈아 바뀜
+                text = (
+                    "배송 문의" if (index + repeat) % 2 else "환불 " * 40
+                )  # 자르기 설정이 번갈아 바뀜
                 assert predict_text(text, bundle)["label"] in labels
             except Exception as exc:  # noqa: BLE001 - 어떤 오류든 기록해 실패로 본다
                 errors.append(f"{type(exc).__name__}: {exc}")

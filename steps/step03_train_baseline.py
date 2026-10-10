@@ -36,16 +36,36 @@ def train_baseline(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, ngram_range=NGRAM
     # 벡터로 라벨을 예측한다. balanced는 수가 적은 라벨에 가중치를 더 준다.
     classifier = LogisticRegression(max_iter=1000, class_weight="balanced", random_state=seed)
     return train_sklearn_run(
-        classifier, data_dir=data_dir, learner_dir=learner_dir, run_name="baseline",
-        kind="baseline", method="tfidf_char_ngram_logistic_regression",
+        classifier,
+        data_dir=data_dir,
+        learner_dir=learner_dir,
+        run_name="baseline",
+        kind="baseline",
+        method="tfidf_char_ngram_logistic_regression",
         model_name="tfidf_char_ngram+logistic_regression",
         probability_source="sklearn.predict_proba (uncalibrated)",
-        ngram_range=ngram_range, seed=seed)
+        ngram_range=ngram_range,
+        seed=seed,
+    )
 
 
-def train_sklearn_run(classifier, *, data_dir, learner_dir, run_name, kind, method, model_name,
-                      probability_source, ngram_range=NGRAM_RANGE, seed=SEED, model_file=None,
-                      fit_params=None, extra_config=None, before_save=None):
+def train_sklearn_run(
+    classifier,
+    *,
+    data_dir,
+    learner_dir,
+    run_name,
+    kind,
+    method,
+    model_name,
+    probability_source,
+    ngram_range=NGRAM_RANGE,
+    seed=SEED,
+    model_file=None,
+    fit_params=None,
+    extra_config=None,
+    before_save=None,
+):
     """문자 TF-IDF + scikit-learn 분류기를 학습·저장·평가한다. step03b도 이 함수를 쓴다."""
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
     output = learner_dir / run_name
@@ -69,8 +89,9 @@ def train_sklearn_run(classifier, *, data_dir, learner_dir, run_name, kind, meth
     fit_kwargs = fit_params(train) if fit_params else {}
     rss_before_training = cpu_rss_mib()
     started = time.perf_counter()
-    model.fit([row["text"] for row in train], [label2id[row["label"]] for row in train],
-              **fit_kwargs)
+    model.fit(
+        [row["text"] for row in train], [label2id[row["label"]] for row in train], **fit_kwargs
+    )
     train_seconds = time.perf_counter() - started  # 학습 시간(초)
     rss_after_training = cpu_rss_mib()
     # 학습에 쓰지 않은 validation으로 성능을 잰다.
@@ -98,19 +119,30 @@ def train_sklearn_run(classifier, *, data_dir, learner_dir, run_name, kind, meth
         before_save(output)
     # 저장한 파일을 서비스와 같은 방식으로 다시 불러와 예측 시간과 결과를 확인한다.
     reloaded, _, efficiency = measure_saved_run(output, validation)
-    efficiency.update({"train_seconds": train_seconds, "training_device": "cpu",
-                       "training_scope": "pipeline.fit only; excludes loading and validation",
-                       "training_environment": measurement_environment(),
-                       "cpu_rss_before_training_mib": rss_before_training,
-                       "cpu_rss_after_training_mib": rss_after_training,
-                       "peak_gpu_memory_allocated_mb": None,
-                       "peak_gpu_memory_reserved_mb": None,
-                       "gpu_memory_reason": "CPU training; GPU not used"})
-    metrics = evaluation_report(validation, predictions, labels, probabilities,
-                                model_name=model_name,
-                                experiment_id=f"{learner_dir.name}/{run_name}", dataset=data_dir.name,
-                                probability_source=probability_source,
-                                efficiency=efficiency)
+    efficiency.update(
+        {
+            "train_seconds": train_seconds,
+            "training_device": "cpu",
+            "training_scope": "pipeline.fit only; excludes loading and validation",
+            "training_environment": measurement_environment(),
+            "cpu_rss_before_training_mib": rss_before_training,
+            "cpu_rss_after_training_mib": rss_after_training,
+            "peak_gpu_memory_allocated_mb": None,
+            "peak_gpu_memory_reserved_mb": None,
+            "gpu_memory_reason": "CPU training; GPU not used",
+        }
+    )
+    metrics = evaluation_report(
+        validation,
+        predictions,
+        labels,
+        probabilities,
+        model_name=model_name,
+        experiment_id=f"{learner_dir.name}/{run_name}",
+        dataset=data_dir.name,
+        probability_source=probability_source,
+        efficiency=efficiency,
+    )
     metrics["prediction_device"] = "cpu"
     metrics["data_sha256"] = config["data_sha256"]
     save_evaluation(output, metrics)
@@ -134,8 +166,12 @@ def train_sklearn_run(classifier, *, data_dir, learner_dir, run_name, kind, meth
     )
     name = "기준 모델" if kind == "baseline" else model_name
     print(f"{name} validation macro F1:", round(metrics["macro_f1"], 4))
-    print("학습 시간(초):", round(train_seconds, 2),
-          "/ CPU 추론(ms/문장):", round(summary["cpu_inference_ms_per_text"], 2))
+    print(
+        "학습 시간(초):",
+        round(train_seconds, 2),
+        "/ CPU 추론(ms/문장):",
+        round(summary["cpu_inference_ms_per_text"], 2),
+    )
     print("저장 위치:", output)
     return metrics
 

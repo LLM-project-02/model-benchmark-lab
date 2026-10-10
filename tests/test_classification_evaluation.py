@@ -18,28 +18,36 @@ LABELS = ["a", "b", "c"]
 
 
 def rows_for(actual):
-    return [{"id": str(i), "text": f"원문, {i}\n두 번째 줄", "label": LABELS[label], "group_id": f"g{i}"}
-            for i, label in enumerate(actual)]
+    return [
+        {
+            "id": str(i),
+            "text": f"원문, {i}\n두 번째 줄",
+            "label": LABELS[label],
+            "group_id": f"g{i}",
+        }
+        for i, label in enumerate(actual)
+    ]
 
 
 def test_metrics_and_one_vs_rest_counts_match_hand_calculation():
     # 실제 행/예측 열: [[2,1,0], [0,1,1], [1,0,0]]
     actual, predicted = [0, 0, 0, 1, 1, 2], [0, 0, 1, 1, 2, 0]
     result = classification_scores(actual, predicted, LABELS)
-    assert result["accuracy"] == .5
+    assert result["accuracy"] == 0.5
     assert result["macro_precision"] == pytest.approx((2 / 3 + 1 / 2) / 3)
     assert result["macro_recall"] == pytest.approx((2 / 3 + 1 / 2) / 3)
     assert result["macro_f1"] == pytest.approx((2 / 3 + 1 / 2) / 3)
-    assert result["weighted_precision"] == pytest.approx(.5)
-    assert result["weighted_recall"] == pytest.approx(.5)
-    assert result["weighted_f1"] == pytest.approx(.5)
+    assert result["weighted_precision"] == pytest.approx(0.5)
+    assert result["weighted_recall"] == pytest.approx(0.5)
+    assert result["weighted_f1"] == pytest.approx(0.5)
     assert result["micro_f1"] == result["accuracy"]
     assert result["balanced_accuracy"] == pytest.approx(balanced_accuracy_score(actual, predicted))
     assert result["mcc"] == pytest.approx(matthews_corrcoef(actual, predicted))
     assert result["support"] == {"a": 3, "b": 2, "c": 1}
     assert result["confusion_matrix"] == [[2, 1, 0], [0, 1, 1], [1, 0, 0]]
     assert np.asarray(result["confusion_matrix_normalized"]) == pytest.approx(
-        np.asarray([[2 / 3, 1 / 3, 0], [0, .5, .5], [1, 0, 0]]))
+        np.asarray([[2 / 3, 1 / 3, 0], [0, 0.5, 0.5], [1, 0, 0]])
+    )
     expected_counts = [(2, 1, 1, 2), (1, 1, 1, 3), (0, 1, 1, 4)]
     for label, counts in zip(LABELS, expected_counts, strict=True):
         assert tuple(result["per_class"][label][key] for key in ("tp", "fp", "fn", "tn")) == counts
@@ -48,10 +56,10 @@ def test_metrics_and_one_vs_rest_counts_match_hand_calculation():
 def test_imbalance_and_never_predicted_classes_are_finite():
     actual, predicted = [0] * 9 + [1], [0] * 10
     result = classification_scores(actual, predicted, LABELS)
-    assert result["accuracy"] == .9
-    assert result["balanced_accuracy"] == .5
+    assert result["accuracy"] == 0.9
+    assert result["balanced_accuracy"] == 0.5
     assert result["macro_f1"] == pytest.approx((18 / 19) / 3)
-    assert result["weighted_f1"] == pytest.approx(.9 * 18 / 19)
+    assert result["weighted_f1"] == pytest.approx(0.9 * 18 / 19)
     assert result["mcc"] == 0
     assert result["per_class"]["b"]["precision"] == 0
     assert result["per_class"]["b"]["recall"] == 0
@@ -62,12 +70,13 @@ def test_imbalance_and_never_predicted_classes_are_finite():
 
 
 def test_log_loss_brier_and_ece_match_hand_calculation():
-    probabilities = [[.8, .2], [.6, .4]]
-    result = classification_scores([0, 1], [0, 0], ["yes", "no"], probabilities,
-                                   probability_source="custom", ece_bins=2)["probability_metrics"]
-    assert result["log_loss"] == pytest.approx((-math.log(.8) - math.log(.4)) / 2)
-    assert result["brier_score"] == pytest.approx((.08 + .72) / 2)
-    assert result["ece"] == pytest.approx(.2)
+    probabilities = [[0.8, 0.2], [0.6, 0.4]]
+    result = classification_scores(
+        [0, 1], [0, 0], ["yes", "no"], probabilities, probability_source="custom", ece_bins=2
+    )["probability_metrics"]
+    assert result["log_loss"] == pytest.approx((-math.log(0.8) - math.log(0.4)) / 2)
+    assert result["brier_score"] == pytest.approx((0.08 + 0.72) / 2)
+    assert result["ece"] == pytest.approx(0.2)
     assert result["bins"][0]["support"] == 0
     assert result["bins"][0]["accuracy"] is None
     assert result["bins"][1]["support"] == 2
@@ -81,25 +90,34 @@ def test_confidence_one_is_in_last_bin_and_probability_zero_is_valid():
     assert result["probability_metrics"]["ece"] == 0
 
 
-@pytest.mark.parametrize("probabilities", [
-    [[.8, .2]], [[.4, .4, .4]], [[-1, 1, 1]], [[float("nan"), 0, 1]],
-    [[float("inf"), 0, 1]], [[1.1, -.1, 0]],
-])
+@pytest.mark.parametrize(
+    "probabilities",
+    [
+        [[0.8, 0.2]],
+        [[0.4, 0.4, 0.4]],
+        [[-1, 1, 1]],
+        [[float("nan"), 0, 1]],
+        [[float("inf"), 0, 1]],
+        [[1.1, -0.1, 0]],
+    ],
+)
 def test_invalid_probability_scores_are_rejected(probabilities):
     with pytest.raises(ValueError, match="확률"):
         classification_scores([0], [0], LABELS, probabilities)
 
 
-@pytest.mark.parametrize("actual,predicted", [([], []), ([0], [0, 1]), ([3], [0]),
-                                                   ([0], [-1]), ([0.0], [0])])
+@pytest.mark.parametrize(
+    "actual,predicted", [([], []), ([0], [0, 1]), ([3], [0]), ([0], [-1]), ([0.0], [0])]
+)
 def test_invalid_targets_are_rejected(actual, predicted):
     with pytest.raises(ValueError):
         classification_scores(actual, predicted, LABELS)
 
 
 def test_unsupported_probability_is_explicit_and_predictions_still_saved(tmp_path):
-    report = evaluation_report(rows_for([0, 1]), [0, 0], LABELS,
-                               unavailable_reason="decision_function만 제공; 보정 안 함")
+    report = evaluation_report(
+        rows_for([0, 1]), [0, 0], LABELS, unavailable_reason="decision_function만 제공; 보정 안 함"
+    )
     probability = report["probability_metrics"]
     assert probability["supported"] is False
     assert probability["log_loss"] is None and probability["brier_score"] is None
@@ -117,22 +135,33 @@ def test_predict_adapter_does_not_require_probabilities_or_receive_targets():
             return [1]
 
     assert predict_scored("  원문  ", {"kind": "baseline", "model": HardClassifier()}) == {
-        "prediction": 1, "probabilities": None}
+        "prediction": 1,
+        "probabilities": None,
+    }
 
 
 def test_artifact_roundtrip_keeps_text_probability_order_and_actual_plot_values(tmp_path):
     rows = rows_for([0, 1, 2])
-    probabilities = [[.6, .3, .1], [.6, .3, .1], [.1, .2, .7]]
-    report = evaluation_report(rows, [0, 0, 2], LABELS, probabilities, model_name="LR",
-                               experiment_id="learner/run", dataset="inquiries")
+    probabilities = [[0.6, 0.3, 0.1], [0.6, 0.3, 0.1], [0.1, 0.2, 0.7]]
+    report = evaluation_report(
+        rows,
+        [0, 0, 2],
+        LABELS,
+        probabilities,
+        model_name="LR",
+        experiment_id="learner/run",
+        dataset="inquiries",
+    )
     save_evaluation(tmp_path, report)
     saved = json.loads((tmp_path / "validation_metrics.json").read_text(encoding="utf-8"))
     assert saved == report
-    predictions = list(csv.DictReader((tmp_path / "validation_predictions.csv").open(encoding="utf-8-sig")))
+    predictions = list(
+        csv.DictReader((tmp_path / "validation_predictions.csv").open(encoding="utf-8-sig"))
+    )
     errors = list(csv.DictReader((tmp_path / "validation_errors.csv").open(encoding="utf-8-sig")))
     assert len(predictions) == 3 and len(errors) == 1
     assert predictions[0]["text"] == rows[0]["text"]
-    assert json.loads(predictions[0]["class_probabilities"]) == {"a": .6, "b": .3, "c": .1}
+    assert json.loads(predictions[0]["class_probabilities"]) == {"a": 0.6, "b": 0.3, "c": 0.1}
     assert errors[0]["id"] == "1" and errors[0]["model_name"] == "LR"
     assert int(errors[0]["text_length"]) == len(rows[1]["text"])
     summary = (tmp_path / "validation_summary.md").read_text(encoding="utf-8")
@@ -144,23 +173,34 @@ def test_artifact_roundtrip_keeps_text_probability_order_and_actual_plot_values(
 
 def make_reports():
     rows = rows_for([0, 1, 2, 0])
-    return (evaluation_report(rows, [0, 0, 1, 0], LABELS, experiment_id="LR", dataset="inquiries"),
-            evaluation_report(rows, [1, 1, 1, 0], LABELS, experiment_id="BERT", dataset="inquiries"))
+    return (
+        evaluation_report(rows, [0, 0, 1, 0], LABELS, experiment_id="LR", dataset="inquiries"),
+        evaluation_report(rows, [1, 1, 1, 0], LABELS, experiment_id="BERT", dataset="inquiries"),
+    )
 
 
 def test_pairwise_errors_and_direction_are_generic_for_any_model_names():
     a, b = make_reports()
     result = compare_predictions(a, b)
-    assert result["counts"] == {"both_correct": 1, "both_wrong": 1,
-                                "a_correct_b_wrong": 1, "b_correct_a_wrong": 1}
+    assert result["counts"] == {
+        "both_correct": 1,
+        "both_wrong": 1,
+        "a_correct_b_wrong": 1,
+        "b_correct_a_wrong": 1,
+    }
     assert result["both_wrong_same_prediction"] == 1
     assert {row["category"]: row["id"] for row in result["errors"]} == {
-        "a_correct_b_wrong": "0", "b_correct_a_wrong": "1", "both_wrong": "2"}
+        "a_correct_b_wrong": "0",
+        "b_correct_a_wrong": "1",
+        "both_wrong": "2",
+    }
     a["experiment_id"], b["experiment_id"] = "ELECTRA", "RoBERTa"
     assert compare_predictions(a, b)["counts"] == result["counts"]
 
 
-@pytest.mark.parametrize("change", ["dataset", "split", "evaluation_sha256", "text", "actual", "order"])
+@pytest.mark.parametrize(
+    "change", ["dataset", "split", "evaluation_sha256", "text", "actual", "order"]
+)
 def test_mismatched_evaluation_rows_and_test_comparison_are_rejected(change):
     a, b = make_reports()
     if change in ("dataset", "split", "evaluation_sha256"):
@@ -175,17 +215,32 @@ def test_mismatched_evaluation_rows_and_test_comparison_are_rejected(change):
 
 def test_comparison_saves_metrics_deltas_errors_and_preserves_legacy_columns(tmp_path):
     a, b = make_reports()
-    entries = [{"run": report["experiment_id"], "dataset": "inquiries", "metrics": report,
-                "efficiency": {"train_seconds": i + 1, "model_size_mib": i + .5}}
-               for i, report in enumerate((a, b))]
-    candidates = [{"model": name, "kind": kind, "run_name": name, "run_learner": "learner",
-                   "cpu_inference_ms_per_text": .1, "reloaded_predictions_match": True}
-                  for name, kind in (("LR", "baseline"), ("BERT", "transformer"))]
+    entries = [
+        {
+            "run": report["experiment_id"],
+            "dataset": "inquiries",
+            "metrics": report,
+            "efficiency": {"train_seconds": i + 1, "model_size_mib": i + 0.5},
+        }
+        for i, report in enumerate((a, b))
+    ]
+    candidates = [
+        {
+            "model": name,
+            "kind": kind,
+            "run_name": name,
+            "run_learner": "learner",
+            "cpu_inference_ms_per_text": 0.1,
+            "reloaded_predictions_match": True,
+        }
+        for name, kind in (("LR", "baseline"), ("BERT", "transformer"))
+    ]
     report = save_comparison(tmp_path, entries, candidates, candidates[0])
     pair = report["pairs"][0]
     assert pair["metric_deltas"]["macro_f1"] == pytest.approx(b["macro_f1"] - a["macro_f1"])
     assert pair["per_class_f1_deltas"]["a"] == pytest.approx(
-        b["per_class"]["a"]["f1-score"] - a["per_class"]["a"]["f1-score"])
+        b["per_class"]["a"]["f1-score"] - a["per_class"]["a"]["f1-score"]
+    )
     assert pair["efficiency_deltas"]["train_seconds"] == 1
     assert pair["efficiency_deltas"]["model_size_mib"] == 1
     assert pair["efficiency_deltas"]["model_load_seconds"] is None
@@ -196,8 +251,13 @@ def test_comparison_saves_metrics_deltas_errors_and_preserves_legacy_columns(tmp
     assert rows[0]["cpu_inference_ms_per_text"] == "0.1"
     assert rows[0]["inference_median_ms_per_sample"] == ""
     assert "작은 점수 차이" in (tmp_path / "model_comparison.md").read_text(encoding="utf-8")
-    assert json.loads((tmp_path / "model_comparison.json").read_text(encoding="utf-8"))["pairs"] == report["pairs"]
-    errors = list(csv.DictReader((tmp_path / "model_error_comparison.csv").open(encoding="utf-8-sig")))
+    assert (
+        json.loads((tmp_path / "model_comparison.json").read_text(encoding="utf-8"))["pairs"]
+        == report["pairs"]
+    )
+    errors = list(
+        csv.DictReader((tmp_path / "model_error_comparison.csv").open(encoding="utf-8-sig"))
+    )
     assert len(errors) == 3
     assert (tmp_path / "model_comparison.png").read_bytes().startswith(b"\x89PNG")
 
@@ -207,8 +267,10 @@ def test_old_metric_logs_remain_comparable_without_inventing_missing_values():
     for report in (a, b):
         report.pop("predictions")
         report.pop("evaluation_sha256")
-    entries = [{"run": name, "dataset": "inquiries", "metrics": report, "efficiency": {}}
-               for name, report in (("a", a), ("b", b))]
+    entries = [
+        {"run": name, "dataset": "inquiries", "metrics": report, "efficiency": {}}
+        for name, report in (("a", a), ("b", b))
+    ]
     result = build_comparison(entries)["pairs"][0]
     assert result["prediction_comparison"]["supported"] is False
     assert result["efficiency_deltas"]["model_size_bytes"] is None
@@ -238,16 +300,17 @@ def test_benchmark_warmup_repeats_and_median_are_measured(monkeypatch):
     import classification_efficiency
 
     # warmup은 timer 밖. 샘플 1, 2ms, pass 4ms를 두 번 직접 관찰한다.
-    times = iter([0, 0, .001, .001, .003, .004, 1, 1, 1.001, 1.001, 1.003, 1.004])
+    times = iter([0, 0, 0.001, 0.001, 0.003, 0.004, 1, 1, 1.001, 1.001, 1.003, 1.004])
     monkeypatch.setattr(classification_efficiency.time, "perf_counter", lambda: next(times))
     calls = []
-    predictions, metrics = benchmark_predict(lambda text: calls.append(text) or {"prediction": 0},
-                                             ["a", "b"], warmup=1, repeats=2)
+    predictions, metrics = benchmark_predict(
+        lambda text: calls.append(text) or {"prediction": 0}, ["a", "b"], warmup=1, repeats=2
+    )
     assert calls == ["a", "a", "b", "a", "b"]
     assert predictions == [{"prediction": 0}, {"prediction": 0}]
     assert metrics["inference_mean_ms_per_sample"] == pytest.approx(1.5)
     assert metrics["inference_median_ms_per_sample"] == pytest.approx(1.5)
-    assert metrics["inference_total_seconds"] == pytest.approx(.004)
+    assert metrics["inference_total_seconds"] == pytest.approx(0.004)
     assert metrics["throughput_samples_per_second"] == pytest.approx(500)
 
 
@@ -256,7 +319,7 @@ def test_legacy_scoring_and_error_saving_imports_remain_available(tmp_path):
     from step03_train_baseline import save_errors
 
     scores = legacy_scores([0, 1], [0, 0], LABELS)
-    assert scores["accuracy"] == .5 and "macro avg" in scores["per_class"]
+    assert scores["accuracy"] == 0.5 and "macro avg" in scores["per_class"]
     save_errors(tmp_path / "errors.csv", rows_for([0, 1]), [0, 0], LABELS)
     errors = list(csv.DictReader((tmp_path / "errors.csv").open(encoding="utf-8-sig")))
     assert errors[0]["actual"] == "b" and errors[0]["predicted"] == "a"

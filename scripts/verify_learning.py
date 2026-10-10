@@ -20,8 +20,10 @@ def read_json(path):
 
 def data_snapshot(data_dir):
     """학습 전후에 호출해 같은 train, validation, 라벨을 썼는지 비교한다."""
-    return {name: hashlib.sha256((Path(data_dir) / name).read_bytes()).hexdigest()
-            for name in ("train.csv", "validation.csv", "labels.json")}
+    return {
+        name: hashlib.sha256((Path(data_dir) / name).read_bytes()).hexdigest()
+        for name in ("train.csv", "validation.csv", "labels.json")
+    }
 
 
 def verify_original_data(data_dir):
@@ -45,8 +47,10 @@ def parameter_evidence(model):
         digests[part].update(name.encode())
         digests[part].update(parameter.detach().float().cpu().numpy().tobytes())
         counts[part] += parameter.numel()
-    return {part: {"sha256": digest.hexdigest(), "parameters": counts[part]}
-            for part, digest in digests.items()}
+    return {
+        part: {"sha256": digest.hexdigest(), "parameters": counts[part]}
+        for part, digest in digests.items()
+    }
 
 
 def verify_run(run_dir):
@@ -59,12 +63,17 @@ def verify_run(run_dir):
     with torch.random.fork_rng(devices=[]):
         torch.random.default_generator.manual_seed(config["seed"])
         original = AutoModelForSequenceClassification.from_pretrained(
-            config["model"], num_labels=len(labels), id2label=dict(enumerate(labels)),
-            label2id={label: index for index, label in enumerate(labels)}, local_files_only=True)
+            config["model"],
+            num_labels=len(labels),
+            id2label=dict(enumerate(labels)),
+            label2id={label: index for index, label in enumerate(labels)},
+            local_files_only=True,
+        )
     initial = parameter_evidence(original)
     del original
     saved = AutoModelForSequenceClassification.from_pretrained(
-        run_dir / "checkpoint", local_files_only=True, use_safetensors=True)
+        run_dir / "checkpoint", local_files_only=True, use_safetensors=True
+    )
     actual_labels = [saved.config.id2label[index] for index in range(saved.config.num_labels)]
     if actual_labels != labels or saved.config.label2id != dict(zip(labels, range(len(labels)))):
         raise ValueError("학습 설정과 저장 모델의 라벨 순서가 다릅니다.")
@@ -73,23 +82,33 @@ def verify_run(run_dir):
     changed = {part: initial[part]["sha256"] != current[part]["sha256"] for part in initial}
     if not all(changed.values()):
         raise ValueError("본체와 분류층이 모두 학습되었는지 확인하세요.")
-    epochs = [json.loads(line) for line in
-              (run_dir / "epochs.jsonl").read_text(encoding="utf-8").splitlines()]
+    epochs = [
+        json.loads(line)
+        for line in (run_dir / "epochs.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
     # 중간에 멈춘 학습은 설정한 epoch 수만큼 기록이 없고 완료 표시도 없다.
     if summary.get("completed") is not True or len(epochs) != config["epochs"]:
         raise ValueError("학습이 끝나지 않은 실험입니다(중간에 멈춤).")
     best = max(epochs, key=lambda row: row["validation_macro_f1"])
     metrics = read_json(run_dir / "validation_metrics.json")
-    if (summary["selection_split"] != "validation" or summary["best_epoch"] != best["epoch"]
-            or summary["optimizer_steps_at_checkpoint"] != best["optimizer_steps"]
-            or summary["optimizer_steps_at_checkpoint"] < 1
-            or metrics["macro_f1"] != best["validation_macro_f1"]):
+    if (
+        summary["selection_split"] != "validation"
+        or summary["best_epoch"] != best["epoch"]
+        or summary["optimizer_steps_at_checkpoint"] != best["optimizer_steps"]
+        or summary["optimizer_steps_at_checkpoint"] < 1
+        or metrics["macro_f1"] != best["validation_macro_f1"]
+    ):
         raise ValueError("저장한 epoch와 validation 기록이 일치하지 않습니다.")
     if summary["max_length"] != config["max_length"]:
         raise ValueError("학습 설정과 요약의 입력 길이가 다릅니다.")
-    return {"run_name": run_dir.name, "changed": changed, "initial": initial,
-            "selected_checkpoint": current, "best_epoch": best["epoch"],
-            "validation_macro_f1": metrics["macro_f1"]}
+    return {
+        "run_name": run_dir.name,
+        "changed": changed,
+        "initial": initial,
+        "selected_checkpoint": current,
+        "best_epoch": best["epoch"],
+        "validation_macro_f1": metrics["macro_f1"],
+    }
 
 
 def verify_selection(learner_dir):
@@ -111,12 +130,23 @@ def verify_selection(learner_dir):
         if candidate.get("kind") == "baseline":  # 기준 모델은 n-gram 범위가 설정이다
             settings.add(("baseline", tuple(config["ngram_range"]), config["seed"]))
         elif candidate.get("kind") == "classical":  # 전통 ML은 분류기와 n-gram 범위가 설정이다
-            settings.add(("classical", config["model"], tuple(config["ngram_range"]),
-                          config["seed"]))
+            settings.add(
+                ("classical", config["model"], tuple(config["ngram_range"]), config["seed"])
+            )
         else:
-            settings.add(tuple(config[key] for key in (
-                "model", "learning_rate", "epochs", "batch_size", "accumulation_steps",
-                "max_length")))
+            settings.add(
+                tuple(
+                    config[key]
+                    for key in (
+                        "model",
+                        "learning_rate",
+                        "epochs",
+                        "batch_size",
+                        "accumulation_steps",
+                        "max_length",
+                    )
+                )
+            )
         labels.add(tuple(config["labels"]))
         datasets.add(config["dataset"])
     if len(settings) < 2:
@@ -133,9 +163,11 @@ def main():
     selection = read_json(LEARNER_DIR / "selected.json")
     # 프로젝트 데이터에는 배포 manifest가 없으므로 현재 파일의 해시를 기록만 한다.
     has_manifest = (DATA_DIR.parent / "manifest.json").exists()
-    report = {"data_sha256": verify_original_data(DATA_DIR) if has_manifest
-              else data_snapshot(DATA_DIR),
-              "selection": verify_selection(LEARNER_DIR), "runs": []}
+    report = {
+        "data_sha256": verify_original_data(DATA_DIR) if has_manifest else data_snapshot(DATA_DIR),
+        "selection": verify_selection(LEARNER_DIR),
+        "runs": [],
+    }
     for candidate in selection["candidates"]:
         if candidate.get("kind") != "transformer":  # 가중치 변경 검사는 사전학습 모델에만 해당한다
             continue

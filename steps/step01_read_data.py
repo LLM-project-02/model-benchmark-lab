@@ -27,9 +27,12 @@ def read_labels(data_dir: Path) -> list[str]:
     value = json.loads((Path(data_dir) / "labels.json").read_text(encoding="utf-8-sig"))
     labels = value["labels"]  # 목록 순서가 곧 라벨 번호(0, 1, 2, ...)
     # 리스트가 아니거나, 비었거나, 빈 문자열·중복 라벨이 있으면 중단한다.
-    if (not isinstance(labels, list) or not labels
-            or not all(isinstance(label, str) and label.strip() for label in labels)
-            or len(set(labels)) != len(labels)):
+    if (
+        not isinstance(labels, list)
+        or not labels
+        or not all(isinstance(label, str) and label.strip() for label in labels)
+        or len(set(labels)) != len(labels)
+    ):
         raise ValueError("labels.json에는 중복 없는 라벨 문자열 목록이 필요합니다.")
     return labels
 
@@ -40,8 +43,10 @@ FINGERPRINT_FILES = ("train.csv", "validation.csv", "labels.json")
 
 def data_fingerprint(data_dir: Path) -> dict[str, str]:
     """파일 내용의 SHA-256. 실험끼리 같은 데이터로 학습했는지 비교할 때 쓴다."""
-    return {name: hashlib.sha256((Path(data_dir) / name).read_bytes()).hexdigest()
-            for name in FINGERPRINT_FILES}
+    return {
+        name: hashlib.sha256((Path(data_dir) / name).read_bytes()).hexdigest()
+        for name in FINGERPRINT_FILES
+    }
 
 
 def main():

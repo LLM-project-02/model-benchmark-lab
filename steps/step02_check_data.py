@@ -16,7 +16,11 @@ REQUIRED_COLUMNS = {"id", "text", "label", "group_id", "source"}  # 모든 행�
 
 
 def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
-    seen = {"id": set(), "group_id": set(), "text": set()}  # 앞 분할에서 본 값 (분할 간 중복 검사용)
+    seen = {
+        "id": set(),
+        "group_id": set(),
+        "text": set(),
+    }  # 앞 분할에서 본 값 (분할 간 중복 검사용)
     report = {}
     for split_name, rows in splits.items():
         if not rows:
@@ -24,8 +28,9 @@ def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
         for row in rows:
             if not REQUIRED_COLUMNS.issubset(row):  # 필수 열 누락 검사
                 raise ValueError(f"{split_name}: 필수 열이 빠졌습니다.")
-            if any(not isinstance(row[key], str) or not row[key].strip()
-                   for key in REQUIRED_COLUMNS):
+            if any(
+                not isinstance(row[key], str) or not row[key].strip() for key in REQUIRED_COLUMNS
+            ):
                 raise ValueError(f"{split_name}: 필수 값이 비어 있습니다.")
         if {row["label"] for row in rows} != set(labels):  # 모든 라벨이 한 번 이상 등장해야 함
             raise ValueError(f"{split_name}: 라벨 목록과 데이터가 다릅니다.")
@@ -34,8 +39,7 @@ def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
         current = {
             "id": {row["id"] for row in rows},
             "group_id": {row["group_id"] for row in rows},
-            "text": {" ".join(unicodedata.normalize("NFKC", row["text"]).split())
-                     for row in rows},
+            "text": {" ".join(unicodedata.normalize("NFKC", row["text"]).split()) for row in rows},
         }
         if len(current["id"]) != len(rows):  # 같은 분할 안 id 중복
             raise ValueError(f"{split_name}: 중복된 id가 있습니다.")
@@ -50,7 +54,8 @@ def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
                 raise ValueError(f"{split_name}: 분할 사이에 {key} 중복이 있습니다.")
             previous.update(current[key])
         report[split_name] = {
-            "rows": len(rows), "groups": len(current["group_id"]),
+            "rows": len(rows),
+            "groups": len(current["group_id"]),
             "class_counts": dict(Counter(row["label"] for row in rows)),
         }
     return report
@@ -58,8 +63,7 @@ def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
 
 def main():
     # test는 마지막 평가 단계에서 처음 읽는다.
-    splits = {name: read_rows(DATA_DIR / f"{name}.csv")
-              for name in ("train", "validation")}
+    splits = {name: read_rows(DATA_DIR / f"{name}.csv") for name in ("train", "validation")}
     report = check_splits(splits, read_labels(DATA_DIR))
     print(json.dumps(report, ensure_ascii=False, indent=2))
     print("train과 validation의 필수 값, 라벨, 분할 중복 검사를 통과했습니다.")

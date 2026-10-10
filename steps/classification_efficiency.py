@@ -23,13 +23,22 @@ def measurement_environment(device="cpu"):
             if line.startswith("model name"):
                 cpu_name = line.split(":", 1)[1].strip()
                 break
-    return {"os": platform.platform(), "python": platform.python_version(),
-            "hostname": platform.node(), "machine": platform.machine(), "cpu": cpu_name,
-            "logical_cpus": psutil.cpu_count(), "torch_threads": torch.get_num_threads(),
-            "torch_interop_threads": torch.get_num_interop_threads(), "device": str(device),
-            "gpu": torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
-            "versions": {name: version(name) for name in
-                         ("numpy", "scikit-learn", "torch", "transformers", "psutil")}}
+    return {
+        "os": platform.platform(),
+        "python": platform.python_version(),
+        "hostname": platform.node(),
+        "machine": platform.machine(),
+        "cpu": cpu_name,
+        "logical_cpus": psutil.cpu_count(),
+        "torch_threads": torch.get_num_threads(),
+        "torch_interop_threads": torch.get_num_interop_threads(),
+        "device": str(device),
+        "gpu": torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None,
+        "versions": {
+            name: version(name)
+            for name in ("numpy", "scikit-learn", "torch", "transformers", "psutil")
+        },
+    }
 
 
 def predict_scored(text, bundle):
@@ -46,7 +55,8 @@ def predict_scored(text, bundle):
         scores = model.predict_proba([text])[0]
     else:
         features = bundle["tokenizer"](
-            text, truncation=True, max_length=bundle["max_length"], return_tensors="pt")
+            text, truncation=True, max_length=bundle["max_length"], return_tensors="pt"
+        )
         with torch.inference_mode():
             scores = model(**features).logits.softmax(-1)[0].cpu().numpy()
     return {"prediction": int(np.argmax(scores)), "probabilities": scores.tolist()}
@@ -72,24 +82,31 @@ def benchmark_predict(predict, texts, *, warmup=1, repeats=1):
         elif results != first_results:
             raise ValueError("반복 추론 결과가 달라졌습니다. 평가 모드와 결정성을 확인하세요.")
     seconds = statistics.mean(pass_seconds)
-    return first_results, {"inference_device": "cpu", "inference_batch_size": 1,
-                           "warmup_samples": warmup, "measurement_repeats": repeats,
-                           "sample_count": len(texts), "inference_total_seconds": seconds,
-                           "inference_pass_seconds": pass_seconds,
-                           "inference_mean_ms_per_sample": statistics.mean(durations) * 1000,
-                           "inference_median_ms_per_sample": statistics.median(durations) * 1000,
-                           "throughput_samples_per_second": len(texts) / seconds,
-                           "inference_protocol": "cpu-single-text-v1",
-                           "inference_scope": "strip + vectorization/tokenization + forward + probabilities; "
-                           "excludes model loading, warmup, metrics, artifact I/O, service input checks"}
+    return first_results, {
+        "inference_device": "cpu",
+        "inference_batch_size": 1,
+        "warmup_samples": warmup,
+        "measurement_repeats": repeats,
+        "sample_count": len(texts),
+        "inference_total_seconds": seconds,
+        "inference_pass_seconds": pass_seconds,
+        "inference_mean_ms_per_sample": statistics.mean(durations) * 1000,
+        "inference_median_ms_per_sample": statistics.median(durations) * 1000,
+        "throughput_samples_per_second": len(texts) / seconds,
+        "inference_protocol": "cpu-single-text-v1",
+        "inference_scope": "strip + vectorization/tokenization + forward + probabilities; "
+        "excludes model loading, warmup, metrics, artifact I/O, service input checks",
+    }
 
 
 def sklearn_parameter_count(classifier):
     """학습된 분류기의 숫자 파라미터 수. TF-IDF 어휘와 IDF는 세지 않는다."""
     if hasattr(classifier, "calibrated_classifiers_"):  # 보정된 분류기: 원래 분류기 + 보정기
-        return sum(sklearn_parameter_count(item.estimator)
-                   + 2 * len(item.calibrators)  # 시그모이드 보정기는 a, b 두 값
-                   for item in classifier.calibrated_classifiers_)
+        return sum(
+            sklearn_parameter_count(item.estimator)
+            + 2 * len(item.calibrators)  # 시그모이드 보정기는 a, b 두 값
+            for item in classifier.calibrated_classifiers_
+        )
     if hasattr(classifier, "coef_"):  # 로지스틱 회귀, LinearSVC
         return int(classifier.coef_.size + classifier.intercept_.size)
     if hasattr(classifier, "feature_log_prob_"):  # 나이브 베이즈
@@ -102,30 +119,45 @@ def model_resources(bundle):
     if bundle["kind"] in SKLEARN_FILES:
         count = sklearn_parameter_count(model[-1])
         paths = [weights_path(bundle["run_dir"], bundle["kind"])]
-        definition = (f"{type(model[-1]).__name__} learned parameters; "
-                      "TF-IDF vocabulary/IDF excluded")
+        definition = (
+            f"{type(model[-1]).__name__} learned parameters; TF-IDF vocabulary/IDF excluded"
+        )
     else:
         count = sum(parameter.numel() for parameter in model.parameters())
-        paths = [path for path in (Path(bundle["run_dir"]) / "checkpoint").rglob("*")
-                 if path.is_file()]
+        paths = [
+            path for path in (Path(bundle["run_dir"]) / "checkpoint").rglob("*") if path.is_file()
+        ]
         definition = "all backbone and classification head parameters"
     size = sum(path.stat().st_size for path in paths)
-    return {"parameter_count": count, "parameter_count_definition": definition,
-            "model_size_bytes": size, "model_size_mib": size / 2**20,
-            "model_size_scope": SKLEARN_FILES.get(
-                bundle["kind"], "checkpoint/ weights + config + tokenizer; excludes copied baseline")}
+    return {
+        "parameter_count": count,
+        "parameter_count_definition": definition,
+        "model_size_bytes": size,
+        "model_size_mib": size / 2**20,
+        "model_size_scope": SKLEARN_FILES.get(
+            bundle["kind"], "checkpoint/ weights + config + tokenizer; excludes copied baseline"
+        ),
+    }
 
 
 def measure_loaded_bundle(bundle, rows, *, warmup=1, repeats=1):
-    results, efficiency = benchmark_predict(lambda text: predict_scored(text, bundle),
-                                            [row["text"] for row in rows],
-                                            warmup=warmup, repeats=repeats)
-    efficiency.update({"cpu_rss_after_inference_mib": cpu_rss_mib(),
-                       "cpu_memory_scope": "process RSS snapshots, includes other live models/caches; "
-                       "not isolated model memory or a sampled peak",
-                       "cpu_peak_memory_mib": None,
-                       "cpu_peak_memory_reason": "RSS snapshots only; peak not sampled",
-                       "environment": measurement_environment(), **model_resources(bundle)})
+    results, efficiency = benchmark_predict(
+        lambda text: predict_scored(text, bundle),
+        [row["text"] for row in rows],
+        warmup=warmup,
+        repeats=repeats,
+    )
+    efficiency.update(
+        {
+            "cpu_rss_after_inference_mib": cpu_rss_mib(),
+            "cpu_memory_scope": "process RSS snapshots, includes other live models/caches; "
+            "not isolated model memory or a sampled peak",
+            "cpu_peak_memory_mib": None,
+            "cpu_peak_memory_reason": "RSS snapshots only; peak not sampled",
+            "environment": measurement_environment(),
+            **model_resources(bundle),
+        }
+    )
     probabilities = [result["probabilities"] for result in results]
     if any(value is None for value in probabilities):
         probabilities = None
@@ -138,9 +170,14 @@ def measure_saved_run(run, rows, *, warmup=1, repeats=1):
     bundle = load_run(run)  # 기존 로더의 라벨 검사·local_files_only·CPU eval 모드를 재사용
     load_seconds = time.perf_counter() - started
     loaded = cpu_rss_mib()
-    predictions, probabilities, efficiency = measure_loaded_bundle(bundle, rows, warmup=warmup,
-                                                                  repeats=repeats)
-    efficiency.update({"model_load_seconds": load_seconds,
-                       "cpu_rss_before_load_mib": before, "cpu_rss_after_load_mib": loaded,
-                       })
+    predictions, probabilities, efficiency = measure_loaded_bundle(
+        bundle, rows, warmup=warmup, repeats=repeats
+    )
+    efficiency.update(
+        {
+            "model_load_seconds": load_seconds,
+            "cpu_rss_before_load_mib": before,
+            "cpu_rss_after_load_mib": loaded,
+        }
+    )
     return predictions, probabilities, efficiency

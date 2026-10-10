@@ -45,8 +45,9 @@ def verify_comparison(directory):
         )
         assert actual == expected, "제공자별 반복 횟수가 다릅니다."
         for field in ("input_text", "classification", "policy", "prompt"):
-            values = {json.dumps(row[field], ensure_ascii=False, sort_keys=True)
-                      for row in case_records}
+            values = {
+                json.dumps(row[field], ensure_ascii=False, sort_keys=True) for row in case_records
+            }
             assert len(values) == 1, f"같은 입력의 {field} 값이 달라졌습니다."
 
     for row in records:
@@ -69,7 +70,8 @@ def verify_comparison(directory):
         assert score["provider"] == record["provider"]
         assert score["response"] == record["response_text"]
     return {
-        "cases": len(case_ids), "records": len(records),
+        "cases": len(case_ids),
+        "records": len(records),
         "errors": sum(bool(row["error"]) for row in records),
         "format_valid": sum(row["output_format_valid"] for row in records),
         "generation_complete": sum(row["generation_complete"] for row in records),

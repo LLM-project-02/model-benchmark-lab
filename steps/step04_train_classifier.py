@@ -93,7 +93,7 @@ def window_sample_counts(dataset_size, batch_size, accumulation_steps):
     sizes = [min(batch_size, dataset_size - start) for start in range(0, dataset_size, batch_size)]
     counts = []
     for window_start in range(0, len(sizes), accumulation_steps):
-        window = sizes[window_start:window_start + accumulation_steps]
+        window = sizes[window_start : window_start + accumulation_steps]
         counts.extend([sum(window)] * len(window))
     return counts
 
@@ -113,9 +113,17 @@ def validate_model(model, loader, device, labels, *, return_probabilities=False)
             predictions.extend(output.logits.argmax(-1).cpu().tolist())  # 점수가 가장 큰 라벨
             probabilities.extend(output.logits.float().softmax(-1).cpu().tolist())
             actual.extend(batch["labels"].cpu().tolist())
-    result = (classification_scores(actual, predictions, labels, probabilities,
-                                    probability_source="transformer.softmax_logits (uncalibrated)"),
-              total_loss / count, predictions)
+    result = (
+        classification_scores(
+            actual,
+            predictions,
+            labels,
+            probabilities,
+            probability_source="transformer.softmax_logits (uncalibrated)",
+        ),
+        total_loss / count,
+        predictions,
+    )
     return (*result, probabilities) if return_probabilities else result
 
 
@@ -157,7 +165,9 @@ def run_training(
     fingerprint = data_fingerprint(data_dir)
     baseline_config = json.loads((baseline_dir / "config.json").read_text(encoding="utf-8"))
     if baseline_config.get("data_sha256") != fingerprint:
-        raise RuntimeError("기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다. step03을 다시 실행하세요.")
+        raise RuntimeError(
+            "기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다. step03을 다시 실행하세요."
+        )
 
     # 난수를 고정해 같은 설정이면 같은 결과가 나오게 한다.
     random.seed(seed)
@@ -336,21 +346,32 @@ def run_training(
         torch.cuda.max_memory_reserved(device) / 2**20 if use_cuda else None
     )
     reloaded, _, efficiency = measure_saved_run(output_dir, validation_rows)
-    efficiency.update({"train_seconds": summary["train_seconds"], "training_device": str(device),
-                       "training_scope": "epoch loop including validation and checkpoint I/O; "
-                       "excludes initial model loading and tokenization",
-                       "training_environment": measurement_environment(device),
-                       "cpu_rss_before_training_mib": rss_before_training,
-                       "cpu_rss_after_training_mib": rss_after_training,
-                       "peak_gpu_memory_allocated_mb": summary["peak_gpu_memory_allocated_mb"],
-                       "peak_gpu_memory_reserved_mb": summary["peak_gpu_memory_reserved_mb"],
-                       "gpu_memory_scope": "PyTorch peak since reset before model loading; training + validation",
-                       "gpu_memory_reason": None if use_cuda else "CPU training; GPU not used"})
-    metrics = evaluation_report(validation_rows, best_predictions, labels, best_probabilities,
-                                model_name=str(model_name),
-                                experiment_id=f"{learner_dir.name}/{run_name}", dataset=data_dir.name,
-                                probability_source="transformer.softmax_logits (uncalibrated)",
-                                efficiency=efficiency)
+    efficiency.update(
+        {
+            "train_seconds": summary["train_seconds"],
+            "training_device": str(device),
+            "training_scope": "epoch loop including validation and checkpoint I/O; "
+            "excludes initial model loading and tokenization",
+            "training_environment": measurement_environment(device),
+            "cpu_rss_before_training_mib": rss_before_training,
+            "cpu_rss_after_training_mib": rss_after_training,
+            "peak_gpu_memory_allocated_mb": summary["peak_gpu_memory_allocated_mb"],
+            "peak_gpu_memory_reserved_mb": summary["peak_gpu_memory_reserved_mb"],
+            "gpu_memory_scope": "PyTorch peak since reset before model loading; training + validation",
+            "gpu_memory_reason": None if use_cuda else "CPU training; GPU not used",
+        }
+    )
+    metrics = evaluation_report(
+        validation_rows,
+        best_predictions,
+        labels,
+        best_probabilities,
+        model_name=str(model_name),
+        experiment_id=f"{learner_dir.name}/{run_name}",
+        dataset=data_dir.name,
+        probability_source="transformer.softmax_logits (uncalibrated)",
+        efficiency=efficiency,
+    )
     metrics["prediction_device"] = str(device)
     metrics["data_sha256"] = fingerprint
     save_evaluation(output_dir, metrics)
@@ -364,9 +385,20 @@ def run_training(
     (output_dir / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print(json.dumps({key: summary[key] for key in (
-        "train_seconds", "peak_gpu_memory_reserved_mb", "cpu_inference_ms_per_text",
-        "reloaded_predictions_match")}, ensure_ascii=False))
+    print(
+        json.dumps(
+            {
+                key: summary[key]
+                for key in (
+                    "train_seconds",
+                    "peak_gpu_memory_reserved_mb",
+                    "cpu_inference_ms_per_text",
+                    "reloaded_predictions_match",
+                )
+            },
+            ensure_ascii=False,
+        )
+    )
     print("저장 위치:", output_dir)
     return output_dir
 

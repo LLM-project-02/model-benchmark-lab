@@ -62,12 +62,19 @@ def summarize_provider(records, provider):
     valid = sum(record["output_format_valid"] for record in subset)  # True를 1로 세어 합산
     complete = sum(bool(record.get("generation_complete")) for record in subset)
     # 그대로 쓸 수 있는 답변: 호출 예외가 없고, 끝까지 생성됐고, 약속한 JSON 형식을 지킴
-    usable = sum(not record["error"] and bool(record.get("generation_complete"))
-                 and record["output_format_valid"] for record in subset)
+    usable = sum(
+        not record["error"]
+        and bool(record.get("generation_complete"))
+        and record["output_format_valid"]
+        for record in subset
+    )
     # 토큰 수는 응답에 기록된 호출만 더한다. 몇 번의 호출이 기록됐는지 함께 남긴다.
     usage = [record.get("usage") or {} for record in subset]
-    known = [item for item in usage
-             if item.get("input_tokens") is not None and item.get("output_tokens") is not None]
+    known = [
+        item
+        for item in usage
+        if item.get("input_tokens") is not None and item.get("output_tokens") is not None
+    ]
     loads = [record["load_seconds"] for record in subset if record.get("load_seconds") is not None]
     return {
         "calls": calls,
@@ -75,7 +82,9 @@ def summarize_provider(records, provider):
         "error_rate_all_calls": errors / calls if calls else None,
         "mean_latency_seconds_success_only": statistics.mean(
             record["latency_seconds"] for record in success
-        ) if success else None,
+        )
+        if success
+        else None,
         "format_valid_rate_all_calls": valid / calls if calls else None,
         "complete_rate_all_calls": complete / calls if calls else None,
         "usable_rate_all_calls": usable / calls if calls else None,
@@ -91,18 +100,38 @@ def estimate_cost(provider_summary, input_usd_per_1m, output_usd_per_1m):
     """기록된 토큰 수와 단가로 계산한 추정 비용(USD). 단가나 토큰 기록이 없으면 None."""
     if None in (input_usd_per_1m, output_usd_per_1m, provider_summary["input_tokens_total"]):
         return None
-    return (provider_summary["input_tokens_total"] * input_usd_per_1m
-            + provider_summary["output_tokens_total"] * output_usd_per_1m) / 1_000_000
+    return (
+        provider_summary["input_tokens_total"] * input_usd_per_1m
+        + provider_summary["output_tokens_total"] * output_usd_per_1m
+    ) / 1_000_000
 
 
 def write_human_scores(path, records):
     fields = [
-        "case_id", "repeat", "provider", "model",
-        "predicted_label", "expected_label", "latency_seconds", "input_tokens",
-        "output_tokens", "output_format_valid", "generation_complete", "finish_reason",
-        "error", "text", "response", "required_points", "forbidden_claims", "rubric_note",
-        "reviewer", "policy_correct_0_2", "required_points_0_2",
-        "no_unsupported_claims_0_2", "clarity_0_2", "notes",
+        "case_id",
+        "repeat",
+        "provider",
+        "model",
+        "predicted_label",
+        "expected_label",
+        "latency_seconds",
+        "input_tokens",
+        "output_tokens",
+        "output_format_valid",
+        "generation_complete",
+        "finish_reason",
+        "error",
+        "text",
+        "response",
+        "required_points",
+        "forbidden_claims",
+        "rubric_note",
+        "reviewer",
+        "policy_correct_0_2",
+        "required_points_0_2",
+        "no_unsupported_claims_0_2",
+        "clarity_0_2",
+        "notes",
     ]
     with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)
@@ -111,7 +140,8 @@ def write_human_scores(path, records):
             row = {key: record.get(key, "") for key in fields}
             row.update(
                 predicted_label=record["classification"]["label"],
-                text=record["input_text"], response=record["response_text"],
+                text=record["input_text"],
+                response=record["response_text"],
                 input_tokens=record["usage"]["input_tokens"],
                 output_tokens=record["usage"]["output_tokens"],
                 required_points=json.dumps(record["required_points"], ensure_ascii=False),
@@ -141,16 +171,19 @@ def run_comparison(chain, cases, output_dir, repeats=REPEATS):
                 for provider in ("ollama", "openai"):
                     generated = generate_prepared(fixed, provider)
                     record = {
-                        "case_id": case["id"], "repeat": repeat + 1,
+                        "case_id": case["id"],
+                        "repeat": repeat + 1,
                         "input_text": fixed["text"],
                         "expected_label": case.get("expected_label"),
                         "classification": fixed["classification"],
-                        "policy": fixed["policy"], "prompt": fixed["prompt"],
+                        "policy": fixed["policy"],
+                        "prompt": fixed["prompt"],
                         # 채점 기준은 사람이 답변을 평가할 때만 쓴다. 프롬프트에는 넣지 않는다.
                         "required_points": case.get("required_points", []),
                         "forbidden_claims": case.get("forbidden_claims", []),
                         "rubric_note": case.get("rubric_note", ""),
-                        **generated, "response_text": generated["text"],
+                        **generated,
+                        "response_text": generated["text"],
                     }
                     # 예외가 생긴 호출도 저장한다. 중단되더라도 끝난 호출 기록은 남긴다.
                     stream.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -163,7 +196,8 @@ def run_comparison(chain, cases, output_dir, repeats=REPEATS):
         provider: summarize_provider(records, provider) for provider in ("ollama", "openai")
     }
     summary = {
-        "cases": len(cases), "repeats": repeats,
+        "cases": len(cases),
+        "repeats": repeats,
         "generation_config": generation_config(),
         "human_quality_scored": False,  # 사람 채점은 아직 하지 않음
         "providers": providers,

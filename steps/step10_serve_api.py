@@ -74,8 +74,11 @@ def generate(body: GenerateRequest, request: Request):
     prepared = request.app.state.chain.invoke(body.text)  # 분류 + 프롬프트 준비
     result = generate_prepared(prepared, body.provider)
     # HTTP 200은 모델이 응답했다는 뜻이다. 답변을 쓸 수 있는지는 status로 확인한다.
-    response = {"status": answer_status(result),
-                "classification": prepared["classification"], "result": result}
+    response = {
+        "status": answer_status(result),
+        "classification": prepared["classification"],
+        "result": result,
+    }
     return JSONResponse(response, status_code=502 if result["error"] else 200)  # 생성 실패 시 502
 
 

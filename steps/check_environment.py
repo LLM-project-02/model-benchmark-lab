@@ -36,7 +36,12 @@ def main():
         running.raise_for_status()
         loaded = running.json().get("models", [])
         for item in loaded:
-            print("Ollama 실행 중:", item["name"], "VRAM(MB):", round(item.get("size_vram", 0) / 2**20))
+            print(
+                "Ollama 실행 중:",
+                item["name"],
+                "VRAM(MB):",
+                round(item.get("size_vram", 0) / 2**20),
+            )
         if not loaded:
             print("Ollama 실행 중인 모델 없음 (생성 호출 직후 다시 확인)")
     except (httpx.HTTPError, ValueError, KeyError):  # 연결 실패 또는 예상과 다른 응답

@@ -45,10 +45,16 @@ def test_ollama_request_and_response_fields(monkeypatch):
 
     def handler(request):
         seen.append(request)
-        return httpx.Response(200, json={
-            "response": VALID_TEXT, "done": True, "done_reason": "stop",
-            "prompt_eval_count": 21, "eval_count": 12,
-        })
+        return httpx.Response(
+            200,
+            json={
+                "response": VALID_TEXT,
+                "done": True,
+                "done_reason": "stop",
+                "prompt_eval_count": 21,
+                "eval_count": 12,
+            },
+        )
 
     install_http_transport(monkeypatch, handler)
     result = models.call_model("ollama", "같은 프롬프트")
@@ -67,9 +73,12 @@ def test_ollama_request_and_response_fields(monkeypatch):
 
 
 def test_ollama_length_limit_and_missing_usage_are_preserved(monkeypatch):
-    install_http_transport(monkeypatch, lambda request: httpx.Response(
-        200, json={"response": "unfinished", "done": True, "done_reason": "length"}
-    ))
+    install_http_transport(
+        monkeypatch,
+        lambda request: httpx.Response(
+            200, json={"response": "unfinished", "done": True, "done_reason": "length"}
+        ),
+    )
     result = models.call_model("ollama", "입력")
     assert result["error"] is None
     assert result["generation_complete"] is False
@@ -83,27 +92,46 @@ def test_openai_real_sdk_request_with_http_transport(monkeypatch):
 
     def handler(request):
         requests.append(request)
-        return httpx.Response(200, json={
-            "id": "resp_lesson_test", "object": "response", "created_at": 1,
-            "status": "completed", "model": models.OPENAI_MODEL,
-            "output": [{
-                "id": "msg_lesson_test", "type": "message", "role": "assistant",
-                "status": "completed", "content": [{
-                    "type": "output_text", "text": VALID_TEXT, "annotations": [],
-                }],
-            }],
-            "usage": {
-                "input_tokens": 15, "output_tokens": 9, "total_tokens": 24,
-                "input_tokens_details": {"cached_tokens": 0},
-                "output_tokens_details": {"reasoning_tokens": 0},
+        return httpx.Response(
+            200,
+            json={
+                "id": "resp_lesson_test",
+                "object": "response",
+                "created_at": 1,
+                "status": "completed",
+                "model": models.OPENAI_MODEL,
+                "output": [
+                    {
+                        "id": "msg_lesson_test",
+                        "type": "message",
+                        "role": "assistant",
+                        "status": "completed",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": VALID_TEXT,
+                                "annotations": [],
+                            }
+                        ],
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 15,
+                    "output_tokens": 9,
+                    "total_tokens": 24,
+                    "input_tokens_details": {"cached_tokens": 0},
+                    "output_tokens_details": {"reasoning_tokens": 0},
+                },
             },
-        })
+        )
 
     def client_factory(**kwargs):
         configurations.append(kwargs)
         return RealOpenAI(
-            api_key="lesson-test-placeholder", base_url="https://lesson.invalid/v1",
-            http_client=httpx.Client(transport=httpx.MockTransport(handler)), **kwargs,
+            api_key="lesson-test-placeholder",
+            base_url="https://lesson.invalid/v1",
+            http_client=httpx.Client(transport=httpx.MockTransport(handler)),
+            **kwargs,
         )
 
     monkeypatch.setenv("OPENAI_API_KEY", "lesson-test-placeholder")
@@ -140,14 +168,18 @@ def test_missing_key_and_provider_failures_never_become_fake_answers(monkeypatch
     assert result["generation_complete"] is False
 
 
-@pytest.mark.parametrize("raw", [
-    'not-json', '{"answer":123,"next_steps":[]}',
-    '{"answer":"답변","next_steps":"확인"}',
-    '{"answer":"","next_steps":[]}',
-    '{"answer":"답변","next_steps":[],"extra":1}',
-    '{"answer":"   ","next_steps":[]}',  # 공백뿐인 답변
-    '{"answer":"답변","next_steps":["  "]}',  # 공백뿐인 행동 항목
-])
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "not-json",
+        '{"answer":123,"next_steps":[]}',
+        '{"answer":"답변","next_steps":"확인"}',
+        '{"answer":"","next_steps":[]}',
+        '{"answer":"답변","next_steps":[],"extra":1}',
+        '{"answer":"   ","next_steps":[]}',  # 공백뿐인 답변
+        '{"answer":"답변","next_steps":["  "]}',  # 공백뿐인 행동 항목
+    ],
+)
 def test_output_schema_rejects_invalid_structure(raw):
     assert models.valid_output(raw) is False
 
@@ -165,11 +197,13 @@ def service_stub(monkeypatch):
         observations["generations"].append((provider, prompt))
         failed = provider == "openai"
         return {
-            "provider": provider, "model": "test-only",
+            "provider": provider,
+            "model": "test-only",
             "text": "" if failed else VALID_TEXT,
             "usage": {"input_tokens": None, "output_tokens": None},
             "latency_seconds": 3.0 if failed else 1.0,
-            "output_format_valid": not failed, "generation_complete": not failed,
+            "output_format_valid": not failed,
+            "generation_complete": not failed,
             "finish_reason": "error" if failed else "stop",
             "error": "TimeoutError" if failed else None,
         }
@@ -237,9 +271,17 @@ def test_comparison_preserves_failures_repeats_and_unscored_fields(service_stub,
     assert seen == before
 
 
-@pytest.mark.parametrize("cases", [[], [{"id": "one", "text": " "}], [
-    {"id": "same", "text": "문의"}, {"id": "same", "text": "다른 문의"},
-]])
+@pytest.mark.parametrize(
+    "cases",
+    [
+        [],
+        [{"id": "one", "text": " "}],
+        [
+            {"id": "same", "text": "문의"},
+            {"id": "same", "text": "다른 문의"},
+        ],
+    ],
+)
 def test_bad_comparison_inputs_fail_before_generation(service_stub, tmp_path, cases):
     runnable, seen, _ = service_stub
     with pytest.raises(ValueError):
@@ -261,7 +303,9 @@ def test_api_loads_once_validates_input_and_keeps_partial_failure(service_stub, 
         assert health.status_code == 200
         assert health.json() == {"status": "ok"}
         assert seen["generations"] == []
-        assert client.post("/generate", json={"text": "문의", "provider": "other"}).status_code == 422
+        assert (
+            client.post("/generate", json={"text": "문의", "provider": "other"}).status_code == 422
+        )
         assert client.post("/compare", json={"text": "   "}).status_code == 422
         good = client.post("/generate", json={"text": "  문의  "})
         assert good.status_code == 200
@@ -284,8 +328,12 @@ def test_api_model_loading_failure_stops_server_startup(monkeypatch):
 
 def test_api_http_success_does_not_hide_invalid_or_incomplete_output(service_stub, monkeypatch):
     def invalid(provider, prompt):
-        return {"error": None, "text": "unfinished", "generation_complete": False,
-                "output_format_valid": False}
+        return {
+            "error": None,
+            "text": "unfinished",
+            "generation_complete": False,
+            "output_format_valid": False,
+        }
 
     monkeypatch.setattr(chain, "call_model", invalid)
     monkeypatch.setattr(api, "load_classifier", lambda: object())
@@ -298,12 +346,27 @@ def test_api_http_success_does_not_hide_invalid_or_incomplete_output(service_stu
 
 def test_summary_denominators_keep_failed_and_incomplete_calls():
     records = [
-        {"provider": "ollama", "error": None, "latency_seconds": 2.0,
-         "generation_complete": True, "output_format_valid": True},
-        {"provider": "ollama", "error": None, "latency_seconds": 4.0,
-         "generation_complete": False, "output_format_valid": False},
-        {"provider": "ollama", "error": "TimeoutError", "latency_seconds": 120.0,
-         "generation_complete": False, "output_format_valid": False},
+        {
+            "provider": "ollama",
+            "error": None,
+            "latency_seconds": 2.0,
+            "generation_complete": True,
+            "output_format_valid": True,
+        },
+        {
+            "provider": "ollama",
+            "error": None,
+            "latency_seconds": 4.0,
+            "generation_complete": False,
+            "output_format_valid": False,
+        },
+        {
+            "provider": "ollama",
+            "error": "TimeoutError",
+            "latency_seconds": 120.0,
+            "generation_complete": False,
+            "output_format_valid": False,
+        },
     ]
     summary = comparison.summarize_provider(records, "ollama")
     assert summary["calls"] == 3
@@ -329,32 +392,55 @@ def test_separate_verifier_detects_changed_prompt(service_stub, tmp_path):
     comparison.run_comparison(runnable, [{"id": "one", "text": "환불 문의"}], destination)
     report = verify_service.verify_comparison(destination)
     assert report == {
-        "cases": 1, "records": 4, "errors": 2,
-        "format_valid": 2, "generation_complete": 2, "human_quality_verified": False,
+        "cases": 1,
+        "records": 4,
+        "errors": 2,
+        "format_valid": 2,
+        "generation_complete": 2,
+        "human_quality_verified": False,
     }
     path = destination / "results.jsonl"
     records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
     records[0]["prompt"] = "different prompt"
-    path.write_text("\n".join(json.dumps(row, ensure_ascii=False) for row in records),
-                    encoding="utf-8")
+    path.write_text(
+        "\n".join(json.dumps(row, ensure_ascii=False) for row in records), encoding="utf-8"
+    )
     with pytest.raises(AssertionError, match="prompt"):
         verify_service.verify_comparison(destination)
 
 
 def test_ollama_load_time_is_kept_apart_from_latency(monkeypatch):
-    install_http_transport(monkeypatch, lambda request: httpx.Response(200, json={
-        "response": VALID_TEXT, "done": True, "done_reason": "stop",
-        "load_duration": 2_500_000_000,
-    }))
+    install_http_transport(
+        monkeypatch,
+        lambda request: httpx.Response(
+            200,
+            json={
+                "response": VALID_TEXT,
+                "done": True,
+                "done_reason": "stop",
+                "load_duration": 2_500_000_000,
+            },
+        ),
+    )
     assert models.call_model("ollama", "입력")["load_seconds"] == 2.5
 
 
 def test_summary_totals_recorded_tokens_and_estimates_cost_only_with_prices():
     records = [
-        {"provider": "openai", "error": None, "latency_seconds": 1.0,
-         "output_format_valid": True, "usage": {"input_tokens": 1000, "output_tokens": 500}},
-        {"provider": "openai", "error": "TimeoutError", "latency_seconds": 3.0,
-         "output_format_valid": False, "usage": {"input_tokens": None, "output_tokens": None}},
+        {
+            "provider": "openai",
+            "error": None,
+            "latency_seconds": 1.0,
+            "output_format_valid": True,
+            "usage": {"input_tokens": 1000, "output_tokens": 500},
+        },
+        {
+            "provider": "openai",
+            "error": "TimeoutError",
+            "latency_seconds": 3.0,
+            "output_format_valid": False,
+            "usage": {"input_tokens": None, "output_tokens": None},
+        },
     ]
     summary = comparison.summarize_provider(records, "openai")
     assert summary["usage_known_calls"] == 1
@@ -375,9 +461,12 @@ def test_rubric_note_is_saved_for_reviewers_but_never_sent_to_models(service_stu
     note = "채점 참고: 접수와 승인을 구분하는지 본다"
     destination = tmp_path / "rubric"
     comparison.run_comparison(
-        runnable, [{"id": "one", "text": "환불 문의", "rubric_note": note}], destination, repeats=1)
-    records = [json.loads(line) for line in
-               (destination / "results.jsonl").read_text(encoding="utf-8").splitlines()]
+        runnable, [{"id": "one", "text": "환불 문의", "rubric_note": note}], destination, repeats=1
+    )
+    records = [
+        json.loads(line)
+        for line in (destination / "results.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
     assert {row["rubric_note"] for row in records} == {note}
     with (destination / "human_scores.csv").open(encoding="utf-8-sig", newline="") as stream:
         assert {row["rubric_note"] for row in csv.DictReader(stream)} == {note}
@@ -386,11 +475,20 @@ def test_rubric_note_is_saved_for_reviewers_but_never_sent_to_models(service_stu
 
 def test_summary_separates_call_errors_from_incomplete_or_invalid_answers():
     def record(error, complete, valid):
-        return {"provider": "ollama", "error": error, "latency_seconds": 1.0,
-                "generation_complete": complete, "output_format_valid": valid}
+        return {
+            "provider": "ollama",
+            "error": error,
+            "latency_seconds": 1.0,
+            "generation_complete": complete,
+            "output_format_valid": valid,
+        }
 
-    records = [record(None, True, True), record(None, False, False),  # 정상, 잘린 답변
-               record(None, True, False), record("TimeoutError", False, False)]  # 형식 오류, 호출 실패
+    records = [
+        record(None, True, True),
+        record(None, False, False),  # 정상, 잘린 답변
+        record(None, True, False),
+        record("TimeoutError", False, False),
+    ]  # 형식 오류, 호출 실패
     summary = comparison.summarize_provider(records, "ollama")
     assert summary["error_rate_all_calls"] == 0.25  # 호출 실패만 센다
     assert summary["complete_rate_all_calls"] == 0.5
@@ -403,7 +501,10 @@ def test_api_status_tells_whether_the_answer_is_usable(service_stub, monkeypatch
         assert client.post("/generate", json={"text": "문의"}).json()["status"] == "ok"
         compared = client.post("/compare", json={"text": "문의"}).json()
         assert [row["status"] for row in compared["results"]] == ["ok", "generation_error"]
-    for complete, valid, expected in ((False, False, "incomplete"), (True, False, "invalid_format")):
+    for complete, valid, expected in (
+        (False, False, "incomplete"),
+        (True, False, "invalid_format"),
+    ):
         result = {"error": None, "generation_complete": complete, "output_format_valid": valid}
         assert api.answer_status(result) == expected
 
@@ -411,16 +512,30 @@ def test_api_status_tells_whether_the_answer_is_usable(service_stub, monkeypatch
 @pytest.mark.parametrize("status", ["failed", "cancelled"])
 def test_openai_failed_body_is_recorded_as_error_not_success(monkeypatch, status):
     def handler(request):
-        return httpx.Response(200, json={
-            "id": "resp_failed", "object": "response", "created_at": 1, "status": status,
-            "model": models.OPENAI_MODEL, "output": [],
-            "error": {"code": "server_error", "message": "private-detail"},
-        })
+        return httpx.Response(
+            200,
+            json={
+                "id": "resp_failed",
+                "object": "response",
+                "created_at": 1,
+                "status": status,
+                "model": models.OPENAI_MODEL,
+                "output": [],
+                "error": {"code": "server_error", "message": "private-detail"},
+            },
+        )
 
     monkeypatch.setenv("OPENAI_API_KEY", "lesson-test-placeholder")
-    monkeypatch.setattr(models, "OpenAI", lambda **kwargs: RealOpenAI(
-        api_key="lesson-test-placeholder", base_url="https://lesson.invalid/v1",
-        http_client=httpx.Client(transport=httpx.MockTransport(handler)), **kwargs))
+    monkeypatch.setattr(
+        models,
+        "OpenAI",
+        lambda **kwargs: RealOpenAI(
+            api_key="lesson-test-placeholder",
+            base_url="https://lesson.invalid/v1",
+            http_client=httpx.Client(transport=httpx.MockTransport(handler)),
+            **kwargs,
+        ),
+    )
     result = models.call_model("openai", "입력")
     assert result["error"] == "GenerationFailed"  # HTTP 200이어도 실패로 집계
     assert result["text"] == "" and result["generation_complete"] is False

@@ -32,22 +32,43 @@ def build_classifier(name, seed=SEED, folds=CALIBRATION_FOLDS):
         # train 전체로 학습한 SVC 하나에서 나오고, 보정기는 교차 검증 예측으로 학습한다.
         classifier = CalibratedClassifierCV(
             LinearSVC(class_weight="balanced", random_state=seed),
-            method="sigmoid", cv=folds, ensemble=False)
-        return (classifier, "tfidf_char_ngram+linear_svc",
-                "CalibratedClassifierCV(sigmoid).predict_proba",
-                {"classifier": "LinearSVC", "class_weight": "balanced",
-                 "probability_calibration": "sigmoid", "calibration_folds": folds,
-                 "calibration_split": "GroupKFold on train group_id", "ensemble": False})
+            method="sigmoid",
+            cv=folds,
+            ensemble=False,
+        )
+        return (
+            classifier,
+            "tfidf_char_ngram+linear_svc",
+            "CalibratedClassifierCV(sigmoid).predict_proba",
+            {
+                "classifier": "LinearSVC",
+                "class_weight": "balanced",
+                "probability_calibration": "sigmoid",
+                "calibration_folds": folds,
+                "calibration_split": "GroupKFold on train group_id",
+                "ensemble": False,
+            },
+        )
     if name == "multinomial_nb":
         # 조건부 독립 가정의 확률 모델. 기본 alpha(1.0)를 그대로 쓴다.
-        return (MultinomialNB(), "tfidf_char_ngram+multinomial_nb",
-                "MultinomialNB.predict_proba (uncalibrated)",
-                {"classifier": "MultinomialNB", "alpha": 1.0})
+        return (
+            MultinomialNB(),
+            "tfidf_char_ngram+multinomial_nb",
+            "MultinomialNB.predict_proba (uncalibrated)",
+            {"classifier": "MultinomialNB", "alpha": 1.0},
+        )
     raise ValueError("CLASSIFIER는 linear_svc 또는 multinomial_nb 중 하나입니다.")
 
 
-def train_classical(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, classifier_name=CLASSIFIER,
-                    run_name=None, ngram_range=NGRAM_RANGE, seed=SEED, folds=CALIBRATION_FOLDS):
+def train_classical(
+    data_dir=DATA_DIR,
+    learner_dir=LEARNER_DIR,
+    classifier_name=CLASSIFIER,
+    run_name=None,
+    ngram_range=NGRAM_RANGE,
+    seed=SEED,
+    folds=CALIBRATION_FOLDS,
+):
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
     run_name = run_name or classifier_name
     baseline_dir = learner_dir / "baseline"
@@ -57,11 +78,14 @@ def train_classical(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, classifier_name=
     baseline_config = json.loads((baseline_dir / "config.json").read_text(encoding="utf-8"))
     if baseline_config.get("data_sha256") != data_fingerprint(data_dir):
         raise RuntimeError(
-            "기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다. step03을 다시 실행하세요.")
+            "기준 모델이 현재 데이터와 다른 데이터로 학습됐습니다. step03을 다시 실행하세요."
+        )
     if baseline_config.get("ngram_range") != list(ngram_range):
         raise RuntimeError("기준 모델과 같은 n-gram 범위로 학습해야 분류기 차이만 비교됩니다.")
 
-    classifier, model_name, probability_source, extra = build_classifier(classifier_name, seed, folds)
+    classifier, model_name, probability_source, extra = build_classifier(
+        classifier_name, seed, folds
+    )
     fit_params = None
     if isinstance(classifier, CalibratedClassifierCV):
         # 보정용 교차 검증도 같은 group_id를 서로 다른 fold에 나누지 않는다.
@@ -77,11 +101,21 @@ def train_classical(data_dir=DATA_DIR, learner_dir=LEARNER_DIR, classifier_name=
         shutil.copy2(baseline_dir / "validation_metrics.json", output / "baseline_validation.json")
 
     return train_sklearn_run(
-        classifier, data_dir=data_dir, learner_dir=learner_dir, run_name=run_name,
-        kind="classical", method=model_name.replace("+", "_"), model_name=model_name,
-        probability_source=probability_source, ngram_range=ngram_range, seed=seed,
-        model_file="model.joblib", fit_params=fit_params,
-        extra_config={"model": model_name, **extra}, before_save=copy_baseline)
+        classifier,
+        data_dir=data_dir,
+        learner_dir=learner_dir,
+        run_name=run_name,
+        kind="classical",
+        method=model_name.replace("+", "_"),
+        model_name=model_name,
+        probability_source=probability_source,
+        ngram_range=ngram_range,
+        seed=seed,
+        model_file="model.joblib",
+        fit_params=fit_params,
+        extra_config={"model": model_name, **extra},
+        before_save=copy_baseline,
+    )
 
 
 def main():

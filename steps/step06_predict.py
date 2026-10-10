@@ -101,7 +101,9 @@ def load_classifier(learner_dir=LEARNER_DIR) -> dict:
         tested = json.loads(test_path.read_text(encoding="utf-8"))
         tested_run = (tested.get("selected_learner", run_learner), tested["selected_run"])
         if tested_run != (run_learner, selected["run_name"]):
-            raise ValueError("test 평가에 쓴 모델과 selected.json의 모델이 다릅니다. 선택을 되돌리세요.")
+            raise ValueError(
+                "test 평가에 쓴 모델과 selected.json의 모델이 다릅니다. 선택을 되돌리세요."
+            )
     return load_run(learner_dir.parent / run_learner / selected["run_name"])
 
 
