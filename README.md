@@ -105,6 +105,8 @@ uv run python steps/check_environment.py
 
 테스트: `uv run python -m pytest` (Windows 앱 제어 정책이 `pytest.exe`를 막는 경우가 있어 python을 거쳐 실행합니다)
 
+코드 형식: 저장소 폴더(`project2-github`)를 VS Code로 열면 Ruff 확장 설치 안내가 뜹니다. 설치하면 `.vscode/settings.json`에 따라 저장할 때 자동 정리됩니다(규칙은 `pyproject.toml`의 `[tool.ruff]`). VS Code를 쓰지 않으면 커밋 전에 `uv run ruff format`을 실행합니다.
+
 주요 설정은 각 파일 상단에 있습니다.
 
 | 설정 | 위치 | 설명 |

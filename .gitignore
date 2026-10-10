@@ -271,8 +271,8 @@ tensorboard/
 events.out.tfevents.*
 
 # 6. Local IDE settings
+# .vscode/settings.json과 extensions.json은 팀 공통 설정(Ruff 자동 정리, 인코딩)이라 커밋한다.
 .idea/
-.vscode/settings.json
 
 # 7. Operating system files
 .DS_Store
