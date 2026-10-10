@@ -73,16 +73,20 @@ uv run python steps/check_environment.py
 - 분할: 제공된 분할을 그대로 사용합니다. 같은 `group_id`는 같은 분할에만 있습니다.
 - 라벨 기준, 필드 설명, 가상 서비스 정책: [data/README.md](data/README.md)
 
-`steps/lesson_settings.py`의 `DATASET`(inquiries 또는 documents)이 사용할 폴더를 정합니다.
+`steps/lesson_settings.py`의 `DATASET`(inquiries 또는 documents)과 `DATA_LEVEL`(basic 또는 advanced)이 사용할 폴더를 정합니다.
 
-| 파일 (`data/<DATASET>/`) | 수량 | 용도 |
-|---|---|---|
-| labels.json | 라벨 3개 | 라벨 설명과 번호 순서 |
-| train.csv | 360행 | 분류 모델 학습 |
-| validation.csv | 120행 | 분류 모델 비교·선정 |
-| test.csv | 120행 | 선정한 분류기 최종 평가 (1회) |
-| generation_development.jsonl | 15건 | 생성 흐름·프롬프트 개발 |
-| generation_eval.jsonl | 24건 | 로컬/상용 생성 모델 최종 비교 |
+| 파일 | 기본 `data/<DATASET>/` | 심화 `data/advanced/<DATASET>/` | 용도 |
+|---|---|---|---|
+| labels.json | 라벨 3개 | 라벨 3개 | 라벨 설명과 번호 순서 |
+| train.csv | 360행 | 180행 | 분류 모델 학습 |
+| validation.csv | 120행 | 60행 | 분류 모델 비교·선정 |
+| test.csv | 120행 | 60행 | 선정한 분류기 최종 평가 (1회) |
+| generation_development.jsonl | 15건 | 6건 | 생성 흐름·프롬프트 개발 |
+| generation_eval.jsonl | 24건 | 12건 | 로컬/상용 생성 모델 최종 비교 |
+
+- 심화 데이터([data/advanced/README.md](data/advanced/README.md)): 기본 데이터 뒤 추가 실험용. 참고 기록이 섞인 긴 사례(최대 약 900토큰)가 많고, 고객 문의는 "새로 접수한 문의", 문서는 "이번에 전달하는 본문"이 라벨 기준입니다.
+- `group_id` 규칙이 다릅니다. 기본은 같은 묶음의 두 문장이 **같은 라벨**, 심화는 같은 묶음의 세 사례가 **서로 다른 라벨**입니다. step02가 `DATA_LEVEL`에 맞는 규칙으로 검사합니다.
+- 결과 폴더도 나뉩니다. 기본은 `artifacts/step_by_step/<DATASET>/`, 심화는 `artifacts/step_by_step/advanced/<DATASET>/`입니다. 두 데이터의 점수는 서로 비교하지 않습니다.
 
 ## 실행 순서
 
@@ -111,7 +115,7 @@ uv run python steps/check_environment.py
 
 | 설정 | 위치 | 설명 |
 |---|---|---|
-| `DATASET`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 사전학습 모델 ID |
+| `DATASET`, `DATA_LEVEL`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 기본/심화 데이터, 사전학습 모델 ID |
 | `LEARNER` | .env (각자) | 내 실험 결과 폴더 이름(예: `learner02`). 비우면 `learner01` |
 | `CLASSIFIER` | steps/step03b_train_classical.py | `"linear_svc"` 또는 `"multinomial_nb"`. 결과 폴더 이름도 같음. LinearSVC는 확률을 주지 않아 train 안에서 group_id로 나눈 교차 검증으로 시그모이드 보정 |
 | `RUN_NAME`, `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 실험 이름과 학습 설정 (실험마다 RUN_NAME을 새로) |

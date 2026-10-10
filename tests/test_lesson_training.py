@@ -248,6 +248,27 @@ def test_data_checks_catch_group_overlap(tmp_path):
         check_splits({"train": train, "validation": validation}, labels)
 
 
+def test_group_label_rule_follows_basic_and_advanced_data(tmp_path):
+    data_dir, _, labels = make_local_inputs(tmp_path)
+    train = read_rows(data_dir / "train.csv")
+    # 기본 데이터: 같은 묶음은 같은 라벨. 심화 데이터: 같은 묶음은 서로 다른 라벨.
+    same = [dict(row, group_id="g-same") if row["label"] == "shipping" else row for row in train]
+    # 행 순서는 shipping 4개, refund 4개, account 4개다. 0, 4, 8번은 라벨이 모두 다르다.
+    mixed = [
+        dict(row, group_id="g-mixed") if index in (0, 4, 8) else row
+        for index, row in enumerate(train)
+    ]
+    check_splits({"train": same}, labels, group_label_rule="same")
+    with pytest.raises(ValueError, match="서로 다른 라벨"):
+        check_splits({"train": mixed}, labels, group_label_rule="same")
+    distinct = [dict(row, group_id=f"g-{index % 4}") for index, row in enumerate(train)]
+    check_splits({"train": distinct}, labels, group_label_rule="distinct")
+    with pytest.raises(ValueError, match="같은 라벨이 두 번"):
+        check_splits({"train": same}, labels, group_label_rule="distinct")
+    with pytest.raises(ValueError, match="group_label_rule"):
+        check_splits({"train": train}, labels, group_label_rule="other")
+
+
 def test_preview_does_not_consume_random_state_or_modify_inputs(tmp_path, capsys):
     import copy
     import random

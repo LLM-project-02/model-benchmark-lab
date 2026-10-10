@@ -17,14 +17,13 @@ from classification_evaluation import (
     save_errors,
     save_evaluation,
 )
-from lesson_settings import DATASET, LEARNER_DIR, ROOT
+from lesson_settings import DATA_DIR, LEARNER_DIR
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
 
-DATA_DIR = ROOT / "data" / DATASET
 NGRAM_RANGE = (2, 5)  # 2~5글자 문자 조각을 특징으로 사용
 SEED = 42  # 재현을 위한 난수 고정값
 

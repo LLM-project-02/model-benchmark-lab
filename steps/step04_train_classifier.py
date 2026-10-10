@@ -15,7 +15,7 @@ import numpy as np
 import torch
 from classification_efficiency import cpu_rss_mib, measure_saved_run, measurement_environment
 from classification_evaluation import evaluation_report, save_evaluation
-from lesson_settings import CLASSIFIER_MODEL, DATASET, LEARNER_DIR, ROOT
+from lesson_settings import CLASSIFIER_MODEL, DATA_DIR, LEARNER_DIR
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
 from step03_train_baseline import classification_scores, save_errors
@@ -24,7 +24,6 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, Data
 
 # 두 번째 실험은 RUN_NAME과 LEARNING_RATE를 함께 바꾼다.
 # 다른 조건을 고정해야 학습률에 따른 차이를 비교할 수 있다.
-DATA_DIR = ROOT / "data" / DATASET
 RUN_NAME = "lr2e5"  # 결과 폴더 이름 (실험마다 다르게)
 LEARNING_RATE = 2e-5  # 한 번 갱신할 때 가중치를 바꾸는 크기
 EPOCHS = 3  # train 전체를 몇 번 반복할지

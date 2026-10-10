@@ -8,14 +8,19 @@ import json
 import unicodedata
 from collections import Counter
 
-from lesson_settings import DATASET, ROOT
+from lesson_settings import DATA_DIR, DATA_LEVEL
 from step01_read_data import read_labels, read_rows
 
-DATA_DIR = ROOT / "data" / DATASET
 REQUIRED_COLUMNS = {"id", "text", "label", "group_id", "source"}  # 모든 행에 있어야 하는 열
+# 같은 group_id 묶음 안의 라벨 규칙은 데이터 README를 따른다.
+# 기본: 같은 상황을 다르게 표현한 문장이라 라벨이 같다(same).
+# 심화: 같은 소재에서 요청이나 목적이 다른 사례라 라벨이 모두 다르다(distinct).
+GROUP_LABEL_RULE = "same" if DATA_LEVEL == "basic" else "distinct"
 
 
-def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
+def check_splits(
+    splits: dict[str, list[dict]], labels: list[str], group_label_rule=GROUP_LABEL_RULE
+) -> dict:
     seen = {
         "id": set(),
         "group_id": set(),
@@ -43,11 +48,17 @@ def check_splits(splits: dict[str, list[dict]], labels: list[str]) -> dict:
         }
         if len(current["id"]) != len(rows):  # 같은 분할 안 id 중복
             raise ValueError(f"{split_name}: 중복된 id가 있습니다.")
-        group_labels = {}  # group_id -> 그 묶음에 나온 라벨 집합
+        group_labels = {}  # group_id -> 그 묶음에 나온 라벨 목록
         for row in rows:
-            group_labels.setdefault(row["group_id"], set()).add(row["label"])
-        if any(len(values) != 1 for values in group_labels.values()):
-            raise ValueError(f"{split_name}: 한 상황 묶음에 서로 다른 라벨이 있습니다.")
+            group_labels.setdefault(row["group_id"], []).append(row["label"])
+        if group_label_rule == "same":
+            if any(len(set(values)) != 1 for values in group_labels.values()):
+                raise ValueError(f"{split_name}: 한 상황 묶음에 서로 다른 라벨이 있습니다.")
+        elif group_label_rule == "distinct":
+            if any(len(set(values)) != len(values) for values in group_labels.values()):
+                raise ValueError(f"{split_name}: 한 묶음에 같은 라벨이 두 번 이상 있습니다.")
+        else:
+            raise ValueError('group_label_rule은 "same" 또는 "distinct"입니다.')
         for key, previous in seen.items():  # train과 validation 사이 데이터 누수 검사
             overlap = previous & current[key]  # 교집합: 두 분할에 모두 있는 값
             if overlap:

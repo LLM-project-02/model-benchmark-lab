@@ -10,9 +10,8 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from lesson_settings import DATASET, ROOT
+from lesson_settings import DATA_DIR
 
-DATA_DIR = ROOT / "data" / DATASET  # 예: project2-kit/data/inquiries
 PREVIEW_ROWS = 3  # 화면에 미리 보여 줄 행 수
 
 

@@ -12,15 +12,23 @@ load_dotenv(ROOT / ".env", override=False)  # .env 값을 환경 변수로 읽�
 
 # 문의는 inquiries, 문서는 documents입니다. 한 주제를 골라 끝까지 사용합니다.
 DATASET = "documents"
+# 기본 데이터는 basic(data/), 발제문 심화 데이터는 advanced(data/advanced/)입니다.
+# 결과 폴더도 따로 저장하므로 두 데이터의 실험이 섞이지 않습니다.
+DATA_LEVEL = "basic"
 # 팀원별 결과 폴더 이름. 각자 .env에 LEARNER=learner02처럼 적는다(.env는 커밋되지 않음).
 # 이 파일을 고치지 않으므로 팀원끼리 설정이 부딪히지 않는다. 비어 있으면 learner01을 쓴다.
 LEARNER = os.getenv("LEARNER", "").strip() or "learner01"
 CLASSIFIER_MODEL = "klue/bert-base"  # Hugging Face에서 받는 한국어 BERT
 
+if DATA_LEVEL not in ("basic", "advanced"):
+    raise ValueError('DATA_LEVEL은 "basic" 또는 "advanced"입니다.')
+# 심화 데이터는 data/advanced/<주제>, 결과는 artifacts/step_by_step/advanced/<주제>에 둔다.
+LEVEL_PATH = () if DATA_LEVEL == "basic" else ("advanced",)
+
 # 주제와 학습자별 폴더에 학습 결과를 보관합니다.
-OUTPUT_ROOT = ROOT / "artifacts" / "step_by_step"
+OUTPUT_ROOT = ROOT.joinpath("artifacts", "step_by_step", *LEVEL_PATH)
 LEARNER_DIR = OUTPUT_ROOT / DATASET / LEARNER
-DATA_DIR = ROOT / "data" / DATASET
+DATA_DIR = ROOT.joinpath("data", *LEVEL_PATH, DATASET)
 DEVELOPMENT_INPUT = DATA_DIR / "generation_development.jsonl"  # 생성 흐름 개발용 입력
 
 # OpenAI 키는 읽어서 클라이언트에 전달하며 화면이나 결과 파일에 출력하지 않습니다.
