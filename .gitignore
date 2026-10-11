@@ -273,6 +273,8 @@ events.out.tfevents.*
 # 6. Local IDE settings
 # .vscode/settings.json과 extensions.json은 팀 공통 설정(Ruff 자동 정리, 인코딩)이라 커밋한다.
 .idea/
+# Claude Code 개인 지침 파일 (각자 PC에만 둔다)
+CLAUDE.local.md
 
 # 7. Operating system files
 .DS_Store
