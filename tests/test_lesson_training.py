@@ -20,8 +20,7 @@ sys.path.insert(0, str(STEPS.parent / "scripts"))
 
 from step01_read_data import read_rows
 from step02_check_data import check_splits
-from step03_train_baseline import train_baseline
-from step03b_train_classical import train_classical
+from step03_train_baseline import train_baseline, train_classical
 from step04_train_classifier import (
     TextDataset,
     preview_training_batch,

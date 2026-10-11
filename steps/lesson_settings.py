@@ -20,15 +20,15 @@ DATA_LEVEL = "basic"
 LEARNER = os.getenv("LEARNER", "").strip() or "learner01"
 CLASSIFIER_MODEL = "klue/bert-base"  # Hugging Face에서 받는 한국어 BERT
 
-if DATA_LEVEL not in ("basic", "advanced"):
+if DATA_LEVEL not in ("basic", "advanced"):  # 오타를 바로 알려 준다
     raise ValueError('DATA_LEVEL은 "basic" 또는 "advanced"입니다.')
 # 심화 데이터는 data/advanced/<주제>, 결과는 artifacts/step_by_step/advanced/<주제>에 둔다.
-LEVEL_PATH = () if DATA_LEVEL == "basic" else ("advanced",)
+LEVEL_PATH = () if DATA_LEVEL == "basic" else ("advanced",)  # 경로 중간에 끼울 폴더
 
 # 주제와 학습자별 폴더에 학습 결과를 보관합니다.
-OUTPUT_ROOT = ROOT.joinpath("artifacts", "step_by_step", *LEVEL_PATH)
-LEARNER_DIR = OUTPUT_ROOT / DATASET / LEARNER
-DATA_DIR = ROOT.joinpath("data", *LEVEL_PATH, DATASET)
+OUTPUT_ROOT = ROOT.joinpath("artifacts", "step_by_step", *LEVEL_PATH)  # 결과 최상위 폴더
+LEARNER_DIR = OUTPUT_ROOT / DATASET / LEARNER  # 내 실험 결과 폴더
+DATA_DIR = ROOT.joinpath("data", *LEVEL_PATH, DATASET)  # 읽을 데이터 폴더
 DEVELOPMENT_INPUT = DATA_DIR / "generation_development.jsonl"  # 생성 흐름 개발용 입력
 
 # OpenAI 키는 읽어서 클라이언트에 전달하며 화면이나 결과 파일에 출력하지 않습니다.

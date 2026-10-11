@@ -21,7 +21,7 @@ from experiment_storage import (
 from lesson_settings import LEARNER_DIR
 from step06_predict import run_kind, weights_path
 
-# step03 기준 모델은 "baseline", step03b·step04 실험은 RUN_NAME으로 적는다.
+# step03 기준 모델은 "baseline", step03 선택 후보와 step04 실험은 RUN_NAME으로 적는다.
 # 다른 팀원의 실험은 "learner02/lr5e5"처럼 적는다.
 # 동점이면 앞에 적은 후보를 고른다. 점수가 같을 때 쓸 모델(예: 더 가볍고 빠른 모델)을 앞에 둔다.
 RUN_NAMES = None  # None이면 이 LEARNER의 완료된 실험을 이름순으로 비교. 목록을 명시해도 된다.

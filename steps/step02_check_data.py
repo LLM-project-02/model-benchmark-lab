@@ -50,14 +50,14 @@ def check_splits(
             raise ValueError(f"{split_name}: 중복된 id가 있습니다.")
         group_labels = {}  # group_id -> 그 묶음에 나온 라벨 목록
         for row in rows:
-            group_labels.setdefault(row["group_id"], []).append(row["label"])
-        if group_label_rule == "same":
+            group_labels.setdefault(row["group_id"], []).append(row["label"])  # 묶음별로 모은다
+        if group_label_rule == "same":  # 기본 데이터: 묶음 안 라벨이 한 종류여야 한다
             if any(len(set(values)) != 1 for values in group_labels.values()):
                 raise ValueError(f"{split_name}: 한 상황 묶음에 서로 다른 라벨이 있습니다.")
-        elif group_label_rule == "distinct":
+        elif group_label_rule == "distinct":  # 심화 데이터: 묶음 안 라벨이 겹치지 않아야 한다
             if any(len(set(values)) != len(values) for values in group_labels.values()):
                 raise ValueError(f"{split_name}: 한 묶음에 같은 라벨이 두 번 이상 있습니다.")
-        else:
+        else:  # 설정 오타
             raise ValueError('group_label_rule은 "same" 또는 "distinct"입니다.')
         for key, previous in seen.items():  # train과 validation 사이 데이터 누수 검사
             overlap = previous & current[key]  # 교집합: 두 분할에 모두 있는 값

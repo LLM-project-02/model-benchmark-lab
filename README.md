@@ -96,8 +96,7 @@ uv run python steps/check_environment.py
 |---|---|
 | step01_read_data.py | 데이터와 라벨 읽기 |
 | step02_check_data.py | 빈 값, 라벨, 분할 간 중복 검사 |
-| step03_train_baseline.py | TF-IDF + 로지스틱 회귀 학습·검증 |
-| step03b_train_classical.py | (선택) 같은 TF-IDF로 LinearSVC·MultinomialNB 학습·검증. step03 다음에 실행 |
+| step03_train_baseline.py | TF-IDF + 로지스틱 회귀 학습·검증. `--classifier linear_svc` 또는 `multinomial_nb`로 선택 후보도 학습 (기준 모델 다음에 실행) |
 | step04_train_classifier.py | 사전학습 모델 파인튜닝·검증 (GPU) |
 | step05_select_model.py | 기준 모델과 사전학습 모델을 같은 validation 점수로 비교·선택, 비교표 작성 |
 | step06_predict.py | 저장한 분류기를 다시 불러와 예측 |
@@ -117,10 +116,10 @@ uv run python steps/check_environment.py
 |---|---|---|
 | `DATASET`, `DATA_LEVEL`, `CLASSIFIER_MODEL` | steps/lesson_settings.py | 주제(팀 공통), 기본/심화 데이터, 사전학습 모델 ID |
 | `LEARNER` | .env (각자) | 내 실험 결과 폴더 이름(예: `learner02`). 비우면 `learner01` |
-| `CLASSIFIER` | steps/step03b_train_classical.py | `"linear_svc"` 또는 `"multinomial_nb"` (`--classifier`로도 지정). LinearSVC는 확률을 주지 않아 train 안에서 group_id로 나눈 교차 검증으로 시그모이드 보정 |
-| `RUN_NAME` | steps/step03_train_baseline.py, steps/step03b_train_classical.py, steps/step04_train_classifier.py | 기본 None: 모델명·주요 설정·한국 시각으로 자동 생성. `--run-name`으로 명시 가능 |
+| `CLASSIFIER` | steps/step03_train_baseline.py | 기본 `"logistic_regression"`(기준 모델). `"linear_svc"`, `"multinomial_nb"`는 선택 후보 (`--classifier`로도 지정). LinearSVC는 확률을 주지 않아 train 안에서 group_id로 나눈 교차 검증으로 시그모이드 보정 |
+| `RUN_NAME` | steps/step03_train_baseline.py, steps/step04_train_classifier.py | 기본 None: 모델명·주요 설정·한국 시각으로 자동 생성. `--run-name`으로 명시 가능 |
 | `LEARNING_RATE` 등 | steps/step04_train_classifier.py | 기존 학습 설정 유지 |
-| `BASELINE_RUN` | steps/step03b_train_classical.py, steps/step04_train_classifier.py | 최신 완료 LR 포인터 사용, 없으면 기존 baseline/. `--baseline-run`으로 명시 가능 |
+| `BASELINE_RUN` | steps/step03_train_baseline.py, steps/step04_train_classifier.py | 최신 완료 LR 포인터 사용, 없으면 기존 baseline/. `--baseline-run`으로 명시 가능 |
 | `RUN_NAMES` | steps/step05_select_model.py | 기본 None: 완료된 실험 자동 탐색. `--runs`로 후보·동점 우선순위 명시. 다른 팀원은 learner/run 형식 |
 | `INPUT_PATH`, `OUTPUT_NAME` | steps/step09_compare.py | 개발 입력 → 최종 비교 입력 전환, 결과 폴더 이름 |
 | `DEFAULT_PROVIDER` | steps/step10_serve_api.py | 서비스 기본 생성 모델. 비교 후 선정한 제공자로 변경 |
