@@ -5,6 +5,10 @@
 
 > 숫자는 시드가 고정돼 있어 거의 같게 나옵니다. 생성 모델의 답변 문장과 응답 시간은 실행할 때마다 조금씩 달라집니다.
 
+현재 분류 학습은 실행 이름을 자동 생성하고 비교마다 별도 이력을 남깁니다.
+이 문서의 `baseline`, `lr2e5` 이름과 GPU 수치는 이전 실행 기준 기록입니다.
+새 경로·명령·호환성은 [실험 저장 문서](docs/EXPERIMENT_STORAGE.md)를 참고하세요.
+
 ## 🗺️ 전체 흐름
 
 ```mermaid
@@ -94,7 +98,7 @@ uv run python steps/step02_check_data.py
 uv run python steps/step03_train_baseline.py
 uv run python steps/step04_train_classifier.py
 uv run python steps/step05_select_model.py
-Get-Content artifacts/step_by_step/inquiries/learner01/model_comparison.csv
+Get-Content artifacts/step_by_step/inquiries/learner01/latest_comparison.json
 uv run python steps/step06_predict.py
 ```
 
@@ -111,6 +115,9 @@ uv run python steps/step06_predict.py
 - **재로드 일치:** 저장한 모델을 서비스와 같은 방식(CPU, 한 문장씩)으로 다시 불러와도 예측이 같은지 확인한 값입니다.
 - **step06 결과:** 예시 문장을 `shipping`(확신도 0.98)으로 예측하고, `"kind": "transformer"`, `"device": "cpu"`가 표시됩니다.
 - **선정 방식:** step05의 `RUN_NAMES`에 적은 후보를 validation macro F1로 고르고, 동점이면 앞에 적은 후보를 고릅니다. 베이스라인이 선택돼도 서비스와 최종 평가에 그대로 쓸 수 있습니다.
+- `RUN_NAME=None`이면 새 LR/BERT 실험 이름을 자동 생성합니다. 이름을 고정하려면 `--run-name <이름>`을 사용합니다.
+- `RUN_NAMES=None`이면 완료된 실험을 자동 탐색합니다. 특정 후보는 `--runs <실험1> <실험2>`로 지정합니다.
+- 새 비교 원본은 `classification_comparisons/<비교 ID>/`에 저장됩니다. `latest_comparison.json`에서 경로를 확인합니다.
 
 ## 4. 🔗 생성 모델 연결 (STEP 5)
 
@@ -241,9 +248,10 @@ Remove-Item -Recurse artifacts
 
 | 파일 | 내용 |
 |---|---|
-| `baseline/`, `lr2e5/` | 설정, epoch 기록, validation 지표·오분류, `training_summary.json`(시간·메모리·재로드) |
-| `model_comparison.csv` | 분류 후보 비교표 |
-| `selected.json` | 선택한 모델 |
+| `<RUN_NAME>/` (이전 baseline/, lr2e5/도 지원) | 설정·메타데이터, epoch 기록, validation 지표·오분류·효율 |
+| `classification_comparisons/<비교 ID>/model_comparison.csv` | 실행마다 보존되는 분류 후보 비교표 |
+| `latest_comparison.json`, `latest_baseline.json` | 최신 비교/LR 실행 포인터 |
+| `selected.json`, `selection_history/<선택 ID>.json` | 현재 선택과 이전 선택 이력 |
 | `comparisons/<이름>/results.jsonl` | 생성 비교 원본 응답 전체 |
 | `comparisons/<이름>/human_scores.csv` | 사람 채점표 |
 | `comparisons/<이름>/summary.json` | 오류율, 응답 시간, 토큰, 비용 요약 |

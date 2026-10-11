@@ -371,6 +371,7 @@ def test_classical_models_compete_and_keep_logistic_regression_as_baseline(train
 
 
 def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors(trained_runs):
+    # 기존 학습 fixture로 상세 보고·최고 epoch·오류 비교·최종 평가 연결을 함께 확인한다.
     data_dir, learner_dir, labels, _, selection = trained_runs
     for name in ("baseline", "run-a", "run-b"):
         run = learner_dir / name
@@ -386,6 +387,7 @@ def test_extended_evaluation_preserves_selected_epoch_and_reports_lr_bert_errors
         assert summary["efficiency"]["model_size_bytes"] > 0
         assert summary["reloaded_predictions_match"] is True
         if name != "baseline":
+            # 상세 확률 보고도 마지막 epoch가 아닌 최고 Validation 점수에 대응해야 한다.
             epochs = [
                 json.loads(line)
                 for line in (run / "epochs.jsonl").read_text(encoding="utf-8").splitlines()

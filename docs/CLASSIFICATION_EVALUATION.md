@@ -1,5 +1,8 @@
 # 분류 평가·비교 사용법
 
+실험 저장 방식이 확장되었습니다. 새 학습 이름·비교 원본 폴더·선택 이력의 현재 규칙은
+[실험 저장 및 이력 관리](EXPERIMENT_STORAGE.md)를 참고하세요.
+
 고객 문의(`inquiries`, A조)와 문서(`documents`, B조)는 같은 평가 코드와 저장 구조를 사용한다.
 각 주제의 기존 라벨 순서·원문·분할을 그대로 사용하며, **서로 다른 데이터셋 점수로 모델 우열을 정하지 않는다.**
 아래 수치 정의와 프로토콜은 실험 결과를 해석하기 위한 것이다. 예시 성능 수치는 넣지 않는다.
@@ -128,8 +131,9 @@ CPU peak는 샘플링하지 않았으므로 `cpu_peak_memory_mib: null`과 이�
 
 ```text
 <LEARNER>/
-  baseline/ 또는 <RUN_NAME>/
+  <RUN_NAME>/ (이전 baseline/도 지원)
     config.json                         # 기존 설정·데이터 파일 지문
+    run_metadata.json                   # RUN ID·시각·모델·하이퍼파라미터·코드 지문
     training_summary.json               # 기존 키 + efficiency
     epochs.jsonl                        # BERT 기존 epoch 기록
     validation_metrics.json             # 기존 지표 키 + 상세 보고·전체 예측·효율·오류 분석
@@ -139,13 +143,19 @@ CPU peak는 샘플링하지 않았으므로 `cpu_peak_memory_mib: null`과 이�
     validation_confusion_matrix.png
     validation_confusion_matrix_normalized.png
     baseline.joblib 또는 checkpoint/     # 기존 가중치, Git 제외
-  model_comparison.json                 # 전체 후보·쌍별 차이·오류 패턴
-  model_comparison.csv                  # 기존 열 + 확장 지표·효율·확률 지표
-  model_comparison.md                   # README/Notion/발표자료용 표와 주의사항
-  model_comparison.png                  # 실측 Accuracy·Macro/Weighted F1·Balanced Accuracy
-  model_differences.csv                 # B-A, 클래스별 F1 차이는 JSON 셀
-  model_error_comparison.csv            # 두 모델의 공동/서로 다른 오류
+  classification_comparisons/<비교 ID>/ # 이하 비교 결과는 실행마다 새 폴더에 보관
+    comparison_metadata.json           # 비교 ID·시각·RUN ID·데이터 지문·완료 여부
+    selected.json                      # 그 비교 당시 선택 스냅샷
+    model_comparison.json              # 전체 후보·설정 스냅샷·쌍별 차이·오류 패턴
+    model_comparison.csv                # 기존 열 + 확장 지표·효율·확률 지표
+    model_comparison.md                 # README/Notion/발표자료용 표와 주의사항
+    model_comparison.png                # 실측 Accuracy·Macro/Weighted F1·Balanced Accuracy
+    model_differences.csv               # B-A, 클래스별 F1 차이는 JSON 셀
+    model_error_comparison.csv          # 두 모델의 공동/서로 다른 오류
   selected.json                        # 기존 선정 계약 유지
+  selection_history/<선택 ID>.json      # 이전/현재 선택 이력
+  latest_comparison.json                # 최신 비교 포인터, 이전 루트 비교 파일은 보존
+  latest_baseline.json                  # 최신 완료 LR 포인터
   test_metrics.json                    # 기존 classifier/baseline 구조 + 각 상세 보고, 선정 잠금
   test_errors.csv                      # 선정 모델 오류, 기존 열 유지
   test_classifier_<위 6종 결과>          # metrics.json, predictions.csv, errors.csv,
@@ -170,8 +180,9 @@ uv run python steps/step05_select_model.py
 uv run python -m pytest
 ```
 
-step04는 기존 GPU 설정·checkpoint 선정 흐름을 그대로 사용한다. 새 실험은 RUN_NAME을 바꾸고
-step05의 RUN_NAMES에 넣는다. **모델과 설정을 확정한 후에만** 아래 명령을 한 번 실행한다.
+step04는 기존 GPU 설정·checkpoint 선정 흐름을 그대로 사용한다. 기본 RUN_NAME은 자동 생성된다.
+step05는 기본적으로 완료된 실험을 탐색하며 `--runs`로 후보를 지정할 수 있다.
+**모델과 설정을 확정한 후에만** 아래 명령을 한 번 실행한다.
 
 ```bash
 uv run python steps/step11_evaluate_final.py

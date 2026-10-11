@@ -12,6 +12,7 @@ from pathlib import Path
 import joblib
 from classification_efficiency import cpu_rss_mib, measure_loaded_bundle
 from classification_evaluation import evaluation_report, save_evaluation
+from experiment_storage import atomic_json, selection_lock
 from lesson_settings import DATA_DIR, LEARNER_DIR
 from step01_read_data import data_fingerprint, read_labels, read_rows
 from step02_check_data import check_splits
@@ -19,7 +20,7 @@ from step03_train_baseline import save_errors
 from step06_predict import SKLEARN_FILES, load_classifier
 
 
-def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
+def _evaluate_final(data_dir, learner_dir):
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
     metrics_path = learner_dir / "test_metrics.json"
     if metrics_path.exists():  # test 평가는 한 번만 한다
@@ -97,6 +98,7 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
     # 어떤 모델을 어떤 데이터로 평가했는지 남긴다. step05·step06이 이 기록으로 선택을 잠근다.
     report = {
         "selected_learner": bundle["identity"]["learner"],
+        # 경로뿐 아니라 RUN·선택 ID를 남겨 평가 당시 모델을 추적한다.
         "selected_run": bundle["run_dir"].name,
         "selected_kind": bundle["kind"],
         "split": "test",
@@ -104,8 +106,14 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
         "test_sha256": hashlib.sha256((data_dir / "test.csv").read_bytes()).hexdigest(),
         "classifier": classifier_report,
         "baseline": baseline_report,
+        "selected_run_id": bundle["identity"]["run_id"],
+        "selection_id": json.loads((learner_dir / "selected.json").read_text(encoding="utf-8")).get(
+            "selection_id"
+        ),
+        "dataset": data_dir.name,
     }
-    metrics_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    # 잠금 기준 보고서를 먼저 원자적으로 저장한다. 후속 시각화 실패도 재평가를 허용하지 않는다.
+    atomic_json(metrics_path, report)
     save_errors(
         learner_dir / "test_errors.csv",
         test_rows,
@@ -123,6 +131,12 @@ def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
     print("기준 모델 test macro F1:", round(report["baseline"]["macro_f1"], 4))
     print("저장 위치:", metrics_path)
     return report
+
+
+def evaluate_final(data_dir=DATA_DIR, learner_dir=LEARNER_DIR):
+    # 선택 확인부터 Test 보고 저장까지 step05와 동시에 실행되지 않도록 보호한다.
+    with selection_lock(learner_dir):
+        return _evaluate_final(data_dir, learner_dir)
 
 
 def main():
