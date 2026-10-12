@@ -1,0 +1,841 @@
+﻿id,text,label,group_id,source
+comments-validation-00001,게임기 저작권 불법인건 알지?,none,comments-c2e6969fe184-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00002,머리좀 저렇게 안했음 좋겠음 무슨 상투말은것도 아니구 왤케 꼴뵈기싫든지,offensive,comments-c2e6969fe184-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00003,솔직지 폐미 종나 묻었네,hate,comments-c2e6969fe184-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00004,쌈디 다시나오게해주세요..지금 추석특집재방하는데 넘착하고 자상하고..쌈디랑나래랑썸도 잼나고..진짜 쌈디아빠닮아서 자상한듯..쌈디 꼭볼수잇게해주세요..ㅜ,none,comments-c2e6969fe184-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00005,전엔 이상한 옷입고 나오더니 이번엔 음식에 장난하고 자빠졌네 얘 왜이러냐,hate,comments-c2e6969fe184-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00006,ubd 안마 제이튠 주식 먹튀 ㅆㄹㄱ,hate,comments-819d19c76f5a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00007,김태희이년도 남자보는눈깔은없어! 이시언급이랑 결혼이라니!,hate,comments-819d19c76f5a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00008,대한민국 3대 도둑놈 1위 조세형 2위 간장게장 3위 비,none,comments-819d19c76f5a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00009,비는 아내가 만삭이든 말든 계속 작품활동 하면서 밖으로 나도는데 김태희는 임신 출산 육아하느라 꼼짝을 할 수가 없나보네. 아예 두문불출 여배우의 경력단절을 제대로 보여주는 예시네 ㅠㅠ 아 진짜 불공평해,offensive,comments-819d19c76f5a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00010,애낳는 기계니 징그러,hate,comments-819d19c76f5a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00011,여러분 현재 한국이 적화통일 당하기 일촉즉발입니다 이것은 하나님을 잊은 한국에 임하는 하나님의 벌입니다 이제 모두 깨어나 회개하고 예수님믿으셔서 웃으며 예수님 만납시다! 천국에서 만나요!,none,comments-819d19c76f5a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00012,요즘 남자들 너무 불쌍해..돈 있어도 애첩질도 제대루 못하구..,hate,comments-819d19c76f5a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00013,자전차왕 엄복동이다!!!,none,comments-819d19c76f5a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00014,퇴물배우 정지훈이나 외모가 지나치게 과대포장된 원조 발연기자 김태희 아줌마,offensive,comments-819d19c76f5a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00015,ㅋ전현무가 작업걸었구만.... ㅋ 미안하게 될꺼에요,offensive,comments-4e1c35a28c90-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00016,둘다 극혐~~~ 바람~~~~~~~~바람~~~바람~~~~,hate,comments-4e1c35a28c90-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00017,한녀들원래 부러우면 이렇게댓글다는거냐?ㅋㅋ,hate,comments-4e1c35a28c90-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00018,"한혜진과 헤어진지 얼마나 됐다고,그새 열애를~~ㅋㅋㅋ",offensive,comments-4e1c35a28c90-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00019,tvn은 진짜 또 걸리냐 ㅋㅋㅋ 불쌍하다..,none,comments-130b54a1110f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00020,돈으로 해결하겠지. 또! 이사람 예전에도 음주운전 걸린적 있었던거 같은데?아님 말구음주운전 두번이상은 그냥 연예계 퇴출시키자..말고도 연기잘하는 사람 아주많다,offensive,comments-130b54a1110f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00021,암암리에 활동 많이했네 잘가셔~~,offensive,comments-130b54a1110f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00022,"얘보다는 걔가 더 심하지.. 이서원? 성추행에 흉기협박. 경찰조사 진행중인것 숨기고 음악방송 진행, 드라마 촬영 진행. 드라마 방영직전에 기사화되서 하차. 재촬영해야함..물론 음주운전이 잘한건 아니지만",offensive,comments-130b54a1110f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00023,연기안한들 뭔걱정,none,comments-130b54a1110f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00024,요즘 시작도 전에 드라마 초치는 ㅅㄲ들이 많네..,offensive,comments-130b54a1110f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00025,또 어묵 쳐먹었나요?,hate,comments-89fb915d462e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00026,비만은 창피한거에요 자기관리를 못하는거니까요 부끄러운줄 아세요,hate,comments-89fb915d462e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00027,이영자 전참시 안한다하지 않았나? 하여간 안봄. 밥블레스유 ❤️❤️,offensive,comments-89fb915d462e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00028,지방흡입 하고 다이어트로 살뺐다고 물건 팔다 걸려서 대국민 사과 눈물쑈 하던 분이 개념인이 된 이 세상,offensive,comments-89fb915d462e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00029,쳐먹다가 사고쳐놓고 또쳐먹냐,hate,comments-89fb915d462e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00030,김건모랑 똑같네^^,offensive,comments-43b15c5403e2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00031,난 슈링크하는데도 넘 고통스러웠음.그이후 레이저 시술은 쳐다도 안봄.,none,comments-43b15c5403e2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00032,마취크림 바르는데...수면마취까지는 필요없어요,none,comments-43b15c5403e2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00033,아니라잖아.. 좀 믿어라 인간들아.. 싫으면 그냥 니 인생 살고 쫌..,hate,comments-43b15c5403e2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00034,저도 피부과휴터치료 받고있는데 수면치료받고해요 처음에 마취크림바르고 시도하고 통증이 너무심해서 수면치료로 했어요 흉터가깊으면 치료과정통증도 더 심해서 마취크림으론 왠만해서 못참아요ㅠㅠ,none,comments-43b15c5403e2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00035,"조사하겠지, 그만 기사화해라.",none,comments-43b15c5403e2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00036,꽃할매보단 역시 꽃할배지 ~!,none,comments-03a7399882b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00037,노망난 영감탱이들,hate,comments-03a7399882b2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00038,댓글이 없다니 1등,none,comments-03a7399882b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00039,동시간대에 JTBC에서 비긴어게인2도 같이함 ㅋㅋ,none,comments-03a7399882b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00040,이거 아직도 하네 또할배 또세끼 또또 사골시리즈,hate,comments-03a7399882b2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00041,이서진 노인네들하고 놀면 늙어 바보야,hate,comments-03a7399882b2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00042,이서진좀 그만나와라 에휴,offensive,comments-03a7399882b2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00043,지겹다 지겨워. 고마해라 마.,none,comments-03a7399882b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00044,남 인스타가서 퍼와서ㅈ기사 올린 기레기를 탓해라 보도자료 뿌린것도 아닌데 왜 엄한사람한테 지럴들이니,hate,comments-605bc62ed978-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00045,설마 협찬?,offensive,comments-605bc62ed978-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00046,이필모 얼굴이 왠지 슬프 보인다. 서수연은 얼굴이 편해보인다. 결혼은 남자의 무덤인가? 두분 행복하세요~,offensive,comments-605bc62ed978-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00047,문제가 많은여자네,offensive,comments-f73b37aa22c8-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00048,악플에 또 사람죽이지 마라 인간들아,none,comments-f73b37aa22c8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00049,에휴 .. 보니까 여자분은 순수하게 사랑했던거 같은데 남자쪽에서 금전적 요구하고 돈빼먹었나보네요 ㅠㅠ 사랑을 악용하는 쪽이 더 나쁜듯 !!!,hate,comments-f73b37aa22c8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00050,이홍기도 징역살아야 된다. 너무나 많이 사랑한 죄,offensive,comments-f73b37aa22c8-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00051,한남들 데이트폭력 근절해주세요 특히 애인 아내 죽이는 한남에게 사형을 주세요 그리고 가정 폭력범은 신상을 공개해주세요,hate,comments-f73b37aa22c8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00052,180넘어갈정도의 기럭지는 아님78에서79180넘는애들은 의심.의구심을 안하고안듬그래도 비율좋아 커보이긴함,none,comments-5dcd88c42fa9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00053,권상우 참 잘 생겼네 김희원? 이름도 희한하네 저놈 저거 인상 참 더럽게 생겼어 미생에서도 살인 충동 생기던데,hate,comments-5dcd88c42fa9-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00054,나보다 작은것으로 기억하는데 왠182???장난하나??,none,comments-5dcd88c42fa9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00055,니가 그덯케 thㅏ움을 자래? 옥땅으로 올라와,offensive,comments-5dcd88c42fa9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00056,비율이 좋아서 185는 되어보임..생각보다 작았네,none,comments-5dcd88c42fa9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00057,뺑상우네 음주운전사고후 차버리고 도망갔었지,offensive,comments-5dcd88c42fa9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00058,지달 180 절대 안넘으,none,comments-5dcd88c42fa9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00059,많이 고친녀 ㄴ,hate,comments-51e030fa4153-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00060,솔직히 말해서 늙었지 ㅋㅋㅋ 다신 안팔릴 중고를 앞으로 누가 구하겠어?,hate,comments-51e030fa4153-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00061,인생은 저렇게 살아야 살맛이 날텐데. 능력 좋고 얼굴 이쁘고.,none,comments-51e030fa4153-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00062,꺼져주세요.. ㅈㄴ보기싫네,hate,comments-51e030fa4153-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00063,군대생활도 기계가 할거나?,none,comments-587b49208f0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00064,"그런데 군복무 중에 음원 발표하면, 자작곡이 수록되어 있다면 음원 수익이 발생할텐데, 군인 신분으로 영리활동 해도 되는것인가요? 궁금...",none,comments-587b49208f0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00065,아니... 군대를 도망친다고 표현하기가 뭐한게 신검받고 입대희망일자 선택하고 나온 날짜일텐데 버닝썬때문에 도망간다니 말같지도 않은 음모론좀 그만해라;;,offensive,comments-587b49208f0d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00066,얜 뭔데 자꾸 기사가 나는거야...? 스폰이 빵빵한가봐??,offensive,comments-587b49208f0d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00067,여기 소속사 yg랑 뭔가 있었다는 뉴스 얼핏 본 기억이 있는데..,offensive,comments-587b49208f0d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00068,전라도 투어 하나보네,none,comments-587b49208f0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00069,아니 뭐 본인이 엄청 유명하고 영향력있는 가수인줄 아나보네.....해외? ㅋㅋㅋㅋ 6년이나 미루다가 이제서야 가는 이유는?,offensive,comments-587b49208f0d-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00070,ㄱㅣ사 쓸게 없구나 이딴게 기사에 나오고 봐야하다니...,offensive,comments-bfd502b18ec0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00071,서현숙 색기오지긴하는데 화장을너무심하게햇어ㅋㅋ,offensive,comments-bfd502b18ec0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00072,서현숙이 너무 아까운거 아니가... 요즘 3대치어중 한명인데 열애설이라니..,none,comments-bfd502b18ec0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00073,멋있다 사람이 연애하면서 사는거지누구랑 헤어지고 누구랑 사귀는게 무슨잘못인가?잘생겼고 인성좋고 자기관리잘하는 뮤지션인건 변함없음 오랜만에 티비에 나온거보니 너무 좋았음,none,comments-fbb15644a0e5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00074,세븐 인성ㅆㅎㅌㅊ인거 같은데 왜 알면서도 사귀는걸까 대물인가...흠,hate,comments-fbb15644a0e5-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00075,나랑동갑에 결혼한 년도까지 똑같으네아직 좀더 살아도 되는 나이인데..부디 좋은곳으로 가시길...,none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00076,"모든 암이 그렇지만...췌장암, 담도암...진짜 싫다ㅠㅠ엄마를 하늘로 데리고 갔어ㅠㅠ삼가고인의 명봅을 빕니다...",none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00077,삼가 고인의 명복을 빕니다. 좋은 분이셨어요.,none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00078,오 케롤... 작품이...,none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00079,오캐롤 수난 연속!,none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00080,힘내세요~~삼가 고인의 명복을 빕니다..,none,comments-7e7c0d65b422-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00081,둘이 껴서 재밌는건 사실인데 다른 예능이랑 ㅇ이제 별반차이가없다ㅏ..,none,comments-1f6febafa0c5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00082,아무리 재밌고 잘나가던 프로도 계집들이 참여하는 순간 노잼 억지웃음 제조기로 변한다 명심해라 계집들이 노잼의 원인이다,hate,comments-1f6febafa0c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00083,유재석이는 징징되면서 억지로할거같음. 가식세끼,hate,comments-1f6febafa0c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00084,윤식당을 못넘기네! 허긴 태호가 뺄갱이냄새가나니...,hate,comments-1f6febafa0c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00085,재발 유재석 박명수 나가라. 정말 재미앖다. 늘 남 멘트 주워담고 재미없은 유재석. 박명수는 외모라도 웃겼는데 지금은 머리심고 꾸미고 나오니 전혀 노잼. 게다가 재치도 없고 열정도 없고.,offensive,comments-1f6febafa0c5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00086,토요일 저녁 황금시간대에 겨우 12% 나왔다고 기뻐하고 난리네 ㅋㅋㅋㅋ 난 그시간에 백년손님 봤는데 후회 안한다. 저능아 컨셉 예능은 이제 질려서 못보겠다.,hate,comments-1f6febafa0c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00087,폐지해라 윾도 제발 ㅋㅋ,hate,comments-1f6febafa0c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00088,악마의 재능 신정환이 들어가면 좋겠다.,none,comments-1f6febafa0c5-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00089,개랑 고양이에 환장한 애들치고 정상인 애들이 없음,hate,comments-16a6ac7bd62f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00090,다나 살 찐거 보고 나도 살 빼면 다나처럼 이뻐지겠지하며새벽에 양념치킨 먹다가 손가락에 묻은 앙념 빨아 먹는 메퇘지년들 생각나네 ㅎㅎ,hate,comments-16a6ac7bd62f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00091,"다나 이쁜데 기자가 질투하는 모양새 말 장난 날개 못 다나? 이런게 기사 제목? ㅋ 다나 까지 마라. 착하고 성실하다 이기. 어릴때부터 응원중 , 다나는 단아하다 이기.",offensive,comments-16a6ac7bd62f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00092,말투도 띠껍고 변한듯 다나 예쁜 사람 이었는데 뚱뚱해지고 이상해 진거 같다,offensive,comments-16a6ac7bd62f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00093,여자는 살찌면 성격도 난폭해지더라,hate,comments-16a6ac7bd62f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00094,음.. 전형적인 우울증 증상으로 보이는데. 심리치료부터 받아봐야겠네요,none,comments-16a6ac7bd62f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00095,이와중에 기자놈이 라임놀이하네... 연예인이 니 놀잇감이냐?? 가만히있어라 제발.,offensive,comments-16a6ac7bd62f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00096,칼들고?진짜 살인 할듯.. 소시오패스인가?엿을 날려? 인성이 쓰레기급 ㄷㄷ 근데 애를 좋아하는 팬이 있다고? 놀랍다 저런애한테 ㅋㅋㅋ 그리고 운전하다 사망 한다 ㅗ,hate,comments-16a6ac7bd62f-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00097,군복무중에 저런데 나가는거 쉽지않은데 금수저 연예인이라 그런지 하고싶은거 다하네,none,comments-8d1f37d7a0ce-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00098,군복입고나오면 적폐아녀? 문재인이좋아하는 인민복에 인공기달고나오면 쭉쭉올라갈텐데.ㅋㅋ,hate,comments-8d1f37d7a0ce-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00099,근데 군인은22시이후 외출 불가능아니냐? 군법아님?,none,comments-8d1f37d7a0ce-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00100,나라지키러간 군인 불러서 뭐하는 짓인지,offensive,comments-8d1f37d7a0ce-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00101,뇌물먹고 자살한 고 노무현 대통령이 분명히 봉하마을 부엉이바위에서 지켜보고 있을 것이다.,hate,comments-8d1f37d7a0ce-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00102,박형식은 뭐냐,none,comments-8d1f37d7a0ce-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00103,연예인 군특혜는 여전하네. 어디 일병이 시상하러 외박나오냐?,hate,comments-8d1f37d7a0ce-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00104,좋네 군복무 중에 시싱식도 오고,offensive,comments-8d1f37d7a0ce-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00105,형식군 왜 거기서 나와 좌파 잔치에 들러리 서러 갔네,hate,comments-8d1f37d7a0ce-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00106,이하늬빼고 다배우가 아니네기린은좀뺏으면한다,offensive,comments-8d1f37d7a0ce-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00107,드라마도 너무 재미있고 현빈 보면서 정말 행복함 그 잘생긴 외모에 연기력까지 겸비한 현빈은 넘사벽 오늘 연기도 정말 미쳤어 내일 제발 해피엔딩으로 마무리 지어주세요,none,comments-de30033b167a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00108,아줌마들 현빈본다고 시청률 나오니까 이딴 똥드라마가 계속나오는거지ㅋㅋ 안그래요 줌마들?,offensive,comments-de30033b167a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00109,알함브라 궁전의 추억이래잖아 지들이 드라마제목 재대로 해석안해놓고 남탓오지네 이게 한국의 현실체 작가진들이나 시청자들이나 국민들이나 한국이나 다 불쌍해 경쟁사회가 낳은 증오 배신 실망 경계,none,comments-de30033b167a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00110,와...개폼만 잡다가 궁나는 발암구라궁전. 스토리 다소 밋밋해도 감정선 하나는 1000미터 깊이처럼 보여준 남자친구 완벽 ko승. 이건 하.....할말이 없다. 둘다 완주한사람은 반박불가다.,hate,comments-de30033b167a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00111,왜이리 악플만 있죠...전개가 답답하기 보단 연출이 세련된거 같고 10분이라 느낄만큼 잼나는데....,none,comments-de30033b167a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00112,JTBC 는 좌빨 방송인데. 이래서 여자들이 문재앙 좋아하나?,hate,comments-87ed72826c0d-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00113,누군가의 상상아님? 예고보니 살아있더만,none,comments-87ed72826c0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00114,이드라마 아줌마 이외엔 아무도 안보는...,none,comments-87ed72826c0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00115,혜나를 왜죽여? 이해안된다 온통 거짓말에 남의 남편뺏고 산 곽미향은 벌안받고 거짓말 들키고도 캐슬에서 잘살고있는데 왜 혜나가 죽어? 제일 비참해져야할 곽미향도 잘살고있는데,none,comments-87ed72826c0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00116,혜나야ㅜㅜㅜㅜㅜ우리혜나 잘 살아야하는데ㅜㅜㅜㅜ고통받다가 죽네,none,comments-87ed72826c0d-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00117,KBS 주말극은 한번씩 꿀잼 노잼 하는것 같다 황금빛 보다가 이건 못보겠다 연기들이 너무 발연기다,offensive,comments-4118b376a3b2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00118,문식이는 엄마를 뺏기는게 두려운거아닐까요..버려질까봐 무서운거구요..사랑이 고픈 어린아이같아요..친아들이었다면 저러지않았겠지요..친부모도 자길 버렸는데 새엄마가 날 언제 내칠까하는 두려움이 컷을듯해요..,none,comments-4118b376a3b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00119,부디 빠른 종영바람.막장 인형의 집 보다 훨 재미없다.연기도.,offensive,comments-4118b376a3b2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00120,점점 재밌어지는듯하네,none,comments-4118b376a3b2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00121,결혼을하더라도..부인 집에두고..괜히 촬영있다고 외박이나하지마쇼..축하해주고싶지가않네요..,offensive,comments-2bb816729c07-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00122,남자들은 왜케 어린 여자에 집착할까,offensive,comments-2bb816729c07-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00123,능력도 있는데 20대 여자랑 결혼했으면 좋을텐데,offensive,comments-2bb816729c07-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00124,박성광결혼기사보다 마스크 수급이 중요 비싸요,offensive,comments-2bb816729c07-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00125,송이? 씬가여?ㅎㅎ너무축하드려요,none,comments-2bb816729c07-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00126,쌌구나 쌌어~~,hate,comments-2bb816729c07-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00127,여자인생 망칠 일 있나 ㅋㅋ,hate,comments-2bb816729c07-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00128,아. . .죽지말지. . 쓰레기같은 연예인 많은데. .그놈들이. 죽어야지. . 안타깝네요. .고인을 명복합니다.,hate,comments-c85cbb506d1b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00129,아~ 어떻해ㅜㅜ삼가고인의명복을 빌어요,none,comments-c85cbb506d1b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00130,이제 편히 쉬세요 형님,none,comments-c85cbb506d1b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00131,테이프로 봄여름가을겨울을 듣고 또 들었던 사람입니다아픔없는곳에서 편히 쉬세요,none,comments-c85cbb506d1b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00132,"당신의 멋진목소리,멋진드럼솜씨,다정한미소가 기억나네요...고통 없는곳에서 편안히 잠들기를 기원합니다.삼가 고인의 명복을 빕니다",none,comments-c85cbb506d1b-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00133,고영욱은 언제나옴? 촤하하하하하하,none,comments-40004f55224b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00134,욕하는 니들 인성도 그닥인데,offensive,comments-40004f55224b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00135,근데 왜 남자만 왜 마스크 쓰고다녀야되나여? 여자는 안쓰고다니는데 너무한거아니야?나도 내일부터 화장하고 다닐래,hate,comments-95f70018b4be-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00136,남주 붐 맞죠? 코수술 티 제법 나네 ㅎㄷㄷ,offensive,comments-95f70018b4be-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00137,뭔알바가 많어....연기 표정 다똑같은데 웃어도 똑같고 울어도 똑같고 놀라도 같은표정...ㅠ.ㅠ,offensive,comments-95f70018b4be-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00138,손예진 따라하냐??? 내용이 지금 만나러갑니다랑 비숫하자나,offensive,comments-95f70018b4be-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00139,우리태희도 늙네 ㅠ 여전히 연기는 어색하공 ㅠ 노잼에 ᆢ에공,offensive,comments-95f70018b4be-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00140,턱 보정물 빼라 제발이다,hate,comments-95f70018b4be-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00141,김태희는 연기가 발전이없네 뭔가를 기대한 사람이 무색하네,offensive,comments-95f70018b4be-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00142,거참 살다보면 맞을 수도 있지ㅉㅉ요즘 애들은 진짜 맞아본적이 없나보다 뭐 그리 큰일이라고 저 난리냐;;;;별 것도 아니구만,offensive,comments-dd52a8a6684e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00143,문재인 탄핵 주장하는 젊은이가 더 많다,none,comments-dd52a8a6684e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00144,에이스의 폭행은 리더로써의 마지막 역할이었다. 이렇게 동료들을 유명하게 만들어주고 떠난 그의 속깊은 슬픈주먹은 계집들은 이해못하지 ㅉㅉ,hate,comments-dd52a8a6684e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00145,요즘 듣보잡 ㅅㄲ들이 설쳐대네 ~ 날도 더운데 짜증나게시리 ~,hate,comments-dd52a8a6684e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00146,잘못했으면 처맞아야지.. 맞으면서 사람되는거다,hate,comments-dd52a8a6684e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00147,난 이상하게 김영희만 보면 짠해요,none,comments-26f9881e1fb3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00148,다들 지식입장이어봐요 그게 쉽게 갚어지나나라도 내가빌린것아니라 갚을마음없다도의적인 성의보였네 김영희..법적으로도 상속포기라는게있어 부모 빚갚을의무 없지않나..김영희 대놓고 욕하는사람..너나 잘해라,none,comments-26f9881e1fb3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00149,암튼 잘 해결 됐다니 다행~~ 김영희씨 화이팅 입니다~~ 잘못된 부분이 있으면 당연히 질책받고 바른방향으로 가야하는게 맞지만 맘적으로 상처는 받지 않았으면 합니다~~,none,comments-26f9881e1fb3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00150,어쨌든 변제 의무가 없는 김영희가 나서서 피해자와 원만하게 합의했으니 잘한건 맞지 뭘 욕을 못해서 안달인지. 피해 당사자도 합의한 건데.,none,comments-26f9881e1fb3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00151,저거들 고향 젓라도 아닌가요?,hate,comments-26f9881e1fb3-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00152,뮤직뱅크 엠씨해서 유일하게 폭망했네남들은 다들 대스타인데,offensive,comments-1522937ca02e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00153,남편 핵불쌍하다..,none,comments-e2e05f38a894-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00154,손절은 칼같이. 여자들은 참 손절 빨라. 남자들은 손절 자 못하는 경향이 있는데 여자들 손절은 번개지. 슈도 아직 이혼 안 당하고 있잖아,hate,comments-e2e05f38a894-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00155,즐겁고 좋을때 동반자? 아니지.힘들고 어려울때 누가 뭐라해도 함께하는게 반려자이자 배우자이지. 숱한 음주운전에 인사사고까지 두둔하는 건 아니지만 힘든 상황에 내팽개쳐 버리네.역시 믿을 이는 아무도 낫씽 증명.,offensive,comments-e2e05f38a894-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00156,팩트:사건터지면 20여년 고락함께한 남편이고뭐고 남남. 한녀의표본,hate,comments-e2e05f38a894-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00157,하늘같은 서방이 어려움을 겪으면 함께 해체나가야지 툭하면 이혼이여,offensive,comments-e2e05f38a894-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00158,26년 최수종님처럼 한결 같기는 힘들겠지만 서로 양보하고 배려하며 비슷하게만 살아도 싸울일 반으로 줄이고 아내 행복하게 만들어줌,none,comments-c8dcef1d2715-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00159,나만 비연예인이 더 싫은가 이세상에 연예인과 비연예인 둘만 존재하는것도 아니고..ㅋ,none,comments-c8dcef1d2715-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00160,어디다가 최수종을 들이밀어 1년만 살아보고 말해라,offensive,comments-c8dcef1d2715-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00161,응암동의 뭐시기?? ㅋㅋ 굳이 비공개로 안해도 되겠구만 기사로 안나면 뭐하는지도 모를것을 ㅋ,none,comments-c8dcef1d2715-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00162,결혼한다는 놈이 전여자친구들한테 연락돌리냐ㅋㅋ갈라니가 아쉽나보지,offensive,comments-bb6b57b78230-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00163,꼴값들하고 개나소나 승무원 좋아하네,hate,comments-bb6b57b78230-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00164,옌 또 뭐야 ?!,offensive,comments-bb6b57b78230-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00165,외국에서는 승무원이 하찮고 3D직종이라 기피하는데 한국에서만 유독 승무원이 대단한 직업으로 낙인찍였어,none,comments-bb6b57b78230-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00166,위너인줄.. 진짜 기자 기사좀 똑바로 쓰지..근데저런 인성이 안좋은 일반인 결혼 기사도 써주나???,offensive,comments-bb6b57b78230-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00167,난또 머라고 지자식이 사생아가있는데 지금부인과 맞났다고난또 요즘 미혼모 미혼부는 머가됨.이혼해서 혼자 키우는부모들도 있고,offensive,comments-0e7f2f9cacea-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00168,뭐이리어려운용어를쓰냐 그냥 혼전임신인거잖아? 애생겨서 결혼한걸 무슨 사생아라표현하냐 사전읽어봐도 더헷갈리네,offensive,comments-0e7f2f9cacea-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00169,아 자수성가드립 그만좀해라 아 지겨워 여기서도 저기서도 자수성가드립,offensive,comments-0e7f2f9cacea-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00170,응 너 돈에 환장했자나ㅋㅋ 오죽하면 애새끼들까지 앵벌이 시키겠냐,hate,comments-0e7f2f9cacea-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00171,이휘재 오빠한테 사과하세요. 휘재오빠 욕먹은 생각하면 아휴 열받아.,none,comments-0e7f2f9cacea-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00172,팬클럽에서 지금이라도 작은 결혼식 올려드리면 좋겠네,none,comments-0e7f2f9cacea-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00173,2년 사귀었으면 ... 서로 온몸의 점 위치까지 다알 듯 ㅋㅋㅋ,offensive,comments-1217d4ebce92-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00174,"ㅋㅋㅋㅋㅋ 현아 니는 섹시한거 진짜 싫다며? 근데 맨날 하는건 섹시한 옷, 표정, 춤!",offensive,comments-1217d4ebce92-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00175,이규빈은 뭐하는 사람임?ㅡㅡ,offensive,comments-1217d4ebce92-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00176,이던 현아 눈에서 꽃이 보이긴 햇는데 역시 ㅎㅎ 그리고 신동욱은 병 때문에 한의사를 만나네 ㅎㅎ,none,comments-1217d4ebce92-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00177,이던현아 커플 진심 부럽고 이쁘고 응원해요,none,comments-1217d4ebce92-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00178,현아 건더리지마라 큐브 붕 신발들아....지대로 아티스트 키우지도 못하던것들이,hate,comments-1217d4ebce92-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00179,현아 이던~ 트리플 좋아요,none,comments-1217d4ebce92-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00180,현아 진짜 보기싫다,none,comments-1217d4ebce92-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00181,근데 진짜 궁금한데 안재환이 자살을 했는데 왜 정선희가 욕을 먹는거죠? 정말 궁금해서 그래요 타살이어서 그런건가요? 빚때문에 스트레스받아서 자살한건데 남아잇는사람이 욕먹어야하는이유가 정말 궁금해요,none,comments-3970678ac3f7-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00182,정말 재미있는 개그우먼인데~그늘에 계신것 같아 안타까워요 조금씩 나오세요힘내세요^^,none,comments-3970678ac3f7-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00183,정선희씨랑 김영철씨랑 입담프로 하나했으면 좋겠어여~ㅋㅋㅋ진솔하면서 위트있어서 재미있게 봤네요^^,none,comments-3970678ac3f7-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00184,힘내세요!!!하늘나라에서 그분이 지켜주시리라 믿습니다 항상 밝은 모습 잃지 마시고 예전처럼 이쁘고 환한 미소 많이 보여주세요!!!화이팅!!!,none,comments-3970678ac3f7-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00185,참 불운했던거지요 그대 탓도 다른 사람 탓도 아니네요 그냥 상황이 그리 만들었네요 다만 잘못된 선택을 한 이들이 안따깝습니다 정선희씨는 힘내서 잘 살아주세요!,none,comments-3970678ac3f7-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00186,머냐 이듣보년은 연예인도 아니고 일반인년 결혼하거나 말거나지,hate,comments-191509a36d0a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00187,예쁘면 잘생긴 남자 만날 자격있지 암 ㅎㅎ,offensive,comments-191509a36d0a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00188,우리 아들 오늘 받아쓰기 백점 받았는데 기사 써주세요~~,offensive,comments-191509a36d0a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00189,제목이 넘웃겨ㅋㅋㅋ 톱스타도 울고갈핫한이래ㅋㅋ듣보잡 기사내보 장난하냐구 ~~~ 여자도 이쁜척하지좀말고 유명한척하지좀말지ㅡ 가만히있음 더 돋보일것을,hate,comments-191509a36d0a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00190,배연정 딸인가요?,none,comments-60a92b0d270f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00191,연이도 어렸을땐 참 이뻤는데. 이제 40 넘고 퇴물되서 시집도 못가고. 재취자리 아니면 평생 혼자 살아야될 나이가 됐네,hate,comments-60a92b0d270f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00192,이 여시 왜 또 슬쩍 관종짓에 끼어드는데 누가 널 지목이라도 했냐,hate,comments-60a92b0d270f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00193,이진숙때 김종국 좋아하는거 엊그제 같네,none,comments-60a92b0d270f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00194,정가은 한재석... 어휴 얘도 좀 혼이 비정상 같다,offensive,comments-60a92b0d270f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00195,친목도모하는것도 아니고 그만하고 기부나 쳐해.,hate,comments-60a92b0d270f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00196,채여니 이쁘다 얼굴도 마음도,none,comments-60a92b0d270f-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00197,스트레스가 원인일듯 문재앙이 책임저라,hate,comments-81e2bdd503a7-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00198,엄마의 인기를 등에업고..관종이네.. 관심없다..,offensive,comments-81e2bdd503a7-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00199,할머니가 문제네ㅉㅉ지딸이 왜 저렇게 됐겠어...그걸 모르고 손녀한테까지 정신 못 차리네ㅉ,hate,comments-81e2bdd503a7-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00200,그러니까 맘 곱게먹어~ 관종...,offensive,comments-81e2bdd503a7-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00201,대만놈들은 솔직히 잘나간다는 애들보면 다 ㅈㄴ 느끼하게 생겼거나 얼굴 어느부분이 ㅈㄴ 이상하게 생겼는데..얘는 괜찮게 생겼네.얼굴 관상보니 고추도 크게 생김.,hate,comments-03f7b565f85b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00202,"런닝맨 , 범인은바로너 제작진이라 ㅋㅋㅋㅋㅋㅋ 망했구만 ㅋㅋㅋ 안봐도비디오다 ㅋㅋㅋ 폭망예상~~~~ 이승기는 하자마라 왜 그런예능에 출연하려고하냐 ~~~~~~~~",offensive,comments-03f7b565f85b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00203,류이호 나온다 꼭 봐야징,none,comments-03f7b565f85b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00204,류이호 잘생겼네,none,comments-03f7b565f85b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00205,승기 머리스타일 이상해 잘생긴얼굴에ㅠㅠ 변화가시급함,none,comments-03f7b565f85b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00206,이승기 예능 이끌 능력도없는데 팬을위한프론가보네,offensive,comments-03f7b565f85b-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00207,정해인도 닮은듯?,none,comments-03f7b565f85b-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00208,야이 멍청한 개돼지들아 블핑이 돈이 안되니 그나마 반응있는 제니 밀어주는거 아니냐 ㅠ 양사장이 매일 밤마다 위스키 들이키며 눈물을 흘린다는데 속좀 이해해주라 ㅋㅋㅋ,hate,comments-8841daf0a34e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00209,울 제니홧팅 ㅠㅠㅠㅠㅠㅠ 댓글신경쓰지마,none,comments-8841daf0a34e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00210,제니를 시작으로 넷다 솔로 준비중이라잖아 !! 악플꺼져,offensive,comments-8841daf0a34e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00211,헐...너무좋다!!제니 너무 매력적이야ㅠㅠ,none,comments-8841daf0a34e-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00212,그냥 둘이 맘에있는듯~~홍진영은 등치있고 리더십있는 상남자스탈을 좋아하고 김종국도 애교많은 여자를 좋아하는듯ㅋ,none,comments-cab65f5b2a5b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00213,남궁민은 어쩌고 ㅠㅠㅠ,none,comments-cab65f5b2a5b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00214,드뎌 김종국 짝을 만나듯 이제 남자답게 고백만 남았다,none,comments-cab65f5b2a5b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00215,종국시러 진영이가 천만배아까워기래기녀석들 하는짓이라 ㅉ ㅉ,hate,comments-cab65f5b2a5b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00216,홍진영 싼티 좔좔,offensive,comments-cab65f5b2a5b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00217,홍진영얼굴도 얼굴이지만 얼굴보다는 몸매가 사기급이다,none,comments-cab65f5b2a5b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00218,홍진영은 항상 저런식으로 분위기를 만들어서 별로 잘될거 같지않음. 그냥 방송이면 다하는 여자로 보임,offensive,comments-cab65f5b2a5b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00219,넘예뻐서 이렇게생기구파성격도사랑스럽더라,none,comments-f06ce6ef5389-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00220,얼굴은 진짜 매력적이게 생겼지,none,comments-f06ce6ef5389-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00221,전에 악플달아서 미안해요 그땐 김스카이팬이라서... 무튼 사실 남녀관계는 본인외엔 알수없죠 요즘 자꾸 악플유도 기사 올라오는거같은데 사실 님 이뻐요 힘내세요,none,comments-f06ce6ef5389-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00222,진짜 분위기이쁘다 얼굴도이쁘고,none,comments-f06ce6ef5389-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00223,손태영은 몸매 갑,none,comments-f06ce6ef5389-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00224,관종짓 또 시작? 남친이랑 헤어졌냐 ㅉㅉ,hate,comments-bbe992734491-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00225,엄마랑 붕어빵은 아니네요 ㅠㅠ 안타깝다ㅠㅠ,none,comments-bbe992734491-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00226,응 학폭레기 감성팔이 집어쳐~,hate,comments-bbe992734491-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00227,지금까지 해온것처럼 씩씩하고 밝은 준희양으로 자라줬으면 좋겠어. 항상 응원할께~~,none,comments-bbe992734491-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00228,안타깝긴 하다만 학교폭력 가해자를 굳이 감싸는 사람들 심리도 참 궁금하다,none,comments-bbe992734491-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00229,그냥 안나오시면 될 거 같은데,none,comments-5e472f0b7570-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00230,그냥 하차해요,none,comments-5e472f0b7570-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00231,이 두 튀기들 좀 안 나왔으면 좋겠네. 꼴배기 싫어 진짜...,hate,comments-5e472f0b7570-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00232,지는 교육받으면 얼마나 받았다고 ㅋㅋㅋㅋ 어디대학 나옴?,hate,comments-5e472f0b7570-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00233,니가 살찌는건 쳐먹고 운동을 안해서지,hate,comments-fc1de18312a9-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00234,똥싸고 자빠졌네,offensive,comments-fc1de18312a9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00235,뚱뚱하긴 해도 그래도 애가 진솔하니 착하더라 문재앙 마누라같이 돼지백정 같은 년이 가식적이고 인성도 안좋으면 미울텐데 국주는 밉싱은 아니더라,hate,comments-fc1de18312a9-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00236,성희롱녀인데 머하러 올라옴?,offensive,comments-fc1de18312a9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00237,이국주 욕하지마.... 그래도 여자로서 망가지면서 웃긴다는게 얼마나 힘든건데.. 난 박나래가 더 웃겨도 인간적으론 이국주가 더 끌리던데... 이국주도 사람이고 여자야 무조건 욕하지 마라,none,comments-fc1de18312a9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00238,환경오염을 얼마나시키는거냐ㅋㅋ실제로는 재활용도안되는 수많은 용기들....비닐들.... 보는나까지 자연에죄짓는기분..,none,comments-fc1de18312a9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00239,돼지같은 것들은...다 이유가 있다~*,offensive,comments-fc1de18312a9-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00240,이국주씨 좋아요.. 항상 건강하시고 행복하세요.. 착힌신것 같아요.. 헤헤~~~♡♡♡,none,comments-fc1de18312a9-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00241,결혼은 인륜지대사라 할만큼 중요한 일인데...애들 소꿉장난도 아니고 참으로 어이가 없구나...,offensive,comments-71c040dee9c5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00242,연예계는 다 짜고치는 고스톱.좋댄다 다들 ㅎ,offensive,comments-71c040dee9c5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00243,이필모 비호감.투머치 . 느끼함.서수연씨가 아깝네여ㅠ,offensive,comments-71c040dee9c5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00244,이필모 좋겠다 서수연 같은 미모의 재원과 결혼하니...,none,comments-71c040dee9c5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00245,정말잘어울리는예픈한쌍갓아요 제가더흥분되고기분이너무좋읍니다 너무너무축하축하드립니다,none,comments-71c040dee9c5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00246,침대에서 했겠지?,hate,comments-71c040dee9c5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00247,큰가보네... 수연언니 부럽다...,offensive,comments-71c040dee9c5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00248,그니께....그러게 혼외 자식은 왜 만들어가지고는.. 거시기는 내둘러도 씨는 뿌리지 말아야할것을.. 다 니 업보여...죽을때 까지 고생좀 하겄네,hate,comments-2d4c1ca35747-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00249,동성이면 어떻고 연상이면 어때 둘이 좋다는데 쓸데없는 일이 에너미 쓰지 말고 날 추워지는데 취약계층과 유기동물 걱정이나 합시다,none,comments-2d4c1ca35747-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00250,"레즈인게 문제가 아니라 성룡 내연녀에, 불화 자퇴 가출이 문제인것같은데...",offensive,comments-2d4c1ca35747-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00251,부성이란걸 못느껴봐서 저러나 안타깝다,none,comments-2d4c1ca35747-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00252,성룡딸우 컷트머리입니다ㅡ 금발이여친;;;;,none,comments-2d4c1ca35747-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00253,왜 여자로써 안사랑하고 하나는 남장을 하는거지?,offensive,comments-2d4c1ca35747-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00254,노인 공경도 안하는 논들한테 뭔 자리를 비켜줘! 임산부논들만 힘드냐?페미논들 진짜 역겨워.,hate,comments-44202c14584b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00255,아니 우리가 임신시켰냐고 애아빠한테나 배려강요하자 좀,hate,comments-44202c14584b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00256,아진짜엥가이해라 사람없으면 앉을수있는거지 말그대로 배려석이지 임산부있으면 비켜주면되는거구만,none,comments-44202c14584b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00257,앉을대도없는데 임산부석이라도 앉아야지 임산부가 벼슬이냐 다리아파디지겄다,hate,comments-44202c14584b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00258,그냥 김치석 따로 만들어라. 지적 장애인 대우 해주께 ㅋㅋㅋㅋ,hate,comments-44202c14584b-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00259,권력범죄자 맞자너.아방궁에 대북송금에..영부인도 꽤해쳐 먹었다거하던데 끼리끼리 해묵은건. 다아는사실인데도둑이 제발저린다더니..해먹었나보네,offensive,comments-44f2682e9d12-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00260,노무현 실루엣이면 뭐 어쩌라구 놈현이 신이냐아주 어거지네,hate,comments-44f2682e9d12-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00261,노무현. 김대중 세월호는 건들면 안되고 이승만 박정희 전두환은 욕해도 되고 ㅋㅋ기준이 뭐냐???,offensive,comments-44f2682e9d12-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00262,저게 어딜봐서 노무현대통령 실루엣이지제정신이면 저게 그렇게 보일 수가 없는데?....,hate,comments-44f2682e9d12-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00263,김종민 전 여친 장윤정~~,none,comments-1dab05379953-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00264,눈물이 많은 남자는 보기싫음 찌찔해보임,offensive,comments-1dab05379953-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00265,도경환은 그냥 별로.. 왜 그런지 모르겠는데 너무 이미지 만드는 느낌;,none,comments-1dab05379953-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00266,생생 할때 도경완은 왜 후배 조충현 아나가 말하면 안웃고 반응안해주죠? 꼰대 선배의 표본...한국인의 표준상...,hate,comments-1dab05379953-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00267,장윤정 결혼잘했지..가수나부랭이주제에,offensive,comments-1dab05379953-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00268,장윤정 그냥 재수없는타입 여자가 억세고 드세보인다 도경한 깨갱거리며살것같다,hate,comments-1dab05379953-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00269,진심이든 아니든 관심없는애들얘네나오면 채널돌림,offensive,comments-1dab05379953-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00270,"그분들 몰려오겠네 에휴, 남한테 피해주는것도 아니고 본인이하고싶어서 하는건데 뭐라고들 하지맙시다.",none,comments-adec484695f2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00271,다 한때다 .. 냅둬라 지멋이라는데...10때 유행옷 20대때 다시입으라하면 못입듯히 나이가점점 차고 삼십줄되면 다 알아서 멈출거다냅둬라,none,comments-adec484695f2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00272,자살은 하지말아라,none,comments-adec484695f2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00273,제발 오지랖 좀 부리지 말자 자기가 하고 싶어서 자기 몸에 하는데 그게 무슨 상관이세요ㅠ 하유 진짜 ㅠㅠㅠㅠ 답답하다 개인 sns에 무슨 사진 하나만 올리면 개떼처럼 달려드니 ㅠㅠ,offensive,comments-adec484695f2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00274,지몸이다 첨견말자. 멋은있네,none,comments-adec484695f2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00275,꼰대베플만있나하고 연령대봤더니 3-40대들이 대부분..,offensive,comments-adec484695f2-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00276,그 와중에도 인스타는 해야하고 연예인 답다,offensive,comments-11b5998a105e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00277,자숙 끝났나요,none,comments-11b5998a105e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00278,한쳐아 너도 어지간하구나 이와중에 인별하는 뇌상태가 궁금하다 요즘은 그래서 내조 잘하고 있니?,hate,comments-11b5998a105e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00279,놀고 자빠졌네ㅎㅎ주디 콱! 때려뿔라~,offensive,comments-11b5998a105e-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00280,시ᆞᆞᆞᆞ뱔 유재석 너도 보고 좀 배워 돈만 벌지말고,offensive,comments-d0219e662bf2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00281,유재석씨는 기부안합니꽈~~~~?,none,comments-d0219e662bf2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00282,이제 웃기기만 하면 된다~,none,comments-d0219e662bf2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00283,좋은일 하셨는데 왜 이리찜찜할까나 작정하고 이미지 세탁하는 느낌적인 느낌,offensive,comments-d0219e662bf2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00284,천만원 기부하고 진짜 언플 쩔게 하네,none,comments-d0219e662bf2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00285,여주 진짜 못생겼네 서강준 봉사하는 기분일듯,offensive,comments-4607adc6a04c-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00286,으ㅡㅇ음.. 이솜도이쁘지만.... 꽃이지고나서야 봄이온줄 알았읍니다... 그립읍니다 김고은님..,none,comments-4607adc6a04c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00287,하루만의 연애로 서로 감정이 절절한 설정은좀 이해가 안가지만 연기력은 좋았슴작가 감독의 연출력이 좀더 좋아졌슴 좋겠다서강준 이솜 연기력은 짱!!,none,comments-4607adc6a04c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00288,하존잼 ㅠㅠ 글고 서강준 연기잘하는듯 ㅠㅠ,none,comments-4607adc6a04c-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00289,2~30대녀 :(쿵쾅쿵쾅) 꿀꿀꿀!!!!!!,hate,comments-f8aa73818782-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00290,맘충들 부들부들 오지네아이 키우는거 힘들다고 생색 낼 아줌마들 여럿있네아무렴 임창정이 아이들 알아서 크니 부모는 옆에서 구경만 한다 이런 뜻으로 말했을까.,hate,comments-f8aa73818782-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00291,악플 단 애들 다 루저들인가?,none,comments-f8aa73818782-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00292,열폭들하네ㅋㅋㅋ왜부럽냐 나이어린 마누라에 자식들4명에 돈도많겠다 남부러울거없는인생인거같은데 횽님홧팅입니다요,hate,comments-f8aa73818782-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00293,"왜? 돈 잘버는 연예인이 다자녀 쉽게 키우니깐 불편하세요?? 그럼 노력해서 돈 잘버시지 그랬어요.. 정부탓, 사회탓만 할게 아니라 본인이 어디까지 해봤냐를 따져야죠..",none,comments-f8aa73818782-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00294,으 댓글에서 생리충 냄새나네 피 새나봐 으,hate,comments-f8aa73818782-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00295,임창정 친한 친구들인가 집안사정을 아주 잘들 아시네 ㅋㅋ 인생을 남욕하면서 허송세월 보내지 마시고 다른곳에서 만족감은 좀 느껴보세요 제발,offensive,comments-f8aa73818782-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00296,창정이형 언제나응원해요 ㅎㅎ,none,comments-f8aa73818782-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00297,눈 졸라 모였네 난 박신혜 스타일이 좋음 신동엽같이 모인눈 극혐 갈데가 없어 짱개랑,hate,comments-ca4427af10ca-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00298,메갈들은 꿈도 꾸지 못할 일이 일어났네.,hate,comments-ca4427af10ca-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00299,몽골정부인? 부인이 있는놈이 또결혼하는거야?,offensive,comments-ca4427af10ca-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00300,중국인이랑 결혼 하는게 뭔 자랑이야,offensive,comments-ca4427af10ca-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00301,30대 여자비율이 가장높은거보니 고소영이뻐요 하는 이유를 알겠다 ^^ 여자들아 진심으로 한마디 하겠는데 30대 여자는 진심으로 여자로 아예안보여요~^^,hate,comments-f504b5df36b6-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00302,고소영은 네임벨류에비해 아우라가 없는듯.. 김태희전지현 하다못해 하지원도 수지를 일반인화 시키던데.. 저 사진만보면 제니랑 왼쪽있는애가 더 예쁘네,none,comments-f504b5df36b6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00303,그냥 이모같은데? 아줌마스러벙,offensive,comments-f504b5df36b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00304,나이먹고 왜저래;,offensive,comments-f504b5df36b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00305,너도 입좀 그만 찢어라 여자이병허니냐,hate,comments-f504b5df36b6-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00306,제니 얼굴 큰거 봐라ㅋㅋ 머리가 너무커 제니야 ㅋㅋ 대두 제니ㅋㅋㅋ 고소영은 이제 늙어서 할매네ㅋㅋ,offensive,comments-f504b5df36b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00307,그럼 보검이가 외롭잖아...,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00308,박보검은 평범한 기독교신자입니다 제발 그만 괴롭히고 이초석 목사님도 항상 응원합니다^^,offensive,comments-9be09d482374-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00309,송찌질에게 탑은 안어울리죠 그녀덕에 특급열차 탄거죠 송찌질 이제 특급열차 운행 안합니다 하차하세요~~ㅋㅋㅋ,hate,comments-9be09d482374-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00310,송혜교씨 화이팅. 왜 남의 인생에 욕들을 하십니까. 자세한 내막도 모르면서..댁들이나 잘들 하셔야 할듯. 욕하면 죄받아요.,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00311,이 와중에..혹시 박보검하고 이번에는 사귀는중인건가..하는 생각이 자꾸 밀려옴;;,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00312,이제 당당히 보검이한테로 가면 되겠네,offensive,comments-9be09d482374-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00313,이제 송중기 드라마 영화 못보겠다~,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00314,한국여자들이 욕하는걸 보니까 송혜교씨 정말 훌륭한 사람이시네요 응원합니다,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00315,혜교님 힘내세요,none,comments-9be09d482374-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00316,난 솔직 정준영이 부럽다,offensive,comments-ce3b61c83edb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00317,로이킴을위해서라도 정준영 로이킴 먼지가되어 영상도 삭제해야함 흑역사임 ㅠㅠ,none,comments-ce3b61c83edb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00318,불쌍해 보이는 이윤 뭘까?~,none,comments-ce3b61c83edb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00319,성매매가 합법인 나라도 있고일반 남자분들도 태국이나 어디 그런여행 가지 않나?그런게 모가 대단하다구..강간하거나 성폭력을 사용한건 아니자나그런 사람들한테는 잠잠하구엄한 애만 너무 잡들이 하네이제 그만좀......,hate,comments-ce3b61c83edb-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00320,아니 사람을 어떻게 했길레 저상태가 되나요? 이나라는 인권도 없습니까? 며칠전만해도 멀쩡하던 준영 오빠가 완전 거지꼴이 되서 눈도 흐리멍텅하고 주눅들어서 폭행당한거 아닌지 의심도 드네요... 너무 험하게 다루진 말아주세요.,offensive,comments-ce3b61c83edb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00321,조그만 공간 속에 추억만 쌓고 오래감방에있으세요 먼지가되어노래가사처럼,offensive,comments-ce3b61c83edb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00322,노이해.. 일반 여자라면.. 속옷 착용안한 상태로 방송 안할듯 노출증 환자나 하겟지.. 여자인 나도 노이해다. ㅜㅜ,offensive,comments-2124e92d9882-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00323,모든 여자들은 설리를 본 받아야 한다. 가슴은 더이상 숨길게 아니다 설리처럼 다 까고 다니자! 설리야 응원한다!,offensive,comments-2124e92d9882-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00324,설리가 이뻐서 질투하는 한녀들 겁나 많네 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ 이쁜게 부러우면 부럽다고해,hate,comments-2124e92d9882-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00325,이 지지배 젖을 잘라버리든지 해야지. 미성년 자식 키우는 부모입장에서 애 볼까 무섭고 댓글 더러운 것도 꼴도 보기 싫다.,hate,comments-2124e92d9882-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00326,이러다 성기노출도 자유될듯...,offensive,comments-2124e92d9882-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00327,자유지ㅇㅇ남자는 꼭지보이는거 상관없고 여자는 보이면 안되는거임? 과하다는건 쿵쾅들이 그러는거겠지,hate,comments-2124e92d9882-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00328,아아 커플 너무 좋아요 달달,none,comments-a432a6ec2392-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00329,어떻게 하면 저렇게 잘생길 수가 있지?,none,comments-a432a6ec2392-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00330,이커플 넘 조아~~~,none,comments-a432a6ec2392-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00331,저렇게 해도 이뿌노...ㅜ,none,comments-a432a6ec2392-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00332,채은씨 너무이뻐요~^^선남선녀!!예쁜만남하서요.언론에서 관심을 안가져야 두분이 더 오래가실듯!!!,none,comments-a432a6ec2392-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00333,도깨비가 그렇게 떴는데 왜 너만 안뜬줄아냐?도깨비가 뜬많큼 니 성형전 얼굴이 떴음 이와중에 아이유에 묻어가기는 좀~~~아이유는 노래라도 잘부르지,offensive,comments-f423a9aab153-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00334,서인영은 시러하나보네 아이유는 영웅호걸때부터 그런거 같긴했지만,offensive,comments-f423a9aab153-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00335,아이유 이젠 레즈 전향이냐,offensive,comments-f423a9aab153-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00336,"이효리 시다바리-아이유,..,아이유 시다바리-유인나 ㅋㅋ",offensive,comments-f423a9aab153-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00337,김태호도 감이 떨어진게 유재석은 패널들에 얹혀가는 자가발전안되는 십거품인데 또 유거품을 썼다는거. 거기다 유재석새기 지랑 맞는다 생각하는 양배추랑 또하는데 둘다 그냥 처망한거지. 양배추는 상승세에 잘못 줄서서 추락을 맛볼거구,hate,comments-eb110484d539-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00338,아니 근데 출연진은 유재석인데 카메라 돌리면서 연예인 일상찍는게 대부분이고 그 일상속에 유재석이 항상 함께하는것도아니면서 유재석은 왜 출연진에속하는거죠..? 참 희한하네..,none,comments-eb110484d539-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00339,유재석 팬들 부덜부덜 난리네 니들은 객관성이 없어 그게 유재석에게 마이너스 무조건 응원해주는 게 독이지,offensive,comments-eb110484d539-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00340,유재석라인 지겹다 나혼자산다 유사판 자연스럽지도 않고,offensive,comments-eb110484d539-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00341,유재석은 꼭 따라 다니는 멤버가 정해져있음 ㅉㅉ,none,comments-eb110484d539-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00342,이걸 6회나 봐야한다니.......,none,comments-eb110484d539-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00343,하하 플러스 유재석 너무 질린다 ㅡㅡ,none,comments-eb110484d539-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00344,김수찬 아자~~,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00345,김수찬이 훨씬 잘했음 트롯에 어울리는 사람을 점수 잘 주고있음 심사에 문제 드러남,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00346,노래 부를 때 너무 느끼해,offensive,comments-10290d3b5960-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00347,솔까말 1위 2위 이해안됨3위 4위가 더 잘했다,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00348,아무리 이찬원 1등이라고 난리쳐도 안되는거야! 왜? 대한민국 에 찬원이 처럼 부르는 가수는 많으니까^^ 하지만 임영웅이나 안성훈 처럼 부르는 가수는 없으니까 그게 팩트니까 !!,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00349,애는 무슨 슬픈노래갖고 이길려고 그래 ~어이없음,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00350,"임영웅 : 광신도 열성팬 거부감, 음역대 중저음대만 맴돌고.. 발성도 옹알옹알...마케팅으로 포장. 롱런 못할듯 ㅠㅠ",hate,comments-10290d3b5960-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00351,임영웅 질린다.똑같은 패턴에 노래,none,comments-10290d3b5960-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00352,바지사장이 무슨죄냐,offensive,comments-799617c397a5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00353,승리도 승리지만 근데 나이트클럽 거의 다 그러지 않나,none,comments-799617c397a5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00354,아직까지 밝혀진 죄가 없으니 당연히 입대해야죠,hate,comments-799617c397a5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00355,증거가 있을리가 없지 우리 승리오빠는 이용당했을뿐 무죄다,none,comments-799617c397a5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00356,증거도 없는데 카톡 원본도 없고 뭐지?,none,comments-799617c397a5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00357,유승준은 천재적인 재능이라도 있지 이넘은 뭐없잖어 대중들이 왜 봐줘야해,hate,comments-799617c397a5-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00358,이병헌이 연기 사부로 나와도 괜찮을듯~~,none,comments-6bbdcc5c1125-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00359,정두홍 인성 드럽기로 유명하지,none,comments-6bbdcc5c1125-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00360,김희철 공익새기,offensive,comments-819b94bbaa8a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00361,조보아 정법나온거 안본 남자있냐?,none,comments-819b94bbaa8a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00362,ㅋㅋㅋ돈떨어졌냐??? 뭐만하면 기어들어와 ㅉㅉ 연기하다가 또 니상황 ㅈ됐다싶으면 그냥 또 토낄려고???이순재 배우가 너 그딴식으로 해서 싫어하는거야. 이쁜척은 졸라 해대면서 책임감 없는년,hate,comments-7ed865344efc-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00363,남자 하나 잘 물은 에이급 술집언니같아. 나두 진심으로 키가 컸으면 호스트하겠다. 얼굴은 마츠모토준 황찬성 닮았다고들 그러네.,hate,comments-7ed865344efc-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00364,드라마 찍다가 도망 갔었지.,offensive,comments-7ed865344efc-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00365,여자는 역시 꾸미기전과 후가 하늘과땅차이....진짜미인은 청바지에 싸구려 면티만 입어도 빛이나더라,offensive,comments-7ed865344efc-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00366,이년은 촬영거부로 미국으로 튄년이 뻔뻔하기 그지없게 튀나오네 ㅋㅋㅋ,hate,comments-7ed865344efc-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00367,진짜 50 다 되어가는데 저 정도 미모면 대단한 거죠~~~,none,comments-7ed865344efc-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00368,그건 햇을까?,offensive,comments-cdb5543a7491-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00369,뭘바래 걍 하차하세요 두년놈이똑갖은데 우찬이하고 헤어진지 얼마나됬다고 연예처하고 꼴사납게 처 놀더만 한걸래는 내가 그럴줄알았다 에휴 달심이이가않이라 한심이다 한걸래,hate,comments-cdb5543a7491-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00370,사귀다 헤어지면 어때서 결혼하고헤어지는것보다났지그냥 출연하시지^^~,none,comments-cdb5543a7491-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00371,솔까 2세 생각하면 한혜진마스크는...,offensive,comments-cdb5543a7491-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00372,재미로하지말고 유익하게진행해보세요 ~~서장훈 추천,none,comments-cdb5543a7491-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00373,전현무 없이 어찌 돌아갈까나..... 얼른 돌아오세요~~,none,comments-cdb5543a7491-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00374,"한혜진 많이 컷지, 것두 남친 덕분에..이참에 인성도 고치고 말버릇도 고쳐서 인정 받는 모델이나 하길",offensive,comments-cdb5543a7491-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00375,40대늙은이 32% 돌아이련들...쯧쯧쯧,hate,comments-a0d00cfed170-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00376,"군대나 가세요, 병역기피는 꿈도 꾸지마시길",offensive,comments-a0d00cfed170-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00377,못생겼는데 왜 인기있음??,offensive,comments-a0d00cfed170-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00378,역시 방탄이다 제2의 엑소라 불려도 손색이 없네 이제는 ㅎㄷㄷ 흥해라 방탄 응원한다!!,none,comments-a0d00cfed170-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00379,한인타운 애들 다갔나 보군,none,comments-a0d00cfed170-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00380,광희는 의외로 추격전에 강한 면모를 보여주며 에이스로 성장했다. 이거빼고 맞음,none,comments-ce6c7df0ea0a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00381,다 유재석할탓ᆢ유재석이 박명수 무시하고 안살리고자기몸담은 프로 살아야하니 조세호한테 엄청 의지하는듯,offensive,comments-ce6c7df0ea0a-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00382,"연예인한테 투자 가능하다면,난 세호한테 올인.",none,comments-ce6c7df0ea0a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00383,저번주 면접 보는거 보니까 잘해서 너무 부럽더라 ㅠㅠ,none,comments-ce6c7df0ea0a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00384,진작 이렇게 하지 그동안 너무 다큐같았음ㅡㅡ 유재석 박명수정준하도 이런씩으로 하지,none,comments-ce6c7df0ea0a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00385,유재석 요즘 재미없음 맨날 오씨 오씨 만 힐줄 알고 ~확실히 예전 만큼 엘리트가 많이 떨어짐,offensive,comments-ce6c7df0ea0a-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00386,M&A전문가란 직업이 있어요?^^PF금융업억 종사하는데 저런 직업은 처음.ㅋ,none,comments-fbce2de29318-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00387,살빼기전 김태희보다 더이뻣음,none,comments-fbce2de29318-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00388,어이 아줌마 관심없으니까 이제 좀 조용히살아라,offensive,comments-fbce2de29318-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00389,예쁘네요 몸 조리 잘하시고 브라운관에서 다시 보고싶네요,none,comments-fbce2de29318-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00390,정말 욕먹기 싫으면 그냥 평범하게 살아라,none,comments-fbce2de29318-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00391,핫? 즐!!! 누가 핫하다는건지?,offensive,comments-fbce2de29318-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00392,김지원 20대 여배우중에 제일 좋아하는데 잘됐으면 좋겠다,none,comments-b69a31579d1f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00393,김지원 저런 분장은 ㅎㅎ 그래도 이쁘긴 하지만,none,comments-b69a31579d1f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00394,이 기사 제목을 송혜교가 싫어합니다,none,comments-b69a31579d1f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00395,잘 어울린다 ㅠㅠ 송혜교 보단 김지원이랑 분위기가 어울린듯,none,comments-b69a31579d1f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00396,김지원 고대 분장도 소화하는 미모 진짜 존예다,none,comments-b69a31579d1f-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00397,가요무대가 승자네요 최장기간 시청률 보증,none,comments-0c5319fe780e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00398,김명민 연기 진짜 잘하고ㅋ 키먼이 왠만만해도 우만기는 재방으로 봤을건데 순진이캐릭터 복장터져서,none,comments-0c5319fe780e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00399,"김현주, 손예진 자연스런 미모에다가 연기력까지 갖춘 몇안되는 배우.",none,comments-0c5319fe780e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00400,정말 멋진 배우 김명민. 실물이 훨씬 나으시던데..,none,comments-0c5319fe780e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00401,요새 나혼자산다 솔직히노잼.,none,comments-c115fef81dcb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00402,정말 성공한딸이 자랑스럽고 대견스러운건알겠지만... 사윗감이... 음...,offensive,comments-c115fef81dcb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00403,패키지여행 갈 사람한테 ed카드작성이나 이미그레이션심사하는건 왜 알려줌?ㅋㅋ 어차피 인솔자가 다 알어서 해줄건데 ㅋㅋㅋㅋ 첫 해외여행가는 엄마 겁주는게 그렇게 재밌나?ㅋㅋㅋ,none,comments-c115fef81dcb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00404,한혜진 진짜 지루해서 채널 돌렸다 하차해라,offensive,comments-c115fef81dcb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00405,남송 참지말자,none,comments-739ccb31df0d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00406,남자 맛을 아는 그녀와 여자와 사귄적 없다는 남자의 성격 차이 ㅋㅋㅋ,hate,comments-739ccb31df0d-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00407,송혜교 가만히 조용히 있어면 될것 가지고 꼭 변명을 널어놓네.같이 촬영했던 모든 남자 연예인과 얽혀있고 꼭 그렇게 하고 싶나.,offensive,comments-739ccb31df0d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00408,근데 어차피 남돌 방탄빼면 다 미세먼지들 수준들이고 여돌 트와이스 빼면 라면스프 부스러기 수준들인데 왜 굳이 창업을..? 싸이나 되는 사람이 굳이..?,offensive,comments-ed1f419a9f5d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00409,싸이가 제시 수영복입고 엉덩이 꿀렁꿀렁하는 춤 보고싶다.,offensive,comments-ed1f419a9f5d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00410,제시 예의좀 가르쳐라 싸이야,none,comments-ed1f419a9f5d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00411,제시는 미국 뽈노 배우인줄 알았다 갑바가 장난이 아니네,hate,comments-ed1f419a9f5d-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00412,제시카 잘됐다. 이상한 광고 찍고 풍신거리는 거 보기 안좋더라. ㅋㅋ,offensive,comments-ed1f419a9f5d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00413,김지훈땜에 안보고 못보겠다 아까비,none,comments-bf0717a0ec5f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00414,백퍼 막장,hate,comments-bf0717a0ec5f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00415,이걸한번 봐바야겠네 한지혜숨소리 듣느리 안보는게낫다싶어 심심했는데 김정수작가라 기대해보네요,none,comments-bf0717a0ec5f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00416,이규한씨 잘 어울릴듯ㅋㅋ,none,comments-bf0717a0ec5f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00417,누구냐 넌,offensive,comments-2c8f8e60e659-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00418,듣보가 죽어도 조문오내,hate,comments-2c8f8e60e659-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00419,또 누군지도 모르는 사람 명복빌면서 착한척하네 ㅋㅋㅋ 조센징,hate,comments-2c8f8e60e659-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00420,별세를 했군여 ㅋㅋ,hate,comments-2c8f8e60e659-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00421,삼가고인의 명복을 빕니다,none,comments-2c8f8e60e659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00422,선생님의 마임공연을 잊지않고있습니다.,none,comments-2c8f8e60e659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00423,"아니, 얘가 누구냐고. ㅡㅡ",offensive,comments-2c8f8e60e659-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00424,잘가라 현관아 좋은곳에 가라 만약 노짱 만나면 자살인지 혹시 타살인지 꼭 물어 바주라,hate,comments-2c8f8e60e659-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00425,다시 보고 싶다. 너무 예쁜 첫째부터 세상에서 제일 귀여운 막내 딸까지 그립다.,none,comments-d0537197ee51-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00426,세 딸들 모두 너무 예쁘고 각자 매력을 가진 것 같아요. 아빠 어디가에서 보던 세 자매의 모습들이 떠올라 저절로 웃음이 지어집니다ㅎㅎㅎ,none,comments-d0537197ee51-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00427,애들이 컸는데도 왜 짜리몽땅 해?⁉️⁉️,offensive,comments-d0537197ee51-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00428,예상대로 가네 .... 막내가 미모가 제일 떨어지네 ... 그래도 귀엽긴하다,offensive,comments-d0537197ee51-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00429,와 셋 다 다르네ㅋㅋㅋ 첫째는 첫째같이 공부하게 생겼고 둘째는 이쁘게 생겼고 셋째는 잘 놀게 생겼네ㅋ,none,comments-d0537197ee51-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00430,잘 컸네요. 화목해보여요~,none,comments-d0537197ee51-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00431,정웅인씨 아내분 인스타보면 촬영없는 쉬는 날 가족들과 자주 놀러다니고 시간을 함께 보내는 것 같던데 정말 가정적인 것 같아요. 저런 환경에서 자라는 아이들은 얼마나 훌륭한 어른이 될까요. 너무 부럽네요ㅠㅠ,none,comments-d0537197ee51-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00432,폭풍 짜리몽땅 됬노‼️‼️‼️,hate,comments-d0537197ee51-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00433,권태기 온거 맞네. . 단물 쪽 빨고 버리는듯. .주위에 여자가 많다는거지. Very very dog 임. . 문제는 이런남자를 여자들이 좋아한다는거.,hate,comments-ab3e5ce1166d-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00434,넌 아마 끝날듯~여론이 혜선이편임~,offensive,comments-ab3e5ce1166d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00435,안재현 공익 신고자 변호사를 스스로 찾아가다니ㆍ침착한 대응 칭찬해주고 싶다ㆍ형사고소는 안한다니 한때 사랑했던사람으로서의 마지막 배려인듯ㆍ구라씨는 조용하네ㆍ,offensive,comments-ab3e5ce1166d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00436,안재현도 잘한거없자나 정준영친구인건 사실아닌가 지가 정준영보다 나은것도 없자나,none,comments-ab3e5ce1166d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00437,정준영 절친이면 말 안해도 알겠다,offensive,comments-ab3e5ce1166d-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00438,그러니까 표정 관리 좀 하세요.,hate,comments-3551e2e550b6-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00439,보아씨도 조심하세요 오죽하면 뜬금없이 보아씨가 엮이는 기사가 낫겠어요?? 아니라고 믿지만 증거는 남아요 본인이 조심하는게 최선이에요 아니 하지마세요 제발,offensive,comments-3551e2e550b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00440,사장들 긴장해서 인터뷰장소에서 지적당하는 화면보며 더우울해하는데 옆에 조보아표정참.. 자신은 걱정해준다고하지만 더불편하게만드는거 그냥웃고만앉아있는 얘말고 진행능력과개그감도있는 먹방도가능한 예능인이 출연했으면,offensive,comments-3551e2e550b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00441,야이 기레기 새끼야 제목 똑바로 안쓰냐??,hate,comments-3551e2e550b6-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00442,어떻게 기자됐냐 제목 왜이래 어그로끌어 조회수가 중요하지?,offensive,comments-3551e2e550b6-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00443,"이 글을쓴기자 말인데요,, 제가 오늘 직장상사분들이랑 회식하고 술을 한잔하고 이 글을 봤습니다만...내가 술이 취해서 이해못하는건지,, 당췌 기사를 이해못하겠네",none,comments-3551e2e550b6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00444,조보아 건들지 마라 기자야 아갈머리 찢어갈긴다 ㅡㅡ,hate,comments-3551e2e550b6-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00445,조보아 표정 귀엽기만 하구만 뭘,none,comments-3551e2e550b6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00446,조보아근데 골목식당에서 졸려보임ㅋ졸린데 졸음필사적으로참는거같음ㅋ 안졸려보이려고 자연스럽게하는데 졸려보임ㅋ,none,comments-3551e2e550b6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00447,나도 어릴땐 이뻤다,none,comments-84dae5088c65-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00448,노노재팬인데 쪽바리년놈들두 까야지 조센징들아,hate,comments-84dae5088c65-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00449,애 사진을 꼭 저렇게 수영복입은걸 올려야겠냐??? 기자넘아??,hate,comments-84dae5088c65-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00450,어려서부터 몸매관리만 엄청신경써서 정작 머리는 돌대가리일수도있을텐데 공부도 신경써주세요,offensive,comments-84dae5088c65-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00451,존못... ㅠㅠ,offensive,comments-84dae5088c65-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00452,보영아 무슨 흉터제거 회복이 6개월이나 걸려?,offensive,comments-36ed63c40724-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00453,안됬구나 죽기전에 나하고 한번하자,hate,comments-36ed63c40724-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00454,턱은 뭘한건가,offensive,comments-36ed63c40724-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00455,근데 박보검이랑 나오는 드라마는 도저히 못 보겠다.....,none,comments-20c6c7ec6c29-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00456,박보검하고 드라마 진짜 아니예요 ㅡㅡ 아무리 방부제라도 ㅠㅠ 유부녀면 맞게 역할하시길,offensive,comments-20c6c7ec6c29-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00457,상대가 보검이라니 ;;;;;; 고사 안하는게 더 이상 둘이 연인으로 말도 안됨,none,comments-20c6c7ec6c29-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00458,송중기 연상녀에게 기빨려서 팍싹 싹은거냐??헉...왜케 늙음??,hate,comments-20c6c7ec6c29-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00459,송혜교 보검이는 건들지마라,none,comments-20c6c7ec6c29-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00460,이모 소리 안들으려면 열심히 관리해야져,offensive,comments-20c6c7ec6c29-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00461,잡티 피부과가서 레이저 하면 싹없어져요 아저씨,none,comments-20c6c7ec6c29-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00462,저표정 식상.. 입벌린..결혼 사진도 그렇고..,offensive,comments-20c6c7ec6c29-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00463,보신 모든분들 추천 누르면 다가올 2020년 대박나고 가족 모두가 만수무강 입니다 그리고 다들 좋은 밤 되시고 좋은 꿈을 꿀 것 입니다,none,comments-ad3912729fc9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00464,여태까지 해외 국적이면서 예능 나와서 그렇게 돈을 쓸어담아 갔구나,offensive,comments-ad3912729fc9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00465,음.........적당히 해라,none,comments-ad3912729fc9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00466,일본 사람입장에선 자기나라를 버린거네요.,none,comments-ad3912729fc9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00467,토착 왜구 강남,hate,comments-ad3912729fc9-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00468,개돼지 민국 또 ㅈㄴ 가겠네ㅋㅋㅋ,hate,comments-349bf8ba2be0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00469,규현도 이제 껴 줘요~~♡♡,none,comments-349bf8ba2be0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00470,근혜조카는 나오지말지. 보기불편한데..식당프로 지겹다,none,comments-349bf8ba2be0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00471,"징글징글하다 ㅋㅋㅋㅋ 나영석은 여행, 처먹는거, 게임 이 세개 아니면 못하냐?? 작작 좀 우려먹어라 질린다",hate,comments-349bf8ba2be0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00472,피디가 식당에 미쳤나??뭐 맨날 먹고 놀고 그게 끝이야징글징글 하다 허접한 컨텐츠,offensive,comments-349bf8ba2be0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00473,고 김주혁님 돌아가셨을때 김주혁님 기사로 인터넷 도배되니까 그 난리치던 엑소의 개집들이었지 아마? ㅋㅋㅋㅋ,hate,comments-e8f46e0e5394-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00474,그래서 군대는 언제 입대하나요,offensive,comments-e8f46e0e5394-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00475,진짜 tmi다..,none,comments-e8f46e0e5394-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00476,카이가 도대체 몇명이냐~이름좀 바꿔라,none,comments-e8f46e0e5394-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00477,나이가 어린 남편이자 '니가 ''니가' ㅠ 아~ 추자현씨 .. 홀랑 깬다 ..,hate,comments-f2388dd74a4c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00478,또 시청률 떨어졋나보네 우효광 카드 꺼내는거보니,none,comments-f2388dd74a4c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00479,역시너는내운명 우효광 추자현부부 결혼축하고하고 두분예쁜만큼 잘사세용 참고로 소이현부부제발 안나왓으면좋겟다 닭살,none,comments-f2388dd74a4c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00480,중국인들 제발좀 나오지 않았으면 좋겠다 진짜 혐중이 괜히 지금 심한게 아니다 착쨩죽쨩이라는 말이 왜 나왔을까??,hate,comments-f2388dd74a4c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00481,팬을 투명인간 취급하는데도 아직도 빨아대는 사람들이 있네 근본이 노예라 당해야 안심이 되는거냐? 아님 개돼지라 다 잊은거냐?,hate,comments-f2388dd74a4c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00482,남자들 날리나겠내,offensive,comments-f43516da3a2e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00483,당신 노래 못하면 악플 달린다 ㅋㅋ,offensive,comments-f43516da3a2e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00484,반짝하고 묻힐듯,offensive,comments-f43516da3a2e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00485,악플 없는 거 보니 아직 대세는 아니군...열심히 해라,offensive,comments-f43516da3a2e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00486,어릴때 예쁜얼굴 그대로네~흥하길 바랍니다~^^,none,comments-f43516da3a2e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00487,저런관상이 노래잘하드라 잘컸넹,none,comments-f43516da3a2e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00488,가정을 지키고싶으면 요리배우고 살빼야할듯.,offensive,comments-652216f86983-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00489,구혜선 안재현을 너무 사랑하네...꼭지도 못생긴게,hate,comments-652216f86983-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00490,구혜선 화이팅..,none,comments-652216f86983-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00491,구혜선님 학업 끝내시고 어떤 형태로든 활동해주세요. 재능많은 사람인데 어쩌다 쓰레기를 만나서 ㅠㅠ 늘 응원합니다~^^,offensive,comments-652216f86983-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00492,구혜선씨 응원합니다!! 나쁜 소속사 나쁜ㅅㄲ 악플다는 댓글알바들 절대 봐주지 말고 무너지지마세요 나쁜것들은 천벌받을거에요,none,comments-652216f86983-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00493,구혜선씨!!항상 응원합니다!!지금처럼 애기들 잘 돌봐시구요믿어요..당신을...힘내세요!!,none,comments-652216f86983-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00494,역시 멋진 여자였어 응원해요,none,comments-652216f86983-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00495,유지보단 안해준단거죠 유책배우자가 좋아서 글겠습니까 이혼해줌 돌씽이라고 지만 신나서 다닐껀데 왜 당한사람이 쿨하게 보내줍니까 그럴이유도 없는거지,none,comments-652216f86983-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00496,입장 바꿔서 하등한 너의 얼굴을 니 남편이 못 생겨서 매력이 없다 술이나 해야지 하고 다른 성형 여자라도 좋고 다른 여자들 어장 관리 한다고 생각 해 바라 ‼️‼️‼️‼️‼️‼️‼️‼️,hate,comments-652216f86983-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00497,ㅎ 아들이 뭔죄야 뭔상관이야 아들한테 어떤 의도도 합의도 없이 이뤄진일을 왜 같이 책임지라고 해,none,comments-e296a8297597-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00498,그래 죗값 치루면된다. 그리고 다시 방송에서 보자!,none,comments-e296a8297597-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00499,마이크로 닷 뒤에com도 잡아왔냐?,offensive,comments-e296a8297597-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00500,"아들들 연예활동 하기에는 이미지추락했고 넘늦었는데, ,",offensive,comments-e296a8297597-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00501,연예인부모는 죄다 사기꾼에 빛쟁이네,hate,comments-e296a8297597-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00502,죗값 받고 다시 활동하자 홧팅~,none,comments-e296a8297597-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00503,간만에 좀 재밌었다 전회장의 빈자리가 아쉽다 전회장 있을땐 의자앉아서 토크만해도 재밌었는데,none,comments-3dc06d949414-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00504,다른 출연자들편만 보고 멍청하고 띨띨하고 눈치없는 기안에피소드 나오면 채널 돌려버린다,offensive,comments-3dc06d949414-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00505,바로 채널 돌림,none,comments-3dc06d949414-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00506,어째ᆢ갈수록 재미가 없어지네성훈ㆍ박나래 편만 잼났음,none,comments-3dc06d949414-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00507,연말에 상하나 타보려고 무지 애쓴다티가 너우 나 ㅜㅜ실망,offensive,comments-3dc06d949414-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00508,제목만 보고 한혜진 언니인줄알고 들어온 나년ㅠㅠㅠㅠㅠㅠㅠ 나혼산은 불매지만 혜진언니 보고싶긔ㅠㅠㅠㅠㅠ,none,comments-3dc06d949414-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00509,화사 나올 때부터 나혼자산다 곧 무한도전 꼴 나겠구나 싶더라 ㅋㅋ 현무형 하고 한혜진 누나는 잘 나갔네..,offensive,comments-3dc06d949414-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00510,한혜연좀 안나왔으면 좋겠다,hate,comments-3dc06d949414-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00511,남자는 저런 얼굴 저런 피부색톤 거의 불호지..여자들이나 좋아할지...,offensive,comments-a454db52196f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00512,됐고 이상화 허벅지 보니까 내 아랫도리가 후덜덜하다,hate,comments-a454db52196f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00513,몸매좋은건 알겠는데 노출증 환자같다,offensive,comments-a454db52196f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00514,문가비 뭐 죄 지은것도 아니고 댓글들 꼬라지 수준 ㅉㅉ,offensive,comments-a454db52196f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00515,방송에서 얘 좀 안 봤으면. ㅡ ㅡ,offensive,comments-a454db52196f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00516,얘가 예쁨?,offensive,comments-a454db52196f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00517,점있는 여자 점 꼴보기 싫다 요즘 세상에 점을 왜 달고 삼?,hate,comments-a454db52196f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00518,~내나이 쉰네살인데 순간순간 옛기억이 떠오를때 부끄러워 나혼자 몸이 오그라들때가 있는데 ~공배우님도 그런 느낌 아닌까요~,none,comments-a2371dc27f82-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00519,공블리 항상 응원합니다❣ 공배우님 인성이 좋으니 저희 팬들도 당연히 매너 갑이죠.,none,comments-a2371dc27f82-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00520,댓글들 진짜 무섭다 ;;댓글알바인가??사람이 그럴수도 있지 .. 한마디 잘못했다고 사람진짜 물어뜯네 ;;;;;;;;; 무서워서 숨만쉬고 살아야 '할판..;,none,comments-a2371dc27f82-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00521,별 희한한 년이네ㅋ,hate,comments-a2371dc27f82-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00522,여혐민국에서 여배우로 살기 참 힘들다;;;,offensive,comments-a2371dc27f82-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00523,이게 공효진이 욕먹을 일인가ㅋ 여자들 뇌구조가 심히 걱정스럽네. 자기나온 영상 공효진 허락도 안받고 올리는것자체가 문제인건데,hate,comments-a2371dc27f82-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00524,"덕후, 코스프레 좋다 이거야. 근데 의상이 몇몇 사람들에게 물음표를 떠올리게 할 만큼 너무 노출이 심하단거지. 하의는 스타킹 라인보다 짧던데 의상 만든 사람이 사람이 입는게 아니라 게임캐릭터가 입는다 몰두해서 만든듯.",none,comments-5d2225ef66d0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00525,시대를 읽지못하고 반대로 가네..;;; 참,none,comments-5d2225ef66d0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00526,알았다 고마해라,none,comments-5d2225ef66d0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00527,이걸로 조현씨가 상처받을꺼 없어요 상처입는건 되려 욕한 쿵쾅이들이 더 받을듯 ㅋㅋ 쿵쾅이들아 너희가 거울보니 돼지만 있어서 열받드나?,hate,comments-5d2225ef66d0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00528,김윤경 얼굴볼때마다 진짜 어색해. 성형을 넘 과하게햇네. 유동근은 다림질로 얼굴피셧네,offensive,comments-bcc8bd1b77ec-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00529,나 같으면 입 찢어버렸다!,hate,comments-bcc8bd1b77ec-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00530,내딸이다 할때 아 진짜 눈물이나네 진짜 유동근씨 연기는 대박이네요 좀 짠하고 딸때문에 어떻게해야할지 모르는 그심정 이해가되네요 암튼 너무 짠했어요,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00531,다음 주에 대리한테 간 연다연이 연돼지로 밝혀져 곤란할때 재형이가 나타나 구해주겠네. ㅋ,offensive,comments-bcc8bd1b77ec-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00532,드라마작가들은 서로서로베끼기하는듯 왜이리진부하고 뻔히 전개와결말이 예상된다,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00533,문식다연재형 이 세명 때문에 봄....물론 경수랑 선하랑 다시 만나는데 결혼생각 없다해서 그나마 덜 열뻗치지만 경수모 노답...그리고 이제 전남편 불임인거 아니까 연기못하는 여자분 퇴장 좀 ㅜㅜ아침일일드라마 연기수준임.,offensive,comments-bcc8bd1b77ec-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00534,방금 유동근 아재 회장여자 한테 엄포 놓을때 포스 ㅎㄷㄷ간만에 정도전때 포스 나오더만 진작 이렇게 만들지 이상하게 캐릭터를 만들어 놓아서.,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00535,어휴 내가 다 울컥하더라 내딸이야 하는데 .. ㅠ,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00536,오늘 박효섭이 유하가 내딸이라 했고 나중에 정은태가 은수가 내딸이라 하겠네ㅋㅋㅋ 이 드라마의 주제는 딸밍아웃ㅋㅋ,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00537,장미희ㅜ집에서 일하는 아줌마는 원상탸로 돌려놔라 ... 너무 억지다.! 큰딸은 결국 팀장하고 결혼하겠지만 ... 그 찌질이 남자 엄마행동도 너무 오버다.,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00538,장미희유동근씨 목소리 옛날영화 보는거같아서 좋음,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00539,큰 딸 시애미 진짜 발암이다! 드라마니까 망정이지! 정말 피하고 싶은 타입!!!,hate,comments-bcc8bd1b77ec-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00540,황금빛보다 훨재밌는데..,none,comments-bcc8bd1b77ec-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00541,SE$ 아닌가요 이제 Sea Eugene $hoo,hate,comments-8c74444428b0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00542,슈는요? 강원도에 이싸요?,none,comments-8c74444428b0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00543,유진 별로,none,comments-8c74444428b0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00544,유진이랑 트와이스 나연이랑 쫌 닮았다,none,comments-8c74444428b0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00545,이와중 타짜는 일본감 ㅋㅋ정신빠진 녀ㄴ,hate,comments-8c74444428b0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00546,좀웃기다. 바다빼고 슈랑 유진 절친이었는데..슈 그리되니 바다랑 노네 ㅎ,none,comments-8c74444428b0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00547,ㅋ그 여자랑 알렉스가 팔던 바지. . . 커서 바느질하고 있었는데 나옴~ ㅎㅎ바지가 보풀이나서 난리~ ㅜ,none,comments-18430314b0e5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00548,댓글중에 슬슬 쿵쾅거리는데....,offensive,comments-18430314b0e5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00549,별로 안사고 싶던데 자기에 취했네 물건같은걸 팔아라,offensive,comments-18430314b0e5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00550,아니 무슨 이리 선비들이 많아 예능나와서 저런말도 못하냐?? 모 하나 껀덕지 잡았다고 사람한명 잡을기세로 악플달고 달려들어 그냥 예능인만큼 편하고 즐기면서봐,offensive,comments-18430314b0e5-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00551,엑소가 제자?? 겁나 부럽다...,none,comments-18430314b0e5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00552,예능을 진지빨고 보는년들이 넘많아져서 요즘 예능 개노잼됨 무도가 망한 이유기도하지 무도전성기땐 수위 장난아니었음,hate,comments-18430314b0e5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00553,제발~~부끄러운줄알았음..이혼은왜하셨나요??사생활지저분한쇼호스트가 티비나와서할소린아닌줄..,hate,comments-18430314b0e5-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00554,직업정신 투철하고 좋구만^^,none,comments-18430314b0e5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00555,~한ㅅ희 나오고 나서 전혀 독특해 보이지 않음 그리고 설리가 잘못한것도 없고ㅡㅡ,none,comments-948973b7ed75-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00556,나도 설리보면 천녀유혼의 임청하나 서기가 생각난다. 뭔가 애절하고 몽환적인 느낌이 나는 비쥬얼..,none,comments-948973b7ed75-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00557,네 알겠습니다 남가수 딘씨,offensive,comments-948973b7ed75-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00558,딘 넘 잘생김~♡,none,comments-948973b7ed75-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00559,악플다는 애들 = 거울보면 한숨만 나옴 ㅇㄱㄹㅇ,offensive,comments-948973b7ed75-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00560,팩트 : 남자들은 설리가 찌찌를 보이던 말던 이쁘니까 좋아함. 여자들은 설리가 마치 끼부린다 생각하면서 여적여를 시전함.,hate,comments-948973b7ed75-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00561,방탄 이미지 소모가 심해. 너무 자주 울어. 방송국의 BTS가 되지마라. 이제 창작으로 승부 봐야.,none,comments-2d18cf97bd03-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00562,방탕소년단은..눈치도없다.. 헤어지기싫어도 어쩡수없이 이별해야하느누그릅앞에서... 해체생각햇다 말하거싶엇니생각이없어,offensive,comments-2d18cf97bd03-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00563,아무리 방탄이 대단하다고 하지만 내년엔 워너원도 없고 과연 시상식장이 꽉 채워질까?ㅋㅋㅋㅋ,none,comments-2d18cf97bd03-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00564,엑소가 없으니깐 시상식이 영 격이 떨어지네 마치 메시호날두 빠진 발롱도르 시상식이랄까...,offensive,comments-2d18cf97bd03-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00565,트와이스올해뜬노래가없는데 ?...응 돈멕이기,offensive,comments-2d18cf97bd03-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00566,너무 이쁘던데,none,comments-69299e877210-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00567,초중등생때부터 박남정이 데리고 방송출연 시키더니 슬슬 제대로 활동하려고 하나보네,none,comments-69299e877210-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00568,강인은 억울한거지 .마녀사냥하지마라. 그렇게치면 정준영 단톡방에있던 모든 사람들 조사대상이지. 프로그램이나 뭐 단발성으로 만들어진 단톡방들이 한두개겠냐,offensive,comments-0904ad930f06-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00569,강인이는 축구만 하는줄 알았더니ㅠ,none,comments-0904ad930f06-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00570,매니저 저렇게잘해주면부담스러워서 관둘듯 나중에관둘때도 좋게관둘거같지가않은디,offensive,comments-5b812b674f71-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00571,매니저님 볼때마다 성혁 생각남 장보리 문지상,none,comments-5b812b674f71-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00572,메니저님 확실하게 공적으로만 만나세요.,offensive,comments-5b812b674f71-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00573,이거 어묵논란은 해결된건가요? 폐지된줄알았는데,none,comments-5b812b674f71-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00574,이영자 스케일전액 기부도 모자라서 뿌라스까지날씬하고 이쁜것들아 쫌 배워라,offensive,comments-5b812b674f71-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00575,이영자씨 광고출현료 전액기부!! 진짜 멋있고 정 넘치는 모습 감동입니다,none,comments-5b812b674f71-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00576,Mbc 주말 드라마 다시했으면 ㅠㅠ,none,comments-cdda84c3022f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00577,드라마는 드라마로 보는것도 좋치요..다음주 벌써부터 기대되네요..ㅜ,none,comments-cdda84c3022f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00578,명탐정 다야!!!!,none,comments-cdda84c3022f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00579,너는 누굴 닮은거니? 실존 인물이면 머리 뜯긴걸로 안끝나,offensive,comments-cdda84c3022f-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00580,그래 한번사는인생 한여자랑 평생을 같이사는건 남자한텐 너무 억울하지,offensive,comments-b1c2df597152-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00581,나 올해 23살인데 이 누나 이혼하기를 학수고대했다.드디어 나에게 기회가 온거라 이말이다,offensive,comments-b1c2df597152-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00582,윤민수랑 결혼 ㄱ ㄱ,none,comments-b1c2df597152-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00583,좋지않은소식이라고 쓸것까진.. 이혼이 뭐라고..,none,comments-b1c2df597152-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00584,앞으로 한국에서는 활동하지마라 어디서 무개념미국애데려와서 머하는짓인가몰라,hate,comments-8245590a6d3a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00585,일본욱일기는 전범기가 아니라고.. 좀 열등감에서 벗어나서 상식적으로 판단하자 좀,hate,comments-8245590a6d3a-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00586,참...실수해서 제대로 사과했는데 왜 자꾸들 그러는지,none,comments-8245590a6d3a-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00587,너무 한국인들 극단적임 단순히 얘는 욱일기라서 좋아요 누른게 아니라 감독사진이라 좋아요 누른건데 당황스럽겠지 ㅡㅡ... 감독한테가서 욱일기 설명 하든가...한국인들 으 지겹다 지겨워 너무 예민하고 민감하고,hate,comments-8245590a6d3a-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00588,1억도 안아깝다 ☝️☝️☝️☝️☝️☝️☝️,none,comments-0329084ac030-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00589,그쪽지역 출신들이 다 그렇지 뭐 ㅋㅋ,offensive,comments-0329084ac030-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00590,댓글에 전라도 사투리...진짜 웃긴다... 사투리가 송가인 말투로 읽혀서~~~,offensive,comments-0329084ac030-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00591,"몇년전 전라디언 냔 먹은적 있는데 아가리엔 똥내,아랫도리는 홍어 장난 아니더구만~~냄새 쩐다 쩌러~~항상 전라디언들은 뒤통수 조심해라",hate,comments-0329084ac030-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00592,비싸면 부르지 말던가요~~왜 송가인한테 그러나요!!,none,comments-0329084ac030-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00593,송가인 1억 불러도 안비싸다 대한민국에 송가인만큼 인기있는 사람 나와보라고 하세요,none,comments-0329084ac030-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00594,우리 가인이는 인기가 많아라~,none,comments-0329084ac030-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00595,한물간 장윤정ㆍ현빈과 비교치 말거라~~~지금은 송가인이가 최고닌께,hate,comments-0329084ac030-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00596,시기가 미묘하네요,none,comments-1ad1042003a6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00597,용기내주셔서 감사합니다,none,comments-1ad1042003a6-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00598,남자가 사회 생활하다 보면 손이 스칠수도 있는거지 거참~~,offensive,comments-f273ba22011e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00599,이정도로 성희롱이냐?,offensive,comments-f273ba22011e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00600,조민기 남자답노 한녀들 참교육 린정한다 ^오^,hate,comments-f273ba22011e-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00601,조민기 자살하겠다.....적당히하자.....,offensive,comments-f273ba22011e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00602,"처음 본 여자한테 찝적 거렸는데, 여자가 기분 나빳다 ? 이게 죄야 ? 성적 발언을 한 것도 아니고, 상대가 기분이 나쁘면 무조건 피해자로 규정하나 ? 이건 아니지 싶다 ㅋㅋㅋ",none,comments-f273ba22011e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00603,"60만원으로 무슨 5억 피해입은 마냥 폭로하는 놈도 그렇고, 60만원을 안 갚고 쌩깠던 매니저 놈도 그렇고.. 참 안습이다.. 인간들 요즘 왜 그런지 참 ㅉㅉ... 신상털기, 먼지털기가 인생 낙인갑다..",none,comments-e0dd57de6dba-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00604,근데 왜 이제 와서 이사단 난거냐. 문재앙시키 또 뭔가 숨기는거 아니야,hate,comments-e0dd57de6dba-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00605,너무 마녀사냥 아닌가,none,comments-e0dd57de6dba-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00606,무표정일때 눈빛이 약간 양아치 같은 느낌이 있었는데 역시 관상은 틀리지 않어 ㅋ 해병대 출신은 왜다 저렇냐 ㅋ,hate,comments-e0dd57de6dba-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00607,아니 무슨 죽을 죄 지은것도 아니고 사람들 진짜 너무 하네요 .한사람 인생을 쥐락펴락하는게 무섭네요 앞으로는 돈관계 확실히 하며 사세요 ~ 이승윤씨도 매니저도 응원할게요 전참시에서는 하차없이 쭉 하셨음 좋겠어요,none,comments-e0dd57de6dba-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00608,제대로안준놈도문제 5년지나 꼴보기싫어 까발리는 년도문제,offensive,comments-e0dd57de6dba-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00609,큰액수도 아니고 갚았는데 방송 첨부터 이야기 하던가 뜨고나니 터치는건 뭐야 ~~~참 언론이 무서워 사람 인생 보내는거 순식간이야,none,comments-e0dd57de6dba-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00610,윤진이 머리길면. 완전 짱인데,none,comments-7675782215f4-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00611,윤진이 배우 김예원(써니에서 반대 패거리 리더)하고 많이 닮았네,none,comments-7675782215f4-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00612,윤진이가 연기를 잘하는것임,none,comments-7675782215f4-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00613,이 시간에는 동물의왕국틀어도 30%임,none,comments-7675782215f4-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00614,이장우 늙고 못생김 저딴 아재가 주연이니깐 망하지,hate,comments-7675782215f4-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00615,문과장님 갓동수형사님 에게 큰 단서를 주고 가심ㅠ유시준이 악마야ㅠ죄없는 사람을 다 죽임,none,comments-c0725cdf042b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00616,비 연기도 잘하네요. 군대 안갔으면 헐리우드에서 더 유명해졌을수도 있는데. 어려운 환경에서 태어나 항상 열심히 사는 모습이 항상 존경스럽습니다.,none,comments-c0725cdf042b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00617,유검사가 방법이 잘못됐지만..어린시절 부모 억울하게 잃고..복수심도 있을꺼고..이해가 안가는건 아니다..난..왜 유검사가 짠하지..문과장 죽음도 슬펐지만..ㅠㅠ,none,comments-c0725cdf042b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00618,유희열의 스케치북은 요즘 하긴 함?,none,comments-c0725cdf042b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00619,이 드라마 아직도 하네~~~,none,comments-c0725cdf042b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00620,아고 웃는 게 참 예쁘기도 하고 익살스럽네요~ 소이현씨 아버님과 복싱하던 방송보니 사랑 많이받고 자라서 밝고 건강하구나 싶었어요!^0^ 그걸 아이도 이어받은 거겠죠? 많이 사랑스러워요 쪼매난 인교진ㅎㅎㅎ,none,comments-9d57dd60a659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00621,엄마.아빠가 잘 웃으니 하은이도 밝은 웃음이 예쁘네요^^,none,comments-9d57dd60a659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00622,엄마가 예뻐서 아가들도 예뻐요,none,comments-9d57dd60a659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00623,여행갔다 하은이랑 셋이서 여행오신거 봤는데 딸과 너무잘놀아주시고 인사도 먼저해주시고 이쁜가족이였어요~ 네가족 행복하세요^^,none,comments-9d57dd60a659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00624,하은이네 가족만 바라봐도 괜실히 같이 웃게되고 기분좋아지는 행복한 바이러스가 가득한집입니다~~늘 보기좋고 사람이 꽃보다 아름다워란 노래가사처럼 예뻐요♡♡♡하은이네 가족 파이팅~~,none,comments-9d57dd60a659-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00625,결혼식장에 술집걸들 8명 오겠네신부가 9번째로 입장하고.술집에서 8명과 술먹은건 사실이고화장실은 경찰조사 하면 나오겠지빨리좀 고소해라. 언능,hate,comments-b587da189c0f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00626,성매매는 범죄라고 하면서 본인들이 다는 악플로 인한 명예훼손 모욕은 범죄가 아닌 척 하시는 분들은 뭔가요? 내로남불 민국 답네요,offensive,comments-b587da189c0f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00627,장자연씨 진짜 미모도 심성도 정말 괜찮더라~~김건모의이번일로충격또한 심할텐데결혼의시작이 큰 장애를 만난것같은데슬기롭게잘 헤쳐나가기를 바랍니다,none,comments-b587da189c0f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00628,좀 내비두면 어디 덧나나요~잘살게 내비둬요~~~쫌,none,comments-b587da189c0f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00629,김민경 지금도 입에 우걱우걱 음식 처 넣고있을 듯,hate,comments-85518d44aff1-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00630,"됐고,,,우리 다니엘 오빠 오늘 지상파 뮤뱅 1등❤️많이 많이 축하해 다녤 평생 꽃길만 걷자",none,comments-85518d44aff1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00631,살빼세요! 심장마비로 돌연사 합니다.! 근데 도배할 만큼 인기있는 사람인가요 누군지 잘몰라서,offensive,comments-85518d44aff1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00632,"하차하세요,,,,예능인데 감정이입욀거 같네요",none,comments-85518d44aff1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00633,자다가 누가 죽는 꿈꿔서 방금 일어나서 불키고 휴대폰 봤는데 실검 1위가 누가 죽는 소식이라니 믿기지가 않습니다 저 스스로도 소름돋아서 눈물이 나고 있습니다,none,comments-85518d44aff1-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00634,남편손절하면 섭외들어올꺼같지? 당신은 끝났어 배우자한테도 의리 못지키는사람을 누가써?이기적인...,offensive,comments-17dbbae47deb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00635,남편이 잘못한건 잘못한거고 잘될때 같이 살다가 어려워졌다고 이혼하는건 좀 아닌것같다,none,comments-17dbbae47deb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00636,박해미정도 글래머면 이혼하고 재결합까지도 얼마안걸릴듯 아직도섹시해서 돈있는영감님들사이에선 최고의인기녀지,hate,comments-17dbbae47deb-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00637,빅 슴가는 앞으로 누가 만져주나~~~~ㅋ,hate,comments-17dbbae47deb-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00638,여자들은 남자한테 힘든일 생기면 같이 떠안으려안하고 도망치는게 먼저 같아,offensive,comments-17dbbae47deb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00639,이혼 두번. 이ㄴ도 팔자가 세다,offensive,comments-17dbbae47deb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00640,지혼자 잘먹고 잘살겠다고 남편사고 좀첫다고 바로버리네 어휴,offensive,comments-17dbbae47deb-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00641,바로 손절하네 ㅋㅋㅋㅋㅋㅋ 몹시 이기적인 여자군,offensive,comments-17dbbae47deb-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00642,광대튀어나온 철가면쓴 아줌마? 개나소나솔로라고,hate,comments-249d7471d033-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00643,베드보이 표절 논란은 해결했나??,none,comments-249d7471d033-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00644,프듀1 출신중 성공한건 역시 청하가 갓.. 그 다음은 전소연 김세정 정채연 이서정,none,comments-249d7471d033-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00645,"여프듀 최고 아웃풋은 김세정이였는데 그룹으로 짜식, 전소미도 JYP에서 연습생이라고 스케줄안잡아줌 짜식, 사실상 청하 체고조넘",offensive,comments-249d7471d033-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00646,또 아이돌이냐,offensive,comments-2a4917485b5b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00647,보나마나 법정 드라마를 빙자한 로맨스 드라마 찍겠지. 내가 장담하는데 고아라랑 남자 주인공이랑 로맨스 장면 보여주는데 시간 다 날린다. 한국 드라마 수준이 그렇지 뭐 그걸 좋다고 보는 사람들도 똑같고,offensive,comments-2a4917485b5b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00648,어제 완전 웃겼음!ㅋ,none,comments-2a4917485b5b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00649,ㅋㅋㅋ연예인들 이미지 관리 시작했네 ㅋㅋㅋ,offensive,comments-5edb0f2aa53f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00650,비난하시는분들...그럼 어떻게 해야하는지요...아니라고 손놓고 있어야하나요?좋은 외교법도좀써주시면 글이 공감이갈텐데...ㅠㅠ,none,comments-5edb0f2aa53f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00651,새로운시작을 가장한 신적폐 문재인,hate,comments-5edb0f2aa53f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00652,정우성 공효진은 원래 좌파지만나머지들은 좌파라인 타려고 커밍아웃한건가곧 문죄인과함께 방송에서 사라지겠네 ㅉㅉ사람은 라인을 잘 타야돼,hate,comments-5edb0f2aa53f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00653,천한것들 답다,hate,comments-5edb0f2aa53f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00654,트럼프나 프란치스코교황까지 빨갱이로 만드네ㅋㅋ대체 뭘 쳐먹었길래 다른세상을 살고있는지ㅋㅋ,hate,comments-5edb0f2aa53f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00655,김윤아가 누구지? 노래는 잘 하는듯,none,comments-29be4ca40592-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00656,로이킴 나오는 줄 알았으면 보는 건데 ㅜㅜ. 윤건 별로라 걸렀더니 ㅜㅜ,none,comments-29be4ca40592-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00657,윤건은 존재감 없었는데;,offensive,comments-29be4ca40592-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00658,작곡과 들어갈 정도만 배우고 지금은 그거보다도 못 치는 같던데요..;,offensive,comments-29be4ca40592-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00659,한국 유명 가수들이 찌질한 동네가서 버스킹하면서 감동 줬다고 자기기만하는 개한심한 프로그램.,hate,comments-29be4ca40592-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00660,다말아먹고 튀냐,offensive,comments-3146bfb7d19e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00661,데리고 잇는 애들이 그렇게 사고를 쳐놧으니..책임을 질때도..됫지..,none,comments-3146bfb7d19e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00662,재산 수백억이니 쉬고 싶으면 쉬는거지. 느그들은 우울증 약 먹으면서 일해야 되고 ㅇㅇ,offensive,comments-3146bfb7d19e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00663,라디오스타 대본 리딩도안하고 올정도니까 돈에환장해서 너무 상업적으로만 일을하는게 보였었음 그래서 어느순간부터 비호감이었음라디오스타 짤릴꺼같다고 생각했음,offensive,comments-3146bfb7d19e-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00664,누가사고가났던 일단의료사고가 났다는게....어디병원이죠 거기,none,comments-66e79b29986c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00665,여배우 몸에 먼짓을 했냐 이 백정들아,hate,comments-66e79b29986c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00666,이런글에 악플좀 달지마라. 진짜 얼마나 속상하겠냐. 악플달꺼면 글쓰지마..저런 실력으로 어떻게 의사가 된건지..이해가 안간다 제대로 보상하고 사과해라. 이휴 진짜 보상받아도 속상하겠다. ㅠㅠ,none,comments-66e79b29986c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00667,해체 수순은 당연한거고 멤버들도 알았든 몰랐든 그동안 혜택을 봤으니까 도의적인 책임에서는 벗어날 수 없다고 봄. 당분간 자숙하면서 기다리는 수밖에,none,comments-203ed0a150e3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00668,해체해야지 아이즈원 엑스원 둘다,offensive,comments-203ed0a150e3-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00669,근데이혁은유투부로 돈벌던데,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00670,"""노라조 """"형""""이란 노래로 힘들 때 위로를 받곤 했습니다. 앞으로도 노라조라는 이름으로 여러 사람에게 즐거움과 위안을 주시면 감사하겠습니다.""",none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00671,노라조 화이팅,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00672,댓글 투척,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00673,슈퍼맨은 아직도 아이들이 좋아합니다,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00674,저 프로듀서 유투브 컨텐츠 빨아먹는거 짜증나더라 불법은 아니다 그런데 빨아먹을라고 밑밥깔고 자기것만 홍보하고 정작 진행자 페이지는 홍보안하고..ㅉㅉ,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00675,이혁이 얼굴과 실력으로 집중조명 받았지만 조빈형도 나름 잘생기고 실력파임 노라죠도 응원하고 이혁씨도 락커로 성공하세요 서로 잘되서 콜라보도 하고 그런모습 보고싶네요^^,none,comments-d82de1f8727c-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00676,더 멋지긴한데 통통할때의 신동이 좋다 건강생각하며 뺀건 잘한거같네요 통통이 신동도 그립지만 지금은 정말 꽃미남이네요 최고의 성형은 다이어트 탄수화물줄입시다 모두 건강행쇼,none,comments-98d1869de1bd-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00677,돼지 stays 돼지 ㅋㅋ 그리고 솔직히 남자는 23 넘어가면 애초에 와꾸가 흘러내려서 이성으로 안 보임 근데 하물며 30대에 관리까지 안했다? 이건 뭐 ㅋㅋ,hate,comments-98d1869de1bd-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00678,살빼니까 왜케 느끼하지ㅋㅋ,none,comments-98d1869de1bd-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00679,살찐돼지들 진짜싫다 남녀노소 돼지들은 개극혐,hate,comments-98d1869de1bd-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00680,전에도 빼서 다이어트약 홍보했던적 있었는데 일부러 찌우고 빼기 반복하는듯,none,comments-98d1869de1bd-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00681,어떤 반응을 하더라도 러블리즈에게 관심을 가진 사람이 한건데 그 관심에 대해서 끝까지 참아주고 인내해주면 좋았을텐데 라고 생각도 들고 동시에 그런 글 보고 당연한 반응을 했구나라는 생각도 들고 어쨋든 재미있는 주제다,none,comments-1b012654b1fb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00682,여자아이돌 죄다 일진 양아치 꼴초 냄비임,hate,comments-1b012654b1fb-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00683,예인이 악플을 '보고' 욕한 것이 맞나? 당시 상황은 멤버가 편의점 갔다가 브이앱 도중 조용해진 방에 들어오며 욕을한 것이라 매니저 혹은 일상의 다른 사람에게 한 것일 수 있다. 팩트는 욕한 걸그룹일 뿐.,none,comments-1b012654b1fb-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00684,윤서이니야 시시때때로 열폭하는 애라 그렇다지만 여기서 정우성까는 애들은 왜 그럼??? 유엔난민 홍보대사라서 SNS에 홍보 좀 한거갖고.. 윤서인 얘도 웃긴게 그러면 지도 평소에 입바른 소리라도 하든가.,hate,comments-fbea67c50b2f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00685,윤서인이 눈치 안보고 당당하게 개념 발언한거지,none,comments-fbea67c50b2f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00686,정우성님 적극 지지합니다 난민 수용ㅍ적극적으로 받아들이곡 정부에서 난민들 적응 잘하도록 아낌없는 지원부탁드려요,none,comments-fbea67c50b2f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00687,정우성이 맞는말 했는데 왜 난리들인지? 오히려 만화가가 관종같구만.,offensive,comments-fbea67c50b2f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00688,친선대사도 중졸에게는 시키지말자.,hate,comments-fbea67c50b2f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00689,정우성씨 앞으로 난민들을 위해 더많은 노력과 도움이 되는 멋진배우로 노력해주세요~ 홧팅하세요~^^♡,none,comments-fbea67c50b2f-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00690,기무라 타쿠야와 후카츠 에리 보다가 이거 짤로만 보는데도 망작스멜이 나노 원작을 이따위로 망쳐놓냐? 차라리 옆방송국에 나오는 소지섭을 캐스팅하던가 뭐냐 이게...,offensive,comments-da857f6f122c-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00691,서인구 싫은데 뭔가 자꾸 잼나 ㅜ ㅜ 군더더기 없고 진도 빠르고 억지도 없고 연출자들 박수 ~,none,comments-da857f6f122c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00692,안 봐요....왜인지는 말 안 할께요...알죠?,offensive,comments-da857f6f122c-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00693,자꾸 메인바꾸지만 그래봤자 군대도피자라는 사실이 바뀌진 않는다,offensive,comments-da857f6f122c-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00694,조오또 가진것 없던 놈이 무언가 가지니 양아치가 되는구나 OOO 양아치,hate,comments-da857f6f122c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00695,그만 좀 나와라 김종국,offensive,comments-127bcbfab5b0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00696,마스크걸고 밥쳐먹는ㅅ끼..,hate,comments-127bcbfab5b0-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00697,철구랑 보황이 의사보다 돈잘범ㅋㅋㅋ,offensive,comments-127bcbfab5b0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00698,코 했네,offensive,comments-127bcbfab5b0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00699,허리가 아파서 총도 못쏘고 슬프겠다,offensive,comments-127bcbfab5b0-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00700,형이 의사인건 이미 오래전 공개됐고 여러번 방송도탔고 같이 나온적도있는데 모르는사실 오늘 첨 공개한것처럼하는건 아니지않나요?,none,comments-127bcbfab5b0-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00701,그래서 ㅅsex는 언제해요?,hate,comments-4747c4fbc661-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00702,난 여자지만 송다은이 젤 매력있던데ㅋㅋㅋ,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00703,난 이번에 나온 셋 다 전혀 이쁜거 모르겠음...셋 다 전혀 내 스타일 아님,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00704,내가 저기있음 현주올인한다 좋은 여자임 웃어주는 사람이랑 있음 행복하지 왜웃냐고 따지는 사람들이 이상한거임,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00705,어딜봐서 임현주가 여우? 좋아하는 남자 앞에서 표현도 못하나.,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00706,여자들이 임현주 싫어하는 이유지들은 평생 남자한테 먼저 다가가지 못하고 수동적으로 기다리기만 했는데임현주는 좋아하는 거 맘껏 표현하고매력 표출하는 거 보고 반감 느끼는 거,offensive,comments-4747c4fbc661-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00707,임현주 넘귀엽고 매력적인것같아요,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00708,임현주너무이뻐요 임현주가짱 같은여자가봐도너무사랑스럼♡,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00709,임현주는 원래 자기 스타일 인것 같아서 오히려 자연스럽던데 ~~,none,comments-4747c4fbc661-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00710,임현주한테 열폭부리는 것들 많넼ㅋㅋ 하긴 지들은 임현주가 가진 매력의 반의반도없으니 남자못꼬시지,hate,comments-4747c4fbc661-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00711,내가 보기엔 이거 돈떼먹으려는 수작 아니냐? 이거 다 쇼아냐?,offensive,comments-445be27e39da-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00712,악플러놈들 지네가 해줄것도 아니면서 팬들한테 염치 불구하고 부탁한다는데 지들이 개소리들 하고있냐. 누가 나랏돈으로 해달래냐 니한테 돈빌려달라냐.,hate,comments-445be27e39da-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00713,안도와들 줄거면 입다물어라ㆍ본인은 얼마나힘들겠냐,offensive,comments-445be27e39da-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00714,여기서 악플다는 사람들너네 가족이라고 생각해봐라 ㅉㅉ,hate,comments-445be27e39da-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00715,오죽하면 공개적으로 아내랑 도와달라고 글 썼겠냐 개인sns에 지인들한테 도움요청할수도있지 뭐 모금프로그램나왔냐 하루아침에 전신마비된 사람한테 악플달고싶냐,offensive,comments-445be27e39da-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00716,지인분들여유있는분들 좀도와드리세요너무안타깝네,none,comments-445be27e39da-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00717,악플러들 너무 싫다. 도와주기 싫으면 외면하면 되지 왜 글을 쓰는 수고를 할까. 이런 행태 외면하지 못하겠다 정말.,offensive,comments-445be27e39da-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00718,관심없음ㅋㅋ 지상파나왔음 욕만더먹었겠지?,offensive,comments-b659900647cd-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00719,김태리 언니... 연기연습 좀 하세요 !!! 연기가 왜 그모양이에요?,offensive,comments-b659900647cd-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00720,역대급 좋아하네 꼴폐미 드라마 ..들어간 돈이 아까움 ㅋㅋ 현실성이라고는 단 1%도 없는,hate,comments-b659900647cd-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00721,재미없어 안봄,none,comments-b659900647cd-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00722,꿀잼 ㅠㅠ,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00723,드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00724,연장해줘요ㅜㅜ 넘재밋음ㅜㅜ,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00725,이다해 예전부터 눈물 연기하나는 진짜 잘해,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00726,재밌어요차선희씨 밤새간호하는 장면 눈물났어요담주가빨리오길,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00727,주말드라마를 기다려서 보긴 거의 처음..아쉬운건 2화분량을 하루에 다 하는 거ㅜㅜㅜ 저녁 약속 있으면 초반은 다 놓치뮤ㅠㅠㅠ,none,comments-57fd291d3bf5-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00728,이다해 얼굴 갈수록 이상해ᆞᆞ이다해 그렇게 성형수술 중독이니,hate,comments-57fd291d3bf5-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00729,"강가ㄴ빛 시후 인생 , 미투운동 동참하고 고해한후 전자발찌 차야 된다",hate,comments-0d5cd63edbe2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00730,"강가ㄴ빛인생 시후 , 미투고백 해라 , 고해한다음 셀프 전자발찌 차러 가즈아",hate,comments-0d5cd63edbe2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00731,아니ᆢᆢ지안이 황금빛내인생은 언제부터야ᆢᆢ,none,comments-0d5cd63edbe2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00732,아빠는 다 암으로 죽는단다.,hate,comments-0d5cd63edbe2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00733,이다해 왜케 웃기냐ㅋㅋㅋㅋ,none,comments-0d5cd63edbe2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00734,재밌기만 하구만 뭘그리들 불평불만들이 많으신가요?,none,comments-0d5cd63edbe2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00735,주말드라마는 할줌마들 전용이라 어쩔수가없음,hate,comments-0d5cd63edbe2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00736,줜나 무리수인데 줜나 재밌음 ㅋㅋㅋ,none,comments-0d5cd63edbe2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00737,난민같음 ㅋㅋㅋㅋ,offensive,comments-98b3fc0a541b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00738,모델 같은 느끼 1도 안듬,none,comments-98b3fc0a541b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00739,순간 홍진영으로 보고 홍진영 숨겨진 딸이 있었나 했음...,none,comments-98b3fc0a541b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00740,정말 이런건 안올리면 좋겠음 정말 가고픈이들도 많을텐데 능력이안돼 못가면 얼마나 자괴감들겠어 응 누가 궁금하다고,offensive,comments-98b3fc0a541b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00741,홍진경씨 머리왜저럼? 탈코르셋임? 예쁜애들이 탈코르셋하는건 본적이없네.,offensive,comments-98b3fc0a541b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00742,21C에 주술사랑 ...,none,comments-acd2a791a54b-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00743,사귈 사람이 없어서 한무당이냐 ㅋㅋㅋ,offensive,comments-acd2a791a54b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00744,의사도 아니고 한의사? 왜?,offensive,comments-acd2a791a54b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00745,의사도아니고 한의사? ㅋㅋ,offensive,comments-acd2a791a54b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00746,한무당 사기꾼이랑...흠..,offensive,comments-acd2a791a54b-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00747,한무당~ 돌팔이 한무당,hate,comments-acd2a791a54b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00748,한의사 망인데. 잘 알아보고 사귀지.,hate,comments-acd2a791a54b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00749,한의사 한물 감,hate,comments-acd2a791a54b-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00750,한의사라벌이가 그닥,offensive,comments-acd2a791a54b-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00751,신수지 겁나이쁜데 얼굴몸매ㄷㄷ 부럽다,none,comments-220827efacfc-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00752,신수지 얘도 비호감별로 이쁘지도 호감도 아닌데엄청 나대는 스타일티비나오지마라 보기싫다,offensive,comments-220827efacfc-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00753,침대에선 어떨까,offensive,comments-220827efacfc-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00754,그녀를 믿지마,offensive,comments-6567430d9ac8-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00755,나이차이는 느껴지는데...요즘 백종원씨 너무 띄움.,none,comments-6567430d9ac8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00756,아빠닮으면 남편복있다던데,none,comments-6567430d9ac8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00757,아이들이 엄마 닮아서 다 귀여워요~ +_+,none,comments-6567430d9ac8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00758,애들와꾸 어쩔꺼냐 하긴 돈이 많으니 성형시켜주겠네 걱정없겠네~,hate,comments-6567430d9ac8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00759,여자들 미쳤어 남편 밥차리는게 그렇게싫냐?,offensive,comments-6567430d9ac8-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00760,예쁜 가족사진이네요~~,none,comments-6567430d9ac8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00761,좋아보인다 부러워요~~~,none,comments-6567430d9ac8-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00762,황교익이 이 기사를 싫어합니다,offensive,comments-6567430d9ac8-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00763,ㅋㅋ 시로마 미루 안된거 부터 ㅆ 주작이었다,offensive,comments-994f6c31b3c3-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00764,끝났네 일본애들도 이제 일본으로 가라,offensive,comments-994f6c31b3c3-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00765,"사쿠라,나코,히토미,미우,미루,에리이,사에를 데리고 와서 한국에서 아이돌 데뷔시키자. 아이즈원 그냥 쳐 바르고 탑아이돌급 인기 얻는다.",offensive,comments-994f6c31b3c3-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00766,슈스케는? 왜 슈스케 얘기는없냐,none,comments-994f6c31b3c3-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00767,문재인이 대통령되고 국가가 공산주의가 되는 것 같다. 적당히해라.,hate,comments-f724d894c519-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00768,아니 이런 시점에 꼭 일본년이랑 만나야했나,hate,comments-f724d894c519-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00769,일본에서 그냥 살아라국적 옮겨라,hate,comments-f724d894c519-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00770,진짜 미친 나라네,offensive,comments-f724d894c519-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00771,진짜..한심..이 시점에 전에 일본간 사진올렸다면..비웃은거지..더 나쁜 인간아님 모지리,offensive,comments-f724d894c519-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00772,고모닮았네~~많이 컸네ㅎ,none,comments-aa1a4532d875-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00773,성매매자 딸...ㅠㅠ 불쌍하다...,hate,comments-aa1a4532d875-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00774,어머나~ 벌써 이케컸네요~~ 어머 어쩜 고모 이쁜것만 닮은것같아요~~^^ 사랑스럽네요~^^,none,comments-aa1a4532d875-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00775,여기도 댓글수준이 참ㅋㅋ 애한테 못하는소리가 없고 엄마가 멀입히든 멀하든 먼상관이이야 어이가없네,none,comments-aa1a4532d875-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00776,진짜 악플 머냐? 그것도 어린아이 한테...악플쓰고 죄책감 안드는가? 가정교육이란걸 못받아서 그런가?아니면 그 부모의 그 자식?,offensive,comments-aa1a4532d875-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00777,그 징그럽단게 니가 쓴 그 의미로 보이냐 ㅉㅉ,hate,comments-aa1a4532d875-hate,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00778,징그럽게 컸다니ᆞᆞ헐~~~ 남의집 귀한 딸에게 그런 무식한 발언을~~~ 개념상실!!,offensive,comments-aa1a4532d875-offensive,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00779,광수 티아라 화영효영 다 똑같....아름 다니 둘만 피해자였지,offensive,comments-2e6c97f6f2b1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00780,박얘쁜 저분인거 백퍼고 또 한분은 급식때부터 생수머신드립을 치시고 ㅋㅋㅋㅋ 걍 노답인데 뭘 아프다니까 불쌍하다고 냄비들처럼 난리냐 ㅋㅋㅋㅋㅋㅋ 걍 쟈들은 노답들만 모인그룹이야 일진들 골라서 만든 양아치여자아이돌 ㅇㅇ,hate,comments-2e6c97f6f2b1-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00781,아직도 팬이 있나?,offensive,comments-2e6c97f6f2b1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00782,지연은 반드시 솔로 해야한다. 능력이 너무 아까워. 좋은 노래 만난다면 언젠가 반드시 터질꺼임.,none,comments-2e6c97f6f2b1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00783,지연이 가수 활동하는건 프로임. 혼자 솔로 할때 포스 보면 요즘 아이돌이랑은 포스가 다름.,none,comments-2e6c97f6f2b1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00784,차선긋는 형이다 저 도로 차선 그려주러 가고싶노 중앙선 저거 너무 한거 아니가?,none,comments-2e6c97f6f2b1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00785,첫번째사진 맘에드네 계속 그렇게 걸어가라 평생 겨 나오지 말고 지구는 둥그니까 계속 걸어나가다 바닷 속에 빠지던지,offensive,comments-2e6c97f6f2b1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00786,경규옹이 저 맥락에서 비교 대상을 차은우로 한건 그만큼 차은우를 대표적인 미남이라고 생각한다는 방증이지,none,comments-09df5014a97e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00787,뭔 개소리야?,offensive,comments-09df5014a97e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00788,역시 경규옹ㅋㅋㅋㅋㅋㅋ,none,comments-09df5014a97e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00789,자연스럽게 늙음을 인위적으로 바꾸려하지말고 그냥 받아들이거라,offensive,comments-09df5014a97e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00790,차은우는 신급이고.. 이경규는 c급이야. 비빌걸 비벼라 할배요.,offensive,comments-09df5014a97e-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00791,하믄좋치 적당히,none,comments-09df5014a97e-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00792,이경규가 이런거보면 세련되긴함 저 나이에 차은우 누가 알꼬 아무리 잘생겼다해도. 배워야할점 많으신분,none,comments-09df5014a97e-none,korean-hate-speech@f8d05dc:labeled/dev.tsv
+comments-validation-00793,"돼조이 얼굴 개빻았고 표정은물론 발성,발음 다 질질새고 눈 게슴츠레뜨는거 극혐임",hate,comments-d097ad402d34-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00794,문가영만 건진 드라마,none,comments-d097ad402d34-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00795,조이얘기는 어케 한마디도 없는건지 .. 우도환한테 모든 책임을 다 떠넘기는것처럼 보이는 이느낌은 .. ㅉㅉ,none,comments-d097ad402d34-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00796,편의점점컵라면이나 쳐드시는 찌질한 한남보다 도환이가 귀공자같고 좋다.불가리향수사주고싶은 기럭지.,hate,comments-d097ad402d34-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00797,댓글 왜 이래 진짜... 넘 한심하다...,none,comments-647cd7ea9f52-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00798,두분 어울리네요,none,comments-647cd7ea9f52-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00799,박성훈 부럽다............춘향이보다 xx는 향단이..... 진심 부럽^^,hate,comments-647cd7ea9f52-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00800,방자전이 최강이지내가 더 맛있지는~~내 인생 최고의 장면이다~~~~!!!!!!!,offensive,comments-647cd7ea9f52-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00801,성훈씨가 아깝네요!,none,comments-647cd7ea9f52-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00802,아뭐야 고래...... 조와햇엇는데 이제안조와해야지!,none,comments-647cd7ea9f52-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00803,역시 춘향이보다 맛,offensive,comments-647cd7ea9f52-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00804,ㅋㅋㅋ 그냥 빼도 못생긴건 여전한데 뭐라는거야 자기들끼리 훈훈거려 ㅌㅋㅋ,hate,comments-75590ed72b6c-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00805,뚱뚱하고 못생긴 남자는 남자가 아니다. 남잔 늘 아름다움을 유지하고 가꿔야 그게 진정한 남자다.,offensive,comments-75590ed72b6c-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00806,신동 : 최시원이 진짜 국회의원 됐으면 좋겠다 (실제로 한 말),none,comments-75590ed72b6c-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00807,다음 세상엔 저 몸으로 태.........................,none,comments-e6ac4e60fd8f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00808,몸매는 모델이니좋은데 다이어트가 일상이고 나이가많아서 결혼하면 임신이잘될지걱정이네요,offensive,comments-e6ac4e60fd8f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00809,와 진짜 신이내린 몸매~,none,comments-e6ac4e60fd8f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00810,저 정도 몸매는 길거리에 널리고 널렸지... 그냥 오크돼지줌마들의 워너비 ㅉㅉㅉㅉ,hate,comments-e6ac4e60fd8f-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00811,전현무 부럽네; 3번은 연달아 할수도 있겠다,offensive,comments-e6ac4e60fd8f-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00812,전현무 쌍코피 터지겟다....ㅋㅋㅋㅋ,none,comments-e6ac4e60fd8f-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00813,근데 학폭 미투 창피하지도 않나? 나 학교다닐때 찐따였소 동네방네 소문내고 다니는거 아님? 찐따가 한을 품으면 오뉴월에도 서리가 내린다더니 효린은 재수없게 발목 잡힌거같아 안타깝군.,hate,comments-d602cdfd44c8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00814,학폭 피해자 치고 되게 당차네 심하게 당했다면 보통 저렇게 언플 못할텐데 그냥 갈굼좀 당했는데 잘된거보니까 짜증난듯 결국엔 비슷한 갈굼을 당한분들도 동참할테고 연예인들 긴장좀 타겠네 ㅋ,hate,comments-d602cdfd44c8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00815,효린아 이쁘고 잘나가는 니가 참아라 저런 면상도 못 까서 뒤에서 징징대는 쿵 쾅이들 뭐할려고 상대하냐 인생패배자들 지금와서 삥뜯어볼려고 에라이 ..캬~~~악~~~~퉤슈,hate,comments-d602cdfd44c8-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00816,어제 너무 재밌으시던데요! 잘 봤어요ㅋㅋ뉴스에서 계속 볼 수 있으면 좋겠어요~~,none,comments-b5cc8031c739-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00817,어제방송봤는데 정해인보다 더 호감적으로 생겼던데.,none,comments-b5cc8031c739-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00818,엠빙신 채널지운지 오래 최승호뒺문으로 들어온 적폐 사퇴시키고구속해야지.국정농단문재인은 정작 국민대중이 원하는 조사나 구속은 없고 지가 싫은것만 벌하면서 경제말아먹는싸이코 이중인격 찐따,hate,comments-b5cc8031c739-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00819,여자출연자들만 다나오지않음 진짜재밌는프로 장수하길~,offensive,comments-b5cc8031c739-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00820,정해인도 별론뎅,none,comments-b5cc8031c739-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00821,정해인보다 훨씬 좋은데,none,comments-b5cc8031c739-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00822,정해인은 너무 귀척해서 별로ㅉㅉ니가 훨 낫다,offensive,comments-b5cc8031c739-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00823,경규형 다 최고시청률이네,none,comments-edadf45147a9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00824,매력 쩐다,none,comments-edadf45147a9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00825,아직도 티비속 화면으로 성격판단하는 멍충한분들이 많네..ㅋㅋ,offensive,comments-edadf45147a9-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00826,이태임과 구분잘안됨,none,comments-edadf45147a9-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00827,b.c급들 기사 쓰지말자,offensive,comments-76fab6bd68a2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00828,개듣보네 ㅋㅋㅋㅋㅋㅋ남자 뭔 프로게이머같이생겼네,hate,comments-76fab6bd68a2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00829,문죄앙 오늘만 몇번째냐 온갖 연예인 기사로 도배중이네 드루킹 덮으려고 더러운정권,hate,comments-76fab6bd68a2-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00830,여자 몸매 오지네. 남자는 외모가 좀 딸리네,offensive,comments-76fab6bd68a2-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00831,이주승 세상에서 제일부럽다,none,comments-76fab6bd68a2-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00832,남녀 주인공이 실제 연인처럼 너무 잘 어울려요,none,comments-7d53b8ce1e4d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00833,명랑만화 같은 엄청 재밌게 봤구요....오늘 2회 시청율은 더 오를것 같다. 본방사수 할게요~,none,comments-7d53b8ce1e4d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00834,발연기로 대박 드라마에 낀 인간도 있는데 괜찮아 이정도면~ 재밌게 봤어요 아기 보느라고 드문드문 봤지만 작정하고 까는 사람들 신경쓰지말고 열심히^^ 참! 댓글볼 시간도 없겠구나 ㅎㅎ,none,comments-7d53b8ce1e4d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00835,안재현배우 아픔딛고 일어서길 바래봅니다,none,comments-7d53b8ce1e4d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00836,오연서는 배우라지만 안재현은 예능인이잖아. 연기를 너무 못하는데 집중이 안되더라. 예능인 쓸거면 이승기쓰지ㅠ,none,comments-7d53b8ce1e4d-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00837,갖고 논거야? 그런거야?,offensive,comments-2437f09350a1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00838,남자측 욕하지마세요,none,comments-2437f09350a1-none,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00839,송윤형 남자가 너무 하네ㅋㅋㅋㅋㅋ 데이지만 새됐어ㅠㅠㅠㅠㅠ 펜타곤 이던이 남자네ㅋㅋ,offensive,comments-2437f09350a1-offensive,korean-hate-speech@f8d05dc:labeled/train.tsv
+comments-validation-00840,아이콘이면 그래도 좀 급있는 여돌 사귈줄알았드니ㅋ 쩌리를 만나고있었네ㅋㅋ,hate,comments-2437f09350a1-hate,korean-hate-speech@f8d05dc:labeled/train.tsv
