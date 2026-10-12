@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]  # steps의 상위 폴더 = project2-kit
 load_dotenv(ROOT / ".env", override=False)  # .env 값을 환경 변수로 읽음 (이미 있는 값은 유지)
 
-# 문의는 inquiries, 문서는 documents입니다. 한 주제를 골라 끝까지 사용합니다.
-DATASET = "documents"
+# 문의는 inquiries, 문서는 documents, 자유주제(악성댓글)는 comments입니다. 한 주제를 골라 끝까지 사용합니다.
+DATASET = "comments"
 # 기본 데이터는 basic(data/), 발제문 심화 데이터는 advanced(data/advanced/)입니다.
 # 결과 폴더도 따로 저장하므로 두 데이터의 실험이 섞이지 않습니다.
 DATA_LEVEL = "basic"

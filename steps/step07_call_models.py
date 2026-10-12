@@ -24,6 +24,7 @@ SAMPLE_INPUTS = {
         "교육장 이용 공지: 10월 8일 오후 2시부터 3시까지 3층 실습실을 점검합니다. "
         "해당 시간에 예약한 수강생은 2층 실습실을 이용해 주세요."
     ),
+    "comments": "이번 작품은 연기가 좋아서 끝까지 재미있게 봤어요. 다음 작품도 기대됩니다.",
 }
 INPUT_TEXT = SAMPLE_INPUTS[lesson.DATASET]
 OLLAMA_URL = lesson.OLLAMA_URL
@@ -201,6 +202,10 @@ def build_prompt(text, dataset=lesson.DATASET):
         "documents": (
             "한국어 공지를 대상, 일정, 해야 할 일을 중심으로 요약한다.\n"
             "원문에 없는 날짜, 장소, 담당자를 만들지 않는다.\n"
+        ),
+        "comments": (
+            "한국어 댓글에서 욕설과 혐오 표현을 걷어 내고 정중한 문장으로 바꾼다.\n"
+            "글쓴이의 의견은 유지하고 원문에 없는 내용을 더하지 않는다.\n"
         ),
     }
     return (
