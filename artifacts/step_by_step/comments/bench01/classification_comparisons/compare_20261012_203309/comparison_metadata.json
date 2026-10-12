@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "comparison_id": "compare_20261012_203309",
+  "created_at": "2026-10-12T20:33:09.139497+09:00",
+  "created_at_utc": "2026-10-12T11:33:09.139497+00:00",
+  "timezone": "Asia/Seoul",
+  "name_timestamp": "20261012_203309",
+  "split": "validation",
+  "dataset": "comments",
+  "data_sha256": {
+    "train.csv": "b70683b7b296ae8d7f304e55b0bb7534a302b3440ea2ff62e791ac6e23f58ffc",
+    "validation.csv": "1cca19436866566d1aa20bf2843541665110b32f885bff1f0deb6a6fa3392d12",
+    "labels.json": "12147198c34872264eef1117605ec29c61f1ed7e4a064985dbb18fc9b202fa00"
+  },
+  "run_ids": [
+    "0fdf19bdf6b04d0390d8a8421c219898",
+    "09cc4cd031834cc68463c34326b86c95",
+    "d1d552a49ceb41f8bfdab6428859d17f",
+    "4ddbc734603b453d9c710f64f2ed5595",
+    "b6a2fd811ace4fa19af5fccc2db3f374",
+    "8ab7a55301b0477fb15b8adb560c4eb4",
+    "2580d8d3e4e3427fb9fc7443d79e2366",
+    "df368d96f3264e6d8f651f6a9f0e1e61",
+    "5ab7171a1c9245f5b74145947ca9bfce",
+    "4419ba0e682b4f7f8571a43ba7c08843"
+  ],
+  "run_names": [
+    "kcelectra-base_lr2e5_s44",
+    "kcbert-base_lr2e5_s44",
+    "roberta-large_lr2e5",
+    "bert-base_lr2e5",
+    "roberta-small_lr5e5",
+    "roberta-base_lr2e5",
+    "koelectra-small_lr5e5",
+    "linear_svc",
+    "baseline",
+    "multinomial_nb"
+  ],
+  "completed": true
+}
