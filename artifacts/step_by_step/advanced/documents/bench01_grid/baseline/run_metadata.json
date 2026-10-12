@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "run_id": "42184d9205bc4aaa9f19cb41332f6a16",
+  "run_name": "baseline",
+  "run_learner": "bench01_grid",
+  "dataset": "documents",
+  "model_id": "sklearn.TfidfVectorizer+sklearn.LogisticRegression",
+  "hyperparameters": {
+    "vectorizer": {
+      "analyzer": "char",
+      "binary": false,
+      "decode_error": "strict",
+      "dtype": "<class 'numpy.float64'>",
+      "encoding": "utf-8",
+      "input": "content",
+      "lowercase": true,
+      "max_df": 1.0,
+      "max_features": null,
+      "min_df": 1,
+      "ngram_range": [
+        2,
+        5
+      ],
+      "norm": "l2",
+      "preprocessor": null,
+      "smooth_idf": true,
+      "stop_words": null,
+      "strip_accents": null,
+      "sublinear_tf": false,
+      "token_pattern": "(?u)\\b\\w\\w+\\b",
+      "tokenizer": null,
+      "use_idf": true,
+      "vocabulary": null
+    },
+    "classifier": {
+      "C": 1.0,
+      "class_weight": "balanced",
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 42,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  },
+  "seed": 42,
+  "data_sha256": {
+    "train.csv": "9cde4fb260649f3c7412674b3c74382820c3ce5354b7c01c2f3e1e448d530546",
+    "validation.csv": "6cb822c5f18bf641b2354b05dbc1930bf815c2cbdd5740d6b6df48ddb5041fb1",
+    "labels.json": "de705c249063b62c6ed3bad6bda03d20338050cc3f886d42a8c3487c48223fe9"
+  },
+  "created_at": "2026-10-12T14:37:10.030373+09:00",
+  "created_at_utc": "2026-10-12T05:37:10.030373+00:00",
+  "timezone": "Asia/Seoul",
+  "name_timestamp": "20261012_143710",
+  "source": {
+    "git_commit": "037071d9cbf5deedda7e25801d6fbddaf35f2679",
+    "steps_sha256": {
+      "check_environment.py": "35180fbba9b49a489a2fd0d31a9d7676613ce900e7170c9a48c9805b1d0006c8",
+      "classification_comparison.py": "bbbb7c6ca6da47a98a9bbfd1f69b69c6870bcbc4cfd37b8275108836a570d714",
+      "classification_efficiency.py": "9c9b95eff52863e8a0c71485c93d0d99a409e8895dbdfe4635f41ec7c05b66f8",
+      "classification_evaluation.py": "b192ed02393712c0f986ba972eb977513a3f5217d26e7f5bf3aafd6a40f57dd8",
+      "experiment_storage.py": "289405af15a31208c6fc0204a1f4fc3b0cbac36608e6540b03519cc57ad62afb",
+      "lesson_settings.py": "9f22eb77a30cc331476a773fef2d05d697a933128cbc3a9b0ee3b4cfdd7d1746",
+      "step01_read_data.py": "75ea4f902936537e319afc4ee57129f42f52c2a3ba5eb44e15c34888cda136ba",
+      "step02_check_data.py": "75bc5b14cafdb54e709b33a8e69d1bcb809587a417d3c8d79e02336181f70b80",
+      "step03_train_baseline.py": "bbf6c4e053cae1f561c15d0bf1f5bf6bb4ea5d76b5d1fed6a11f31a6fe9f5772",
+      "step04_train_classifier.py": "06d7428b64f879fe54c83a756837fb709ea081601f66205d5a518fb9be692673",
+      "step05_select_model.py": "41da125e8be1fcd7487f34834c1845cdcc99bea373384aedd610d70cc20bfc23",
+      "step06_predict.py": "847e59749b542689a5e2f75c8ebe5447b6be91070dbd5ddca03f0e1c8cbaa9d1",
+      "step07_call_models.py": "63c491a876ff8762a2d0cecc71f1e3d6aea8235ba13c0dd2939061513996e801",
+      "step08_connect_chain.py": "7f291bf0220a43e98322f3264d57cae7ae30558aad8c1a31b4bd6ed62dda85f5",
+      "step09_compare.py": "c39a58d9c2b3dc55e3c8d5ba7d563ef19481c8ae75a1b6193a939da0cd98bd0d",
+      "step10_serve_api.py": "5d2361d5fd69cf0995ff606ad6cca1aecd40e755148592023772a26f437366da",
+      "step11_evaluate_final.py": "c4b4590a6787355083f61df0dd7fc8a12b54023e852b568d0ebdc574f4aadbf2"
+    }
+  },
+  "completed": true,
+  "completed_at": "2026-10-12T14:37:11.839273+09:00"
+}

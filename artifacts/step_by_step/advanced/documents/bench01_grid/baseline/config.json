@@ -1,0 +1,67 @@
+{
+  "kind": "baseline",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "9cde4fb260649f3c7412674b3c74382820c3ce5354b7c01c2f3e1e448d530546",
+    "validation.csv": "6cb822c5f18bf641b2354b05dbc1930bf815c2cbdd5740d6b6df48ddb5041fb1",
+    "labels.json": "de705c249063b62c6ed3bad6bda03d20338050cc3f886d42a8c3487c48223fe9"
+  },
+  "labels": [
+    "announcement",
+    "manual",
+    "minutes"
+  ],
+  "ngram_range": [
+    2,
+    5
+  ],
+  "seed": 42,
+  "run_name": "baseline",
+  "run_id": "42184d9205bc4aaa9f19cb41332f6a16",
+  "model_id": "sklearn.TfidfVectorizer+sklearn.LogisticRegression",
+  "created_at": "2026-10-12T14:37:10.030373+09:00",
+  "hyperparameters": {
+    "vectorizer": {
+      "analyzer": "char",
+      "binary": false,
+      "decode_error": "strict",
+      "dtype": "<class 'numpy.float64'>",
+      "encoding": "utf-8",
+      "input": "content",
+      "lowercase": true,
+      "max_df": 1.0,
+      "max_features": null,
+      "min_df": 1,
+      "ngram_range": [
+        2,
+        5
+      ],
+      "norm": "l2",
+      "preprocessor": null,
+      "smooth_idf": true,
+      "stop_words": null,
+      "strip_accents": null,
+      "sublinear_tf": false,
+      "token_pattern": "(?u)\\b\\w\\w+\\b",
+      "tokenizer": null,
+      "use_idf": true,
+      "vocabulary": null
+    },
+    "classifier": {
+      "C": 1.0,
+      "class_weight": "balanced",
+      "dual": false,
+      "fit_intercept": true,
+      "intercept_scaling": 1,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "n_jobs": null,
+      "penalty": "deprecated",
+      "random_state": 42,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "verbose": 0,
+      "warm_start": false
+    }
+  }
+}
