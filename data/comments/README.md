@@ -20,7 +20,10 @@
 | `validation.csv` | 840행 | 153 | 380 / 261 / 199 | 모델 선택과 개선 과정의 확인 |
 | `test.csv` | 838행 | 156 | 326 / 294 / 218 | 모델과 조건을 정한 뒤 최종 평가 |
 
-생성 단계에 쓰는 `generation_development.jsonl`, `generation_eval.jsonl`은 아직 없습니다. 생성 단계에서 추가합니다.
+| `generation_development.jsonl` | 15건 | | 5 / 5 / 5 | 순화 흐름과 프롬프트 개발 (validation에서 뽑음) |
+| `generation_eval.jsonl` | 24건 | | 8 / 8 / 8 | 로컬 모델과 상용 모델의 최종 비교 (test에서 뽑음) |
+
+생성용 파일은 `scripts/prepare_comments_generation.py`가 시드 42로 라벨당 같은 수를 뽑아 만듭니다. `generation_eval.jsonl`은 test 최종 평가를 마친 뒤에 만들었습니다. 채점 기준(`required_points`, `forbidden_claims`)은 댓글마다 따로 쓰지 않고 라벨별 공통 기준을 씁니다.
 
 CSV 형식은 기본 데이터와 같습니다(UTF-8 BOM, 컬럼 `id`, `text`, `label`, `group_id`, `source`). 분류 모델에는 `text`만 넣습니다.
 
