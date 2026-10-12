@@ -1,0 +1,12 @@
+{
+  "comparison_id": "compare_20261012_121933",
+  "path": "classification_comparisons/compare_20261012_121933",
+  "compatibility_files": [
+    "model_comparison.csv",
+    "model_comparison.json",
+    "model_comparison.md",
+    "model_comparison.png",
+    "model_differences.csv",
+    "model_error_comparison.csv"
+  ]
+}

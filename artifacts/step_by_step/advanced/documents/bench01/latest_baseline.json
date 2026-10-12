@@ -1,0 +1,11 @@
+{
+  "run_learner": "bench01",
+  "run_name": "baseline",
+  "run_id": "f660c5a4f1f64320ae04ec0f602d4acf",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "9cde4fb260649f3c7412674b3c74382820c3ce5354b7c01c2f3e1e448d530546",
+    "validation.csv": "6cb822c5f18bf641b2354b05dbc1930bf815c2cbdd5740d6b6df48ddb5041fb1",
+    "labels.json": "de705c249063b62c6ed3bad6bda03d20338050cc3f886d42a8c3487c48223fe9"
+  }
+}

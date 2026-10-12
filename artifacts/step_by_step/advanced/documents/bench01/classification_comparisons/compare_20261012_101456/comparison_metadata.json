@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "comparison_id": "compare_20261012_101456",
+  "created_at": "2026-10-12T10:14:56.327303+09:00",
+  "created_at_utc": "2026-10-12T01:14:56.327303+00:00",
+  "timezone": "Asia/Seoul",
+  "name_timestamp": "20261012_101456",
+  "split": "validation",
+  "dataset": "documents",
+  "data_sha256": {
+    "train.csv": "9cde4fb260649f3c7412674b3c74382820c3ce5354b7c01c2f3e1e448d530546",
+    "validation.csv": "6cb822c5f18bf641b2354b05dbc1930bf815c2cbdd5740d6b6df48ddb5041fb1",
+    "labels.json": "de705c249063b62c6ed3bad6bda03d20338050cc3f886d42a8c3487c48223fe9"
+  },
+  "run_ids": [
+    "f660c5a4f1f64320ae04ec0f602d4acf",
+    "734f0fddb7414b4e803213e40a7dc920",
+    "c80aca92910040799fbb66466e9ea57d",
+    "1b9cf12fe9cd4717834a9e6b8e4d2f72",
+    "9f23605abdfe4db689e7cfd3a1a0f2a0",
+    "10422089bf1643ae9d1c1236db1075b9"
+  ],
+  "run_names": [
+    "baseline",
+    "koelectra_lr2e5",
+    "linear_svc",
+    "lr2e5",
+    "multinomial_nb",
+    "roberta_lr2e5"
+  ],
+  "completed": false
+}
