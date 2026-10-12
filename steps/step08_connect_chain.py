@@ -64,8 +64,8 @@ POLICIES = {
         "가상 문서 요약 정책: 회의록은 제안과 결정 및 보류를 구분해 요약한다. " + DOCUMENT_RULES
     ),
     "none": (
-        "가상 댓글 순화 정책: 문제가 없는 댓글이다. answer에 원문을 띄어쓰기와 맞춤법까지 "
-        "고치지 않고 그대로 적고 next_steps는 빈 배열로 둔다. " + COMMENT_RULES
+        "가상 댓글 순화 정책: 문제가 없는 댓글이다. answer에 원문을 고치지 않고 그대로 적고 "
+        "next_steps는 빈 배열로 둔다. " + COMMENT_RULES
     ),
     "offensive": (
         "가상 댓글 순화 정책: 욕설, 비속어, 비꼼처럼 불쾌한 표현을 걷어 내고 "

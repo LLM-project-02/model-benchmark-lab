@@ -1,0 +1,65 @@
+{
+  "cases": 24,
+  "repeats": 2,
+  "generation_config": {
+    "temperature": 0.2,
+    "max_output_tokens": 512,
+    "timeout_seconds": 120.0,
+    "ollama": {
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "num_ctx": 4096,
+      "stream": false,
+      "keep_alive": "5m"
+    },
+    "openai": {
+      "model": "gpt-6-luna",
+      "api": "responses",
+      "reasoning_effort": "none",
+      "store": false,
+      "max_retries": 0
+    }
+  },
+  "human_quality_scored": false,
+  "providers": {
+    "ollama": {
+      "calls": 48,
+      "errors": 0,
+      "error_rate_all_calls": 0.0,
+      "mean_latency_seconds_success_only": 0.942506956254268,
+      "format_valid_rate_all_calls": 1.0,
+      "complete_rate_all_calls": 1.0,
+      "usable_rate_all_calls": 1.0,
+      "usage_known_calls": 48,
+      "input_tokens_total": 21370,
+      "output_tokens_total": 2399,
+      "max_load_seconds": 0.0091529
+    },
+    "openai": {
+      "calls": 48,
+      "errors": 0,
+      "error_rate_all_calls": 0.0,
+      "mean_latency_seconds_success_only": 1.7872638791741338,
+      "format_valid_rate_all_calls": 1.0,
+      "complete_rate_all_calls": 1.0,
+      "usable_rate_all_calls": 1.0,
+      "usage_known_calls": 48,
+      "input_tokens_total": 19202,
+      "output_tokens_total": 1693,
+      "max_load_seconds": null
+    }
+  },
+  "metric_notes": {
+    "error_rate_all_calls": "호출 자체가 실패(예외)한 비율. 답변 품질은 포함하지 않는다.",
+    "complete_rate_all_calls": "토큰 한도 등으로 잘리지 않고 끝까지 생성된 비율",
+    "usable_rate_all_calls": "예외 없음 + 끝까지 생성 + JSON 형식 준수를 모두 만족한 비율"
+  },
+  "estimated_cost_usd": {
+    "ollama": null,
+    "openai": null
+  },
+  "cost_basis": {
+    "openai_input_usd_per_1m": null,
+    "openai_output_usd_per_1m": null,
+    "note": "기록된 토큰 수 x .env 단가. 단가가 없으면 계산하지 않는다."
+  }
+}

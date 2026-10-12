@@ -77,7 +77,7 @@ def share(rows, key, value=True):
     return sum(row[key] == value for row in rows) / len(rows) if rows else 0.0
 
 
-def write_markdown(path, name, rows, before):
+def write_markdown(path, name, rows, before, summary):
     lines = [
         f"# 순화 결과 자동 점검 ({name})",
         "",
@@ -114,7 +114,19 @@ def write_markdown(path, name, rows, before):
         "- offensive와 hate 댓글은 '순화 후 none 판정' 비율이 높아야 합니다.",
         "- '게시 불가 안내'는 hate 정책에서 남길 의견이 없을 때 나오는 정상 동작입니다.",
         "",
+        "## 호출 요약 (summary.json)",
+        "",
+        "| 모델 | 호출 | 오류 | 쓸 수 있는 답변 | 평균 응답 시간 | 입력 토큰 | 출력 토큰 |",
+        "|---|---:|---:|---:|---:|---:|---:|",
     ]
+    for provider, title in PROVIDERS.items():
+        usage = summary["providers"][provider]
+        lines.append(
+            f"| {title} | {usage['calls']} | {usage['errors']} | {usage['usable_rate_all_calls']:.0%} | "
+            f"{usage['mean_latency_seconds_success_only']:.2f}초 | {usage['input_tokens_total']:,} | "
+            f"{usage['output_tokens_total']:,} |"
+        )
+    lines.append("")
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -223,7 +235,8 @@ def main():
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    write_markdown(folder / "rewrite_check.md", args.name, rows, before)
+    summary = json.loads((folder / "summary.json").read_text(encoding="utf-8"))
+    write_markdown(folder / "rewrite_check.md", args.name, rows, before, summary)
     write_chart(folder / "rewrite_check.png", args.name, rows, before)
     for provider, title in PROVIDERS.items():
         group = [r for r in rows if r["provider"] == provider]
