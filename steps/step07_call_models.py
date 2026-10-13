@@ -67,6 +67,10 @@ def call_ollama(prompt):
         "model": OLLAMA_MODEL,
         "prompt": prompt,
         "stream": False,
+        "think": False,  # 생각 단계 없이 바로 답변 (OpenAI의 reasoning effort none과 같은 조건)
+        # 응답을 검사하는 스키마(AnswerPayload)를 그대로 넘겨 JSON 모양을 강제한다.
+        # OpenAI 호출에는 없는 조건이므로 비교할 때 차이로 적는다.
+        "format": AnswerPayload.model_json_schema(),
         "keep_alive": "5m",  # 호출 후 5분간 모델을 메모리에 유지
         "options": {
             "temperature": TEMPERATURE,
@@ -180,6 +184,8 @@ def generation_config():
             "num_ctx": 4096,
             "stream": False,
             "keep_alive": "5m",
+            "think": False,
+            "format": "json_schema(AnswerPayload)",
         },
         "openai": {
             "model": OPENAI_MODEL,

@@ -63,6 +63,8 @@ def test_ollama_request_and_response_fields(monkeypatch):
     assert body["prompt"] == "같은 프롬프트"
     assert body["model"] == models.OLLAMA_MODEL
     assert body["stream"] is False
+    assert body["think"] is False
+    assert body["format"] == models.AnswerPayload.model_json_schema()
     assert body["options"]["num_predict"] == models.MAX_OUTPUT_TOKENS
     assert result["text"] == VALID_TEXT
     assert result["usage"] == {"input_tokens": 21, "output_tokens": 12}

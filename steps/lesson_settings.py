@@ -33,7 +33,8 @@ DEVELOPMENT_INPUT = DATA_DIR / "generation_development.jsonl"  # 생성 흐름 �
 
 # OpenAI 키는 읽어서 클라이언트에 전달하며 화면이나 결과 파일에 출력하지 않습니다.
 # os.getenv(이름, 기본값): .env에 값이 없으면 오른쪽 기본값을 쓴다.
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:4b-instruct-2507-q4_K_M")
+# 로컬 생성 모델은 comparisons/local_models01의 비교로 골랐다(복습 키트 기본값은 qwen3:4b-instruct-2507-q4_K_M).
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:e4b")
 OLLAMA_URL = os.getenv(
     "OLLAMA_BASE_URL", "http://127.0.0.1:11434"
 )  # 내 PC에서 실행 중인 Ollama 주소

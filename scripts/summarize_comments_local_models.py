@@ -28,7 +28,7 @@ from matplotlib.patches import Patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "steps"))
 
-from lesson_settings import DATASET, LEARNER_DIR, OLLAMA_MODEL
+from lesson_settings import DATASET, LEARNER_DIR
 
 LABELS = ["none", "offensive", "hate"]
 ITEMS = {
@@ -42,6 +42,8 @@ SURFACE, INK, INK2, MUTED = "#fcfcfb", "#0b0b0b", "#52514e", "#898781"
 GRID, AXIS = "#e1e0d9", "#c3c2b7"
 COLORS = {"prompt_only": "#2a78d6", "json_schema": "#eb6834"}
 BOOTSTRAP = 10000  # 입력 15건을 복원 추출해 평균의 흔들림을 보는 횟수
+# 이 비교 전까지 쓰던 로컬 모델(복습 키트 기본값). 지금 설정은 비교 뒤에 바뀌므로 고정해 둔다.
+PREVIOUS_MODEL = "qwen3:4b-instruct-2507-q4_K_M"
 
 
 def short_name(model):
@@ -50,7 +52,7 @@ def short_name(model):
     if name != model:
         name = name.replace("-GGUF:Q4_K_M", "") + " (HF)"
     name = name.replace("-2507-q4_K_M", "").replace(":q4km", "")
-    return name + (" · 기존 기본값" if model == OLLAMA_MODEL else "")
+    return name + (" · 기존 기본값" if model == PREVIOUS_MODEL else "")
 
 
 def case_means(rows):
@@ -278,8 +280,8 @@ def write_markdown(path, name, table, scores, summary, judge, classifier):
         )
     best = ranked(table)[0]
     lines.append(f"- **두 조건을 합쳐 1위:** {config_name(best)} {best['score_all_calls']:.2f}점.")
-    if (OLLAMA_MODEL, "prompt_only") in by_key:
-        before = by_key[OLLAMA_MODEL, "prompt_only"]
+    if (PREVIOUS_MODEL, "prompt_only") in by_key:
+        before = by_key[PREVIOUS_MODEL, "prompt_only"]
         lines.append(
             f"- **지금까지 쓴 설정과 비교:** {config_name(before)} {before['score_all_calls']:.2f}점. "
             f"1위와의 {gap_text(best, before)}"
@@ -365,7 +367,7 @@ def write_markdown(path, name, table, scores, summary, judge, classifier):
             "차이는 실제보다 크게 보일 수 있습니다."
         ),
         (
-            f"- 프롬프트는 {short_name(OLLAMA_MODEL).split(' · ')[0]}과 OpenAI의 답변을 보며 "
+            f"- 프롬프트는 {short_name(PREVIOUS_MODEL).split(' · ')[0]}과 OpenAI의 답변을 보며 "
             "이 15건으로 다듬었습니다. 그 모델에 유리할 수 있습니다."
         ),
         "- 채점은 틀릴 수 있습니다. 사람이 `llm_spotcheck.csv` 10건을 확인하기 전까지는 참고값입니다.",
