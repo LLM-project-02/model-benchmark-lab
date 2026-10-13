@@ -322,6 +322,25 @@ def test_custom_builder_is_used_and_runtime_failure_is_isolated(service):
     assert seen == ["질문: 원본 댓글"] and rows[1]["success"] is True
 
 
+@pytest.mark.parametrize("classifier_name", [None, "mock"])
+def test_custom_prompt_does_not_change_default_output_contract(service, classifier_name):
+    # 기존 서비스의 유효한 본문도 기본 계약과 다르면 실패로 남기며 자동 변환하지 않는다.
+    raw = json.dumps({"answer": "원본 답변", "next_steps": ["원본 행동"]}, ensure_ascii=False)
+    service["build_prompt"] = lambda data, context: "서비스가 구성한 프롬프트"
+    rows = run(
+        service,
+        llms={"legacy": lambda prompt: generation(raw_text=raw),
+              "default": lambda prompt: generation()},
+        combinations=[(classifier_name, "legacy"), (classifier_name, "default")],
+    )["results"]
+    assert rows[0]["status"] == "error" and rows[0]["success"] is False
+    assert rows[0]["error"]["stage"] == "parse"
+    assert rows[0]["generation"]["raw_text"] == raw
+    assert rows[0]["generated_text"] is None
+    assert rows[0]["timings"]["llm_seconds"] is not None
+    assert rows[1]["success"] is True and rows[1]["label"] == "abusive"
+
+
 def test_service_input_validation_happens_before_callbacks(service):
     def validate(data):
         if not isinstance(data.get("comment"), str):

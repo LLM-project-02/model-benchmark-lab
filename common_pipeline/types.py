@@ -1,4 +1,7 @@
-"""팀원이 구현할 함수의 계약. TypedDict는 설명용이며 실제 검증은 엔진이 수행한다."""
+"""서비스·모델 어댑터가 엔진에 전달할 공통 계약. TypedDict는 타입 설명용이다.
+
+엔진은 이 계약과 등록 라벨을 검사한다. 서비스별 응답 구조·내용 검증은 여기에 정의하지 않는다.
+"""
 
 from collections.abc import Callable
 from typing import Literal, NotRequired, TypedDict
@@ -12,8 +15,8 @@ class Classification(TypedDict):
 
 
 class Generation(TypedDict):
-    # 아래 필드는 모두 필수다. 사용량을 모르면 토큰 수에 None을 넣는다.
-    raw_text: str
+    # 어댑터는 아래 필드를 모두 제공한다. 사용량을 모르면 토큰 수에 None을 넣는다.
+    raw_text: str  # 원본 응답 보존; 서비스 JSON을 다른 구조로 고쳐 담지 않는다.
     model_id: str
     input_tokens: int | None
     output_tokens: int | None
@@ -30,10 +33,11 @@ class PromptContext(TypedDict):
     # LLM 단독에는 전체 라벨, 분류기 경로에는 예측 라벨의 항목만 전달한다.
     label_definitions: dict[str, str]
     policies: dict[str, str]
-    output_fields: list[str]
+    output_fields: list[str]  # 현재 generated_text 기본 계약 안내; 출력 스키마 변경 기능 아님
 
 
 class Service(TypedDict):
+    # 입력·분류 기준·생성 정책·프롬프트의 내용은 서비스가 결정한다.
     id: str
     label_definitions: dict[str, str]
     common_policy: str  # 공통 규칙이 없으면 빈 문자열 허용
@@ -41,7 +45,7 @@ class Service(TypedDict):
     policy_version: str
     # 검증 함수는 정상 입력에 None을 반환하고 잘못된 입력에는 예외를 발생시킨다.
     validate_input: NotRequired[Callable[[dict], None]]
-    # 입력과 문맥의 복사본을 받는다. 반환값은 비어 있지 않은 프롬프트 문자열이다.
+    # 입력과 문맥의 복사본을 받는다. 프롬프트 교체 시에도 기본 출력 계약을 지킨다.
     build_prompt: NotRequired[Callable[[dict, PromptContext], str]]
 
 
