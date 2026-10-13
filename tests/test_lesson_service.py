@@ -511,6 +511,59 @@ def test_api_status_tells_whether_the_answer_is_usable(service_stub, monkeypatch
         assert api.answer_status(result) == expected
 
 
+def test_api_rechecks_rewritten_comment_and_flags_without_blocking(service_stub, monkeypatch):
+    _, seen, settings = service_stub
+    settings["label"] = "offensive"  # 원문은 댓글 라벨로 분류된다
+    rewritten = "고친 댓글"
+
+    def predict(text, bundle):
+        seen["predictions"].append((text, bundle))
+        # 고친 댓글에도 문제 표현이 남았다고 판정하는 상황
+        label = "hate" if text == rewritten else settings["label"]
+        return {"label": label, "confidence": 0.7, "truncated": False, "model": {}}
+
+    def call(provider, prompt):
+        seen["generations"].append((provider, prompt))
+        return {
+            "provider": provider,
+            "model": "test-only",
+            "text": json.dumps({"answer": rewritten, "next_steps": []}, ensure_ascii=False),
+            "usage": {"input_tokens": None, "output_tokens": None},
+            "latency_seconds": 1.0,
+            "output_format_valid": True,
+            "generation_complete": True,
+            "finish_reason": "stop",
+            "error": None,
+        }
+
+    monkeypatch.setattr(chain, "predict_text", predict)
+    monkeypatch.setattr(chain, "call_model", call)
+    monkeypatch.setattr(api, "load_classifier", lambda: object())
+    with TestClient(api.app) as client:
+        body = client.post("/generate", json={"text": "원문 댓글"}).json()
+        compared = client.post("/compare", json={"text": "원문 댓글"}).json()
+    # 다시 판정은 표시만 하고 답을 막지 않는다
+    assert body["status"] == "ok"
+    assert body["result"]["answer_check"] == {
+        "label": "hate",
+        "confidence": 0.7,
+        "needs_review": True,
+    }
+    assert [row["answer_check"]["needs_review"] for row in compared["results"]] == [True, True]
+    assert [text for text, _ in seen["predictions"]].count(rewritten) == 3
+
+
+def test_answer_recheck_is_skipped_for_other_topics_and_unusable_answers(service_stub):
+    _, seen, _ = service_stub
+    usable = {"error": None, "output_format_valid": True, "text": VALID_TEXT}
+    assert chain.review_answer(usable, "refund", object()) is None  # 댓글 주제가 아님
+    broken = {"error": None, "output_format_valid": False, "text": "형식이 틀린 답"}
+    assert chain.review_answer(broken, "hate", object()) is None
+    failed = {"error": "TimeoutError", "output_format_valid": False, "text": ""}
+    assert chain.review_answer(failed, "none", object()) is None
+    assert seen["predictions"] == []
+
+
 @pytest.mark.parametrize("status", ["failed", "cancelled"])
 def test_openai_failed_body_is_recorded_as_error_not_success(monkeypatch, status):
     def handler(request):

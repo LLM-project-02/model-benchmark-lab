@@ -141,13 +141,23 @@ def send(client, spec):
     return record
 
 
+def recheck_text(result):
+    """고친 댓글을 다시 판정한 결과(answer_check)를 짧게 적는다. 없으면 빈 문자열."""
+    check = result.get("answer_check")
+    if not check:
+        return ""
+    return f", 다시 검사 {check['label']}" + (" → 확인 필요" if check["needs_review"] else "")
+
+
 def outcome(record):
-    """응답을 한 줄로 줄인다: 생성 결과의 status, 또는 422의 오류 종류."""
+    """응답을 한 줄로 줄인다: 생성 결과의 status와 다시 검사, 또는 422의 오류 종류."""
     body = record["response"]
     if record["path"] == "/compare" and "results" in body:
-        return " / ".join(f"{row['provider']} {row['status']}" for row in body["results"])
+        return " / ".join(
+            f"{row['provider']} {row['status']}{recheck_text(row)}" for row in body["results"]
+        )
     if "status" in body and "result" in body:
-        return f"{body['result']['provider']} {body['status']}"
+        return f"{body['result']['provider']} {body['status']}{recheck_text(body['result'])}"
     if "detail" in body and isinstance(body["detail"], list):
         return ", ".join(sorted({item["type"] for item in body["detail"]}))
     return json.dumps(body, ensure_ascii=False)[:60]

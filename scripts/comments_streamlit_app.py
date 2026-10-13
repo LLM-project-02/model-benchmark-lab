@@ -103,6 +103,8 @@ def batch_row(text, response):
         "고친 댓글": "",
         "다음 안내": "",
         "상태": "",
+        "다시 검사": "",
+        "확인 필요": "",
         "응답 시간(초)": None,
         "생성 모델": "",
         "오류": "",
@@ -117,6 +119,10 @@ def batch_row(text, response):
     classification = body.get("classification") or {}
     result = body.get("result") or {}
     answer, next_steps = parse_answer(result)
+    check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
+    if check:
+        row["다시 검사"] = f"{check['label']} ({check['confidence']:.0%})"
+        row["확인 필요"] = "예" if check["needs_review"] else "아니오"
     row.update(
         {
             "라벨": classification.get("label", ""),
@@ -162,6 +168,18 @@ def show_result(result, status):
         st.warning(answer or "(빈 답변)")
     for step in next_steps:
         st.markdown(f"- {step}")
+    check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
+    if check and check["needs_review"]:
+        title = LABELS.get(check["label"], (check["label"],))[0]
+        st.warning(
+            f"다시 확인 필요: 고친 댓글도 분류 모델이 {title}({check['label']}, "
+            f"{check['confidence']:.0%})로 봤습니다. 게시하기 전에 사람이 확인해 주세요."
+        )
+    elif check:
+        st.caption(
+            f"고친 댓글 다시 검사: 문제 없음(none, {check['confidence']:.0%}). 분류 모델은 표현만 보므로, "
+            "뜻이 바뀌었는지는 사람이 확인해야 합니다."
+        )
     st.caption(
         f"{STATUS.get(status, status)} · {result.get('model')} · {result['latency_seconds']:.2f}초"
     )
@@ -246,6 +264,11 @@ def batch_tab(url):
         "**결과:** "
         + ", ".join(f"{label} {count}건" for label, count in counts.items())
         + f" · 그대로 쓸 수 있는 답변 {(result['상태'] == 'ok').sum()}/{len(result)}건"
+        + f" · 다시 확인 필요 {(result['확인 필요'] == '예').sum()}건"
+    )
+    st.caption(
+        "다시 확인 필요: 고친 댓글을 분류 모델에 다시 넣었을 때 none이 아니었던 줄입니다. "
+        "분류 모델은 표현만 보므로, 말투는 정중한데 뜻이 바뀐 답은 여기에 잡히지 않습니다."
     )
     st.dataframe(result, width="stretch", hide_index=True)
     st.download_button(

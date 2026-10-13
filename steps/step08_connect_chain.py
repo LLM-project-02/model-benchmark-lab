@@ -138,6 +138,24 @@ def generate_prepared(prepared: Prepared, provider):
     return call_model(provider, prepared["prompt"])
 
 
+def review_answer(result, label, classifier):
+    """댓글 주제에서 생성 모델이 고친 댓글을 분류 모델로 한 번 더 판정한다.
+
+    고친 댓글에도 문제 표현이 남았는지 보는 안전장치다. 분류 모델은 표현만 보므로 말투는 정중한데
+    뜻이 바뀐 답은 잡지 못하고, 멀쩡한 답을 잘못 짚기도 한다. 그래서 답을 막지 않고 사람이
+    확인해야 한다고만 알린다. 댓글 주제가 아니거나 쓸 수 있는 답변이 아니면 None을 돌려준다.
+    """
+    if label not in COMMENT_LABELS or result.get("error") or not result.get("output_format_valid"):
+        return None
+    answer = json.loads(result["text"])["answer"]
+    verdict = predict_text(answer, classifier)  # 원문을 분류한 것과 같은 모델
+    return {
+        "label": verdict["label"],
+        "confidence": verdict["confidence"],
+        "needs_review": verdict["label"] != "none",  # none이 아니면 사람이 확인
+    }
+
+
 def compare_prepared(prepared: Prepared):
     # 같은 분류 결과와 프롬프트를 두 제공자가 공유한다.
     return {

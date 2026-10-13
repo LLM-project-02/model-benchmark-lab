@@ -17,6 +17,7 @@ from step08_connect_chain import (
     compare_prepared,
     create_chain,
     generate_prepared,
+    review_answer,
 )
 
 HOST = "127.0.0.1"
@@ -45,6 +46,7 @@ class GenerateRequest(TextRequest):
 async def lifespan(app):
     # 서버가 시작될 때 한 번 읽는다. 모델을 읽지 못하면 시작이 실패한다.
     classifier = load_classifier()
+    app.state.classifier = classifier  # 고친 댓글을 다시 판정할 때도 같은 모델을 쓴다
     app.state.chain = create_chain(classifier)
     yield  # 여기서부터 서버가 요청을 처리한다
 
@@ -74,6 +76,10 @@ def generate(body: GenerateRequest, request: Request):
     # 요청 검증에 실패하면 함수 실행 전 422를 반환한다.
     prepared = request.app.state.chain.invoke(body.text)  # 분류 + 프롬프트 준비
     result = generate_prepared(prepared, body.provider)
+    # 댓글 주제: 고친 댓글을 다시 판정한 결과. 다른 주제는 None
+    result["answer_check"] = review_answer(
+        result, prepared["classification"]["label"], request.app.state.classifier
+    )
     # HTTP 200은 모델이 응답했다는 뜻이다. 답변을 쓸 수 있는지는 status로 확인한다.
     response = {
         "status": answer_status(result),
@@ -88,7 +94,15 @@ def compare(body: TextRequest, request: Request):
     # 한 번 분류해서 만든 프롬프트를 두 생성 모델이 공유한다.
     prepared = request.app.state.chain.invoke(body.text)
     result = compare_prepared(prepared)
-    result["results"] = [{**row, "status": answer_status(row)} for row in result["results"]]
+    label = prepared["classification"]["label"]
+    result["results"] = [
+        {
+            **row,
+            "status": answer_status(row),
+            "answer_check": review_answer(row, label, request.app.state.classifier),
+        }
+        for row in result["results"]
+    ]
     failed = any(row["error"] for row in result["results"])
     return JSONResponse(result, status_code=502 if failed else 200)
 
