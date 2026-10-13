@@ -1,0 +1,408 @@
+﻿id,premise,hypothesis,actual,predicted,group_id
+klue-nli-v1_dev_00007,"11월 5일, 정부가 국무회의에서 통합진보당에 대한 해산심판 청구안을 통과시켰으며, 이애 따라 대한민국 법무부는 즉시 해산 청구서를 제출했다.",법무부가 해산심판 청구안을 통과시킨 후 정부가 해산 청구서를 제출하였다.,contradiction,entailment,p_7d6e57382c
+klue-nli-v1_dev_00009,"11월 5일, 정부가 국무회의에서 통합진보당에 대한 해산심판 청구안을 통과시켰으며, 이애 따라 대한민국 법무부는 즉시 해산 청구서를 제출했다.",정부는 통합진보당의 해산에 동의하였다.,entailment,contradiction,p_7d6e57382c
+klue-nli-v1_dev_00013,14일 전국에서 제365회 토익 시험이 치러졌다.,제주도는 제 365회 토익 시험을 15일에 치렀다.,contradiction,neutral,p_b6fb969d65
+klue-nli-v1_dev_00015,14일 전국에서 제365회 토익 시험이 치러졌다.,토익은 시험의 한 종류이다.,entailment,neutral,p_b6fb969d65
+klue-nli-v1_dev_00016,1636년 병자호란 당시 남한산성에 피난하게 된 조선 인조는 사방이 청군에 포위되어 고립무원의 처지에 놓인다.,1636년 병자호란 당시 인조는 한양에서 청군에게 포위당해 고립무원의 처지에 놓인다.,contradiction,neutral,p_d621a6f3d1
+klue-nli-v1_dev_00022,"1877년, 파리 살롱에서 그의 출제품들을 모두 거절당하자 매리 카사트는 7년만에 처음으로 파리 살롱에서 작품을 전시하지 못했다.",매리 카사트가 파리 살롱에 그의 작품을 전시하지 못한 것은 1877년이 처음이다.,entailment,contradiction,p_333630d440
+klue-nli-v1_dev_00027,"1880년, 역마차를 타고 뉴멕시코의 로즈버그로 가려 하는 손님들은 잠시 애리조나의 톤토에 멈추게 된다.",손님들은 역마차를 타고 뉴멕시코의 로즈버그로 향하게 된다.,entailment,contradiction,p_be5a1c7b5b
+klue-nli-v1_dev_00029,18일 귀국이라 발인도 지켜드리지 못해 더욱 죄송할 따름입니다.,18일 한국으로 귀국하였습니다.,neutral,entailment,p_7e4c8641fd
+klue-nli-v1_dev_00031,"1934년 7월, 사이토 내각을 이어 출범한 오카다 게이스케 내각은 과격파 청년 장교들의 계속되는 갈등 유발과 점령지 주민들의 계속되는 저항에 부딪쳤다.",1934년 7월 오카다 게이스케 내각을 이어 사이토 내각이 출범했다.,contradiction,entailment,p_db959c3e43
+klue-nli-v1_dev_00032,"1934년 7월, 사이토 내각을 이어 출범한 오카다 게이스케 내각은 과격파 청년 장교들의 계속되는 갈등 유발과 점령지 주민들의 계속되는 저항에 부딪쳤다.",오카다 게이스케 내각은 청년 장교들의 갈등을 해결했다.,neutral,contradiction,p_db959c3e43
+klue-nli-v1_dev_00054,1주택을 소유한 1세대가 다른 1주택을 추가로 취득한 경우 종전 주택을 일정 기간 내에 처분할 경우에 신규 주택은 1주택 세율을 적용받게 된다.,1주택을 소유한 1세대가 다른 1주택을 추가로 취득한 경우 종전 주택을 일정 기간 내에 처분할 경우에만 신규 주택은 1주택 세율을 적용받게 된다.,neutral,entailment,p_46c19a28bc
+klue-nli-v1_dev_00064,2003년 변정수 씨가 교통사고로 죽었다는 이야기가 돌았지만 사실무근이었다.,2003년 변정수 씨가 교통사고로 죽었다.,contradiction,entailment,p_a49a60bcdf
+klue-nli-v1_dev_00067,"2012년 도입 이후 올해로 4회를 맞은 한국관광 100선은 직전 100선 평가, 지자체 추천, 빅데이터 분석 등을 통해 예비 후보 발굴로 시작한다.",한국관광 100선은 2011년에 도입되었다.,contradiction,entailment,p_6bad7cae4f
+klue-nli-v1_dev_00069,"2012년 도입 이후 올해로 4회를 맞은 한국관광 100선은 직전 100선 평가, 지자체 추천, 빅데이터 분석 등을 통해 예비 후보 발굴로 시작한다.",예비 후보를 발굴한 후 한국 관광 100선을 선정한다.,entailment,neutral,p_6bad7cae4f
+klue-nli-v1_dev_00071,2013년 12월 31일까지 010으로 번호변경을 하지 않으면 2014년 1월1일 0시 이후에 발신기능이 정지된다.,2013년 12월 31일까지 010으로 번호변경을 하지 않아도 수신기능은 가능하다.,neutral,contradiction,p_c97db6c1f5
+klue-nli-v1_dev_00072,2013년 12월 31일까지 010으로 번호변경을 하지 않으면 2014년 1월1일 0시 이후에 발신기능이 정지된다.,2014년 1월1일 0시 이후에는 010으로만 발신 가능하다.,entailment,neutral,p_c97db6c1f5
+klue-nli-v1_dev_00087,"20일 새벽 0시 39분 경, 미국 콜로라도 주 오로라에 위치한 센추리 16 영화관에서 총기 난사로 12명이 사망하고, 58명이 부상을 당하는 일이 발생하였다.","20일 새벽 0시 39분 경, 미국 콜로라도 주 오로라에 위치한 센추리 16 영화관에서 총기 난사로 70명의 사상자가 발생하였다.",entailment,contradiction,p_824025b5da
+klue-nli-v1_dev_00089,20일 서울 강남구 팁스타운에서 스마트대한민국펀드 출범식이 개최됐다.,팁스타운은 신사동에 위치해있다.,neutral,contradiction,p_7f5e439b24
+klue-nli-v1_dev_00091,21세기에 70년대 수준의 스토리텔링이라니요.,70년대에 21세기 수준의 스토리텔링이라니요.,contradiction,entailment,p_4f2da8a643
+klue-nli-v1_dev_00099,"25년 이상 노동당 작전부장을 맡아왔던 오극렬이 국방위원회 부위원장에 임명된 직후, 작전부가 국방위원회 산하 정찰총국으로 통폐합됐다는 것입니다.",오극렬이 국방위원회에 오기 전 작전부가 국방위원회 산하 기구로 통폐합되었습니다.,contradiction,entailment,p_536cb1b7fe
+klue-nli-v1_dev_00106,29일 산다라박은 한짝씩 색이 다른 운동화를 신고 있는 사진을 올리기도 했다.,28일에 산다라박은 양쪽이 색이 다른 운동화을 신었다.,neutral,entailment,p_202cada156
+klue-nli-v1_dev_00110,2년 후인 2015년 6월 첫딸을 출산했다.,2015년 6월이 첫 출산이다.,neutral,entailment,p_9379c06827
+klue-nli-v1_dev_00111,2년 후인 2015년 6월 첫딸을 출산했다.,2015년 6월 장녀를 출산했다.,entailment,contradiction,p_9379c06827
+klue-nli-v1_dev_00121,30대 초반의 소설가로 성공한 심양자에게 어느 날 어릴 적 친구인 경순한테서 20여 년 만에 전화가 온다.,경순은 심양자가 30대 초반에 알게된 친구이다.,contradiction,entailment,p_72ec2f2ccc
+klue-nli-v1_dev_00122,30대 초반의 소설가로 성공한 심양자에게 어느 날 어릴 적 친구인 경순한테서 20여 년 만에 전화가 온다.,심양자는 30대 초반에 소설가가 되었다.,neutral,entailment,p_72ec2f2ccc
+klue-nli-v1_dev_00132,3138번으로 들어가서 가운데 집입니다.,3138번으로 들어간 뒤 중간에 있는 집입니다.,entailment,contradiction,p_1e39ce5f9d
+klue-nli-v1_dev_00134,"3명이 시작해서 현재 연구원은 5명, 인턴은 3명으로 구성돼 있습니다.",현재 연구원과 인턴은 총합 8명입니다.,entailment,contradiction,p_f0bc93dbe8
+klue-nli-v1_dev_00135,"3명이 시작해서 현재 연구원은 5명, 인턴은 3명으로 구성돼 있습니다.",현재 총 인원은 3명입니다.,contradiction,entailment,p_f0bc93dbe8
+klue-nli-v1_dev_00143,"45만 명이 부상당했고, 2만5천 명이 실종되었습니다.",사망자는 3천 명입니다.,neutral,contradiction,p_f0aaddbc8e
+klue-nli-v1_dev_00150,"4월26일 새벽 4시 반부터 2시간여 동안, 주한 미군은 사드의 핵심 장비를 경북 성주 골프장에 반입하였다.","4월 26일 새벽 4시 반부터 약 새벽 6시 반까지, 주한 미군은 사드의 핵심 장비를 경북 성주 골프장에 반입하였다.",entailment,contradiction,p_7f87ce02ef
+klue-nli-v1_dev_00162,"5개 운동부의 경기가 열리기 전인 12일에는 양교 합동 방송제, 13일에는 양교 합동 응원오리엔테이션이 함께 진행된다.",5개 운동부의 경기는 12일 이후에 열린다.,entailment,contradiction,p_be30021a55
+klue-nli-v1_dev_00175,81년도 영화를 30년이지난 지금 평가가 말이되는가.,81년도 영화를 30년이 지났으니 지금 평가해야한다.,contradiction,entailment,p_87771e3fd7
+klue-nli-v1_dev_00181,"8월 중에 입주신청을 하면 청년은 9월, 신혼부부는 10월부터 입주가 가능하다.",8월 중에 입주신청을 한 청년은 10월부터 입주가 가능하다.,contradiction,entailment,p_c054200e23
+klue-nli-v1_dev_00187,8일의 이탈리아 여행 마무리 도시가 로마였습니다,이탈리아 여행을 7일동안 했습니다.,contradiction,entailment,p_8cd92060d7
+klue-nli-v1_dev_00191,95년 마닐라 쇼핑센터 극장에서 마리사를 만나다.,95년에 마리사를 처음 만났다.,neutral,contradiction,p_c0fc67a84a
+klue-nli-v1_dev_00194,9년 전의 린지의 리즈 시절과 레이첼은 지금 봐도 예뻐요.,레이첼의 리즈 시절은 지금이에요.,neutral,entailment,p_4b6361db32
+klue-nli-v1_dev_00202,가난 속의 동심은 공책 속 꽃잎처럼 무한한 희망일 것이다.,가난해도 동심을 갖는다면 희망이 이루어질 것이다.,neutral,entailment,p_ccfbedca1d
+klue-nli-v1_dev_00212,각 주관기관 별로 서면평가와 발표평가 등의 절차를 거쳐 9월 중에 지원대상을 최종 선발할 계획이다.,지원대상을 3분기에 최종 선발할 계획이다.,entailment,contradiction,p_da4808906d
+klue-nli-v1_dev_00218,같은 시간 이란을 제압하고 8강에 진출한 우리나라와의 4강 맞대결 가능성도 커졌다.,우리나라는 4강에 진출했다.,neutral,entailment,p_9b4f0641fa
+klue-nli-v1_dev_00220,개인적으로 어린이보다 어른에게 더 추천하고싶은 영화입니다.,어린이는 관람 불가 영화입니다.,contradiction,entailment,p_1191f87057
+klue-nli-v1_dev_00223,개인적으로 점수 주는것 자체가 아깝다.,점수 주는것 자체가 아깝다는 것은 내 생각이 아니다.,contradiction,entailment,p_aafa559302
+klue-nli-v1_dev_00235,거인 스림이 토르의 망치 묠니르를 훔쳐 간 뒤 돌려받고 싶으면 프레이야를 자기 신부감으로 내놓으라고 요구한다.,토르는 거인 스립의 망치 묠니르를 훔쳐간다.,contradiction,entailment,p_5f2bff1309
+klue-nli-v1_dev_00252,겨드랑이나 땀이 나는 부위에 향수를 뿌리면 땀과 섞여 그야말로 최악의 향이 날 수 있으니 조심해야 한다.,반드시 땀이 나는 부위에 향수를 뿌려야 한다.,contradiction,neutral,p_2be2ac65f7
+klue-nli-v1_dev_00260,결국 이 모든 일들이 여주의 상상이라는 걸로 끝나야 말이되지.,결국 엔딩은 모든 일들이 실제 일어난 일이라는 것이었다.,neutral,contradiction,p_b6e2996f37
+klue-nli-v1_dev_00275,경기에서 대한민국은 구자철과 지동원의 활약에 힘입어 주도권을 잡았으나 이후 게인리흐에게 두 골을 내줬다.,경기에서 대한민국은 3:2로 승리했다.,neutral,contradiction,p_f9ef9f3eb0
+klue-nli-v1_dev_00276,경기에서 대한민국은 구자철과 지동원의 활약에 힘입어 주도권을 잡았으나 이후 게인리흐에게 두 골을 내줬다.,경기에서 게인리흐가두 골을 따냈다.,entailment,contradiction,p_f9ef9f3eb0
+klue-nli-v1_dev_00277,경북 동해안은 아침 한때 비가 오겠다.,경북 동해안 아침에 내리는 비는 오후까지 지속될 예정이다.,contradiction,neutral,p_f5c04b2ddc
+klue-nli-v1_dev_00294,경찰은 김 모 스스로가 십자가의 목재를 구매하고 설계도를 작성한 것으로 보아 단독 자살로 판단하고 국립과학수사연구원에 부검을 의뢰하였다.,김 모씨의 죽음은 계획적인 타살이라 경찰은 생각했다.,contradiction,neutral,p_8e17a6b4ef
+klue-nli-v1_dev_00304,고 최종근 하사 아버지는 영결식이 열리는 동안 고개를 숙이며 차분히 앉아 있었다.,최종근 하사는 아버지의 영결식에 참석하였다.,contradiction,entailment,p_d6a8173695
+klue-nli-v1_dev_00316,고유정 남편의 전부인이 스스로 목숨을 끊은 탓에 의붓아들은 제주에서 할머니 손에 자라고 있었다.,고유정 남편의 전부인은 교통사고로 사망했다.,contradiction,neutral,p_09e1a16b58
+klue-nli-v1_dev_00328,공성전은 그냥 배경일뿐 중점은 묵가의 사상과 그것에 관한 인물들의 생각이다.,공성전이 중점이다.,contradiction,entailment,p_fef51d3247
+klue-nli-v1_dev_00330,공성전은 그냥 배경일뿐 중점은 묵가의 사상과 그것에 관한 인물들의 생각이다.,공성전이 중점이 아니다.,entailment,contradiction,p_fef51d3247
+klue-nli-v1_dev_00356,"관내 착한가게 235곳에서 6,685만원 상당을 후원했고, 착한 가정 34곳에서도 1,064만원 상당의 성금을 쾌척했다.","착한가게 중 한 곳에서 1,000만원을 후원했다.",neutral,contradiction,p_8af48ec483
+klue-nli-v1_dev_00357,"관내 착한가게 235곳에서 6,685만원 상당을 후원했고, 착한 가정 34곳에서도 1,064만원 상당의 성금을 쾌척했다.",총 269곳에서 후원했다.,entailment,contradiction,p_8af48ec483
+klue-nli-v1_dev_00370,광주전남에서 유일하게 진행되는 이 공연은 서울시와 강진군의 문화교류 사업으로 무료 초대권을 6월 20일부터 강진아트홀 매표소에서 배부한다.,이 공연은 서울시와 강진군에서 볼 수 있다.,contradiction,entailment,p_c5c3583fdd
+klue-nli-v1_dev_00376,구구절절 설명하고 이해시키려는 노력이 큰 의미없이 다가온다.,대충 이해시키려는 노력이 큰 의미가 없다.,contradiction,entailment,p_a9938258e7
+klue-nli-v1_dev_00377,구구절절 설명하고 이해시키려는 노력이 큰 의미없이 다가온다.,설명하려는 내용이 복잡하다.,neutral,entailment,p_a9938258e7
+klue-nli-v1_dev_00383,구로사와 아키라 타계 이후 일본 영화는 몰락했다.,구로사와 아키라는 일본 영화의 전성기를 이끌었다.,neutral,contradiction,p_d4046c21d3
+klue-nli-v1_dev_00406,국토부는 8월부터 현장에서 이용 가능할 것으로 예상하고 있다.,국토부의 예상보다 빨리 이용 가능해질 전망이다.,neutral,entailment,p_d61e058630
+klue-nli-v1_dev_00419,"그 3분 후 스웨덴 루스티그가 두 번째 골을 성공시켰고, 후반 31분 요한 엘만데르의 왼발 슛이 골로 이어지며 한 골차까지 쫓아왔다.",스웨덴 루스티그가 총 세 골을 넣었다.,neutral,contradiction,p_eba687be10
+klue-nli-v1_dev_00434,그 후 1년 3개월 만에 이혼했지만 둘 사이에 아들을 두고 있다.,결혼한 지 1년 3개월 만에 이혼했다.,neutral,entailment,p_e29d5df609
+klue-nli-v1_dev_00437,그거빼고 치안이나 모든것들은 완벽합니다.,치안이 가장 완벽합니다.,neutral,contradiction,p_58ed0117f8
+klue-nli-v1_dev_00438,그거빼고 치안이나 모든것들은 완벽합니다.,치안이 완벽합니다.,entailment,contradiction,p_58ed0117f8
+klue-nli-v1_dev_00447,그는 매일 아침 먹는다는 과일 주스를 갈아 마시고 운동을 시작했다.,그는 운동 전에 과일 주스를 갈아 마셨다.,entailment,contradiction,p_f9ddfb49f2
+klue-nli-v1_dev_00454,그는 플루타르코스의 저서에 끼어있던 아내에게 보내는 편지를 번역하였는데 여기서 플루타르코스는 2년 연상의 언니를 잃고 비탄에 빠진 아내를 위한하고 있다.,플루타르코스는 그의 저서에 끼어 있던 편지를 번역했다.,contradiction,entailment,p_17c3d27f8c
+klue-nli-v1_dev_00456,그는 플루타르코스의 저서에 끼어있던 아내에게 보내는 편지를 번역하였는데 여기서 플루타르코스는 2년 연상의 언니를 잃고 비탄에 빠진 아내를 위한하고 있다.,플루타르코스의 처형이 죽었다.,entailment,neutral,p_17c3d27f8c
+klue-nli-v1_dev_00457,"그는 해외에서 교육을 받은 최초의 이란 왕위계승 후보자로, 4년 동안 스위스에서 지내다가 고등학교 졸업장은 이란에서 받기 위해 1936년 귀국했다.",그는 스위스에서 고등학교 졸업장을 받았다.,contradiction,neutral,p_630c74996e
+klue-nli-v1_dev_00458,"그는 해외에서 교육을 받은 최초의 이란 왕위계승 후보자로, 4년 동안 스위스에서 지내다가 고등학교 졸업장은 이란에서 받기 위해 1936년 귀국했다.",그는 태어나자마자 해외에서 지냈다.,neutral,contradiction,p_630c74996e
+klue-nli-v1_dev_00493,"그러나 결국 학생을 선발하는 현 교육제도에서, 영어를 절대평가로 한다고 해서 과연 사교육 시장의 팽창이 주춤할지 의문입니다.",영어를 절대평가로 하면 사교육 시장은 주춤한다.,neutral,contradiction,p_4dfb0618de
+klue-nli-v1_dev_00505,그런데 2인이상은 머물기엔 작은 집이예요.,두 명이 머물기엔 적당한 크기에요.,contradiction,entailment,p_0f4da1ac30
+klue-nli-v1_dev_00506,그런데 2인이상은 머물기엔 작은 집이예요.,혼자 머물기엔 너무 큰 집이에요.,neutral,contradiction,p_0f4da1ac30
+klue-nli-v1_dev_00507,그런데 2인이상은 머물기엔 작은 집이예요.,세 명이 머물기엔 집이 작아요.,entailment,neutral,p_0f4da1ac30
+klue-nli-v1_dev_00508,그런데 당시 박근혜 후보는 문재인 후보보다 노년층에서 높은 지지율을 얻었으므로 미분류표에서 박근혜 후보자의 득표율이 높을 수밖에 없다는 것이다.,문재인 후보는 미분류표를 박근혜 후보보다 더 많이 얻었다.,contradiction,neutral,p_e8d74e9c0c
+klue-nli-v1_dev_00509,그런데 당시 박근혜 후보는 문재인 후보보다 노년층에서 높은 지지율을 얻었으므로 미분류표에서 박근혜 후보자의 득표율이 높을 수밖에 없다는 것이다.,당시 문재인 후보의 지지율은 박근혜 후보보다 노년층 지지율에서 뒤쳐졌다.,entailment,neutral,p_e8d74e9c0c
+klue-nli-v1_dev_00510,그런데 당시 박근혜 후보는 문재인 후보보다 노년층에서 높은 지지율을 얻었으므로 미분류표에서 박근혜 후보자의 득표율이 높을 수밖에 없다는 것이다.,분류표 득표율은 문재인 후보가 더 높았다.,neutral,contradiction,p_e8d74e9c0c
+klue-nli-v1_dev_00511,그런데 집주인의 아내가 산기가 있자 데크티너는 산파 노릇을 하여 아들이 태어나는 것을 돕는다.,데크니터는 산파인 척하며 집주인의 아내의 아들을 살해하려 한다.,contradiction,neutral,p_8f4f7fe17d
+klue-nli-v1_dev_00512,그런데 집주인의 아내가 산기가 있자 데크티너는 산파 노릇을 하여 아들이 태어나는 것을 돕는다.,데크니터는 집주인의 아들이 태어나는 것을 돕기 위해 산파 노릇을 한다.,entailment,contradiction,p_8f4f7fe17d
+klue-nli-v1_dev_00520,그리고 2층침대는 성인남자가 숙박하기에는 길이가 짧습니다,성인남자에게 2층 침대의 길이는 적당합니다.,contradiction,entailment,p_941dd099db
+klue-nli-v1_dev_00551,그의 유해는 상트페테르부르크 교외에 있는 우스펜스키 묘지에 안장되었으나 소련 시절의 대대적인 묘지 재구획 공사로 그의 유해가 멸실되어 지금까지 찾을 수 없다.,소련의 묘지 재구획 공사는 지금까지 계속되고 있다.,neutral,contradiction,p_4679ea309d
+klue-nli-v1_dev_00554,그치만 그것을 다 감수 할 만큼 넘 좋았어요,마음에 들지 않는 점들도 있어요.,entailment,neutral,p_f80beca3e2
+klue-nli-v1_dev_00555,그치만 그것을 다 감수 할 만큼 넘 좋았어요,모든 점이 완벽했어요.,contradiction,neutral,p_f80beca3e2
+klue-nli-v1_dev_00568,근데 마지막에 수신료인상정당성에 관한 깨알같은 자막나간건 최악이었습니다,마지막에 수신료 인상 정당성에 대한 자막은 반드시 필요했습니다.,contradiction,neutral,p_a275656caf
+klue-nli-v1_dev_00572,근데 이번엔 예약후에 한국분인걸 알았어요.,이번엔 예약 전에 한국 분인 걸 몰랐어요.,entailment,contradiction,p_37af55b174
+klue-nli-v1_dev_00573,근데 이번엔 예약후에 한국분인걸 알았어요.,예약 전부터 한국 분인 걸 알았어요.,contradiction,entailment,p_37af55b174
+klue-nli-v1_dev_00585,"기원전 233년에, 아이아키다이 왕조의 마지막 생존 인물인 데이다미아가 살해당했다.",데이다미아는 자살했다.,contradiction,neutral,p_d7e61fc2be
+klue-nli-v1_dev_00586,"기존 수사 기관이 고위 공직자 범죄를 수사하게 될 때 공수처에 통지하도록 하고, 사건이 중복되는 경우 공수처가 이첩하도록 하였다.",사건이 중복되는 경우는 기존 수사 기관이 이첩하도록 했다.,contradiction,entailment,p_c118edacea
+klue-nli-v1_dev_00591,기존에 700억원에 이르는 추진체 발사 비용은 500억으로 약 3분의 1을 절감한 셈이다.,추진체를 발사하는 데는 100억이 넘는 비용이 든다.,entailment,contradiction,p_1bac9409aa
+klue-nli-v1_dev_00594,김말석이 쓰레기 하치장 총책임자로 부임한 이후 이곳에서는 그전에는 없었던 인명사고가 발생하기 시작했다.,김말석은 인명사고를 발생시켰다.,neutral,entailment,p_b52980fb2a
+klue-nli-v1_dev_00603,김태리 씨와 변요한 씨 등 주역들은 1일 소속사를 통해 종영 소감을 전했다.,변요한 씨는 직접 종영 소감을 발표했다.,contradiction,neutral,p_fd82eebc88
+klue-nli-v1_dev_00619,난 당신이 떠날때 길 하나도 못 건넜는데,난 길을 건넜다.,contradiction,entailment,p_fefcdd03d6
+klue-nli-v1_dev_00624,난 생처음으로 내돈내고 본 영화중에서 극장에서 졸았던 영화다.,남의 돈으로 본 영화가 있다.,neutral,entailment,p_d7dc38a2f6
+klue-nli-v1_dev_00625,난 아직도 이 졸작의 제목을 이해할수없다,이 졸작에서 이해되는 것은 제목 뿐이다.,contradiction,neutral,p_f834a2d314
+klue-nli-v1_dev_00636,내가 사랑하는 사람이 날 사랑하는 건 기적이다.,내가 사랑하는 사람이 나와 서로 사랑하는 건 기적이다.,entailment,neutral,p_b3e3299cf0
+klue-nli-v1_dev_00640,내가본건 이거하나지만 이거하나로 만족할래,하나만 보고는 만족하지 않을래.,contradiction,entailment,p_61a03020e4
+klue-nli-v1_dev_00642,내가본건 이거하나지만 이거하나로 만족할래,하나를 보고도 만족할래.,entailment,contradiction,p_61a03020e4
+klue-nli-v1_dev_00644,"내일인 2012년 12월 6일, 아침 서울기온은 영하 10도, 철원은 영하 15도까지 떨어질 것으로 전망된다.",오늘은 2012년 12월 5일이다.,entailment,contradiction,p_4fcf33fe2d
+klue-nli-v1_dev_00645,"내일인 2012년 12월 6일, 아침 서울기온은 영하 10도, 철원은 영하 15도까지 떨어질 것으로 전망된다.",내일 아침 서울기온은 철원보다 낮을 것으로 전망된다.,contradiction,entailment,p_4fcf33fe2d
+klue-nli-v1_dev_00647,낼부터 불평과 후회는 줄일 수 있을거같다,불평보다 후회가 줄이기 쉬울 것 같다.,neutral,contradiction,p_6ce857acc2
+klue-nli-v1_dev_00648,낼부터 불평과 후회는 줄일 수 있을거같다,불평과 후회는 내일부터 줄일 수 있을 것 같다.,entailment,contradiction,p_6ce857acc2
+klue-nli-v1_dev_00655,"노르웨이 배의 선장인 달란트는 심한 폭풍우에 휘말리게 되고, 표류를 한 끝에 노르웨이의 해안에 닿게 된다.",달란트는 향해 중 사망한다.,contradiction,neutral,p_fcb2d72f3e
+klue-nli-v1_dev_00656,"노르웨이 배의 선장인 달란트는 심한 폭풍우에 휘말리게 되고, 표류를 한 끝에 노르웨이의 해안에 닿게 된다.",달란트는 노르웨이의 해안에 고립된다.,neutral,contradiction,p_fcb2d72f3e
+klue-nli-v1_dev_00661,"농촌진흥청은 올해 들어서야 미세먼지로 인한 농작물 피해 관련 연구에 들어갈 예정이고, 가축 피해 관련 연구도 수행할 계획이라고 밝혔다.",농촌진흥청은 미세먼지로 인한 농작물 피해 관련 연구를 작년부터 지속해왔다.,contradiction,neutral,p_f3de74a8ea
+klue-nli-v1_dev_00671,"뉘른베르크 후속재판에서는 1949년까지 나치주요인물들이 재판을 받으며, 재판에 회부된 184명 중 5분의 4가 유죄판결을 받았다.",재판에 회부된 사람은 모두 184명이다.,entailment,contradiction,p_b36633bd57
+klue-nli-v1_dev_00695,다만 드라이기가 없다는게 흠인듯싶습니다.,드라이기가 없다는게 가장 큰 단점입니다.,neutral,entailment,p_1528967870
+klue-nli-v1_dev_00698,다만 방마다 잠금장치가 없는게 흠이었어요.,잠금장치가 없어도 보안은 철저했어요.,neutral,contradiction,p_c66635e0fa
+klue-nli-v1_dev_00700,"다만 소액주주의 부담을 줄이기 위해 국내 상장주식 양도소득은 2000만원, 해외주식과 비상장 주식, 채권, 파생상품 소득은 하나로 묶어서 250만원을 공제한다.",해외주식은 500만원을 공제한다.,contradiction,neutral,p_e0807e385c
+klue-nli-v1_dev_00705,다만 여행 하는 도중에 너무 한가지 소재 같은거에서 시간을 떼우는 듯한 느낌도 있지만,여행 하는 도중에 여러가지 소재에 시간을 때우는 느낌도 있지만.,contradiction,entailment,p_3de6410630
+klue-nli-v1_dev_00712,다만 중소기업 수출은 전체 수출 또는 대기업 및 중견기업 수출 감소와 비교할 때 상대적으로 감소폭이 작은 것으로 조사됐다.,대기업의 수출 감소폭이 제일 작다.,contradiction,neutral,p_de9fc2e2a3
+klue-nli-v1_dev_00713,다만 중소기업 수출은 전체 수출 또는 대기업 및 중견기업 수출 감소와 비교할 때 상대적으로 감소폭이 작은 것으로 조사됐다.,대기업이 중소기업보다 수출 감소폭이 높다.,entailment,neutral,p_de9fc2e2a3
+klue-nli-v1_dev_00714,다만 중소기업 수출은 전체 수출 또는 대기업 및 중견기업 수출 감소와 비교할 때 상대적으로 감소폭이 작은 것으로 조사됐다.,전체 수출 감소폭은 중견기업 감소폭보다 작다.,neutral,entailment,p_de9fc2e2a3
+klue-nli-v1_dev_00730,다면 5층까지 가방들고 올라가기 좀 힘듭니다,5층까지 가방이 없다면 힘들지 않습니다.,neutral,contradiction,p_a17f2087b4
+klue-nli-v1_dev_00741,단 이직 전 24개월동안 12개월이상 보험료를 내야 한다.,보험료를 이직 전 2년동안 1년이상 내야 한다.,entailment,contradiction,p_080762ce28
+klue-nli-v1_dev_00753,당첨자에게는 응모 시 입력한 휴대 전화번호로 국민관광상품권 5만 원권 모바일 교환권이 발송된다.,국민관광상품권 5만 원권은 우표로 발송된다.,contradiction,neutral,p_14a18b8f96
+klue-nli-v1_dev_00764,"대외무역법상 전략물자는 매각시 산업통상자원부 의 허가를 득해야 하며, 전기통신사업법과 전파법에 의거 미래창조과학부 허가도 받아야 한다.","산업통상자원부, 미래창조과학부 둘 중 하나의 허락을 맡으면 전략물자를 팔 수 있다.",contradiction,entailment,p_d8354b45b7
+klue-nli-v1_dev_00765,"대외무역법상 전략물자는 매각시 산업통상자원부 의 허가를 득해야 하며, 전기통신사업법과 전파법에 의거 미래창조과학부 허가도 받아야 한다.",전략물자를 살때도 두 부서의 허가가 있어야한다.,neutral,entailment,p_d8354b45b7
+klue-nli-v1_dev_00777,"대한민국 전국버스운송사업조합연합회는 20일 서울특별시 방배동 전국버스회관에서 긴급 비상총회를 열고, 무기한으로 버스 전면 운행 중단을 단행하기로 하였다.",버스 전면 운행 중단의 기간은 정해지지 않았다.,entailment,contradiction,p_1d4c4cd6f1
+klue-nli-v1_dev_00779,대한제국은 1905년 11월 17일 일본에 의해 강제적 조약인 을사늑약을 맺으며 외교권을 박탈당하고 고종은 강제 폐위된다.,대한제국은 외교권을 되찾는다.,neutral,contradiction,p_b11a31d45a
+klue-nli-v1_dev_00798,덤덤하게 표현되는 진짜와 가짜의 기묘한 동행,진짜와 가짜는 구별하기 힘들도록 표현된다.,neutral,contradiction,p_6e972b9f9f
+klue-nli-v1_dev_00803,도보 1분거리에 세븐일레븐이 있습니다.,세븐일레븐은 맞은편에 있습니다.,neutral,contradiction,p_b093bc8277
+klue-nli-v1_dev_00808,"독일의 패전 후, 1948년 연합군 정부는 도이치은행은 10개의 독립된 지역은행으로 분리할 것을 명령하였다.",세계 제2차대전에서 독일이 전쟁에서 승리했다.,contradiction,neutral,p_5fc7c2a2c2
+klue-nli-v1_dev_00810,"독일의 패전 후, 1948년 연합군 정부는 도이치은행은 10개의 독립된 지역은행으로 분리할 것을 명령하였다.",독일의 패전 후 도이치은행은 총 10개의 지역 은행으로 분리되었다.,neutral,contradiction,p_5fc7c2a2c2
+klue-nli-v1_dev_00811,"동구는 내부청소 및 용수공급을 완료하고 지난 29일 안전점검과 시험가동을 실시, 5월부터 10월까지 6개월간 분수대를 운영한다.",분수대의 내부청소 및 용수공급은 지난 28일에 완료되었다.,neutral,entailment,p_1ad641ee03
+klue-nli-v1_dev_00816,동물이 겨울잠을 자는 동안 심장 박동수가 감소하고 체온이 내려간다.,생물은 겨울잠을 잔다.,neutral,entailment,p_328db8d01c
+klue-nli-v1_dev_00819,"동해안은 전날 밤부터, 남해안과 제주도는 3일부터 너울로 인한 높은 물결이 해안 도로나 방파제를 넘을 것으로 보여 사고에 유의할 필요가 있다.",동해안은 2일 밤부터 사고에 유의할 필요가 있다.,entailment,contradiction,p_0ebf70cbeb
+klue-nli-v1_dev_00826,두 이야기 모두 아이들에게 거짓말을 하면 큰 벌을 받게 된다는 교훈을 준다.,두 이야기의 교훈은 각각 다르다.,contradiction,neutral,p_34df61e089
+klue-nli-v1_dev_00827,두 이야기 모두 아이들에게 거짓말을 하면 큰 벌을 받게 된다는 교훈을 준다.,두 이야기는 어른들을 위한 동화이다.,neutral,contradiction,p_34df61e089
+klue-nli-v1_dev_00835,드래곤라이더가 되는과정이 정말 재밋어요,드래곤라이더가 되는 과정이 단지 재밌지만은 않다.,neutral,entailment,p_91a536c43a
+klue-nli-v1_dev_00856,또 순천소방서 박승민 소방위는 구급출동 시 사용되는 주 들것의 측면에 이동 가능한 매트 및 롤러형 보조 들것을 부착하는 방식을 고안해 동상을 수상했다.,박승민은 소방 공무원이다.,entailment,neutral,p_3d2cd422cd
+klue-nli-v1_dev_00868,또한 두 부처는 올해 연말까지 이번에 논의한 내용을 구체화하여 실제적인 협업 방안을 마련할 예정이다.,두 부처는 이번에 논의한 내용에 대한 실제적인 협업 방안을 마련하지 않았다.,entailment,contradiction,p_96d549db03
+klue-nli-v1_dev_00883,"또한 평남 남포시는 기존 평남의 강서, 대안, 온천, 용강, 천리마군을 편입하여 특별시로 승격했다는 것이 확인됐다고 통일부는 덧붙였다.",4개의 군이 남포시로 합쳐졌다.,contradiction,entailment,p_49d9f486b5
+klue-nli-v1_dev_00905,라푼젤은 숲에 고립된 영지에 사는 사악한 마녀 고델의 하인으로 살고 있다.,라푼젤은 마녀 고델을 하인으로 삼고 있다.,contradiction,entailment,p_d14461bfcd
+klue-nli-v1_dev_00918,로마에서 3박4일간 이곳에서 머물렀습니다.,로마는 당일치기로 갔어요.,contradiction,neutral,p_8f02daf8bf
+klue-nli-v1_dev_00927,"리버풀은 전반전 추가 시간에 사디오 마네가 획득한 페널티킥을 제임스 밀너가 성공, 1골 차로 따라 잡았다.",리버풀은 후반전 내내 한 골도 넣지 못했다.,neutral,contradiction,p_648b8982ac
+klue-nli-v1_dev_00929,리카의 할머니는 그녀에게 선물로 인형 세트를 주기로 결정한다.,리카는 선물로 인형 세트를 받기를 원하고 있다.,neutral,contradiction,p_28630ad887
+klue-nli-v1_dev_00930,리카의 할머니는 그녀에게 선물로 인형 세트를 주기로 결정한다.,리카의 할머니는 아직 인형 세트를 리카에게 주지 않았다.,entailment,contradiction,p_28630ad887
+klue-nli-v1_dev_00935,마을에서 제법 뼈대 있는 집안의 기순 아씨가 이웃 동네 부잣집 외아들 긍재에게 시집을 간다.,기순 아씨와 긍재는 혼인을 한다.,entailment,neutral,p_60519b9084
+klue-nli-v1_dev_00941,마이클잭슨도 대단하지만 댄서들도 정말 춤 잘춘다.,댄서들은 마이클 잭슨 만큼 잘 춘다.,neutral,entailment,p_1d0c9f243a
+klue-nli-v1_dev_00953,마추픽추에서는 왜그런지 저도 같이 울었어요,마추픽추에서는 우리 모두 울었어요.,neutral,entailment,p_06a46b0243
+klue-nli-v1_dev_00959,만 18세 이하 청소년들의 등교가 시작되면서 만 18세 이하 청소년들은 6월부터 1주일에 1인당 5개까지 살 수 있다.,만 18세 이하 청소년들은 등교 전까지는 1인당 3개씩 구입 가능했다.,neutral,entailment,p_21377c69bc
+klue-nli-v1_dev_00962,만든이들의 애정이 가득 느껴지는 아름다운 작품,만든이들의 노력이 느껴지는 아름다운 작품.,neutral,contradiction,p_f7b60b61af
+klue-nli-v1_dev_00978,"먼저, 반기문 전 유엔 사무총창 대선 출마를 신임 유엔 사무총장이 반대했다는 보도가 대표 사례이다.",신임 유엔 사무총장은 반기문이다.,contradiction,entailment,p_38ff56d0bd
+klue-nli-v1_dev_00980,명석은 장모에게 찾아가 집으로 돌아가자고 권유하고 세차장에서 일을 하기 시작한다.,명석은 세차장에서 일을 하기 위해 장모를 찾아갔다.,neutral,entailment,p_234879edb5
+klue-nli-v1_dev_00984,명화는 몇번을 봐야 모르던 부분이 보인다.,명화는 몇 번을 봐야 알던 부분이 정리가 된다.,neutral,contradiction,p_ad229c5038
+klue-nli-v1_dev_00994,모하마드 레자가 11살이 되었을 때 아버지 레자 샤는 압돌후세인 테이무르타시의 충고에 따라 아들을 스위스의 에스티티 르로제로 유학 보냈다.,레자 샤는 압돌후세인 테이무르타시의 형이다.,neutral,contradiction,p_b9b012ee9c
+klue-nli-v1_dev_00996,모하마드 레자가 11살이 되었을 때 아버지 레자 샤는 압돌후세인 테이무르타시의 충고에 따라 아들을 스위스의 에스티티 르로제로 유학 보냈다.,모하마드 레자는 압돌후세인 테이무르타시의 아버지이다.,contradiction,entailment,p_b9b012ee9c
+klue-nli-v1_dev_01002,"무선전파를 이용, 통신을 지원하는 특성상 한반도 전역 및 해외 파병지역을 포함한 원거리 지역에도 통신망 지원이 가능하게 될 전망이다.",한반도 전역 및 해외 파병지역을 포함한 지구 전역에 통신망 지원이 가능하게 될 전망이다.,neutral,contradiction,p_e287ad9f21
+klue-nli-v1_dev_01020,물량과 캐릭터 하나하나의 성격이 살아 있는듯 해요.,캐릭터 각각의 성격이 생동감 넘치는 듯 해요.,entailment,neutral,p_d2e36317f8
+klue-nli-v1_dev_01037,미다스가 당나귀 귀를 가지고 있다는 것은 아리스토파네스의 기원전 5세기 희극 개구리에 언급된다.,희극은 기원전 5세기에 처음 만들어진다.,neutral,contradiction,p_ec7ada3ebb
+klue-nli-v1_dev_01040,미래통합당은 2020년 4월 7일 대한민국 제 21대 국회의원 선거 관악 갑 후보 김대호를 제명했다.,김대호는 무소속으로 국회의원에 출마했다.,neutral,contradiction,p_5056df6a86
+klue-nli-v1_dev_01042,미모의 배우 제인 윌킨슨으로부터 이혼에 동의해주지 않는 남편 에지웨어 경을 설득해 달라는 부탁을 받은 푸아로는 에지웨어 경을 찾아간다.,남편 에지웨어 경은 제인 윌킨슨의 전남편이다.,contradiction,neutral,p_2ad2f474d6
+klue-nli-v1_dev_01044,미모의 배우 제인 윌킨슨으로부터 이혼에 동의해주지 않는 남편 에지웨어 경을 설득해 달라는 부탁을 받은 푸아로는 에지웨어 경을 찾아간다.,제인 윌킨슨은 남편 에지웨어 경으로부터 이혼을 원한다.,entailment,contradiction,p_2ad2f474d6
+klue-nli-v1_dev_01048,"민영주택의 자격요건은 국민주택과 동일하게 하되 높은 분양가를 고려, 소득수준을 완화한다.",국민주택의 자격요건은 민영주택과 동일하게 하되 소득수준을 완화한다.,contradiction,entailment,p_966b542da8
+klue-nli-v1_dev_01063,바리오스는 이날 경기 후반 19분에 투입돼 거친 태클을 내내 시도하며 손흥민 선수를 견제했다.,바리오스는 경기 후반부는 뛰지 않았다.,contradiction,neutral,p_55e98fe921
+klue-nli-v1_dev_01064,바리오스는 이날 경기 후반 19분에 투입돼 거친 태클을 내내 시도하며 손흥민 선수를 견제했다.,바리오스는 경기를 풀타임으로 뛰지 않았다.,entailment,neutral,p_55e98fe921
+klue-nli-v1_dev_01065,바리오스는 이날 경기 후반 19분에 투입돼 거친 태클을 내내 시도하며 손흥민 선수를 견제했다.,바리오스는 경기 전반에 뛰지 않았다.,neutral,contradiction,p_55e98fe921
+klue-nli-v1_dev_01072,"박근혜 후보는 60대 이상과 50대, 경북권에서, 안철수 원장은 20대와 전라권, 문재인 상임고문은 40대와 충청권에서 높은 응답률을 나타냈다.",박근혜 후보는 20대와 전라권에서 가장 높은 지지률을 얻었다.,contradiction,entailment,p_c36df3144f
+klue-nli-v1_dev_01076,"박정희 정권은 유신 체제를 소위 한국적 민주주의라고 선전하였으나, 찬성하는 국민들조차 이를 민주정치로 받아들이지 않았다.",박정희 정권은 진짜로 유신 체제를 한국적 민주주의라고 생각했다.,neutral,contradiction,p_04facd7de4
+klue-nli-v1_dev_01082,반크는 사이버외교사절단으로 철저하게 비정부기구이고 비영리단체입니다.,반크는 국제기구입니다.,neutral,contradiction,p_459bb8659e
+klue-nli-v1_dev_01098,방송 이후 같은 그룹 멤버였던 빅토리아 웨이보에 짧은 글이 올라왔다.,방송이 끝난 후 빅토리아 웨이보에 글이 올라왔다.,entailment,contradiction,p_4b82b625e4
+klue-nli-v1_dev_01100,방안에 라지에이터가 있으나 방을 덥히기엔 불충분합니다.,라지에이터로 난방을 합니다.,entailment,neutral,p_22b4dd5b6d
+klue-nli-v1_dev_01110,방은 다락방 느낌에 넓고 아늑한 느낌입니다.,방은 다락방입니다.,contradiction,entailment,p_196e4f286e
+klue-nli-v1_dev_01133,베네치아에서 이 가격에 이런 집에 머물 수 있다,가격이 정말 저렴하다.,neutral,entailment,p_e43fcaa7d6
+klue-nli-v1_dev_01136,베트남 대표팀은 지난 3일과 5일 각각 팔레스타인과 오만을 이겨 승점 6점으로 일찌감치 대회 우승을 확정 지어 응원 열기를 한층 끌어올렸다.,팔레스타인은 오만을 상대로 승리하였다.,neutral,entailment,p_6c0b31b071
+klue-nli-v1_dev_01138,베트남 출신 아버지와 러시아 출신 어머니 사이에 태어나 혼혈이다.,러시아 남성과 베트남 여성과의 사이에 태어난 자식이다.,contradiction,entailment,p_d41241c5fe
+klue-nli-v1_dev_01146,별 의미 없는 영화에서 의미를 찾는 것은 골 아픈 일이다.,영화의 의미를 찾는 것은 때때로 골이 아프다.,entailment,neutral,p_8886abe42a
+klue-nli-v1_dev_01147,별거 아닌것같은 등장인물들의 대사 하나하나와 행동들이 모두 복선이다.,등장 인물 대사에 크게 신경 쓰기 않아도 된다.,contradiction,neutral,p_62e1840828
+klue-nli-v1_dev_01173,봄 여름 가을이 괜찮은 여행이 될 것 같습니다,겨울 빼고는 괜찮은 여행이 될 것 같습니다.,entailment,contradiction,p_61c24f775a
+klue-nli-v1_dev_01175,부모님이 모두 돌아가시고 난 후 엄격한 외할머니와 함께 살고 있는 루나는 아버지처럼 가수가 되고 싶어 한다.,루나의 아버지는 가수였다.,entailment,neutral,p_1fd47c38ae
+klue-nli-v1_dev_01178,부모님이 언제나 밝은 얼굴로 인사해 주십니다.,부모님은 밝은 얼굴로 인사를 받아주십니다.,neutral,entailment,p_6d1c070dd0
+klue-nli-v1_dev_01193,분명 민우는 운명을 바꿀 수 있었다.,민우는 운명을 바꾸게 된다.,neutral,entailment,p_2716b0508e
+klue-nli-v1_dev_01206,불편사항은 24시간 신고할 수 있다.,불편사항은 밤에도 신고할 수 있다.,entailment,neutral,p_11eedab966
+klue-nli-v1_dev_01210,블레어 윗치 2 라는 타이틀만 뺐다면 그럭저럭은 했을텐데,블레어 윗치 2 라는 타이틀 덕분에 그럭저럭은 해냈다.,contradiction,entailment,p_40b6063d1e
+klue-nli-v1_dev_01211,블레어 윗치 2 라는 타이틀만 뺐다면 그럭저럭은 했을텐데,블레어 윗치 1 보다는 낫다.,neutral,entailment,p_40b6063d1e
+klue-nli-v1_dev_01216,비과학적인 것은 일체 믿지 않는 잡지 편집자 진초게 하나메는 담당하는 잡지가 휴간되자 회사를 그만둔다.,진초게는 초자연적인 힘을 믿는다.,contradiction,neutral,p_8259c77e2d
+klue-nli-v1_dev_01217,비과학적인 것은 일체 믿지 않는 잡지 편집자 진초게 하나메는 담당하는 잡지가 휴간되자 회사를 그만둔다.,진초게는 새로운 직장을 얻었다.,neutral,contradiction,p_8259c77e2d
+klue-nli-v1_dev_01224,비극의 피해자가 당신의 가족 혹인 지인이 될 수도 있다.,내 가족이 피해자가 될 수도 있다.,entailment,neutral,p_005d201212
+klue-nli-v1_dev_01230,비긴어게인 그여자작사 그남자작곡 그러나 역시나 원스가 내겐 최고다,내게 최고는 비긴어게인이다.,contradiction,entailment,p_3596b1a3dc
+klue-nli-v1_dev_01248,사실 그가 사랑한건 친구의 엄마가아니었을거란 생각이든다,그가 사랑한건 친구의 아빠가 아니였을까 생각한다.,neutral,contradiction,p_91633f3dfd
+klue-nli-v1_dev_01281,새누리당 주호영 의원은 어제 국회 기자회견에서 선진화법에 대한 위헌법률심판이나 헌법소원 심판 청구에 대한 법적인 사항을 검토하기로 했다며 이같이 밝혔다.,주호영은 새누리당 당원이다.,entailment,neutral,p_d6a57ae409
+klue-nli-v1_dev_01287,"새로운 일자리도 2022년까지 89만 개, 2025년까지 190만 개가 창출될 것입니다.",창출되는 일자리의 종류는 100가지가 넘습니다.,neutral,entailment,p_038f405f41
+klue-nli-v1_dev_01293,생활력도 책임감도 없는 남편과 결혼한 여주인공 고마키는 초등학생 딸 노리코와 함께 집을 나온다.,고마키는 남편 몰래 집을 나온다.,neutral,contradiction,p_27e1b8f4cb
+klue-nli-v1_dev_01295,샤워기 따듯한 물은 조금나오다 멈춥니다.,샤워기에서 나오는 찬물은 끊기지 않고 잘 나옵니다.,neutral,contradiction,p_8d34508310
+klue-nli-v1_dev_01298,샤워기가 위에만 있다는게 아쉬운 단점이였어요.,유일한 단점은 샤워기였어요.,neutral,entailment,p_e9f24ad1fc
+klue-nli-v1_dev_01324,선포식에서 스타벅스는 이번 달 25일 부터 우선 50개 점을 전환하고 연내에 330개의 모든 스타벅스 매장으로 확대할 계획이라고 밝혔다.,1년 안으로 총 380개의 스타벅스 매장을 개편할 것이다.,entailment,neutral,p_27f20e1595
+klue-nli-v1_dev_01337,세번째는 숙소로 가는 길이 매우 매우 으슥합니다,단점이 세가지입니다.,neutral,entailment,p_9e64158830
+klue-nli-v1_dev_01340,세상의 모든 길고양이들이 행복했으면 좋겠다,세상의 모든 고양이들이 행복하면 좋겠다.,neutral,entailment,p_ed612bc903
+klue-nli-v1_dev_01341,세상의 모든 길고양이들이 행복했으면 좋겠다,세상의 모든 유기묘들이 행복한 세상이 되면 좋겠다.,entailment,neutral,p_ed612bc903
+klue-nli-v1_dev_01358,"소방방재본부는 아직 옛주소를 기반으로 신고를 받고 있고, 경찰들은 옛주소로 검색한 뒤 근처에서 새주소로 다시 검색하는 편법을 쓰고 있다.","경찰은 옛주소, 새주소 둘다 신고를 받는다.",neutral,contradiction,p_54c489a637
+klue-nli-v1_dev_01362,소설가를 꿈꾸는 미모의 신문사 취재기자 윤지연은 등단을 위해서는 무슨 짓이라도 할 수 있다는 간절한 소망을 가졌다.,윤지연은 신문사에 취직하는 것이 꿈이다.,contradiction,entailment,p_500eaa5c02
+klue-nli-v1_dev_01367,소재의 흥미로움에 비해선 많이 부족하다.,소재는 흥미를 일으킨다.,entailment,neutral,p_0b8c5d5372
+klue-nli-v1_dev_01368,소재의 흥미로움에 비해선 많이 부족하다.,소재 만큼 내용도 흥미롭다.,contradiction,neutral,p_0b8c5d5372
+klue-nli-v1_dev_01374,솔직히 1점은 아닌데 평점 낮춰야한다.,솔직히 1점도 주기 아깝다.,contradiction,entailment,p_4e69e3053c
+klue-nli-v1_dev_01376,"수건 넉넉히 주시고, 침구 깨끗합니다.",수건이 정말 깨끗합니다.,neutral,entailment,p_e1b53381b9
+klue-nli-v1_dev_01378,"수도권 2315가구, 지방 3077가구가 공급된다.","수도권에는 3077가구, 지방에는 2315가구가 공급된다.",contradiction,entailment,p_60b14d212e
+klue-nli-v1_dev_01382,수압쎈거랑 잘때 안추웠던게 넘 맘에들었어요,잘 때 따뜻했어요.,neutral,contradiction,p_6ed812831a
+klue-nli-v1_dev_01397,숙소 바로 나오자마자 에펠탑 바로 보여요.,숙소는 파리에 있어요.,entailment,neutral,p_6ad7869035
+klue-nli-v1_dev_01398,숙소 바로 나오자마자 에펠탑 바로 보여요.,숙소는 런던에 있어요.,contradiction,neutral,p_6ad7869035
+klue-nli-v1_dev_01406,숙소아웃하기전 호스트를 만날수는 없었습니다.,숙소아웃하기전 호스트를 만날수는 없어 아쉬웠습니다.,neutral,entailment,p_2945ceb548
+klue-nli-v1_dev_01409,숙소위치는 떼르미니역 메트로 두정거장에 이동 편리했구요,이용가능한 교통편이 메트로밖에 없어요.,neutral,contradiction,p_0dbcdc5ed6
+klue-nli-v1_dev_01410,숙소위치는 떼르미니역 메트로 두정거장에 이동 편리했구요,숙소가 떼르미니역 매트로 두정거장 떨어져 있어요.,entailment,contradiction,p_0dbcdc5ed6
+klue-nli-v1_dev_01436,시는 자전거도로 구축과 함께 공영자전거 플랫폼도 운영하고 있다.,공영자전거 플랫폼의 운영은 차질을 겪고 있다.,neutral,contradiction,p_bbd1fafa47
+klue-nli-v1_dev_01464,신자유주의는 기업 입장에서 비용 최소화를 위해 노동시장 유연성을 도입하고 노동자를 해고하기 쉽게 한다.,기업에서 신자유주의를 받아들였지만 오히려 비용이 늘어났다.,neutral,contradiction,p_07fe09353b
+klue-nli-v1_dev_01467,실내체육시설은 월 누적 이용금액이 8만원 이상이면 3만원 환급해주고 주말 외식 업소 5회 이용하면 다음 외식 때 1만원을 돌려준다.,실외체육시설은 누적 이용금액이 5만원 이상이면 3만원 환급해준다.,neutral,contradiction,p_371a5dc45c
+klue-nli-v1_dev_01469,실제로 이런장르는 옛날부터 한국에있었음,이런 장르는 예전부터 한국에만 있지 않았음.,neutral,entailment,p_6cbb2e9e8b
+klue-nli-v1_dev_01477,아내 최지연 씨는 4살 때부터 무용을 했다.,최지연은 무용을 하는 4살 어린이이다.,contradiction,entailment,p_51a4299232
+klue-nli-v1_dev_01482,아름다운 음악과 스토리 유지태씨의 열연이 돋보였습니다.,음악 때문에 스트레스 받았습니다.,contradiction,neutral,p_0c73c98534
+klue-nli-v1_dev_01488,아버지는 트레이시에게 결코 결혼해도 이혼할 것이다고 악담을 퍼부은 데다 약혼자 커트리지가 자신이 원했던 프러포즈를 하지 않아서 트레이시는 기분이 좋지가 않다.,커트리지가 트레이시의 기분을 풀어준다.,neutral,contradiction,p_f2cc5eed20
+klue-nli-v1_dev_01490,아버지의 뒤를 이어 경찰이 된 주인공 사카모토 마사유키는 자신이 조선인임을 잊고 일본인 동료 사이고 쇼지로와 각별한 우정을 쌓으며 일본 제국을 위해 헌신한다.,사카모토 마사유키는 조선인이 아니다.,contradiction,entailment,p_6ab278858a
+klue-nli-v1_dev_01498,아울러 신원조회에 부동의하거나 제출 자료에 허위가 발견된 경우 즉시 사업에서 배제하고 재참여가 불가능하도록 지침을 보완했다.,제출 자료에 사실이 발견된 경우 즉시 사업에서 배제하도록 지침을 보완했다.,contradiction,entailment,p_fddecc4e1a
+klue-nli-v1_dev_01505,아일랜드 인디펜던트지에 따르면 27일 현재 사건은 교회 건너편에 있는 브리드웰 가르다 역 경찰관이 조사하고 있다.,경찰관은 교회 건너편에 살고있다.,neutral,entailment,p_32a23677e6
+klue-nli-v1_dev_01509,"아직 정확한 인명 피해는 아직 집계되지 않았으며, 막대한 경제적 손실이 발생할 것으로 예상된다.",경제적 손실은 인명 피해를 야기한다.,neutral,entailment,p_ae4573eca7
+klue-nli-v1_dev_01513,아침에 아주가끔 층간소음도 조금 있었구요.,아침마다 층간소음에 시달렸구요.,contradiction,neutral,p_8fe1c6740e
+klue-nli-v1_dev_01514,아침에 아주가끔 층간소음도 조금 있었구요.,층간소음은 아주 가끔이라 신경쓰이진 않았구요.,neutral,contradiction,p_8fe1c6740e
+klue-nli-v1_dev_01516,아프리카 서해안 적도기니 정부가 발주한 바타 국제공항 터미널은 2200억원에 따냈다.,바타 국제공항 터미널은 아프리카 서해안에 있다.,neutral,entailment,p_e3e9b74f7f
+klue-nli-v1_dev_01518,아프리카 서해안 적도기니 정부가 발주한 바타 국제공항 터미널은 2200억원에 따냈다.,바타 국제공항 터미널을 2300억원에 따냈다.,contradiction,entailment,p_e3e9b74f7f
+klue-nli-v1_dev_01519,안보신분들은 안보는게 훨씬 더 나을수도 있어요,보지 않은 분들은 무조건 봐야 해요.,contradiction,neutral,p_af75181eef
+klue-nli-v1_dev_01521,안보신분들은 안보는게 훨씬 더 나을수도 있어요,보지 않은 사람들은 계속 보지 않는 게 더 나을 것 같아요.,entailment,neutral,p_af75181eef
+klue-nli-v1_dev_01532,"안타까운 마음에 언론에 얘기했지만, 정부에서는 의외로 조용했습니다.",정부에서는 언론의 눈치를 보지 않습니다.,neutral,entailment,p_1e0faf3a56
+klue-nli-v1_dev_01557,어려서부터 엄마와 둘이 살아온 해랑은 졸업을 앞둔 미술 감독 지망생이다.,해랑이 유일하게 함께 살고있는 가족은 엄마이다.,entailment,contradiction,p_30296ab0f4
+klue-nli-v1_dev_01564,어릴때 이거보고 심오한기분과 저 고양이가 무서웠다,어릴 때는 이걸 보고 기분이 좋았다.,contradiction,entailment,p_55ea8191d9
+klue-nli-v1_dev_01577,어휴상영시간도 짧고 아무튼 기대에 많이 못 미침,기대가 너무 컸다.,neutral,contradiction,p_2fbb9a1259
+klue-nli-v1_dev_01583,"얼마뒤 장한의 진나라 군대가 조나라의 거록성을 포위하자, 초나라는 조나라 구원군을 편성해 상장군 송의를 대장으로 삼고 거록으로 출진한다.",거록성은 진나라의 성이다.,contradiction,entailment,p_831318e598
+klue-nli-v1_dev_01589,엄마의 만류에도 불구하고 희수는 대학 마지막 학기를 휴학하고 간병에 매달린다.,희수는 대학의 마지막 학기만을 남겨두고 있다.,entailment,contradiction,p_8ffcee971c
+klue-nli-v1_dev_01597,에릭센은 공을 뺏기자 멈칫하며 양말을 치켜올리며 그대로 케인에게 공을 양보했다.,에릭센은 상대 선수에게 공을 뺏겼다.,neutral,entailment,p_7f53ba9bc4
+klue-nli-v1_dev_01600,엘리가 술에 취해 곯아떨어지자 폴이 자기 집으로 데려가서 재운다.,엘리가 폴을 자기 집으로 데려가 재운다.,contradiction,entailment,p_6e070573f0
+klue-nli-v1_dev_01603,엘리베이터가 없는 2층이지만 한국의 빌딩으로는 3층입니다.,한국의 빌딩에는 엘레베이터가 있습니다.,neutral,contradiction,p_d4deddb8a5
+klue-nli-v1_dev_01627,"역과 3분거리, 공항버스는 10분거리였어요.",공항버스는 1시간 거리였어요.,contradiction,neutral,p_457b6e87c3
+klue-nli-v1_dev_01628,"역과 3분거리, 공항버스는 10분거리였어요.",역은 버스로 3분 거리였어요.,neutral,entailment,p_457b6e87c3
+klue-nli-v1_dev_01633,역시 이병헌은 내레이션을 참 잘하는 멋진 훈남이다.,이병헌은 예쁜 여자다.,contradiction,neutral,p_708d2eb9b6
+klue-nli-v1_dev_01647,연구원 아나는 여러 전자기 파장이 전해질에 미치는 영향을 실험하던 중 우연히 물질이 사라지는 현상을 발견하고 친구들과 이를 연구하기로 한다.,예상과 달리 물질이 변하지 않자 실험을 관둔다.,contradiction,neutral,p_b4f1201bee
+klue-nli-v1_dev_01648,연구자들은 2006년 5월 6일 일본 남쪽 바다 난카이 해구의 해저에서 채취한 토양 시료를 배양기에 넣고 섭씨 10도에서 2013일을 배양했다.,연구자들은 2013년에 해저 토양을 수집하였다.,contradiction,entailment,p_a4a6cd16cb
+klue-nli-v1_dev_01655,연설 직후 푸틴 대통령과 세르게이 악쇼노프 크림 공화국 총리는 크림의 러시아 합병 조약에 서명했다.,연설이 끝난 후 푸틴 대통령이 서명을 했다.,entailment,contradiction,p_1364beec01
+klue-nli-v1_dev_01657,연수가 골목길을 청소하던 이른 아침 바위틈 사이에서 난 양지꽃을 발견한다.,연수는 바위틈 사이에서 고양이를 발견한다.,contradiction,neutral,p_59901acade
+klue-nli-v1_dev_01692,영화 자체는 별로지만 발킬머의 연기는 제대로다,발킬머의 연기가 좋습니다.,entailment,contradiction,p_b66156e3f6
+klue-nli-v1_dev_01696,영화는 1인당 6000원 할인이 제공된다.,영화는 1인당 5000원 할인이 제공된다.,contradiction,entailment,p_5104eea727
+klue-nli-v1_dev_01697,영화는 1인당 6000원 할인이 제공된다.,영화는 매일 6000원 할인이 제공된다.,neutral,contradiction,p_5104eea727
+klue-nli-v1_dev_01705,영화학과 대학생이 만든 졸업작품을 본 듯한 느낌이었습니다,베테랑 감독의 작품을 본 듯한 느낌이었습니다.,contradiction,neutral,p_ccdedc9603
+klue-nli-v1_dev_01709,오공은 무천도사와의 약속을 기억하고 그에게 수련을 받으러 간다.,무천도사는 오공과의 약속을 기억한다.,neutral,entailment,p_a7235061ba
+klue-nli-v1_dev_01732,오삼룡은 다른 이웃 아홉 가족과 함께 일제의 강제로 평남 강서 농장으로 이민을 가게 된다.,오삼룡의 가족은 총 4명이다.,neutral,contradiction,p_a88222789b
+klue-nli-v1_dev_01733,오삼룡은 다른 이웃 아홉 가족과 함께 일제의 강제로 평남 강서 농장으로 이민을 가게 된다.,오삼룡의 이웃들도 일제의 강제로 이민을 가게 된다.,entailment,neutral,p_a88222789b
+klue-nli-v1_dev_01736,"오씨는 문을 열어준 최씨에게 자신이 가져온 칼을 휘둘렀고, 박씨도 칼을 잡아 맞대응했다.",박씨가 잡은 칼은 오씨의 칼이다.,neutral,contradiction,p_d3825cd596
+klue-nli-v1_dev_01741,"오프라인 매장은 농협하나로마트, 이마트, 롯데마트 등 이며 온라인 쇼핑몰은 마켓컬리, 네이버, 11번가, 티몬 등 이다.",티몬은 대표적인 오프라인 매장이다.,contradiction,neutral,p_4c04eba0f7
+klue-nli-v1_dev_01749,옥탑방 왕세자가 끝난지도 벌써 7개월이나 지났네요,옥탑방 왕세자가 벌써 7개월 전이라니 아쉽네요.,neutral,contradiction,p_f1551db0c0
+klue-nli-v1_dev_01750,"올림픽 야구는 남자 종목만 있고, 여자 종목으로는 유사한 스포츠 소프트볼이 있다.",올림픽 여자 종목으로는 스포츠 소르프볼이 야구와 그나마 비슷하다.,entailment,neutral,p_5a6d535fe3
+klue-nli-v1_dev_01753,올해 국내의 무연탄 생산량은 지난해의 210만 톤보다 30만 톤 감소한 180만 톤이다.,지난해 국내 무연탄 생산량은 200만 톤 이하였다.,contradiction,entailment,p_ef375585b2
+klue-nli-v1_dev_01759,올해 추석 연휴는 오는 9월 12일 목요일부터 14일 토요일까지다.,올해 추석 연휴는 주말까지 포함하면 총 5일이다.,contradiction,neutral,p_35bfdfa8d8
+klue-nli-v1_dev_01761,올해 추석 연휴는 오는 9월 12일 목요일부터 14일 토요일까지다.,올해 추석 연휴는 주말과 겹쳐있다.,entailment,contradiction,p_35bfdfa8d8
+klue-nli-v1_dev_01798,우리는 사그라다 파밀리아까지 걸어다니긴 했지만요.,사그라다 파밀리아까지 차를 타고 이동했습니다.,contradiction,neutral,p_e5ba16acc2
+klue-nli-v1_dev_01807,우선 출발 하루전에 정확한 주소를 알려줍니다.,도착하기 전까진 아무도 정확한 주소를 모릅니다.,contradiction,neutral,p_12cf5fc755
+klue-nli-v1_dev_01820,"원고측이 승소하면서, 1인당 최대 450만 5172원까지 전기요금을 돌려받을 수 있을 것으로 보이지만, 한전 측은 판결문을 검토한 뒤 입장을 밝히겠다고 하였다.",1인당 최소 200만원의 전기요금을 돌려받을 수 있을 것으로 보인다.,neutral,contradiction,p_f831dda4ef
+klue-nli-v1_dev_01821,"원고측이 승소하면서, 1인당 최대 450만 5172원까지 전기요금을 돌려받을 수 있을 것으로 보이지만, 한전 측은 판결문을 검토한 뒤 입장을 밝히겠다고 하였다.",한천 측은 입장을 밝히기 전에 먼저 판결문을 검토하고 입장을 밝힐 예정이다.,entailment,contradiction,p_f831dda4ef
+klue-nli-v1_dev_01824,원내 대표 들에게 전화 돌리겠습니다.,원내대표들에게 전화 드리도록 하겠습니다.,entailment,contradiction,p_e0ff6689d9
+klue-nli-v1_dev_01825,원내 제3당인 자유선진당은 충남 천안을에서 후보 한 명을 냈지만 김호연 한나라당 후보에게 패배했다.,김호연은 자유선진당 소속의 후보이다.,contradiction,entailment,p_8d9cdec459
+klue-nli-v1_dev_01834,원작에서 자베르도 불쌍한 사람들 중 한명이었다.,원작에서 자베르 한명만 불쌍하다.,contradiction,neutral,p_674d936178
+klue-nli-v1_dev_01837,월마트에서는 차로 5분정도 걸리고 해변가로는 10분정도.,해변가에서보다 월마트에서의 거리가 더 멈.,contradiction,entailment,p_b15545e268
+klue-nli-v1_dev_01838,월마트에서는 차로 5분정도 걸리고 해변가로는 10분정도.,월마트와 해변가는 같은 방향에 있음.,neutral,contradiction,p_b15545e268
+klue-nli-v1_dev_01853,"위치는 람블라스에서 좀 되고,지하철은 5분거리에요.",람블라스와 지하철은 같은 방향에 있습니다.,neutral,contradiction,p_9698f084a4
+klue-nli-v1_dev_01854,"위치는 람블라스에서 좀 되고,지하철은 5분거리에요.",지하철보다 람블라스의 위치가 더 멉니다.,entailment,contradiction,p_9698f084a4
+klue-nli-v1_dev_01861,위치를 중요시한다면 만족하실만한 숙소에요.,이 숙소의 위치는 훌륭합니다.,entailment,neutral,p_f6ec494983
+klue-nli-v1_dev_01864,"유로자전거나라 남부투어,로마버스투어 미팅장소가 산마조레성당 앞이기 때문에 이른 아침에도 편리했어요",산마조레성당 앞에는 로마버스투어를 위한 미팅장소밖에 없어요.,contradiction,neutral,p_8cc378da93
+klue-nli-v1_dev_01867,유일한 가족이자 무당이었던 엄마를 잃은 소진에게 실종된 아이를 찾아달라는 남자가 찾아온다.,남자는 아내와 함께 왔다.,neutral,contradiction,p_9766a81847
+klue-nli-v1_dev_01871,"유치원과 어린이집의 경우 당초 실내만 금연구역으로 지정돼 있었으나, 최근 법 개정으로 범위가 확대됐다.",최근 유치원과 어린이집 내에서 금연구역을 지정하는 법이 처음으로 제정되었다.,contradiction,neutral,p_3d21185a40
+klue-nli-v1_dev_01874,유치원에서 초등저학년이 보면 좋아할 듯.,초등 고학년은 싫어할 듯.,neutral,contradiction,p_cc523a9028
+klue-nli-v1_dev_01880,은 시장은 1963년생으로 올해 55세다.,은 시장은 남자이다.,neutral,entailment,p_4ed64be3fe
+klue-nli-v1_dev_01883,"은 핸드메이드 제품으로, 10만원도 안 되는 가격에 마치 휴양지에 온 듯한 느낌을 낼 수 있다.",가격은 5만원이다.,neutral,contradiction,p_9bb8834d56
+klue-nli-v1_dev_01888,은행 주차 관리원 판국은 자신이 근무하는 주차장이 무인주차 시스템으로 변경되자 해고를 당한다.,판국은 은행원이다.,contradiction,neutral,p_b1e1ec539d
+klue-nli-v1_dev_01905,의도한 혼돈도 어느 지경을 넘으면 진정한 혼돈이 된다.,절대 혼돈을 의도해서는 안된다.,neutral,contradiction,p_44313d7133
+klue-nli-v1_dev_01916,이 공동체가 이후 유럽연합의 모체가 되었습니다.,유럽연합은 이 공동체가 타 공동체를 합병하여 생겨났습니다.,neutral,contradiction,p_f4fec873fa
+klue-nli-v1_dev_01924,이 문제는 이장원 씨 오답에서 영감을 받은 배우 하석진 씨가 맞혔다.,하석진 씨도 이 문제의 정답을 이미 알고 있었다.,contradiction,neutral,p_c2bfd3aa2e
+klue-nli-v1_dev_01932,이 사실은 수련 활동 후 여중생들에 의해 알려졌으며 당시 워터파크에는 타 학교 5개교가 동시에 입장한 것으로 알려졌다.,당시 워터파크에는 타 학교 3개교 이상이 동시에 입장한 것으로 알려졌다.,entailment,contradiction,p_7d73bd9e52
+klue-nli-v1_dev_01933,이 시위를 민주화 운동과 같은 혁명의 일종으로 보게 된다면 2005년의 튤립 혁명과 2010년 키르기스스탄 혁명 이후 세 번째로 일어난 혁명이다.,키르기스스탄 혁명은 2005년도에 일어났다.,contradiction,entailment,p_810bf73b17
+klue-nli-v1_dev_01940,이 외에도 해외유입 확진자 수를 실시간 모니터링해 위험이 크다고 판단되는 국가에 부정기 항공편도 감편 조치할 예정이다.,확진자 수가 많이 나오는 국가에 부정기 항공편을 줄일 계획이다.,entailment,neutral,p_d690997601
+klue-nli-v1_dev_01949,이강인 선수와 함께 결승행 골을 만든 최준 선수가 경기 후 소감을 밝혔다.,이강인 선수와 최준 선수는 같은 팀이다.,entailment,neutral,p_e43ec6f291
+klue-nli-v1_dev_01954,이것보다 아름다운 공주 이야기는 없다,두번째로 아름다운 공주 이야기다.,contradiction,entailment,p_25415256c9
+klue-nli-v1_dev_01960,이것이 재밌다면 당신의 정신 연령은 5살,이것은 정신적으로 성숙한 사람들에게 재밌을 것이다.,contradiction,neutral,p_b10794c50e
+klue-nli-v1_dev_01965,이곳은 작품을 논하는 곳이지 그들의 개인삶에 대한 평가의 장소가 아닙니다,이 곳에서 그들의 개인 삶에 대한 평가를 해서는 안됩니다.,entailment,neutral,p_239186b2af
+klue-nli-v1_dev_01969,이날 수색대대를 방문해 군화기를 살펴보고 있는 나경원 자유한국당 원내대표 사진이다.,나경원은 사진을 찍은 주체이다.,contradiction,entailment,p_f7a9f47137
+klue-nli-v1_dev_01984,"이날 표결에서 15개 이사국 가운데 미국, 영국, 프랑스 등 10개국이 찬성했고, 중국, 러시아, 독일 등 5개국이 기권했다.",이날 표결에서 중국과 독일은 찬성했다.,contradiction,entailment,p_821fbdc615
+klue-nli-v1_dev_01991,"이는 1960년대에 일본 혼슈의 남부 해안을 따라 건설된, 꿈의 초특급으로 불렸던 도카이도 신칸센이 개통된 이후 50년만에 나온 계획이다.",아직까지도 사람들이 애용하는 도카이도 신칸센은 남부 해안을 따라 건설됐다.,neutral,entailment,p_bd310687e2
+klue-nli-v1_dev_01995,이는 사회적 거리두기의 완화로 인해 거리를 두는 것에 한해서 집회나 모임을 허가하도록 변경되었기 때문이다.,모든 집회나 모임은 허가되지 않는다.,contradiction,entailment,p_465e571f16
+klue-nli-v1_dev_01998,이니에스타는 2002년부터 바르셀로나에서만 활약한 원클럽맨이었다.,이니에스타는 2002년부터 바르셀로나에서 살았다.,neutral,entailment,p_d9d4cb3504
+klue-nli-v1_dev_02003,이들은 다음 달 21일부터 배우자 및 자녀와 함께 모국행 비행기에 몸을 실을 예정이다.,이들은 가족과 함께 모국에 정착할 것이다.,neutral,contradiction,p_a3e4ba98c3
+klue-nli-v1_dev_02012,"이때 과거에 쓰이던 정체자, 곧 점이나 획을 생략하거나 변경하지 않은 한자 글자를 본자라 부른다.",정체자는 전통적으로 써오던 방식이다.,neutral,entailment,p_52f0e7a13d
+klue-nli-v1_dev_02031,이렇게 되면 도시계획변경없이 바로 시설을 설치할 수 있게 된다.,원칙적으로는 도시계획을 변경해야 시설을 설치할 수 있다.,neutral,contradiction,p_6d44ecdb90
+klue-nli-v1_dev_02039,이렇게 안좋은 후기 남긴적 처음이네요.,후기를 남긴 적이 처음이에요.,neutral,entailment,p_d2259069eb
+klue-nli-v1_dev_02050,이를 위해 먼저 한국형 실업부조인 국민취업지원제도를 내년 1월 1일부터 시행할 예정이다.,내년 신정부터 국민취원지원제도가 시행될 예정이다.,entailment,contradiction,p_3661f94ab1
+klue-nli-v1_dev_02057,"이마트, 롯데마트 등은 이날부터 상품별, 구매 금액별 쿠폰행사 등을 통해 행사 상품을 할인된 가격에 구매할 수 있다.","트레이더스 등은 상품별, 구매 금액별 쿠폰행사 등을 통해 행사 상품을 할인된 가격에 구매할 수 있다.",neutral,contradiction,p_32a8861b91
+klue-nli-v1_dev_02058,"이마트, 롯데마트 등은 이날부터 상품별, 구매 금액별 쿠폰행사 등을 통해 행사 상품을 할인된 가격에 구매할 수 있다.","이마트, 롯데마트 등은 이날부터 상품별, 구매 금액별 쿠폰행사 등을 통해 행사 상품을 인하된 가격에 구매한다.",entailment,contradiction,p_32a8861b91
+klue-nli-v1_dev_02061,이모데테의 강요로 독일 부잣집에 온 하이디는 클라라의 친구가 된다.,하이디는 독일 부잣집에 가고 싶다고 고집을 부렸다.,contradiction,neutral,p_cdacbbab65
+klue-nli-v1_dev_02070,"이번 교육에는 어린이 400명, 학부모 94명, 선생님 18명이 참여했다.",이번 교육에는 총 500여명이 참여했다.,entailment,contradiction,p_dcac08dd05
+klue-nli-v1_dev_02083,이번 조선민주주의인민공화국의 핵실험은 2006년 10월 9일과 2009년 5월 25일에 있었던 두 차례의 핵실험 이후 3년 9개월만에 일어난 것이다.,2006년 10월 9일 이전에도 조선민주주의인민공화국의 핵실험은 있었다.,neutral,contradiction,p_913478035d
+klue-nli-v1_dev_02084,이번 조선민주주의인민공화국의 핵실험은 2006년 10월 9일과 2009년 5월 25일에 있었던 두 차례의 핵실험 이후 3년 9개월만에 일어난 것이다.,이번 핵실험은 2013년 2월에 일어났다.,entailment,contradiction,p_913478035d
+klue-nli-v1_dev_02089,이번에 개방되는 장교숙소 5단지는 1986년 미군으로부터 반환받은 부지에 한국토지주택공사가 미군 장교를 위해 운영한 임대주택이다.,장교숙소 5단지는 미군 병사를 위해 운영했다.,contradiction,neutral,p_b797065692
+klue-nli-v1_dev_02094,"이사회는 짐 캔털루포에게 시선을 돌렸고, 그는 2003년 1월 회장이자 최고경영자로 복귀했다.",짐 캔털루포는 2001년까지 최고경영자였다.,neutral,contradiction,p_2113abd9fe
+klue-nli-v1_dev_02102,"이에 따라 3일부터 폐지를 수출하거나 수입하려는 경우 폐기물 처리 및 운반계획서, 유해물질 분석결과서 등을 첨부해 유역환경청장에게 신고해야 한다.",신고는 수출입 1주일 전까지 해야한다.,neutral,contradiction,p_884730e9f8
+klue-nli-v1_dev_02105,"이에 따라 면회는 투명차단막을 설치한 별도 공간 또는 야외에서 실시해야 하며, 비닐 등을 통한 간접 접촉 이외에 직접적인 신체 접촉이나 음식 섭취는 제한한다.",야외에서도 면회를 실시할 수 있다.,entailment,contradiction,p_140f7cac10
+klue-nli-v1_dev_02106,"이에 따라 면회는 투명차단막을 설치한 별도 공간 또는 야외에서 실시해야 하며, 비닐 등을 통한 간접 접촉 이외에 직접적인 신체 접촉이나 음식 섭취는 제한한다.",간접 접촉도 될 수 있으면 지양하는 것을 권장한다.,neutral,contradiction,p_140f7cac10
+klue-nli-v1_dev_02108,"이에 따라 세부지침에는 기숙사, 학술행사 등 생활영역 및 다중이용시설 11개가 추가되었다.",세부지침에는 사용이 금지된 다중이용시설 11개가 추가되었다.,neutral,contradiction,p_7e17294a4f
+klue-nli-v1_dev_02135,이와같은 의견은 대한민국 제21대 국회의원 선거에서 미래통합당이 참패하자 일부 보수주의 유튜버들이 제기했다.,대한민국 제21대 국회의원 선거에서 승리한 것은 국민의당이다.,neutral,contradiction,p_ffe7eebe14
+klue-nli-v1_dev_02138,이와이 슌지의 슬픈 감성이 아름다운 영상 속에 흘러내린다,이와이 슌지는 슬픈 감성으로 대표된다.,neutral,entailment,p_3394d74edf
+klue-nli-v1_dev_02150,이재오 대한민국 정부 특임 장관의 조카가 한국콘텐츠진흥원에 과장으로 채용되는 과정에서 특혜가 있었다는 의혹이 제기됐다.,이재오 특임 장관의 장남이 한국콘텐츠진흥원에 대리에 채용되었다.,neutral,contradiction,p_b200d9b355
+klue-nli-v1_dev_02152,"이전에는 치즈가 더러워지는 것을 막고, ‘호흡’할 수 있도록 표면에 검은 왁스를 칠하거나 타르를 칠한 검은 천으로 감싸 유통되고 있었다.",표면에 왁스를 칠하면 치즈를 더럽힐 수 있었다.,contradiction,entailment,p_292971d0e0
+klue-nli-v1_dev_02158,이준수 애국지사는 광복군 제2지대 제3구대에 입대해 일제에 맞서 무장독립투쟁을 진행했다.,이준수는 광복군에 맞서 싸운 무장독립투쟁군이다.,contradiction,entailment,p_8ada2192de
+klue-nli-v1_dev_02169,이후 공개 연애를 시작하고 2005년 결혼식을 올렸다.,공개 연애는 2004년부터 시작했다.,neutral,contradiction,p_9defeb87e1
+klue-nli-v1_dev_02181,인간적인 측면에서는 의아하지만 아르헨에게 우승컵을 안긴 장본인,아르헨을 승리로 이끈 장본인.,entailment,neutral,p_116c4b043b
+klue-nli-v1_dev_02187,인물사진이나 인물화의 경우 정면에서 왼쪽을 더 중시한 형태로 촬영하거나 그리는 경우가 많다.,인물화의 경우 정면에서 왼쪽을 더 중시하는 형태로 그리는 경우가 많다.,entailment,contradiction,p_807447bcaf
+klue-nli-v1_dev_02209,임 시장은 19일 경기 오산시청에서 열린 혁신교육지방정부협의회 정기총회에 부회장으로 참석해 이와 같이 밝혔다.,혁신교육지방정부협의회 정기총회의 회장은 경기도지사이다.,neutral,contradiction,p_9a55b0dd92
+klue-nli-v1_dev_02225,자신을 고등학생 1학년 딸을 둔 어머니로 소개한 네티즌은 전날 밤 딸에게 전화 한 통이 걸려왔다고 말했다.,"고등학생 학부형이라고 자신을 밝힌 여성은, 전날 밤 큰 딸에게 전화 한 통이 걸려 왔다고 말했다.",neutral,contradiction,p_ba1491ce4d
+klue-nli-v1_dev_02226,자신을 고등학생 1학년 딸을 둔 어머니로 소개한 네티즌은 전날 밤 딸에게 전화 한 통이 걸려왔다고 말했다.,전날 밤 딸에게 전화가 걸려왔다고 말한 여성은 여고생 딸을 둔 학부형이다.,entailment,contradiction,p_ba1491ce4d
+klue-nli-v1_dev_02229,자신의 부끄러운 역사를 이리 담담하게 돌아볼 수 있는 독일인의 성숙된 역사의식이 일본과 비교된다.,일본은 독일인에 비해 성숙된 역사의식을 가졌다.,contradiction,entailment,p_0ca8fa68af
+klue-nli-v1_dev_02239,장미 전쟁은 리처드 3세가 전투 중 사망하여 막을 내렸고 헨리 7세가 튜더 왕조 시대를 열었다.,헨리 7세는 리처드 3세의 아들이다.,neutral,entailment,p_630e0fb95c
+klue-nli-v1_dev_02252,저는 보통 평범한 생각을 하는 다른사람들과 똑같기 때문에 지금 거의 시청자들 마음이 저와 비슷할듯,지금 거의 시청자들 마음이 저처럼 우울할 것입니다.,neutral,contradiction,p_2ed119d1fb
+klue-nli-v1_dev_02253,저는 보통 평범한 생각을 하는 다른사람들과 똑같기 때문에 지금 거의 시청자들 마음이 저와 비슷할듯,저도 평범한 생각을 합니다.,entailment,neutral,p_2ed119d1fb
+klue-nli-v1_dev_02258,전기 생산지와 수요지가 인접하면 별도의 송전망 투자가 필요 없고 환경부담도 최소화할 수 있다.,전기 생산지와 수요지가 멀어질수록 송전망 투자는 증가한다.,neutral,contradiction,p_0e2672f314
+klue-nli-v1_dev_02261,"전기를 통하게 만든 매우 얇은 물질을 두 반도체 사이에 끼운 뒤 자기장을 연속적으로 강하게 하면 전기의 전도성은 2배, 3배, 정수 배로 뛰어오른다.","매우 얇은 도체를 두 반도체 사이에 끼운 뒤 자기장을 연속적으로 강하게 하면 전기의 전도성은 2배, 3배, 정수 배로 뛰어오른다.",entailment,contradiction,p_31d41322c8
+klue-nli-v1_dev_02263,전남대학교어린이병원서 고위험 질환 치료받은 환아의 부모가 감사의 뜻으로 병원에 벽시계를 기증해 화제다.,전남대학교어린이병원서 고위험 질환을 치료받은 환아는 고아이다.,contradiction,neutral,p_9a5432e0ed
+klue-nli-v1_dev_02294,젊은 회의론자인 시인은 어느 여름날 텅 빈 도심에서 권태를 느끼고 자살을 결심한다.,시인은 햇볕이 강한 오후에 자살을 감행하기로 결심한다.,neutral,contradiction,p_616d0174ad
+klue-nli-v1_dev_02310,정부가 해외유입 환자 증가에 대응해 20일부터 방역 강화 대상 국가를 기존 4개국에서 2개국을 추가 지정하기로 했다.,20일부터 방역 강화 대상 국가는 6개국이다.,entailment,contradiction,p_73321280cd
+klue-nli-v1_dev_02311,"정부는 당초 중기재정운용계획에서 2014년에는 499조 5천억원 정도의 빚을 질 것이라고 예상했지만, 2014년이 다 지나기 전에 이를 이미 초과한 것입니다.",정부는 2014년에 최소 600조의 빚을 질 것이라 예상했다.,contradiction,neutral,p_678e1acd1f
+klue-nli-v1_dev_02313,"정부는 당초 중기재정운용계획에서 2014년에는 499조 5천억원 정도의 빚을 질 것이라고 예상했지만, 2014년이 다 지나기 전에 이를 이미 초과한 것입니다.",정부는 2014년에 최소 499조 5천억원의 빚을 졌다.,entailment,neutral,p_678e1acd1f
+klue-nli-v1_dev_02326,정세균 국무총리가 14일 정부세종청사에서 열린 국무회의를 주재하고 있다.,국무총리는 문재인 야당 대표이다.,contradiction,neutral,p_89d6dc1c4f
+klue-nli-v1_dev_02332,정이랑 씨는 황보라 씨와 만나서 한 이야기를 공개했다.,정이랑 씨는 황보라 씨와 전화상으로 한 이야기를 공개했다.,contradiction,neutral,p_7665a9f756
+klue-nli-v1_dev_02335,"정종섭 안전행정부 장관은 장관이 되기 전의 직업은 헌법학자였고, 장관으로 지명되고 여러 의혹이 불거져 나오자 국회의원들 앞에서 바짝 엎드렸습니다.",정종섭의 첫 직업은 안전행정부 장관입니다.,contradiction,neutral,p_bfd080193d
+klue-nli-v1_dev_02338,정책발행의 경우는 수당 지급 대상자에게 카드가 배송되면 등록 후 바로 사용이 가능하다.,수당 지금 대상자에게는 현금이 배송된다.,contradiction,neutral,p_1d10acfdbc
+klue-nli-v1_dev_02340,정책발행의 경우는 수당 지급 대상자에게 카드가 배송되면 등록 후 바로 사용이 가능하다.,수당 지급 대상자는 카드를 등록하지 않으면 바로 사용할 수 없다.,entailment,neutral,p_1d10acfdbc
+klue-nli-v1_dev_02343,정해둔 아이를 아이를 서둘러 입양해야 할 상황에 놓인 효진은 민수가 혼인 신고를 하지 않은 것을 알고 그를 질책한다.,효진과 민수는 아이를 입양하려고 한다.,entailment,contradiction,p_54eee91963
+klue-nli-v1_dev_02346,제74주년 광복절인 지난해 8월 15일 오전 서울 종로구 보신각에서 열린 광복절 기념 타종행사에서 학생과 시민들이 태극기를 흔들고 있다.,지난해 8월 15일은 제73주년 광복절이었다.,contradiction,entailment,p_725f042786
+klue-nli-v1_dev_02350,제리가 정문으로 걸어나올때 온몸의 세포가 곤두서는듯한 느낌.,제리가 정문으로 걸어나올때 그려려니 싶었다.,contradiction,neutral,p_c913228e48
+klue-nli-v1_dev_02356,제주항공이 지난 1월부터 비상상황 대응력을 높이기 위해 객실승무원의 안전교육 프로그램에 가상현실을 통한 안전훈련을 도입했다고 11일 밝혔다.,가상현실 안전훈련은 파일럿만 진행한다.,contradiction,neutral,p_0dfb71ec1e
+klue-nli-v1_dev_02402,"중기부는 향후 서면평가, 현장평가, 심층평가 등을 거쳐 늦어도 9월 중에는 45개사 내외 강소기업을 최종 선정할 계획이다.",중기부는 빠르면 6월부터 45개사 내외 강소기업을 최종 선정할 계획이다.,neutral,contradiction,p_0fb1e7f7ed
+klue-nli-v1_dev_02407,중반부까지 답답하긴 하지만 그게 현실,초반부는 속이 뻥 뚤린다.,contradiction,neutral,p_09a4ac1b34
+klue-nli-v1_dev_02411,중부 이탈리아기 이맘때 다 그런거 같긴하지만요.,이탈리아만 다 그런거 같긴하지만요.,neutral,contradiction,p_6e038d4611
+klue-nli-v1_dev_02415,중산층 가장인 마이클은 전직 경찰이자 현재는 보험설계사이다.,마이클은 경찰이다.,contradiction,entailment,p_e68ed2e7ba
+klue-nli-v1_dev_02427,즉 그냥 관광회사 그 이상도 그 이하도 아닙니다.,딱 그냥 관광회사 정도입니다.,entailment,contradiction,p_7d88549937
+klue-nli-v1_dev_02434,지금은 일주일에 1인당 10장까지만 살 수 있다.,이전에는 1인당 2장까지만 살 수 있었다.,neutral,entailment,p_c596f587d2
+klue-nli-v1_dev_02444,"지난 1년 우리는, 기습적인 일본의 조치에 흔들리지 않고 정면돌파하면서, 오히려 전화위복의 계기를 만들었습니다.",우리는 일본의 기습적인 조치에도 불구하고 성장했습니다.,neutral,entailment,p_6d9494b36d
+klue-nli-v1_dev_02447,지난 2010년 11월 구제역이 처음 발생한 이후 40여일만인 1월 7일 매몰 또는 살처분된 가축이 100만마리를 넘어섰다.,1월 6일 매몰 또는 살처분된 가축은 30만마리였다.,neutral,contradiction,p_d09288d18e
+klue-nli-v1_dev_02456,지난해 말부턴 허마에 공동 브랜드로 신선한 두부를 납품하고 있다.,재작년 말에 공동 브랜드가 탄생했다.,neutral,contradiction,p_ec532f6f81
+klue-nli-v1_dev_02457,지난해 말부턴 허마에 공동 브랜드로 신선한 두부를 납품하고 있다.,납품되는 두부의 상태는 신선하다.,entailment,neutral,p_ec532f6f81
+klue-nli-v1_dev_02458,"지난해 발표한 청정 전남 블루 이코노미는 블루 에너지, 블루 투어, 블루 바이오, 블루 트랜스포트, 블루 농수산, 블루 시티 등 6개 분야를 의미한다.",청정 전남 블루 이코노미는 재작년에 발표한 것이다.,contradiction,entailment,p_8af85e1fc9
+klue-nli-v1_dev_02460,"지난해 발표한 청정 전남 블루 이코노미는 블루 에너지, 블루 투어, 블루 바이오, 블루 트랜스포트, 블루 농수산, 블루 시티 등 6개 분야를 의미한다.",청정 전남 블루 이코노미는 올해 발표한 것이 아니다.,entailment,contradiction,p_8af85e1fc9
+klue-nli-v1_dev_02464,지역경제 활성화를 위해 먼저 지역소비진작에 나선다.,지역경제 활성화를 위해 먼저 해외직구소비진작에 나선다.,contradiction,neutral,p_b959c4c355
+klue-nli-v1_dev_02469,지원기업 신청 제출서류를 2건으로 줄이고 선정평가 방식을 블라인드 서면평가로 전환한다.,기존 지원기업 신청 제출서류는 3건 이상이었다.,entailment,neutral,p_e292f16f14
+klue-nli-v1_dev_02470,지하철 두개노선이 숙소 바로앞입니다,숙소 바로 옆에도 지하철이 있습니다.,neutral,entailment,p_7eae8be0c1
+klue-nli-v1_dev_02479,진짜 소소한재미 그리고 류승범 신민아라는 배우를 다시알게된 영화,영화 보기 이전에 류승범과 신민아라는 배우를 전혀 몰랐다.,contradiction,entailment,p_1fe1da2c52
+klue-nli-v1_dev_02485,짐을 정리하던 중 한 점의 미술 작품을 발견하고 해나는 고등학교 시절 추억에 잠긴다.,해나는 대학생이다.,neutral,contradiction,p_bb72d114c5
+klue-nli-v1_dev_02489,집 창문으로 에펠타워의 끝 부분이 살짝보입니다,집 창문으로 무엇이든 보입니다.,neutral,contradiction,p_fae704949f
+klue-nli-v1_dev_02498,집은 매우 깔끔하고 사진에 보는 그대로입니다.,집은 사진처럼 매우 예쁩니다.,neutral,entailment,p_80f5b869bb
+klue-nli-v1_dev_02509,집합제한 명령은 대부분 해수욕장의 폐장일인 다음달 31일까지 계속된다.,대부분의 해수욕장은 다다음달에 폐장한다.,contradiction,entailment,p_fbe0395e8c
+klue-nli-v1_dev_02538,처음 숙소 찾아갈때 헷갈릴 수 있어요.,숙소에 처음 찾아갔어요.,neutral,entailment,p_d0fd6a9450
+klue-nli-v1_dev_02549,천재만이 천재를 알아보는 법인것 같습니다.,똑똑하지 않아도 천재를 알아볼 수 있습니다.,contradiction,entailment,p_9d2ee1a1d4
+klue-nli-v1_dev_02550,천재만이 천재를 알아보는 법인것 같습니다.,천재는 천재와 천재가 아닌 사람을 알아볼 수 있습니다.,neutral,contradiction,p_9d2ee1a1d4
+klue-nli-v1_dev_02553,"첫 구조 광부는 칠레 국적의 31세 플로렌시오 아발로이며, 그는 구출 직후 칠레의 대통령인 세바스티안 피녜라와 포옹하였다.",플로렌시오 아발로는 구출되자마자 바로 병원으로 실려갔다.,contradiction,neutral,p_801ff36bc4
+klue-nli-v1_dev_02554,첫편이 좀 괴팍하구 두번째편은 스릴감있어요,둘째편은 정적이에요.,contradiction,neutral,p_9c2aee8ede
+klue-nli-v1_dev_02555,첫편이 좀 괴팍하구 두번째편은 스릴감있어요,첫 편도 스릴감있어요.,neutral,entailment,p_9c2aee8ede
+klue-nli-v1_dev_02558,청결과 온수 등의 문제 전혀 없습니다.,청결과 온수 외에 문제가 있습니다.,neutral,contradiction,p_3ce821c1eb
+klue-nli-v1_dev_02559,청결과 온수 등의 문제 전혀 없습니다.,따뜻한 물이 잘 나옵니다.,entailment,neutral,p_3ce821c1eb
+klue-nli-v1_dev_02562,청년들이 일할 기회조차 갖지 못하는 상황이 지속되면 경기 회복 후에도 양질의 일자리를 찾기 어려울 수 있습니다.,경기 불황 상태에서 아무런 청년도 일할 기회를 가지지 못합니다.,neutral,contradiction,p_438d4dccce
+klue-nli-v1_dev_02579,초반 보도에서는 3층이 화재의 발생 지점이라고 추측되었으나 12층이 화재 발생 구역이라는 보고도 나왔다.,3층이 화재의 발생 지점이다.,neutral,contradiction,p_67a23efc3b
+klue-nli-v1_dev_02633,침대도 너무 편하고 화장실도 정말 깨끗해요.,침대가 참 푹신해요.,neutral,entailment,p_82c59cf424
+klue-nli-v1_dev_02639,침실은 두개이고 최대4인이 숙박가능합니다.,방은 2개입니다.,neutral,entailment,p_3569d0607e
+klue-nli-v1_dev_02654,캡틴잭은 조니뎁밖에 할 수 없는 캐릭터이다,조니 뎁만이 캡틴직 캐릭터를 할 수 있다.,entailment,contradiction,p_e671d33de9
+klue-nli-v1_dev_02656,코믹 메이플스토리는 지난 2004년 4월 처음 출간돼 약 15년간 연재되며 2019년 2월 현재 누적 판매 부수가 1850만 부를 넘기는 등 큰 인기를 끌었다.,코믹 메이플스토리는 곧 누적 판매부수가 1800만 부에 도달할 예정이다.,contradiction,neutral,p_f9d58a0923
+klue-nli-v1_dev_02659,콘스탄스는 경찰이 오기 전에 한발 먼저 도망친 존이 남긴 메모를 발견하고 그를 뒤쫓아 뉴욕으로 향한다.,존은 경찰이 온 후 도망쳤다.,contradiction,entailment,p_e758a4fbba
+klue-nli-v1_dev_02662,콜로세움 근처 숙소로 테르미니역에서도 나름 가깝습니다.,서울에 있는 숙소입니다.,contradiction,neutral,p_e915ad412d
+klue-nli-v1_dev_02663,콜로세움 근처 숙소로 테르미니역에서도 나름 가깝습니다.,숙소가 로마에 있습니다.,entailment,neutral,p_e915ad412d
+klue-nli-v1_dev_02665,쿨 경관은 과속차량을 단속하던 중 차에 치일 뻔한 챠오챠오를 구해준다.,챠오챠오는 경찰이다.,neutral,entailment,p_3350ab7c8e
+klue-nli-v1_dev_02666,쿨 경관은 과속차량을 단속하던 중 차에 치일 뻔한 챠오챠오를 구해준다.,챠오챠오는 차에 치이지 않았다.,entailment,neutral,p_3350ab7c8e
+klue-nli-v1_dev_02671,크누트는 베를린 동물원에서 태어난 북극곰 가운데 30년 만에 유아기를 넘기고 살아남은 유일한 북극곰이기도 했다.,베를린 동물원에서 태어난 북극곰은 대부분 유아기를 넘긴다.,contradiction,neutral,p_741d691210
+klue-nli-v1_dev_02673,크누트는 베를린 동물원에서 태어난 북극곰 가운데 30년 만에 유아기를 넘기고 살아남은 유일한 북극곰이기도 했다.,베를린 동물원에서는 지난 30년 동안 유아기를 넘긴 북극곰이 없었다.,entailment,contradiction,p_741d691210
+klue-nli-v1_dev_02685,통사론 또는 구문론은 단어가 문장을 이루는 방법을 연구하는 언어학의 하위 분야이다.,언어학의 하위 분야에는 문장론이 포함된다.,neutral,entailment,p_2e395d66a6
+klue-nli-v1_dev_02689,특히 40여년 전 당시 각종 새우젓 등 젓갈을 저장 장소로 사용하였던 전장포 옛 토굴도 관광객에게 개방할 예정이다.,전장포 옛 토굴은 주요 관광지의 자리를 공고히 해왔다.,contradiction,neutral,p_49e510205d
+klue-nli-v1_dev_02695,특히 그동안 무면허 운전으로 적발된 전력이 여섯 차례에 달하는 것으로 확인됐다.,무면허 운전으로 여덟 차례 적발되었다.,contradiction,entailment,p_3d5e0415f5
+klue-nli-v1_dev_02708,"파우스트는 병을 고치기 위해 백방으로 노력하며 기도하지만, 아무것도 나아지지 않는다.",파우스트는 크리스쳔이다.,neutral,entailment,p_fe9301aceb
+klue-nli-v1_dev_02718,페널티 아크 인근에서 현란한 드리블로 수비진을 흔든 뒤 문전으로 쇄도하는 수아레스에게 날카로운 패스를 건네 골을 도왔다.,수아레스는 패스를 받아 골을 성공시켰다.,entailment,neutral,p_5788e03e13
+klue-nli-v1_dev_02724,"평범한 가장 제이콥은 어느 날, 자신이 일하는 은행에 강도가 들이닥치는 사건을 겪는다.",강도가 마을을 돌아다녔지만 은행엔 들어가지 않았다.,contradiction,neutral,p_b1a2e63029
+klue-nli-v1_dev_02738,평점은 여론에 편승될 수 없어야 한다.,평점 외에도 여론에 편승될 수 없어야 하는 것들이 더 있다.,neutral,entailment,p_0c3abb641b
+klue-nli-v1_dev_02744,평점이 왜이래 마지막에 나 울었었는데,나는 처음과 끝에 울었다.,neutral,entailment,p_d12aeeb4aa
+klue-nli-v1_dev_02768,피라에서 도보로 20분 정도 소요됩니다.,피라에서 자전거로 10분 정도 소요됩니다.,neutral,contradiction,p_50e236c6c1
+klue-nli-v1_dev_02770,피렌체 다시 간다면 다시 이곳을 찾을 겁니다.,이곳에 다시 오는 날은 피렌체에 다시 가는 날입니다.,entailment,neutral,p_20da6749ad
+klue-nli-v1_dev_02775,피비덕분에 3점이라는 높은 점수를 준다,피비가 아니었음 3점도 안 줬다.,entailment,neutral,p_d840447ac8
+klue-nli-v1_dev_02776,피서객들의 무분별한 입장을 통제하기 위해 펜스도 설치했다.,펜스는 야생동물의 출입을 막아 피서객의 안전을 지키기 위해 설치했다.,contradiction,neutral,p_e2e2ada58f
+klue-nli-v1_dev_02782,하이디의 건강을 염려한 클라라의 아버지는 마부인 제바스티안에게 부탁해서 하이디를 고향인 스위스 산골 마을에 돌려보낸다.,하이디의 아버지는 마부 제바스티안이다.,contradiction,entailment,p_522199c28d
+klue-nli-v1_dev_02848,한국말 후기가 없어서 한국말로 작성합니다.,후기는 한국말로만 작성할 수 있습니다.,contradiction,neutral,p_a5d6a0ecc1
+klue-nli-v1_dev_02850,한국말 후기가 없어서 한국말로 작성합니다.,이게 첫 한국말 후기입니다.,entailment,neutral,p_a5d6a0ecc1
+klue-nli-v1_dev_02853,한국영화는 이미 너무 멀리 중국한테 추월당했다,중국은 한국영화를 추월했다.,entailment,contradiction,p_2436becfcf
+klue-nli-v1_dev_02854,한국은행은 미국 연방준비제도이사회와 30일 오전 3시 현행 통화스와프 계약 만료를 6개월 연장하기로 합의했다고 밝혔다.,한국은행와 미국 연방준비제도이사회와의 현행 통화스와프 계약은 30일 오전 3시부로 만료되었다.,contradiction,entailment,p_ee4507b790
+klue-nli-v1_dev_02857,"한국의 자동차는 미국, 중국과 더불어 차체의 앞 좌석 왼쪽에 운전대가 설치되어 있다.",중국의 차는 앞 좌석 오른쪽에 운전대가 설치되어 있다.,contradiction,neutral,p_6ca7f552d7
+klue-nli-v1_dev_02865,한때 촉망받는 운동선수였던 지훈은 어느 날 조직 폭력배들 간의 싸움에 말려들어 친구였던 동진을 대신하여 살인죄를 뒤집어쓰고 복역을 한다.,지훈은 실제로 살인을 저지르지 않았다.,entailment,contradiction,p_735fc11466
+klue-nli-v1_dev_02879,한편 렉터 박사가 조금씩 흘려준 정보를 바탕으로 버팔로 빌의 거주지를 알아낸 스탈링은 사투 끝에 그를 사살하고 상원의원의 딸을 구하는 데 성공한다.,렉터 박사는 일부러 버팔로 빌의 정보를 흘린다.,neutral,contradiction,p_7af2b57600
+klue-nli-v1_dev_02897,해당 보도 직후 피해자 홍 씨는 블로그를 통해 현재 상황을 전했다.,해당 보도는 피해자 홍 씨에 관한 내용이었다.,neutral,entailment,p_57f511aa33
+klue-nli-v1_dev_02901,"해상의 경우는 26일 일요일 밤의 제주도 남쪽 먼바다를 시작으로, 27일 월요일에 대부분의 해상에 태풍 특보가 확대될 것으로 보았다.",27일 밤부터 대부분의 해상에 태풍 특보가 확대될 것으로 보았다.,neutral,contradiction,p_13ee20b963
+klue-nli-v1_dev_02905,행복하개는 2018년 동국대학교 창업선도대학 육성사업에 선정된 기업으로 국내 최초 반려동물 훈련사 매니지먼트 회사 형태로 운영되는 반려동물 교육서비스 기업이다.,행복하개는 반려동물을 대신 맡아주는 서비스이다.,contradiction,neutral,p_a1d2e75fe3
+klue-nli-v1_dev_02912,향가는 세련된 개인 창작시로서 남북국 시대의 문학을 대표하고 있다.,향가는 세련된 귀족 문학이다.,neutral,contradiction,p_60cb45f702
+klue-nli-v1_dev_02923,현재 부상으로 인해 제대로 활동할 수 없는 웬디를 제외한 멤버 전원이 패션 잡지에서 모델로 활약하게 된 것이다.,웬디를 포함한 멤버 전원이 패션 잡지에서 모델로 활약하게 된 것이다.,contradiction,entailment,p_e8152d010a
+klue-nli-v1_dev_02931,현재 장성택의 매형인 전영진 쿠바 주재 북한 대사와 조카인 장용철 말레이시아 대사도 조선민주주의인민공화국 본국으로 소환된 것으로 전해졌다.,전영진과 장용철은 소환된 후 조선민주주의인민공화국에 머물고 있다.,neutral,contradiction,p_f24db45442
+klue-nli-v1_dev_02935,"현재는 전기통신사업법상 비대면으로 통신서비스에 가입하려면 공인전자서명, 신용카드, 휴대전화 문자인증만 가능했다.",과거에는 비대면으로 통신서비스 가입이 불가능했다.,neutral,entailment,p_cfeac671d6
+klue-nli-v1_dev_02937,"현재는 전기통신사업법상 비대면으로 통신서비스에 가입하려면 공인전자서명, 신용카드, 휴대전화 문자인증만 가능했다.",현재는 전기통신사업법상 비대면으로 통신서비스 가입이 불가능하다.,contradiction,entailment,p_cfeac671d6
+klue-nli-v1_dev_02939,"현지시간 19일 오후 하마스측은 이스라엘 남부 지역을 향해 로켓을 발사하였고, 로켓 포탄 3발이 이스라엘 남부 베르셰바시 인근에 떨어졌다.",이스라엘 남부 지역은 로켓 3발의 폭격을 받았다.,entailment,neutral,p_18c301ccb9
+klue-nli-v1_dev_02941,현행 여객자동차법상 택시 운전업무에 종사하려는 자는 택시운전 자격 취득과 법정필수교육을 이수해야 하며 이를 이행하기 전에는 택시 운행이 불가능하다.,법정필수교육은 택시 운행을 하면서 이수해도 된다.,contradiction,neutral,p_bac8473241
+klue-nli-v1_dev_02944,호스트 분의 응답이 빠른 편은 아니었습니다.,호스트분의 응답은 총알같았어요.,contradiction,neutral,p_20a54c2057
+klue-nli-v1_dev_02945,호스트 분의 응답이 빠른 편은 아니었습니다.,호스트분의 응답이 그리 늦은 편도 아니었어요.,neutral,entailment,p_20a54c2057
+klue-nli-v1_dev_02953,혼열 왕자가 스네이프교수 였던게 가장 인상깊었다.,스네이프 교수는 혼혈 왕자가 아니었다.,contradiction,entailment,p_de4c36f652
+klue-nli-v1_dev_02954,혼열 왕자가 스네이프교수 였던게 가장 인상깊었다.,스네이프 교수가 혼혈 왕자인건 마지막에 나왔다.,neutral,contradiction,p_de4c36f652
+klue-nli-v1_dev_02976,환하고 전망이 좋은 8층 아파트입니다.,뷰가 아름다운 아파트입니다.,entailment,neutral,p_6ac251ce23
+klue-nli-v1_dev_02988,회고할수있는 추억같지않은 추억이 있다는것도,회고할 수 없는 추억이 있다.,contradiction,entailment,p_971bb0140e
+klue-nli-v1_dev_02989,후뢰시맨 실제 촬영 의상 낙찰로 화제가 된 팬이 후뢰시맨 사인회 후기를 올렸다.,후뢰시맨의 팬은 촬영 의상을 선물받았다.,contradiction,neutral,p_8da5cde6a0

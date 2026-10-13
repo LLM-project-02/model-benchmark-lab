@@ -1,0 +1,20 @@
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+# 학습·비교 기록(metrics, epochs, comparisons)은 커밋하고 모델 가중치만 제외한다.
+artifacts/**/checkpoint/
+*.safetensors
+*.pt
+*.pth
+*.joblib
+.cache/
+.uv-cache/
+*.log
+dist/
+*.egg-info/
+.DS_Store
