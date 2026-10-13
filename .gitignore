@@ -288,3 +288,7 @@ artifacts/**/checkpoint/
 # OS 잠금용 파일은 결과 이력이 아니므로 버전 관리에서 제외한다.
 artifacts/**/.selection.lock
 .uv-cache/
+
+# 9. 수업 자료
+# 발제문 PDF는 각자 PC에만 둔다.
+261008_팀프로젝트2_발제문.pdf
