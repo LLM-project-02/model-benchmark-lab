@@ -5,12 +5,14 @@
 - 입력: text 하나 → (premise, hypothesis) 문장 쌍
 - MAX_LENGTH 192 → 128, BATCH 4 x 누적 4 → 16 x 누적 1 (실질 배치 16은 동일)
 - --quick: 일부 데이터와 1 epoch로 실행 가능 여부만 먼저 확인
-- --model, --run, --epochs, --lr, --label-smoothing: 실행할 때 지정
+- --model, --run, --epochs, --lr, --label-smoothing, --dropout, --select-by: 실행할 때 지정
 - RoBERTa처럼 문장 구분표(token_type_ids)를 쓰지 않는 모델은 자동으로 빼고 넣는다
+- --select-by: 저장 기준. f1(Macro-F1 최고, 기본값) 또는 loss(validation loss 최저)
 
 실행 예
   uv run python nli/train_bert.py --model klue/roberta-base --run roberta_lr2e5
   uv run python nli/train_bert.py --model klue/roberta-base --run roberta_ls01 --label-smoothing 0.1
+  uv run python nli/train_bert.py --model klue/roberta-base --run roberta_ls005 --label-smoothing 0.05 --select-by loss
 """
 
 import argparse
@@ -128,8 +130,11 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
                  run_name=RUN_NAME, model_name=config.CLASSIFIER_MODEL,
                  learning_rate=LEARNING_RATE, epochs=EPOCHS, batch_size=BATCH_SIZE,
                  accumulation_steps=ACCUMULATION_STEPS, max_length=MAX_LENGTH,
-                 seed=SEED, device_name=DEVICE, label_smoothing=0.0, dropout=None):  # [변경]
+                 seed=SEED, device_name=DEVICE, label_smoothing=0.0, dropout=None,
+                 select_by="f1"):  # [저장 기준]
     data_dir, learner_dir = Path(data_dir), Path(learner_dir)
+    if select_by not in ("f1", "loss"):
+        raise ValueError("select_by는 'f1' 또는 'loss'여야 합니다.")
     if quick:
         run_name, epochs = run_name + "_quick", 1
     output_dir = learner_dir / run_name
@@ -141,7 +146,8 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
     if device.type == "cuda":
         torch.cuda.reset_peak_memory_stats(device)
     print("모델:", model_name, "/ 결과 폴더:", output_dir.name)
-    print(f"학습률: {learning_rate} / epoch: {epochs} / 라벨 스무딩: {label_smoothing}")  # [변경]
+    print(f"학습률: {learning_rate} / epoch: {epochs} / 라벨 스무딩: {label_smoothing} "
+          f"/ 저장 기준: {select_by}")  # [저장 기준]
 
     labels = read_labels(data_dir)
     train_rows = read_rows(data_dir / "train.csv")
@@ -166,7 +172,7 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     token_type_ids = uses_token_type_ids(model_name)
     print("문장 구분표(token_type_ids) 사용:", token_type_ids)
-        # 드롭아웃을 지정하면 모델 설정의 기본값(0.1)을 덮어쓴다.
+    # 드롭아웃을 지정하면 모델 설정의 기본값(0.1)을 덮어쓴다.
     dropout_settings = {} if dropout is None else {
         "hidden_dropout_prob": dropout, "attention_probs_dropout_prob": dropout}
     model = AutoModelForSequenceClassification.from_pretrained(
@@ -219,8 +225,9 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
         "model": str(model_name),
         "token_type_ids": token_type_ids,
         "learning_rate": learning_rate,
-        "label_smoothing": label_smoothing,  # [변경]
+        "label_smoothing": label_smoothing,
         "dropout": model.config.hidden_dropout_prob,
+        "select_by": select_by,  # [저장 기준]
         "epochs": epochs,
         "batch_size": batch_size,
         "accumulation_steps": accumulation_steps,
@@ -235,7 +242,8 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
     shutil.copy2(baseline_dir / "baseline.joblib", output_dir / "baseline.joblib")
     shutil.copy2(baseline_dir / "validation_metrics.json", output_dir / "baseline_validation.json")
 
-    best_score, updates = -1.0, 0
+    # [저장 기준] -inf(무한히 작은 수)로 시작해야 loss 기준(점수 = -loss)에서도 첫 epoch이 저장된다.
+    best_score, updates = float("-inf"), 0
     started = time.perf_counter()
     for epoch in range(1, epochs + 1):
         model.train()
@@ -246,7 +254,7 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
             window_start = (index // accumulation_steps) * accumulation_steps
             window_size = min(accumulation_steps, len(train_loader) - window_start)
             with torch.autocast(device_type=device.type, dtype=dtype, enabled=use_cuda):
-                # [변경] 정답을 꺼내서 라벨 스무딩을 적용한 loss를 직접 계산한다.
+                # 정답을 꺼내서 라벨 스무딩을 적용한 loss를 직접 계산한다.
                 # label_smoothing=0.0이면 기존 계산과 같다.
                 targets = batch.pop("labels")
                 output = model(**batch)
@@ -254,8 +262,8 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
                     output.logits.float(), targets, label_smoothing=label_smoothing)
                 loss = full_loss / window_size
             scaler.scale(loss).backward()
-            batch_count = targets.shape[0]                       # [변경]
-            total_train_loss += full_loss.item() * batch_count   # [변경]
+            batch_count = targets.shape[0]
+            total_train_loss += full_loss.item() * batch_count
             count += batch_count
             if (index + 1) % accumulation_steps == 0 or index + 1 == len(train_loader):
                 scaler.unscale_(optimizer)
@@ -285,15 +293,19 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
             stream.write(json.dumps(record) + "\n")
         print(json.dumps(record, ensure_ascii=False))
 
-        if metrics["macro_f1"] > best_score:
-            best_score, best_predictions = metrics["macro_f1"], predictions
+        # [저장 기준] f1이면 Macro-F1이 높을수록, loss면 validation loss가 낮을수록 좋다.
+        score = metrics["macro_f1"] if select_by == "f1" else -validation_loss
+        if score > best_score:
+            best_score, best_predictions = score, predictions
             checkpoint = output_dir / "checkpoint"
             model.save_pretrained(checkpoint, safe_serialization=True)
             tokenizer.save_pretrained(checkpoint)
             summary = {
                 "method": "full_backbone_and_head_finetuning",
                 "model": str(model_name),
-                "label_smoothing": label_smoothing,  # [변경]
+                "label_smoothing": label_smoothing,
+                "selection_metric": select_by,                    # [저장 기준]
+                "validation_loss_at_checkpoint": validation_loss,  # [저장 기준]
                 "best_epoch": epoch,
                 "optimizer_steps_at_checkpoint": updates,
                 "selection_split": "validation",
@@ -304,7 +316,8 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
                 (output_dir / filename).write_text(
                     json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
             save_errors(output_dir / "validation_errors.csv", validation_rows, predictions, labels)
-            print(f"  → epoch {epoch} 모델 저장 (Macro-F1 {best_score:.4f})")
+            print(f"  → epoch {epoch} 모델 저장 (기준: {select_by}, "
+                  f"Macro-F1 {metrics['macro_f1']:.4f}, val loss {validation_loss:.4f})")  # [저장 기준]
 
     summary["train_seconds"] = time.perf_counter() - started
     summary["device"] = str(device)
@@ -322,8 +335,9 @@ def run_training(quick=False, data_dir=DATA_DIR, learner_dir=config.LEARNER_DIR,
     (output_dir / "training_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({key: summary[key] for key in (
-        "best_epoch", "train_seconds", "peak_gpu_memory_reserved_mb",
-        "cpu_inference_ms_per_text", "reloaded_predictions_match")}, ensure_ascii=False))
+        "best_epoch", "selection_metric", "validation_loss_at_checkpoint", "train_seconds",
+        "peak_gpu_memory_reserved_mb", "cpu_inference_ms_per_text",
+        "reloaded_predictions_match")}, ensure_ascii=False))  # [저장 기준]
     print("저장 위치:", output_dir)
     return output_dir
 
@@ -336,13 +350,16 @@ def main():
     parser.add_argument("--epochs", type=int, default=EPOCHS, help="학습 반복 횟수")
     parser.add_argument("--lr", type=float, default=LEARNING_RATE, help="학습률")
     parser.add_argument("--label-smoothing", type=float, default=0.0,
-                        help="라벨 스무딩 (예: 0.1)")  # [변경]
+                        help="라벨 스무딩 (예: 0.1)")
     parser.add_argument("--dropout", type=float, default=None,
                         help="드롭아웃 비율 (예: 0.2, 지정하지 않으면 모델 기본값)")
+    parser.add_argument("--select-by", default="f1", choices=["f1", "loss"],
+                        help="모델 저장 기준: f1(Macro-F1 최고) 또는 loss(validation loss 최저)")  # [저장 기준]
     args = parser.parse_args()
     run_training(quick=args.quick, model_name=args.model, run_name=args.run,
                  epochs=args.epochs, learning_rate=args.lr,
-                 label_smoothing=args.label_smoothing, dropout=args.dropout)
+                 label_smoothing=args.label_smoothing, dropout=args.dropout,
+                 select_by=args.select_by)  # [저장 기준]
 
 
 if __name__ == "__main__":

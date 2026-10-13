@@ -1,0 +1,26 @@
+{
+  "kind": "transformer",
+  "dataset": "klue_nli",
+  "input": "premise + hypothesis pair",
+  "learner": "wanwi",
+  "run_name": "roberta_ls005",
+  "quick_check": false,
+  "model": "klue/roberta-base",
+  "token_type_ids": false,
+  "learning_rate": 2e-05,
+  "label_smoothing": 0.05,
+  "dropout": 0.1,
+  "select_by": "loss",
+  "epochs": 3,
+  "batch_size": 16,
+  "accumulation_steps": 1,
+  "max_length": 128,
+  "seed": 42,
+  "device": "cuda",
+  "precision": "bfloat16",
+  "labels": [
+    "entailment",
+    "neutral",
+    "contradiction"
+  ]
+}

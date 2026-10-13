@@ -80,3 +80,44 @@
 - 확률 보정 상세: calibration_<실험 이름>.md
 - 학습 곡선: epoch_curves_label_smoothing.png, epoch_curves_regularization.png
 - test 최종 평가: test_results.md
+
+
+## 사후 분석 (test 평가 이후, 공식 선정에는 반영하지 않음)
+
+- 목적 1: Macro-F1과 보정 전 validation loss만으로 두 최종 후보를 비교하면 결과가 어떻게 달라지는지 확인
+  - 결과: ls01_ep6이 두 지표 모두 우세 (0.8880 / 0.4087 vs 0.8853 / 0.7592)
+  - 보정 후 B 절반 loss로는 lr2e5_ep6이 우세 → 비교 기준에 따라 선택이 바뀐다
+- 목적 2: 라벨 스무딩 모델의 epoch을 10으로 늘리면 validation loss가 더 떨어지는지 확인 (roberta_ls01_ep10)
+  - 실험 전 예상: validation loss는 0.3999(ls01_ep6의 epoch 4)보다 크게 낮아지지 않고,
+    Macro-F1은 0.88 부근에서 정체할 것
+
+- 이 분석 결과와 관계없이 공식 선정(roberta_lr2e5_ep6)과 공식 test 결과는 바꾸지 않는다.
+
+- 목적 2 결과 (roberta_ls01_ep10):
+  - validation loss 최저는 epoch 2(0.3976)이며 이후 0.41~0.44에서 오르내림 → 더 떨어지지 않음
+  - Macro-F1은 epoch 5부터 0.877~0.885에서 정체, 최고 0.8849(epoch 9)로 ls01_ep6(0.8880)보다 높지 않음
+  - 학습 시간 1,439초로 ls01_ep6(892초)의 약 1.6배
+  - 실험 전 예상과 일치. 라벨 스무딩 모델은 4~6 epoch이면 충분한 것으로 보인다
+  - 학습 곡선: epoch_curves_ls_epochs.png 
+  
+- 목적 3: 보정 전 validation loss 낮추기 (기준: roberta_ls01, 목표 기록 0.3803)
+  - 모든 실험은 loss가 가장 낮은 epoch을 저장 (--select-by loss)
+  - roberta_ls01_lr1e5: 라벨 스무딩 0.1 + 학습률 1e-5 → 예상: 셋 중 val loss 최저(0.38 이하), Macro-F1 약 0.875
+  - roberta_ls005: 라벨 스무딩 0.05 → 예상: val loss 0.38~0.42
+  - roberta_ls02: 라벨 스무딩 0.2 → 예상: val loss가 0.1보다 높고, 보정 시 T < 1
+  - loss가 최저인 epoch을 validation으로 고르므로 val loss는 다소 유리하게 나온다. B 절반 보정 후 loss를 함께 기록한다.
+
+- 목적 3 결과 (3 epoch, loss 기준 저장):
+  - roberta_ls01_lr1e5: val loss 0.3647 (epoch 2), Macro-F1 0.8750 → 목표(0.3803) 달성, 최저 기록
+  - roberta_ls02: val loss 0.3903 (epoch 3, 아직 감소 중), Macro-F1 0.8844
+  - roberta_ls005: val loss 0.3995 (epoch 2, epoch 3에 상승), Macro-F1 0.8669
+  
+- 목적 3 보정 결과 (B 절반):
+  - roberta_ls01_lr1e5: T = 1.0, B loss 0.3509 (보정 전후 동일) → 보정 없이 정직한 확률. 평균 확신도 0.887 vs 정답률 0.883
+  - roberta_ls02: T = 0.87 (예상대로 T < 1) → 겸손한 모델. 보정으로 자신감을 올려 B loss 0.3751 → 0.3637
+  - roberta_ls005: T = 1.23 → 조금 과장. B loss 0.3894 → 0.3780, ECE는 0.0528 → 0.0577로 오히려 증가
+  - 라벨 스무딩 강도에 따라 T가 일정하게 감소: 0(2.01) → 0.05(1.22) → 0.1(1.09) → 0.2(0.85)
+  
+- 목적 4: 10 epoch으로 늘리기 (loss 기준 저장)
+  - roberta_ls02_ep10 → 예상: val loss가 0.3903보다 낮아지지만 0.3647에는 못 미침, Macro-F1 약 0.885
+  - roberta_ls01_lr1e5_ep10 → 예상: 최저 val loss는 0.3647과 비슷, Macro-F1은 0.8750보다 상승
