@@ -1,0 +1,11 @@
+﻿case_id,답변,provider
+dev-01,X,openai
+dev-01,Y,ollama
+dev-02,X,openai
+dev-02,Y,ollama
+dev-03,X,ollama
+dev-03,Y,openai
+dev-04,X,openai
+dev-04,Y,ollama
+dev-05,X,openai
+dev-05,Y,ollama
