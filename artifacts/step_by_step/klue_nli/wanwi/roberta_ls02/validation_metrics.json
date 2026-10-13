@@ -1,0 +1,63 @@
+{
+  "accuracy": 0.8849840255591054,
+  "macro_f1": 0.8844009008656376,
+  "per_class": {
+    "entailment": {
+      "precision": 0.8943181818181818,
+      "recall": 0.9161816065192084,
+      "f1-score": 0.9051178838412881,
+      "support": 859.0
+    },
+    "neutral": {
+      "precision": 0.8738853503184714,
+      "recall": 0.8596491228070176,
+      "f1-score": 0.866708780795957,
+      "support": 798.0
+    },
+    "contradiction": {
+      "precision": 0.8855780691299165,
+      "recall": 0.8772136953955135,
+      "f1-score": 0.8813760379596679,
+      "support": 847.0
+    },
+    "accuracy": 0.8849840255591054,
+    "macro avg": {
+      "precision": 0.8845938670888566,
+      "recall": 0.8843481415739132,
+      "f1-score": 0.8844009008656376,
+      "support": 2504.0
+    },
+    "weighted avg": {
+      "precision": 0.8848500208821874,
+      "recall": 0.8849840255591054,
+      "f1-score": 0.8848463951464373,
+      "support": 2504.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      787,
+      42,
+      30
+    ],
+    [
+      46,
+      686,
+      66
+    ],
+    [
+      47,
+      57,
+      743
+    ]
+  ],
+  "confusion_matrix_axes": {
+    "rows": "actual",
+    "columns": "predicted",
+    "labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ]
+  }
+}

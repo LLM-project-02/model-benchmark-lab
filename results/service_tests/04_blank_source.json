@@ -1,0 +1,14 @@
+{
+  "case": "04_blank_source",
+  "description": "공백만 있는 원문: 문장이 없음",
+  "expected_status": 400,
+  "status": 400,
+  "as_expected": true,
+  "request": {
+    "source": "   ",
+    "report": "우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다. 김봉진 대표는 아시아 8개국 사업을 총괄한다."
+  },
+  "response": {
+    "detail": "원문과 보고서에 문장이 하나 이상 있어야 합니다."
+  }
+}

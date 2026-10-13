@@ -1,0 +1,151 @@
+{
+  "selected_run": "roberta_lr2e5_ep6",
+  "selected_model": "klue/roberta-base",
+  "split": "test",
+  "test_rows": 3000,
+  "classifier": {
+    "accuracy": 0.8643333333333333,
+    "macro_f1": 0.8641890197403169,
+    "per_class": {
+      "entailment": {
+        "precision": 0.865255052935515,
+        "recall": 0.899,
+        "f1-score": 0.8818048062775871,
+        "support": 1000.0
+      },
+      "neutral": {
+        "precision": 0.8778705636743215,
+        "recall": 0.841,
+        "f1-score": 0.8590398365679265,
+        "support": 1000.0
+      },
+      "contradiction": {
+        "precision": 0.8504486540378864,
+        "recall": 0.853,
+        "f1-score": 0.8517224163754369,
+        "support": 1000.0
+      },
+      "accuracy": 0.8643333333333333,
+      "macro avg": {
+        "precision": 0.8645247568825744,
+        "recall": 0.8643333333333333,
+        "f1-score": 0.8641890197403169,
+        "support": 3000.0
+      },
+      "weighted avg": {
+        "precision": 0.8645247568825744,
+        "recall": 0.8643333333333333,
+        "f1-score": 0.8641890197403168,
+        "support": 3000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        899,
+        45,
+        56
+      ],
+      [
+        65,
+        841,
+        94
+      ],
+      [
+        75,
+        72,
+        853
+      ]
+    ],
+    "confusion_matrix_axes": {
+      "rows": "actual",
+      "columns": "predicted",
+      "labels": [
+        "entailment",
+        "neutral",
+        "contradiction"
+      ]
+    }
+  },
+  "baseline": {
+    "accuracy": 0.5053333333333333,
+    "macro_f1": 0.5019077343796445,
+    "per_class": {
+      "entailment": {
+        "precision": 0.5009090909090909,
+        "recall": 0.551,
+        "f1-score": 0.5247619047619048,
+        "support": 1000.0
+      },
+      "neutral": {
+        "precision": 0.5044014084507042,
+        "recall": 0.573,
+        "f1-score": 0.5365168539325843,
+        "support": 1000.0
+      },
+      "contradiction": {
+        "precision": 0.5130890052356021,
+        "recall": 0.392,
+        "f1-score": 0.4444444444444444,
+        "support": 1000.0
+      },
+      "accuracy": 0.5053333333333333,
+      "macro avg": {
+        "precision": 0.5061331681984657,
+        "recall": 0.5053333333333333,
+        "f1-score": 0.5019077343796445,
+        "support": 3000.0
+      },
+      "weighted avg": {
+        "precision": 0.5061331681984657,
+        "recall": 0.5053333333333333,
+        "f1-score": 0.5019077343796445,
+        "support": 3000.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        551,
+        263,
+        186
+      ],
+      [
+        241,
+        573,
+        186
+      ],
+      [
+        308,
+        300,
+        392
+      ]
+    ],
+    "confusion_matrix_axes": {
+      "rows": "actual",
+      "columns": "predicted",
+      "labels": [
+        "entailment",
+        "neutral",
+        "contradiction"
+      ]
+    }
+  },
+  "calibration": {
+    "temperature": 2.77,
+    "loss_before": 0.8788,
+    "loss_after": 0.4331,
+    "ece_before": 0.1261,
+    "ece_after": 0.0267,
+    "mean_confidence_before": 0.99,
+    "mean_confidence_after": 0.8907
+  },
+  "agreement": {
+    "둘 다 맞음": 1375,
+    "RoBERTa만 맞음": 1218,
+    "베이스라인만 맞음": 141,
+    "둘 다 틀림": 266
+  },
+  "seconds": {
+    "classifier_gpu_including_load": 6.38,
+    "baseline_cpu": 0.47
+  }
+}

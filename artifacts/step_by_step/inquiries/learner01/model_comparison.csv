@@ -1,3 +1,0 @@
-﻿run,kind,model,validation_accuracy,validation_macro_f1,train_seconds,cpu_inference_ms_per_text,peak_gpu_memory_reserved_mb,reloaded_predictions_match,selected
-learner01/baseline,baseline,tfidf_char_ngram+logistic_regression,0.9833,0.9833,0.21,0.36,,True,
-learner01/lr2e5,transformer,klue/bert-base,1.0,1.0,15.2,21.5,2338.0,True,yes

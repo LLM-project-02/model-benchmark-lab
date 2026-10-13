@@ -1,0 +1,19 @@
+{
+  "method": "full_backbone_and_head_finetuning",
+  "model": "klue/roberta-base",
+  "label_smoothing": 0.2,
+  "selection_metric": "loss",
+  "validation_loss_at_checkpoint": 0.3903460702576195,
+  "best_epoch": 3,
+  "optimizer_steps_at_checkpoint": 4218,
+  "selection_split": "validation",
+  "max_length": 128,
+  "train_seconds": 437.3350580999395,
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "peak_gpu_memory_allocated_mb": 2153.80126953125,
+  "peak_gpu_memory_reserved_mb": 2340.0,
+  "cpu_inference_ms_per_text": 11.889209305116617,
+  "reloaded_predictions_match": true,
+  "torch_version": "2.11.0+cu128"
+}

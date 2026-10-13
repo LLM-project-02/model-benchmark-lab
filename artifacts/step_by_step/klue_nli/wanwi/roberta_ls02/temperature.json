@@ -1,0 +1,5 @@
+{
+  "temperature": 0.85,
+  "fitted_on": "validation (전체)",
+  "usage": "probs = softmax(logits / temperature)"
+}

@@ -1,0 +1,21 @@
+{
+  "split": "dev",
+  "run_at": "2026-10-13T16:03:27",
+  "classifier": "roberta_lr2e5_ep6",
+  "temperature": 2.77,
+  "providers": {
+    "ollama": "qwen3:4b-instruct-2507-q4_K_M",
+    "openai": "gpt-6-luna"
+  },
+  "max_output_tokens": 512,
+  "cases_file_sha256": "379a03e9ac6035460f429b5830af9b9a7443b6eec4e4b52fc5b3658fa62439a5",
+  "prompt_file_sha256": "f0f567a2668882da43eb8dec1ed3e723eef4b6b5d1abeb53387b26fba3fdc563",
+  "price_usd_per_1m": {
+    "input": null,
+    "output": null
+  },
+  "warmup_seconds": {
+    "ollama": 3.82,
+    "openai": 2.03
+  }
+}

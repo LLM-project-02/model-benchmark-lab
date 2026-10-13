@@ -1,0 +1,110 @@
+﻿id,premise,hypothesis,actual,predicted,group_id
+klue-nli-v1_train_00058,12억 원어치 중국 골동품을 수집한 김창래 씨의 거듭되는 반전 사연이 뒤늦게 주목받고 있다.,김창래씨의 반전 사연은 무관심 속에 잊혀졌다.,contradiction,entailment,p_c22782aaca
+klue-nli-v1_train_00059,12억 원어치 중국 골동품을 수집한 김창래 씨의 거듭되는 반전 사연이 뒤늦게 주목받고 있다.,김창래 씨는 사업의 일환으로 중국 골동품을 수집했다.,neutral,entailment,p_c22782aaca
+klue-nli-v1_train_00070,13일 반민정 씨는 서울 서초구 서초동 대법원 앞 기자회견에서 그간 심경을 밝혔다.,대법원은 서울 강동구에 있다.,contradiction,entailment,p_9578a107d5
+klue-nli-v1_train_00071,13일 반민정 씨는 서울 서초구 서초동 대법원 앞 기자회견에서 그간 심경을 밝혔다.,반민정 씨는 억울한 심경을 밝혔다.,neutral,entailment,p_9578a107d5
+klue-nli-v1_train_00102,"1666년 베커는 마인츠 대학교의 의학 강사로 취직할 수 있었고, 이와 동시에 대주교의 주치의가 되었다.",1666년 베커는 대주교의 주치의가 되었다.,entailment,neutral,p_4b07b1ede2
+klue-nli-v1_train_00112,"1701년에 텔레만은 법을 공부하기 위해 라이프치히 대학에 입학하는데, 아마도 어머니의 권유로 보인다.",텔레만은 1701년에 대학을 졸업한다.,contradiction,neutral,p_e91668f8f8
+klue-nli-v1_train_00113,"1701년에 텔레만은 법을 공부하기 위해 라이프치히 대학에 입학하는데, 아마도 어머니의 권유로 보인다.",텔레만은 라이프치히 대학에 입한한다.,entailment,neutral,p_e91668f8f8
+klue-nli-v1_train_00114,"1701년에 텔레만은 법을 공부하기 위해 라이프치히 대학에 입학하는데, 아마도 어머니의 권유로 보인다.",텔레만은 본인의 의지로 대학에 입학한다.,contradiction,neutral,p_e91668f8f8
+klue-nli-v1_train_00184,1957년 뉴질랜드에 사는 어머니를 끔찍히 생각하는 주인공 라이오넬은 잡화점의 딸 파퀴타와 운명적인 만남을 갖는다.,라이오넬은 잡화점의 딸과 결혼한다.,neutral,entailment,p_6082cb0211
+klue-nli-v1_train_00196,1960년대의 영화로서 스릴 넘치고 스토리 구성이 탄탄한 전쟁 영화,스토리 구성이 약하고 스릴을 찾을 수 없던 전쟁 영화.,contradiction,entailment,p_f5c8a29c66
+klue-nli-v1_train_00240,1984년 필립 그로닝은 그랑드샤르트뢰즈 수도원 측에 수사들의 삶을 담은 영화를 찍고 싶다는 제의를 하였다.,필립 그로닝은 그랑드샤르트뢰즈 수도원 측에 제안 하나를 한다.,entailment,neutral,p_f74e838ab0
+klue-nli-v1_train_00241,"1985년 2월, 불륜 관계였던 아키야마 다케히로의 집에 침입한 노노미야 기와코는 잠들어 있던 아기 에리나를 보고 충동적으로 납치한다.",아키야마 다케히로와 노노미야 기와코는 부부이다.,contradiction,entailment,p_429a51ca57
+klue-nli-v1_train_00242,"1985년 2월, 불륜 관계였던 아키야마 다케히로의 집에 침입한 노노미야 기와코는 잠들어 있던 아기 에리나를 보고 충동적으로 납치한다.",에리나는 6개월 된 아기이다.,neutral,entailment,p_429a51ca57
+klue-nli-v1_train_00279,"1994년 12월 7일 서울 명동, 그해 마지막 시위에서 나눔의 집 할머니들은 위안부 문제 처리 없는 일본의 유엔 가입을 반대하는 주제로 시위를 한다.",1994년 12월 7일 서울 명동에서는 그해 첫 시위가 시작된다.,contradiction,entailment,p_64db938446
+klue-nli-v1_train_00280,"1994년 12월 7일 서울 명동, 그해 마지막 시위에서 나눔의 집 할머니들은 위안부 문제 처리 없는 일본의 유엔 가입을 반대하는 주제로 시위를 한다.",일본은 할머니들의 시위에 항복하여 유엔에 가입하지 못한다.,neutral,entailment,p_64db938446
+klue-nli-v1_train_00285,1999년 개봉된 이영화가 더 감동적이었다.,이 영화는 1998년에 개봉했다.,contradiction,entailment,p_53e76668e6
+klue-nli-v1_train_00286,1999년 개봉된 이영화가 더 감동적이었다.,1999년 개봉된 영화는 모두 감동적이다.,neutral,entailment,p_53e76668e6
+klue-nli-v1_train_00303,"19세기 프랑스에서 자크 오펜바흐가 코믹한 이야기와 알기 쉬운 음악으로 가벼운 오페라를 작곡하였고, 사람들에게 환영받은 데서 오페레타의 역사는 시작되었다.",오페레타의 역사는 21세기에 시작되었다.,contradiction,entailment,p_2404f5472b
+klue-nli-v1_train_00398,2007년 11월엔 중국 동포들이 낸 방문취업비자 발급 거부 취소소송에서 엇갈린 판결이 나오기도 했다.,방문취업비자 발급 거부 취소소송에서 모두 같은 판결이 나왔다.,contradiction,neutral,p_bca30af3ca
+klue-nli-v1_train_00447,2012년 개봉당시 극장에서 4번봤습니다,개봉은 2012년 이전에 했습니다.,contradiction,neutral,p_2ee23b1375
+klue-nli-v1_train_00448,2012년 개봉당시 극장에서 4번봤습니다,개봉 당시 극장에서 봤습니다.,entailment,neutral,p_2ee23b1375
+klue-nli-v1_train_00472,"2016년 상주영덕고속도로의 개통으로 서울에서도, 대전에서도, 부산에서도 편하게 청송으로 찾아올 수 있다.",상주영덕고속도로의 개통으로 청송에서 영덕까지 걸리는 시간이 획기적으로 단축되었다.,neutral,entailment,p_d62f4dad89
+klue-nli-v1_train_00539,2021년부터 정지궤도 공공복합통신위성 사업도 추진한다.,정지궤도 공공복합통신위성 사업은 2021년에 끝이 난다.,contradiction,entailment,p_327f56fc35
+klue-nli-v1_train_00540,2021년부터 정지궤도 공공복합통신위성 사업도 추진한다.,정지궤도 공공복합통신위성 사업은 각광받는 사업이다.,neutral,entailment,p_327f56fc35
+klue-nli-v1_train_00595,22일 오전 서울 프레스센터에서 열린 제16차 일자리위원회에서 김용기 일자리위원회 부위원장이 발언하고 있다.,22일 오전 제 16차 일자리위원회가 부산 프레스센터에서 열렸다.,contradiction,entailment,p_cd90664cba
+klue-nli-v1_train_00597,22일 오전 서울 프레스센터에서 열린 제16차 일자리위원회에서 김용기 일자리위원회 부위원장이 발언하고 있다.,일자리위원회 부위원장 김용기는 30분동안 발언하고 있다.,neutral,entailment,p_cd90664cba
+klue-nli-v1_train_00662,2번이상을 봐야 그 진가를 알 수 있는 영화고요,진가를 보려면 2번 이상 봐야하고요.,entailment,neutral,p_26df67d26d
+klue-nli-v1_train_00663,2부 통일골든벨 행사에서는 5월 31일 목포실내체육관에서 개최될 전남지역본선대회에 참가할 학생 15명을 선발했다.,전남지역본선대회는 종료되었다.,contradiction,neutral,p_423a01a8d4
+klue-nli-v1_train_00665,2부 통일골든벨 행사에서는 5월 31일 목포실내체육관에서 개최될 전남지역본선대회에 참가할 학생 15명을 선발했다.,전남지역본선대회는 아직 열리지 않았다.,entailment,contradiction,p_423a01a8d4
+klue-nli-v1_train_00689,2층 침실에서의 하룻밤은 매우 낭만적인 시간이였습니다.,침실에서 좋은 시간을 보냈습니다.,entailment,neutral,p_177dc8ff9e
+klue-nli-v1_train_00696,2편의 연장선으로 바라보게 되는 또 하나의 슬픈 이야기,"2편에서 완전 독립한, 완전한 별개의 이야기.",contradiction,entailment,p_c7ceef2166
+klue-nli-v1_train_00697,2편의 연장선으로 바라보게 되는 또 하나의 슬픈 이야기,시리즈는 총 3편까지 있다.,neutral,contradiction,p_c7ceef2166
+klue-nli-v1_train_00732,3군사령관은 이 사실을 육군참모총장과 국방장관에게 보고하지 않았다고 군 감찰에서 드러났습니다.,3군 사령관은 육군참모총장에게만 보고했습니다.,contradiction,neutral,p_074ff9512c
+klue-nli-v1_train_00734,3군사령관은 이 사실을 육군참모총장과 국방장관에게 보고하지 않았다고 군 감찰에서 드러났습니다.,군 감찰에서 3군사령관에 관한 사항이 드러났습니다.,entailment,neutral,p_074ff9512c
+klue-nli-v1_train_00750,3박4일동안 너무 재밌는시간 보내고 갑니다.,3박4일동안 아주 재밌게 지내다 갑니다.,entailment,neutral,p_90b2efc8ea
+klue-nli-v1_train_00751,3박4일동안 너무 재밌는시간 보내고 갑니다.,3박4일동안 할 일 없이 너무 지루하게 보냈습니다.,contradiction,neutral,p_90b2efc8ea
+klue-nli-v1_train_00786,40개교에 신기술 분야 융합 전공을 운영해 관련 인재 1만 명을 기른다.,신기술 분야 융합 전공을 운영해 관련 인재를 최소 2만 명을 기른다.,contradiction,entailment,p_0d2c62516c
+klue-nli-v1_train_00787,40개교에 신기술 분야 융합 전공을 운영해 관련 인재 1만 명을 기른다.,신기술 분야 융합 전공을 운영해 관련 청소년 인재를 기른다.,neutral,entailment,p_0d2c62516c
+klue-nli-v1_train_00799,4박을 하는동안 호스트는 딱 두번 마주쳤다.,"4박동안 호스트와는 체크인,체크아웃할때만 마주쳤다.",neutral,contradiction,p_b5a00d20d0
+klue-nli-v1_train_00800,4박을 하는동안 호스트는 딱 두번 마주쳤다.,4일 머무는 동안 호스트를 두번 만났다.,entailment,neutral,p_b5a00d20d0
+klue-nli-v1_train_00944,88년도 영화지만 너무 감동적으로 봄 형제애를 느낌,영화를 흐느끼며 봄.,neutral,entailment,p_0293802471
+klue-nli-v1_train_00951,8월 14일부터 카드사별 이용 횟수 산정과 할인 제공이 시작되므로 세부 사항은 사전에 홍보를 통해 자세히 안내할 예정이다.,카드사별 이용 횟수 산정이 할인 제공보다 먼저 시작된다.,contradiction,entailment,p_2b92d90856
+klue-nli-v1_train_00952,8월 14일부터 카드사별 이용 횟수 산정과 할인 제공이 시작되므로 세부 사항은 사전에 홍보를 통해 자세히 안내할 예정이다.,카드사별 할인 제공을 8월 14일부터 시작한다.,entailment,contradiction,p_2b92d90856
+klue-nli-v1_train_00954,"8월 18일 공사시작 5년 7개월, 사업자선정 23년만에 청량리역 민자역사가 준공되었다.",모든 역사는 사업자선정 후 10년 안에 준공되었다.,contradiction,entailment,p_e136293563
+klue-nli-v1_train_00955,"8월 18일 공사시작 5년 7개월, 사업자선정 23년만에 청량리역 민자역사가 준공되었다.",청량리역 민자역사에는 여러 상가가 들어섰다.,neutral,entailment,p_e136293563
+klue-nli-v1_train_00960,8월 더위만 아니면 지내기 좋은 숙소입니다.,8월 더위에도 지내기 좋습니다.,contradiction,neutral,p_85b9984b00
+klue-nli-v1_train_00961,8월 더위만 아니면 지내기 좋은 숙소입니다.,8월 더위에는 지내기가 완벽하지 않습니다.,entailment,neutral,p_85b9984b00
+klue-nli-v1_train_00994,"9월 한 달 동안 위키백과의 조두순 항목은 303,603 회로 2위를, 조두순 사건 항목은 175,215 회로 4위를 기록하였다.",조두순 사건 항목이 조두순 항목보다 더 많았다.,contradiction,neutral,p_c1e13dcb88
+klue-nli-v1_train_00995,"9월 한 달 동안 위키백과의 조두순 항목은 303,603 회로 2위를, 조두순 사건 항목은 175,215 회로 4위를 기록하였다.",조두순 항목이 순위권 안에 기록된 건 처음이다.,neutral,contradiction,p_c1e13dcb88
+klue-nli-v1_train_00999,가격 위치 친절도 모든면에서 너무 좋습니다,가격을 빼고는 마음에 듭니다.,contradiction,neutral,p_99e9f6ca7b
+klue-nli-v1_train_01000,가격 위치 친절도 모든면에서 너무 좋습니다,가격이 싸진 않지만 그만큼 값을 합니다.,neutral,contradiction,p_99e9f6ca7b
+klue-nli-v1_train_01001,가격 위치 친절도 모든면에서 너무 좋습니다,모든 점이 마음에 듭니다.,entailment,neutral,p_99e9f6ca7b
+klue-nli-v1_train_01044,가수 아이유가 본인 팬이 아니란 사람을 팬으로 만들고자 엄청난 애정공세를 펼쳤다.,아이유는 자신의 팬이 아니라고 밝히는 사람에게는 관심을 두지 않았다.,contradiction,neutral,p_0088a3c8eb
+klue-nli-v1_train_01057,가슴이 따뜻해지는 영화 굿 너무 좋음,할아버지 이야기에 가슴이 따뜻해짐.,neutral,entailment,p_5ba4464662
+klue-nli-v1_train_01058,가슴이 따뜻해지는 영화 굿 너무 좋음,영화 너무 좋음.,entailment,neutral,p_5ba4464662
+klue-nli-v1_train_01133,"가족이 절대로 자신들의 결혼을 찬성하지 않을 것이라고 알고 있었기 때문에, 로미오는 로렌스 신부와 만나, 결혼식의 주례를 서 줄 것을 부탁한다.",로미오는 자신의 가족에게 결혼식 주례를 서 줄 것을 부탁한다.,contradiction,entailment,p_885684fc13
+klue-nli-v1_train_01134,"가족이 절대로 자신들의 결혼을 찬성하지 않을 것이라고 알고 있었기 때문에, 로미오는 로렌스 신부와 만나, 결혼식의 주례를 서 줄 것을 부탁한다.",로미오는 결혼식을 성공적으로 마친다.,neutral,entailment,p_885684fc13
+klue-nli-v1_train_01135,"가족이 절대로 자신들의 결혼을 찬성하지 않을 것이라고 알고 있었기 때문에, 로미오는 로렌스 신부와 만나, 결혼식의 주례를 서 줄 것을 부탁한다.",로미오는 자신들의 가족의 반응을 알고 있다.,entailment,neutral,p_885684fc13
+klue-nli-v1_train_01176,각 지자체는 경찰 등과 함께 합동 단속을 실시할 예정이다.,각 지자체는 소방서 등과 함께 단속을 실시할 예정이다.,neutral,entailment,p_ff69f7b051
+klue-nli-v1_train_01219,간호사인 엄마와 소방관인 아빠 사이에서 사랑받으며 자라던 아들 존은 1969년 10월 12일 브룩스톤 화재로 소방관이던 아버지를 잃게 된다.,존의 아버지는 1969년 10월 12일 브룩스톤 화재에서 살아남게 된다.,contradiction,entailment,p_e06a326b49
+klue-nli-v1_train_01281,감동코드만 넣으면 좋은영화가 되는게 아닙니다.,감동코드만으로는 좋은 영화라 할 수 없습니다.,entailment,neutral,p_8007879ecf
+klue-nli-v1_train_01282,감동코드만 넣으면 좋은영화가 되는게 아닙니다.,감동코드 하나만으로도 충분히 좋은 영화가 됩니다.,contradiction,neutral,p_8007879ecf
+klue-nli-v1_train_01283,감동코드만 넣으면 좋은영화가 되는게 아닙니다.,감동코드만 있는 영화는 안볼것입니다.,neutral,contradiction,p_8007879ecf
+klue-nli-v1_train_01354,강도를 만났던 목격자들은 매니가 그 강도라고 증언을 하고 매니는 체포된다.,매니는 강도 용의자로 체포된다.,entailment,neutral,p_110651d4fe
+klue-nli-v1_train_01364,"강릉과 속초, 동해, 삼척, 고성, 정선 등 30개 노선 시내버스 운행이 단축 운행되고 있다고 노컷뉴스가 보도했다.",강릉은 폭설로 시내버스를 단축운행한다.,neutral,contradiction,p_b3f71ef6d8
+klue-nli-v1_train_01365,"강릉과 속초, 동해, 삼척, 고성, 정선 등 30개 노선 시내버스 운행이 단축 운행되고 있다고 노컷뉴스가 보도했다.",강원도에서 30개 노선 시내버스 운행이 단축 운행되고 있다.,entailment,neutral,p_b3f71ef6d8
+klue-nli-v1_train_01378,강아지를 끔찍이도 좋아하는 12살 독일 소녀인 키라 클라우스 뮐러는 돈으로 인한 자기 부모의 다툼으로 인해 돈에 대한 안 좋은 감정을 갖게 된다.,키라 클라우스 뮐러는 강아지를 매우 좋아한다.,entailment,contradiction,p_d8e7e20420
+klue-nli-v1_train_01388,강원도 산불 피해가 심하던 지난 6일에는 피해 복구를 위해 민하 군과 함께 1003만 원을 기부해서 화제가 되기도 했다.,민하 군은 단독으로 1003만 원을 기부했다.,contradiction,neutral,p_1608933c94
+klue-nli-v1_train_01390,강원도 산불 피해가 심하던 지난 6일에는 피해 복구를 위해 민하 군과 함께 1003만 원을 기부해서 화제가 되기도 했다.,강원도에 산불이 났었다.,entailment,neutral,p_1608933c94
+klue-nli-v1_train_01409,강진아감독의 단편들을 쭈욱 봤었는데요.,강진아감독의 작품을 본적이 없는데요.,contradiction,neutral,p_0c9472ea32
+klue-nli-v1_train_01443,"같은 해 7월 레드벨벳은 얼루어에서 커버 모델이 되어, 팀원 전체와 함께 레드벨벳의 매력을 보여주기도 했다.",레드벨벳을 커버 모델로 사용한 것은 얼루어가 최초이다.,neutral,contradiction,p_4083670ded
+klue-nli-v1_train_01454,개관식이 열린 3일 박물관을 찾은 관람객들이 전시장을 둘러보고 있다.,3일부터 관람객들이 방문 가능하다.,neutral,entailment,p_c6b2dfd206
+klue-nli-v1_train_01455,개관식이 열린 3일 박물관을 찾은 관람객들이 전시장을 둘러보고 있다.,사전 예약을 통해 관람객을 받았다.,neutral,entailment,p_c6b2dfd206
+klue-nli-v1_train_01456,개관식이 열린 3일 박물관을 찾은 관람객들이 전시장을 둘러보고 있다.,개관식은 3일이지만 관람객의 방문은 5일부터 가능하다.,contradiction,entailment,p_c6b2dfd206
+klue-nli-v1_train_01482,개별 기업의 현장 금융애로는 매주 개최하는 금융리스크대응반 회의를 통해서 적극 해결해 나갈 것임도 덧붙였다.,금융리스크대응반 회의는 매주 개최된다.,entailment,neutral,p_2b7a1cfd33
+klue-nli-v1_train_01501,개인욕실이 있는 개인룸이기 때문에 불편함이 없었습니다.,개인룸에도 개인 욕실이 없습니다.,contradiction,neutral,p_b7311721d4
+klue-nli-v1_train_01503,개인욕실이 있는 개인룸이기 때문에 불편함이 없었습니다.,개인룸에 개인 욕실이 딸려있습니다.,entailment,neutral,p_b7311721d4
+klue-nli-v1_train_01519,개인적으로 2편보단 1편이 좀 더 낫다고 생각한다.,2편이 1편보다 낫다.,contradiction,neutral,p_485c7c4abc
+klue-nli-v1_train_01520,개인적으로 2편보단 1편이 좀 더 낫다고 생각한다.,1편이 2편보다 낫다.,entailment,neutral,p_485c7c4abc
+klue-nli-v1_train_01525,개인적으로 라이온킹하고 미녀와야수는 언터쳐블이라고 생각함,언터쳐블한 작품은 라이온 킹이라고 생각 함.,entailment,contradiction,p_af5b06b9b7
+klue-nli-v1_train_01526,개인적으로 라이온킹하고 미녀와야수는 언터쳐블이라고 생각함,라이온 킹과 미녀와 야수는 희대의 명작이라고 함.,neutral,contradiction,p_af5b06b9b7
+klue-nli-v1_train_01545,개인적으로 페리터미널이나 셩완역쪽은 버스로 이동하는 것이 훨씬 편했습니다.,페리터미널이나 셩완역쪽의 버스편이 없습니다.,contradiction,neutral,p_4c5dffca5a
+klue-nli-v1_train_01546,개인적으로 페리터미널이나 셩완역쪽은 버스로 이동하는 것이 훨씬 편했습니다.,페리터미널이나 셩완역쪽을 버스로 이동했습니다.,entailment,neutral,p_4c5dffca5a
+klue-nli-v1_train_01547,개인적으로 페리터미널이나 셩완역쪽은 버스로 이동하는 것이 훨씬 편했습니다.,페리터미널이나 셩완역쪽은 버스만 이용하겠습니다.,neutral,contradiction,p_4c5dffca5a
+klue-nli-v1_train_01590,거실 베란다에서 내다본 마당뷰도 근사했구요.,마당이 없는 곳이었어요.,contradiction,neutral,p_701a5749ef
+klue-nli-v1_train_01605,"걱정 없이 맛있게 먹고 마시기만 하면 좋겠지만 늘어날 뱃살, 팔뚝 살을 생각하니 걱정이다.",맛있게 먹고 마시면 걱정 없이 살 수 있다.,contradiction,neutral,p_10dd749079
+klue-nli-v1_train_01606,"걱정 없이 맛있게 먹고 마시기만 하면 좋겠지만 늘어날 뱃살, 팔뚝 살을 생각하니 걱정이다.",뱃살과 팔뚝은 살이 잘 빠지지 않는 부위이다.,neutral,entailment,p_10dd749079
+klue-nli-v1_train_01611,"건강보험공단이 참여하는 가운데 클러스터 부지를 활용, 고령화시대 대비 고령친화 의료용품 산업을 육성한다.",클러스터 부지를 활용하는 고령화시대 대비 고령친화 의료용품 산업 육성에 건강보험공단은 참여하지 않는다.,contradiction,entailment,p_d28ab8ff00
+klue-nli-v1_train_01612,"건강보험공단이 참여하는 가운데 클러스터 부지를 활용, 고령화시대 대비 고령친화 의료용품 산업을 육성한다.","국민연금공단도 참여하는 가운데 클러스터 부지를 활용, 고령화시대 대비 고령친화 의료용품 산업을 육성한다.",neutral,entailment,p_d28ab8ff00
+klue-nli-v1_train_01623,건물이 오래된 목조건물이라서 방음과 활동이 불편합니다.,건물은 최근에 지어졌습니다.,contradiction,neutral,p_f853938f2e
+klue-nli-v1_train_01624,건물이 오래된 목조건물이라서 방음과 활동이 불편합니다.,방음이 잘 되지 않는 건물입니다.,entailment,neutral,p_f853938f2e
+klue-nli-v1_train_01653,걸작인 원작을 졸작으로 만든 작가가 존경스럽다,원작은 졸작이다.,contradiction,entailment,p_39fe24c3e5
+klue-nli-v1_train_01654,걸작인 원작을 졸작으로 만든 작가가 존경스럽다,모두가 작가를 존경한다.,contradiction,entailment,p_39fe24c3e5
+klue-nli-v1_train_01749,결말이 궁금해서 끝까지 보게 되는 영화,결말을 위해 모든 것을 집중한 영화.,neutral,entailment,p_ea3c5c0db6
+klue-nli-v1_train_01794,"경기가 팽팽한 균형을 이룬 가운데 양 팀 모두 결정적인 기회를 잡았으나, 양 팀 모두 기회를 살리지 못하며 경기는 연장전에 들어갔다.",경기는 한 팀의 압도적인 승리로 끝났다.,contradiction,neutral,p_868aeeae6e
+klue-nli-v1_train_01803,경기도 파주시 운정보건지소가 지역 아동과 청소년들을 위한 무료 건강검진을 실시한다고 17일 밝혔다.,무료 건강검진은 지역내 모든 주민을 위한 것이다.,contradiction,entailment,p_26803af383
+klue-nli-v1_train_01804,경기도 파주시 운정보건지소가 지역 아동과 청소년들을 위한 무료 건강검진을 실시한다고 17일 밝혔다.,무료 건강검진은 무기한으로 실시된다.,neutral,entailment,p_26803af383
+klue-nli-v1_train_01865,경제위축이 생산에 파급되면서 고용상황은 더욱 어려워졌습니다.,경제위축이 생산에 파급되었으나 고용상황에는 영향을 미치지 않았습니다.,contradiction,neutral,p_1826b24e8a
+klue-nli-v1_train_01931,"경찰은 이들이 위조한 5만원권 지폐 5552장을 모두 압수하였고, 대한민국 위폐 범죄로는 최대 규모인 것으로 드러났다.",경찰은 이들이 위조한 5만원권 지폐 중 일부만 압수했다.,contradiction,neutral,p_f261f30480
+klue-nli-v1_train_01932,"경찰은 이들이 위조한 5만원권 지폐 5552장을 모두 압수하였고, 대한민국 위폐 범죄로는 최대 규모인 것으로 드러났다.",이들은 5만원권 위조지폐 5552장을 만들었다.,entailment,neutral,p_f261f30480
+klue-nli-v1_train_02017,고난도 직무를 맡아 성과를 낼수록 임금이 오르게 된다.,직무 난이도가 높을수록 성과를 내기는 어렵다.,neutral,entailment,p_e000b6e1ba
+klue-nli-v1_train_02035,고등학교 문학 교사 헤르만은 학생들이 제출한 그저 그런 수준의 작문 과제들을 채점하며 좌절한다.,헤르만은 학생들에게 작문을 다시 가르친다.,neutral,entailment,p_b899780993
+klue-nli-v1_train_02036,고등학교 문학 교사 헤르만은 학생들이 제출한 그저 그런 수준의 작문 과제들을 채점하며 좌절한다.,헤르만은 학생들의 과제에 좌절한다.,entailment,contradiction,p_b899780993
+klue-nli-v1_train_02075,"고향에 돌아온 소광은 식구들과 함께 주연을 즐기고, 문중과 빈객들을 불러모아 함께 놀며 돈을 많이 썼다.",소광은 돈이 부족해 고향에 돌아가지 못했다.,contradiction,neutral,p_c7172bb66d
+klue-nli-v1_train_02077,"고향에 돌아온 소광은 식구들과 함께 주연을 즐기고, 문중과 빈객들을 불러모아 함께 놀며 돈을 많이 썼다.",소광은 유흥에 돈을 많이 썼다.,entailment,neutral,p_c7172bb66d
+klue-nli-v1_train_02087,"곧이어 학생들 역할을 하는 등장인물들은 하던 일을 멈추고, 선생님 역할을 하는 사람에게 시선을 집중한다.",학생들 역할을 하는 등장인물들은 하던 일을 계속한다.,contradiction,entailment,p_ce483a3e72
+klue-nli-v1_train_02088,"곧이어 학생들 역할을 하는 등장인물들은 하던 일을 멈추고, 선생님 역할을 하는 사람에게 시선을 집중한다.",선생님 역할을 하는 사람들은 집중된 시선에 당황한다.,neutral,entailment,p_ce483a3e72
+klue-nli-v1_train_02106,곳곳에 드러나는 색감과 아이템이 영국을 나타냈다.,영국을 나타내는 색감이 드러났다.,entailment,neutral,p_c9c9a1dbd2
+klue-nli-v1_train_02116,공각기동대의 새로운 면과 새로운 스토리를 볼 수 있다는 것이 매우 기쁘다,공각기동대의 새로운 스토리를 볼 수 있다.,entailment,neutral,p_fefee0da0d
