@@ -16,6 +16,7 @@ import json
 import config
 
 SELECTED_RUN = "roberta_lr2e5_ep6"  # 최종 선정 모델 (표에 ★ 표시)
+POST_HOC_RUNS = {"roberta_ls01_ep10"}  # test 이후 사후 분석 실험 (공식 비교표에서 제외)
 RESULTS_DIR = config.ROOT / "results"
 
 
@@ -86,6 +87,7 @@ def main():
     run_dirs = sorted(
         path for path in config.LEARNER_DIR.iterdir()
         if path.is_dir() and not path.name.endswith("_quick")  # 실행 확인용 결과는 제외
+        and path.name not in POST_HOC_RUNS                      # 사후 분석 실험은 제외
         and (path / "validation_metrics.json").exists()
     )
     rows = [collect(path) for path in run_dirs]
