@@ -1,5 +1,5 @@
 {
-  "reviewer": "llm:claude-opus-5-5 (대화 세션에서 채점)",
+  "reviewer": "llm:claude-opus-5-5 (대화 세션에서 채점, 2026-10-13 규칙 보완)",
   "method": "가린 채점표(blind_sheet.md)",
   "answers": 96,
   "unusable_answers_scored_zero": 0,
