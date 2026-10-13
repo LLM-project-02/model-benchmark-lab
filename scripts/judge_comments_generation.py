@@ -9,7 +9,12 @@ uv run python scripts/judge_comments_generation.py apply local_models01 --review
 comparisons/<이름>/results.jsonl의 답변 가운데 그대로 쓸 수 있는 것만 채점한다.
 호출 오류, 잘린 답변, JSON 형식이 틀린 답변은 채점하지 않고 0점으로 둔다.
 같은 입력에 같은 답변이면 한 번만 채점해 어느 모델이든 같은 점수를 받게 한다.
-채점은 틀릴 수 있다. llm_spotcheck.csv의 10건을 사람이 직접 확인한다.
+
+채점은 틀릴 수 있다. apply가 만드는 llm_spotcheck.csv의 10건을 사람이 직접 확인한다.
+- 서로 다른 답변 10개를 뽑으므로, 한 댓글에 답이 두 가지면 같은 댓글이 두 번 나올 수 있다.
+- human_agrees: 1 = 채점에 동의, 0 = 동의하지 않음, 빈칸 = 아직 안 봤거나 판단 보류
+- human_notes: 동의하지 않거나 보류한 이유, 내가 줄 점수
+- apply를 다시 실행해도 이미 적은 human_agrees, human_notes는 같은 답변 줄에 그대로 옮겨 둔다.
 """
 
 import argparse
@@ -169,6 +174,35 @@ def make_sheet(folder, records):
     print(f"채점할 답변 {len(keys)}건: {folder / 'blind_sheet.md'}")
 
 
+def spot_key(row):
+    """사람 확인 표의 한 줄을 가리키는 키: 같은 댓글에 같은 답변이면 같은 줄이다."""
+    return (normalized(row["text"]), normalized(row["answer"]), row["next_steps"])
+
+
+def read_spotcheck(folder):
+    """llm_spotcheck.csv를 읽는다. 아직 없으면 빈 목록."""
+    path = Path(folder) / "llm_spotcheck.csv"
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8-sig", newline="") as stream:
+        return list(csv.DictReader(stream))
+
+
+def spotcheck_sentence(rows):
+    """사람 확인 결과를 한 문장으로 줄인다. human_agrees 1 = 동의, 0 = 동의 안 함, 빈칸 = 보류."""
+    if not rows:
+        return "사람 확인 표본(llm_spotcheck.csv)이 없습니다."
+    marks = [(row.get("human_agrees") or "").strip() for row in rows]
+    agree, disagree = marks.count("1"), marks.count("0")
+    pending = len(marks) - agree - disagree
+    if agree + disagree == 0:
+        return f"사람이 llm_spotcheck.csv의 {len(rows)}건을 아직 확인하지 않았습니다."
+    sentence = f"사람이 llm_spotcheck.csv의 {len(rows)}건 가운데 {agree}건에 동의했고, " + (
+        f"{disagree}건에 동의하지 않았습니다" if disagree else "동의하지 않은 건은 없습니다"
+    )
+    return sentence + (f". {pending}건은 판단을 보류했습니다." if pending else ".")
+
+
 def apply_scores(folder, records, reviewer):
     """채운 blind_scores.csv를 답변별 점수, 사람 확인용 표본, 채점 요약으로 옮긴다."""
     ids = json.loads((folder / "blind_key.json").read_text(encoding="utf-8"))
@@ -221,25 +255,27 @@ def apply_scores(folder, records, reviewer):
     # 사람이 확인할 표본. 어느 모델의 답변인지는 적지 않는다.
     sample = random.Random(42).sample(sorted(done), min(SPOTCHECK, len(done)))
     texts = {record["case_id"]: record for record in records}
+    # 사람이 이미 적은 칸은 같은 답변 줄에 그대로 옮긴다. 다시 실행해도 지워지지 않게 하려는 것이다.
+    written = {spot_key(row): row for row in read_spotcheck(folder)}
+    spot_rows = []
+    for key in sample:
+        case_id, answer, next_steps = json.loads(key)
+        row = {
+            "expected_label": texts[case_id]["expected_label"],
+            "text": texts[case_id]["input_text"],
+            "answer": answer,
+            "next_steps": json.dumps(next_steps, ensure_ascii=False),
+            **{f"{item}_0_2": done[key][item] for item in ITEMS},
+            "notes": done[key]["notes"],
+        }
+        before = written.get(spot_key(row), {})
+        row["human_agrees"] = before.get("human_agrees", "")  # 사람이 확인한 뒤 채운다
+        row["human_notes"] = before.get("human_notes", "")
+        spot_rows.append(row)
     with (folder / "llm_spotcheck.csv").open("w", encoding="utf-8-sig", newline="") as stream:
-        fields = ["expected_label", "text", "answer", "next_steps"]
-        fields += [f"{item}_0_2" for item in ITEMS] + ["notes", "human_agrees", "human_notes"]
-        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer = csv.DictWriter(stream, fieldnames=list(spot_rows[0]))
         writer.writeheader()
-        for key in sample:
-            case_id, answer, next_steps = json.loads(key)
-            writer.writerow(
-                {
-                    "expected_label": texts[case_id]["expected_label"],
-                    "text": texts[case_id]["input_text"],
-                    "answer": answer,
-                    "next_steps": json.dumps(next_steps, ensure_ascii=False),
-                    **{f"{item}_0_2": done[key][item] for item in ITEMS},
-                    "notes": done[key]["notes"],
-                    "human_agrees": "",  # 사람이 확인한 뒤 채운다
-                    "human_notes": "",
-                }
-            )
+        writer.writerows(spot_rows)
 
     summary = {
         "reviewer": reviewer,
@@ -247,7 +283,7 @@ def apply_scores(folder, records, reviewer):
         "answers": len(records),
         "unusable_answers_scored_zero": sum(not row["usable"] for row in rows),
         "unique_answers_judged": len(done),
-        "human_spotcheck": "llm_spotcheck.csv (아직 확인하지 않음)",
+        "human_spotcheck": spotcheck_sentence(spot_rows),
         "notes": "채점표에 어느 모델의 답변인지 적지 않았다. 같은 입력에 같은 답변은 한 번만 채점했다.",
     }
     (folder / "llm_judge.json").write_text(

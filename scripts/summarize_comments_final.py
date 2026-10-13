@@ -28,7 +28,9 @@ from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "steps"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
+from judge_comments_generation import read_spotcheck, spotcheck_sentence
 from lesson_settings import (
     DATASET,
     LEARNER_DIR,
@@ -369,7 +371,11 @@ def write_markdown(
             f"- 입력이 {gap['cases']}건(라벨당 {gap['cases'] // len(LABELS)}건)이라 작은 차이는 우연일 수 있습니다. "
             "95% 구간을 함께 봅니다."
         ),
-        "- 채점은 사람이 `llm_spotcheck.csv`를 확인하기 전까지 참고값입니다.",
+        (
+            "- 채점은 Claude가 했습니다. "
+            + spotcheck_sentence(read_spotcheck(Path(path).parent))
+            + " 사람이 모두 다시 채점한 것은 아니므로 점수는 참고값입니다."
+        ),
         (
             f"- {wrong}건은 분류기가 정답과 다른 라벨을 골라 다른 정책이 적용됐습니다. 두 모델이 같은 조건이지만 "
             "그 입력의 점수는 생성 모델의 실력만 보여 주지 않습니다."

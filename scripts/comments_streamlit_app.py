@@ -99,7 +99,7 @@ def batch_row(text, response):
     row = {
         "원문": text,
         "라벨": "",
-        "확신도": None,
+        "분류 확신도": None,
         "고친 댓글": "",
         "다음 안내": "",
         "상태": "",
@@ -120,7 +120,7 @@ def batch_row(text, response):
     row.update(
         {
             "라벨": classification.get("label", ""),
-            "확신도": round(classification["confidence"], 3)
+            "분류 확신도": round(classification["confidence"], 3)
             if "confidence" in classification
             else None,
             "고친 댓글": answer,
@@ -141,8 +141,12 @@ def show_classification(classification):
     title, policy = LABELS.get(label, (label, ""))
     left, right = st.columns(2)
     left.metric("분류 결과", f"{title} ({label})")
-    right.metric("확신도", f"{classification['confidence']:.0%}")
-    st.caption(f"적용한 정책: {policy}")
+    right.metric("분류 확신도", f"{classification['confidence']:.0%}")
+    # 확신도는 분류 모델이 낸 값이다. 생성 모델은 이 라벨을 받기만 하므로 두 모델 비교에서도 하나다.
+    st.caption(
+        f"적용한 정책: {policy} · 확신도는 분류 모델(KcELECTRA)이 이 라벨을 얼마나 확신하는지이고, "
+        "생성 모델과는 관계없습니다."
+    )
 
 
 def show_result(result, status):
