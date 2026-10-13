@@ -7,6 +7,7 @@ from collections.abc import Callable
 from typing import Literal, NotRequired, TypedDict
 
 
+# 분류기가 예측한 결과를 어떤 형태로 반환해야 하는지 정의
 class Classification(TypedDict):
     label: str  # 서비스 설정에 정의된 라벨을 그대로 반환한다.
     probabilities: NotRequired[dict[str, float] | None]  # 생략하면 None; 임의 확률 금지
@@ -14,6 +15,7 @@ class Classification(TypedDict):
     run_id: NotRequired[str | None]  # 생략하면 None
 
 
+# LLM 생성 결과를 어떤 형태로 반환해야 하는지 정의
 class Generation(TypedDict):
     # 어댑터는 아래 필드를 모두 제공한다. 사용량을 모르면 토큰 수에 None을 넣는다.
     raw_text: str  # 원본 응답 보존; 서비스 JSON을 다른 구조로 고쳐 담지 않는다.
@@ -24,9 +26,13 @@ class Generation(TypedDict):
     request_attempts: int  # 어댑터가 실제 수행한 요청 시도 수(1 이상)
 
 
+# LLM에게 어떤 정보를 전달해서 답변을 생성하게 할지 정의
 class PromptContext(TypedDict):
     service_id: str
+    # 생성 모델이 따라야 하는 정책
     policy_version: str
+    # llm only : 분류기를 사용하지 않고 llm이 분류와 응답 생성을 모두 담당
+    # classifier llm : 분류기가 먼저 입력을 분류하고, 그 결과를 LLM에게 전달하여 응답을 생성
     mode: Literal["llm_only", "classifier_llm"]
     label: str | None
     common_policy: str
@@ -36,6 +42,7 @@ class PromptContext(TypedDict):
     output_fields: list[str]  # 현재 generated_text 기본 계약 안내; 출력 스키마 변경 기능 아님
 
 
+# 각각 구현되는 서비스의 설정을 정의
 class Service(TypedDict):
     # 입력·분류 기준·생성 정책·프롬프트의 내용은 서비스가 결정한다.
     id: str
