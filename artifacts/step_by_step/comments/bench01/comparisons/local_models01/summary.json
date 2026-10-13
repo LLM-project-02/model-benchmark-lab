@@ -1,0 +1,402 @@
+{
+  "input": "generation_development.jsonl",
+  "cases": 15,
+  "repeats": 2,
+  "ollama_version": "0.35.0",
+  "generation_config": {
+    "temperature": 0.2,
+    "max_output_tokens": 512,
+    "timeout_seconds": 120.0,
+    "num_ctx": 4096,
+    "think": false,
+    "stream": false,
+    "keep_alive": "5m",
+    "conditions": {
+      "prompt_only": "format 없음. JSON 형식은 프롬프트로만 요구한다 (step07과 같음).",
+      "json_schema": "format에 step07의 AnswerPayload 스키마를 넣어 형식을 강제한다."
+    },
+    "warmup": "모델마다 기록하지 않는 호출 한 번으로 먼저 메모리에 올린다."
+  },
+  "models": [
+    {
+      "name": "kanana2-3b-chatml:q4km",
+      "digest": "ab937df3c73d",
+      "parameter_size": "3.5B",
+      "quantization": "Q4_K_M",
+      "file_gb": 2.0133277904242277,
+      "load_seconds": 2.0868069,
+      "loaded_gb": 2.404638670384884,
+      "vram_gb": 2.404638670384884,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.5906562000047415,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 9334,
+          "output_tokens_total": 1485,
+          "max_load_seconds": 0.0069156
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.27577782000104584,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 9334,
+          "output_tokens_total": 767,
+          "max_load_seconds": 0.005968
+        }
+      }
+    },
+    {
+      "name": "hf.co/mradermacher/kanana-2-3b-instruct-GGUF:Q4_K_M",
+      "digest": "d5a16a4a92bc",
+      "parameter_size": "3.51B",
+      "quantization": "Q4_K_M",
+      "file_gb": 2.013327855616808,
+      "load_seconds": 1.9808461,
+      "loaded_gb": 2.404638670384884,
+      "vram_gb": 2.404638670384884,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.5059419033311617,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 9334,
+          "output_tokens_total": 1792,
+          "max_load_seconds": 0.0069415
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.2503282366630932,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 9334,
+          "output_tokens_total": 773,
+          "max_load_seconds": 0.0066386
+        }
+      }
+    },
+    {
+      "name": "qwen3:4b-instruct-2507-q4_K_M",
+      "digest": "0edcdef34593",
+      "parameter_size": "4.0B",
+      "quantization": "Q4_K_M",
+      "file_gb": 2.3257860941812396,
+      "load_seconds": 3.0059594,
+      "loaded_gb": 2.9598828116431832,
+      "vram_gb": 2.9598828116431832,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.4593080766654263,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 13550,
+          "output_tokens_total": 1272,
+          "max_load_seconds": 0.0064655
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.46623320332728324,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 13550,
+          "output_tokens_total": 1292,
+          "max_load_seconds": 0.0064121
+        }
+      }
+    },
+    {
+      "name": "gemma3:4b",
+      "digest": "a2af6cc3eb7f",
+      "parameter_size": "4.3B",
+      "quantization": "Q4_K_M",
+      "file_gb": 3.1095014922320843,
+      "load_seconds": 4.5743494,
+      "loaded_gb": 2.6780371088534594,
+      "vram_gb": 2.6780371088534594,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.5477444699887807,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12348,
+          "output_tokens_total": 1331,
+          "max_load_seconds": 0.0060181
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.5036978766710187,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12348,
+          "output_tokens_total": 1123,
+          "max_load_seconds": 0.0059853
+        }
+      }
+    },
+    {
+      "name": "qwen3.5:4b",
+      "digest": "2a654d98e6fb",
+      "parameter_size": "4.7B",
+      "quantization": "Q4_K_M",
+      "file_gb": 3.157168379984796,
+      "load_seconds": 4.5302813,
+      "loaded_gb": 2.9132128888741136,
+      "vram_gb": 2.9132128888741136,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.4688692500271524,
+          "format_valid_rate_all_calls": 0.9,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.9,
+          "usage_known_calls": 30,
+          "input_tokens_total": 11312,
+          "output_tokens_total": 956,
+          "max_load_seconds": 0.0059333
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.4769167900007839,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 11312,
+          "output_tokens_total": 960,
+          "max_load_seconds": 0.0059181
+        }
+      }
+    },
+    {
+      "name": "exaone3.5:7.8b",
+      "digest": "c7c4e3d1ca22",
+      "parameter_size": "7.8B",
+      "quantization": "Q4_K_M",
+      "file_gb": 4.443027877248824,
+      "load_seconds": 3.9900294,
+      "loaded_gb": 4.828759764321148,
+      "vram_gb": 4.828759764321148,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.7495613633344571,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12604,
+          "output_tokens_total": 1396,
+          "max_load_seconds": 0.0082026
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.5984581533392581,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12604,
+          "output_tokens_total": 1088,
+          "max_load_seconds": 0.0069861
+        }
+      }
+    },
+    {
+      "name": "qwen3.5:9b",
+      "digest": "6488c96fa5fa",
+      "parameter_size": "9.7B",
+      "quantization": "Q4_K_M",
+      "file_gb": 6.141583166085184,
+      "load_seconds": 6.2846278,
+      "loaded_gb": 5.113037107512355,
+      "vram_gb": 5.113037107512355,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.8392681799867812,
+          "format_valid_rate_all_calls": 0.9333333333333333,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.9333333333333333,
+          "usage_known_calls": 30,
+          "input_tokens_total": 11312,
+          "output_tokens_total": 1142,
+          "max_load_seconds": 0.0074137
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.9065862466658776,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 11312,
+          "output_tokens_total": 1184,
+          "max_load_seconds": 0.0061328
+        }
+      }
+    },
+    {
+      "name": "gemma4:e2b",
+      "digest": "7fbdbf8f5e45",
+      "parameter_size": "5.1B",
+      "quantization": "Q4_K_M",
+      "file_gb": 6.6705102901905775,
+      "load_seconds": 4.8399181,
+      "loaded_gb": 1.5910644521936774,
+      "vram_gb": 1.5910644521936774,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.37760570998070764,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1270,
+          "max_load_seconds": 0.0067399
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.3578687633310134,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1061,
+          "max_load_seconds": 0.0065979
+        }
+      }
+    },
+    {
+      "name": "gemma4:e4b",
+      "digest": "c6eb396dbd59",
+      "parameter_size": "8.0B",
+      "quantization": "Q4_K_M",
+      "file_gb": 8.948473928496242,
+      "load_seconds": 5.3047328,
+      "loaded_gb": 3.0047656232491136,
+      "vram_gb": 3.0047656232491136,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.7754696033351745,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1503,
+          "max_load_seconds": 0.0066621
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.7199332266580314,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1362,
+          "max_load_seconds": 0.0053673
+        }
+      }
+    },
+    {
+      "name": "gemma4:e4b-it-q8_0",
+      "digest": "9dcc35808b42",
+      "parameter_size": "8.0B",
+      "quantization": "Q8_0",
+      "file_gb": 10.836977954953909,
+      "load_seconds": 6.8088735,
+      "loaded_gb": 4.893281248398125,
+      "vram_gb": 4.893281248398125,
+      "conditions": {
+        "prompt_only": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.990735140008231,
+          "format_valid_rate_all_calls": 0.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 0.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1419,
+          "max_load_seconds": 0.0059666
+        },
+        "json_schema": {
+          "calls": 30,
+          "errors": 0,
+          "error_rate_all_calls": 0.0,
+          "mean_latency_seconds_success_only": 0.914070783322677,
+          "format_valid_rate_all_calls": 1.0,
+          "complete_rate_all_calls": 1.0,
+          "usable_rate_all_calls": 1.0,
+          "usage_known_calls": 30,
+          "input_tokens_total": 12318,
+          "output_tokens_total": 1264,
+          "max_load_seconds": 0.0063651
+        }
+      }
+    }
+  ]
+}
