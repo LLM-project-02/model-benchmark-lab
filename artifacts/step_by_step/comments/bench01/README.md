@@ -89,6 +89,9 @@ uv run python scripts/summarize_comments_final.py final02 --input-usd-per-1m 0.1
 # 5. 서비스: 직접 켜서 쓰거나, 정상·실패 요청 기록을 다시 만들기
 uv run python steps/step10_serve_api.py
 uv run python scripts/check_comments_service.py service_check02
+
+# 6. 사용자 화면 (도전 실습 B): 5번의 서버를 켠 채로 다른 터미널에서
+uv run --group ui streamlit run scripts/comments_streamlit_app.py
 ```
 
 - 결과 폴더는 저장소에 이미 있습니다. 같은 이름으로 실행하면 덮어쓰지 않고 멈추므로, 다시 돌릴 때는 새 이름(예: `final03`)을 씁니다. test 평가(step11)는 `test_metrics.json`이 있으면 다시 돌지 않습니다.
@@ -175,6 +178,17 @@ uv run python scripts/check_comments_service.py service_check02
 - 정상 요청 6개는 200(`status: ok`), 잘못된 입력 6개는 422(분류·생성 전에 거절), 생성 모델에 연결되지 않으면 502(분류 결과는 함께 반환)입니다.
 - 서버를 켠 뒤 첫 요청은 7.4초(로컬 모델 로딩 6.1초), 그다음은 1.3~1.8초입니다.
 - 서비스 중 로컬 생성 모델이 GPU 3.0GB, 서버(분류 모델 포함)가 RAM 1.1GB를 씁니다.
+
+### 사용자 화면 (도전 실습 B)
+
+[scripts/comments_streamlit_app.py](../../../../scripts/comments_streamlit_app.py)는 FastAPI 서버에 요청을 보내고 결과를 보여 주는 Streamlit 화면입니다. 분류와 생성은 서버가 합니다.
+
+- **댓글 하나:** 댓글을 넣으면 분류 결과와 확신도, 적용한 정책, 고친 댓글, 다음 안내, 응답 시간을 보여 줍니다. "두 모델 비교"를 고르면 로컬과 상용의 답을 나란히 보여 줍니다.
+- **CSV 여러 건:** CSV를 올리고 댓글이 든 열과 최대 건수를 고르면 한 줄씩 처리해 표로 보여 주고, 결과를 CSV로 내려받습니다. 엑셀에서 저장한 한국어 CSV(cp949)도 읽고, 내려받은 파일은 엑셀에서 한글이 깨지지 않습니다.
+- **오류 안내:** 서버가 꺼져 있으면 켜는 명령을, 입력이 잘못되면(422) 한국어 안내를, 생성 모델 호출이 실패하면(502) 실패와 분류 결과를 보여 줍니다.
+- **설치:** Streamlit은 팀 공통 설치에 넣지 않고 `pyproject.toml`의 `ui` 묶음에만 넣었습니다. `uv run --group ui ...`로 실행하면 그때 설치됩니다.
+- **접속 범위:** `.streamlit/config.toml`에서 이 노트북(127.0.0.1)에서만 열리게 했습니다. 기본값이면 같은 네트워크의 다른 기기가 화면에 들어와 이 노트북의 OpenAI 키로 요청을 보낼 수 있습니다.
+- **확인한 것:** 브라우저 없이 Streamlit AppTest로 서버가 꺼진 경우, 댓글 하나(로컬), 빈 입력, 두 모델 비교, CSV 처리, 연결 실패를 실행해 오류 없이 동작하는 것을 확인했습니다.
 
 ## 최종 선정과 이유
 

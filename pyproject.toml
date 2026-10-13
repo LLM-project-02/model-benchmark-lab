@@ -23,6 +23,8 @@ dependencies = [
 
 [dependency-groups]
 dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+# 도전 실습 B 사용자 화면(scripts/comments_streamlit_app.py)에만 쓴다: uv run --group ui streamlit run ...
+ui = ["streamlit>=1.65,<2"]
 
 [tool.uv]
 package = false

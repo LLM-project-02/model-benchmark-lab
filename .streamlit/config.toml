@@ -1,0 +1,10 @@
+# Streamlit 설정. 저장소 폴더에서 streamlit run을 실행하면 이 파일을 읽는다.
+
+[server]
+# 이 노트북에서만 열리게 한다. 기본값이면 같은 네트워크의 다른 기기도 화면에 들어와
+# 이 노트북의 OpenAI 키로 요청을 보낼 수 있다. 다른 기기에서 시연하려면 Cloudflare Tunnel 등을 따로 쓴다.
+address = "127.0.0.1"
+
+[browser]
+# 사용 통계를 Streamlit으로 보내지 않는다.
+gatherUsageStats = false
