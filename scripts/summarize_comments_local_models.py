@@ -2,7 +2,8 @@
 
 uv run python scripts/summarize_comments_local_models.py local_models01
 
-scripts/compare_comments_local_models.py와 scripts/judge_comments_generation.py를 실행한 뒤에 쓴다.
+scripts/compare_comments_local_models.py, scripts/judge_comments_generation.py,
+scripts/check_comments_local_models.py를 실행한 뒤에 쓴다.
 comparisons/<이름>/에 local_models_summary.md, .csv, .png를 만든다.
 
 모델을 고르는 기준은 조건마다 LLM 채점 평균(8점 만점, 쓸 수 없는 답변은 0점)이 가장 높은 모델이다.
@@ -68,7 +69,30 @@ def interval(values, generator):
     return float(np.percentile(means, 2.5)), float(np.percentile(means, 97.5))
 
 
-def summarize(scores, summary):
+def share(rows, key, value="True"):
+    """조건에 맞는 답변의 비율. 답변이 없으면 None."""
+    return sum(row[key] == value for row in rows) / len(rows) if rows else None
+
+
+def classifier_check(checks, model, condition):
+    """쓸 수 있는 답변을 선택한 분류 모델로 다시 판정한 결과 (rewrite_check.csv)."""
+    rows = [
+        row
+        for row in checks
+        if row["model"] == model and row["condition"] == condition and row["usable"] == "True"
+    ]
+    by_label = {label: [row for row in rows if row["expected_label"] == label] for label in LABELS}
+    rewritten = by_label["offensive"] + by_label["hate"]
+    return {
+        "clf_none_after_rewrite": share(rewritten, "answer_label", "none"),
+        "clf_none_after_offensive": share(by_label["offensive"], "answer_label", "none"),
+        "clf_none_after_hate": share(by_label["hate"], "answer_label", "none"),
+        "hate_blocked_notice_rate": share(by_label["hate"], "blocked_notice"),
+        "none_unchanged_rate": share(by_label["none"], "unchanged"),
+    }
+
+
+def summarize(scores, checks, summary):
     generator = np.random.default_rng(42)
     table = []
     for model in summary["models"]:
@@ -109,6 +133,7 @@ def summarize(scores, summary):
             entry["score_classifier_correct"] = statistics.mean(
                 row["total"] for row in rows if row["predicted_label"] == row["expected_label"]
             )
+            entry.update(classifier_check(checks, model["name"], condition))
             entry["case_means"] = means
             table.append(entry)
     return table
@@ -146,7 +171,11 @@ def write_csv(path, table):
             )
 
 
-def write_markdown(path, name, table, scores, summary, judge):
+def percent(value):
+    return "없음" if value is None else f"{value:.0%}"
+
+
+def write_markdown(path, name, table, scores, summary, judge, classifier):
     config = summary["generation_config"]
     by_key = {(entry["model"], entry["condition"]): entry for entry in table}
     order = [entry["model"] for entry in ranked(table, "json_schema")]
@@ -163,11 +192,32 @@ def write_markdown(path, name, table, scores, summary, judge):
         "- 그래프: [local_models_summary.png](local_models_summary.png)",
         "- 답변별 점수와 채점 이유: [llm_scores.csv](llm_scores.csv)",
         "- 사람이 확인할 채점 10건: [llm_spotcheck.csv](llm_spotcheck.csv)",
+        "- 분류 모델로 다시 판정한 결과: [rewrite_check.csv](rewrite_check.csv)",
+        "",
+        "## 앞 단계에서 고른 모델이 쓰인 곳",
+        "",
+        (
+            f"- **분류 모델:** 앞 단계에서 고른 {classifier['model']}(`{classifier['run_name']}`)가 "
+            "댓글마다 none, offensive, hate 가운데 하나를 붙였고, 그 라벨의 정책이 모든 생성 모델에 "
+            "똑같이 들어갔습니다."
+        ),
+        (
+            "- **생성 후보에 없는 이유:** 분류 모델은 라벨 하나만 내고 문장을 쓰지 못합니다. "
+            "이 비교는 댓글을 고쳐 쓰는 생성 모델끼리의 비교입니다."
+        ),
+        (
+            "- **판정에도 썼습니다:** 고친 문장을 같은 분류 모델에 다시 넣어 none으로 나오는지 봤습니다. "
+            "아래 '분류 모델로 다시 판정한 결과'입니다."
+        ),
         "",
         "## 비교 조건",
         "",
         (
-            "- **같게 둔 것:** 프롬프트(step08에서 동결), 분류기, "
+            "- **후보:** 이 PC의 Ollama에 설치돼 있던 생성 모델 전부입니다. 따로 고르거나 새로 내려받지 "
+            "않았습니다."
+        ),
+        (
+            "- **같게 둔 것:** 프롬프트(step08에서 동결), 분류 모델, "
             f"temperature {config['temperature']}, 최대 출력 {config['max_output_tokens']}토큰, "
             f"문맥 길이 {config['num_ctx']}, 생각 단계 끔."
         ),
@@ -243,6 +293,48 @@ def write_markdown(path, name, table, scores, summary, judge):
         f"{best_correct['score_classifier_correct']:.2f}점. "
         + ("전체로 본 1위와 같습니다." if best_correct is best else "전체로 본 1위와 다릅니다.")
     )
+    lines += [
+        "",
+        "## 분류 모델로 다시 판정한 결과",
+        "",
+        (
+            f"고친 문장을 {classifier['model']}에 다시 넣은 결과입니다. 쓸 수 있는 답변만 셌습니다. "
+            "채점과 따로 본 참고값입니다."
+        ),
+        "",
+        (
+            "| 모델 | 조건 | offensive·hate: 고친 뒤 none | offensive만 | hate만 | "
+            "hate 중 게시 불가 안내 | none: 원문 그대로 |"
+        ),
+        "|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for model in order:
+        for condition, title in CONDITIONS.items():
+            entry = by_key[model, condition]
+            if entry["clf_none_after_rewrite"] is None:
+                continue  # 쓸 수 있는 답변이 없는 조건
+            lines.append(
+                f"| {short_name(model)} | {title} | {percent(entry['clf_none_after_rewrite'])} | "
+                f"{percent(entry['clf_none_after_offensive'])} | {percent(entry['clf_none_after_hate'])} | "
+                f"{percent(entry['hate_blocked_notice_rate'])} | {percent(entry['none_unchanged_rate'])} |"
+            )
+    forced = [by_key[model, "json_schema"] for model in order]
+    relation = np.corrcoef(
+        [entry["score_all_calls"] for entry in forced],
+        [entry["clf_none_after_rewrite"] for entry in forced],
+    )[0, 1]
+    lines += [
+        "",
+        "- offensive와 hate 댓글은 '고친 뒤 none' 비율이 높아야 하고, none 댓글은 '원문 그대로' 비율이 높아야 합니다.",
+        (
+            f"- 형식 강제 조건 {len(forced)}개 모델에서 채점 점수와 '고친 뒤 none' 비율의 상관계수는 "
+            f"{relation:.2f}입니다. 1에 가까울수록 두 판정이 같은 순서를 낸다는 뜻입니다."
+        ),
+        (
+            "- 분류 모델은 표현만 보고 뜻이 바뀌었는지는 보지 못합니다. 뜻을 바꾼 정중한 문장도 none으로 "
+            "나오므로 이 비율만으로 모델을 고르지 않습니다."
+        ),
+    ]
     lines += ["", "## 정답 라벨별 점수 (8점 만점)", ""]
     lines += [
         "| 모델 | 프롬프트만: none | offensive | hate | 형식 강제: none | offensive | hate |",
@@ -287,7 +379,7 @@ def write_markdown(path, name, table, scores, summary, judge):
     Path(path).write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_chart(path, name, table, summary):
+def write_chart(path, name, table, summary, classifier):
     installed = {font.name for font in font_manager.fontManager.ttflist}
     family = next(
         (n for n in ("Malgun Gothic", "NanumGothic", "AppleGothic") if n in installed), None
@@ -306,11 +398,16 @@ def write_chart(path, name, table, summary):
     )
     by_key = {(entry["model"], entry["condition"]): entry for entry in table}
     order = [entry["model"] for entry in ranked(table, "json_schema")]
-    fig, (left, right) = plt.subplots(
-        1, 2, figsize=(12.5, 7.2), dpi=150, sharey=True, gridspec_kw={"width_ratios": [2.3, 1]}
+    fig, (left, middle, right) = plt.subplots(
+        1,
+        3,
+        figsize=(15.5, 7.4),
+        dpi=150,
+        sharey=True,
+        gridspec_kw={"width_ratios": [2.2, 1.25, 0.9]},
     )
     fig.set_facecolor(SURFACE)
-    fig.subplots_adjust(top=0.82, bottom=0.12, left=0.25, right=0.97, wspace=0.08)
+    fig.subplots_adjust(top=0.82, bottom=0.14, left=0.2, right=0.975, wspace=0.07)
     fig.text(
         0.03,
         0.965,
@@ -324,7 +421,8 @@ def write_chart(path, name, table, summary):
         0.03,
         0.915,
         f"개발 입력 {summary['cases']}건 × {summary['repeats']}회 · 같은 프롬프트 · 생각 단계 끔 · "
-        "LLM 채점 4항목 합계(8점 만점), 쓸 수 없는 답변은 0점 · 가는 선은 95% 구간",
+        "왼쪽: 가린 채점 4항목 합계, 쓸 수 없는 답변은 0점, 가는 선은 95% 구간 · "
+        "가운데: 고친 문장을 선택한 분류 모델에 다시 넣은 결과",
         ha="left",
         va="top",
         fontsize=9.5,
@@ -332,7 +430,7 @@ def write_chart(path, name, table, summary):
     )
     positions = np.arange(len(order))
     height = 0.36
-    for axis in (left, right):
+    for axis in (left, middle, right):
         axis.set_facecolor(SURFACE)
         for side in ("top", "right", "left"):
             axis.spines[side].set_visible(False)
@@ -370,6 +468,18 @@ def write_chart(path, name, table, summary):
                 va="center",
                 fontsize=9,
             )
+            judged = entry["clf_none_after_rewrite"]
+            if judged is not None:  # 쓸 수 있는 답변이 있는 조건만 그린다
+                middle.barh(
+                    y,
+                    judged,
+                    height=height,
+                    color=COLORS[condition],
+                    edgecolor=SURFACE,
+                    lw=2,
+                    zorder=3,
+                )
+                middle.text(judged + 0.02, y, f"{judged:.0%}", ha="left", va="center", fontsize=9)
             right.barh(
                 y,
                 entry["mean_latency_seconds"],
@@ -391,7 +501,13 @@ def write_chart(path, name, table, summary):
     left.invert_yaxis()
     left.set_xlim(0, 8.9)
     left.set_xticks(range(0, 9, 2))
-    left.set_xlabel("LLM 채점 평균 (8점 만점)")
+    left.set_xlabel("가린 채점 평균 (8점 만점)")
+    middle.set_xlim(0, 1.22)
+    middle.set_xticks([0, 0.5, 1.0], ["0%", "50%", "100%"])
+    middle.set_xlabel(
+        f"분류 모델({classifier['model'].split('/')[-1]}) 판정:\n"
+        "offensive·hate 댓글을 고친 뒤 none으로 나온 비율"
+    )
     slowest = max(entry["mean_latency_seconds"] for entry in table)
     right.set_xlim(0, slowest * 1.3)
     right.set_xlabel("평균 응답 시간 (초)")
@@ -427,10 +543,17 @@ def main():
         for item in ITEMS:
             row[item] = int(row[item])
 
-    table = summarize(scores, summary)
+    with (folder / "rewrite_check.csv").open(encoding="utf-8-sig", newline="") as stream:
+        checks = list(csv.DictReader(stream))
+    # 답변을 만들 때와 다시 판정할 때 쓴 분류 모델 (test 평가 뒤에는 바뀌지 않는다)
+    classifier = json.loads((LEARNER_DIR / "selected.json").read_text(encoding="utf-8"))
+
+    table = summarize(scores, checks, summary)
     write_csv(folder / "local_models_summary.csv", table)
-    write_markdown(folder / "local_models_summary.md", args.name, table, scores, summary, judge)
-    write_chart(folder / "local_models_summary.png", args.name, table, summary)
+    write_markdown(
+        folder / "local_models_summary.md", args.name, table, scores, summary, judge, classifier
+    )
+    write_chart(folder / "local_models_summary.png", args.name, table, summary, classifier)
     for condition, title in CONDITIONS.items():
         print(f"[{title}]")
         for entry in ranked(table, condition):
