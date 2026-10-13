@@ -1,0 +1,38 @@
+[
+  {
+    "set": "B 절반 · 보정 전",
+    "temperature": 1.0,
+    "loss": 0.3935,
+    "ece": 0.0522,
+    "mean_confidence": 0.8823,
+    "accuracy": 0.8662,
+    "macro_f1": 0.864
+  },
+  {
+    "set": "B 절반 · 보정 후 (A로 찾은 T)",
+    "temperature": 1.04,
+    "loss": 0.3935,
+    "ece": 0.0469,
+    "mean_confidence": 0.8738,
+    "accuracy": 0.8662,
+    "macro_f1": 0.864
+  },
+  {
+    "set": "validation 전체 · 보정 전",
+    "temperature": 1.0,
+    "loss": 0.4008,
+    "ece": 0.0507,
+    "mean_confidence": 0.8825,
+    "accuracy": 0.8654,
+    "macro_f1": 0.8637
+  },
+  {
+    "set": "validation 전체 · 보정 후 (참고용)",
+    "temperature": 1.03,
+    "loss": 0.4005,
+    "ece": 0.0472,
+    "mean_confidence": 0.8762,
+    "accuracy": 0.8654,
+    "macro_f1": 0.8637
+  }
+]

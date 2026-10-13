@@ -121,3 +121,12 @@
 - 목적 4: 10 epoch으로 늘리기 (loss 기준 저장)
   - roberta_ls02_ep10 → 예상: val loss가 0.3903보다 낮아지지만 0.3647에는 못 미침, Macro-F1 약 0.885
   - roberta_ls01_lr1e5_ep10 → 예상: 최저 val loss는 0.3647과 비슷, Macro-F1은 0.8750보다 상승
+
+- 목적 4 결과 (10 epoch, loss 기준 저장):
+  - roberta_ls02_ep10: 최저 val loss 0.4161 (epoch 7), Macro-F1 0.8834 → 3 epoch(0.3903)보다 나쁨. 예상 틀림
+  - roberta_ls01_lr1e5_ep10: 최저 val loss 0.4008 (epoch 2), 저장 모델 Macro-F1 0.8637 → 3 epoch(0.3647)보다 나쁨. 예상 틀림
+    (Macro-F1은 학습 중 epoch 9에서 0.8861까지 올랐지만 loss 기준 저장이라 남지 않음)
+  - 라벨 스무딩 0.1 실험(ls01 vs ls01_ep10)까지 포함해 세 번 모두 10 epoch의 최저 val loss가 3 epoch보다 나빴다.
+  - 해석: 학습률이 마지막에 0으로 줄어드는 일정이라, 3 epoch 실험은 epoch 2~3에서 마무리 효과를 받았다.
+    10 epoch에서는 같은 시점의 학습률이 커서 그 효과가 없었고, 마무리 단계에는 이미 과적합이 진행됐다.
+  - 결론: val loss 최저는 roberta_ls01_lr1e5 (3 epoch, 0.3647). epoch 증가는 val loss 개선에 도움이 되지 않았다.
