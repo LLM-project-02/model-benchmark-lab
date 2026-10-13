@@ -22,6 +22,7 @@ from step08_connect_chain import (
 HOST = "127.0.0.1"
 PORT = 8000
 # provider를 생략한 요청이 쓰는 생성 모델. step09 비교를 마치면 선정한 제공자로 바꾼다.
+# 악성댓글 주제는 comparisons/final02 비교 뒤 로컬(Ollama gemma4:e4b)로 정했다.
 DEFAULT_PROVIDER = "ollama"
 
 
