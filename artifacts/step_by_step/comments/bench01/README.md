@@ -28,14 +28,19 @@
 
 ```
 FastAPI 요청(text)
-  → 분류 모델 KcELECTRA-base (CPU): 라벨과 확신도
+  → 팀 공통 파이프라인(common_pipeline.compare)이 아래 네 단계를 실행
+      분류 모델 KcELECTRA-base (CPU): 라벨과 확률
+      프롬프트: 라벨별 정책 + 원문 (step08 apply_policy)
+      생성 모델: 기본은 로컬 gemma4:e4b(Ollama), 요청에 provider를 적으면 OpenAI gpt-6-luna
+      응답 검사: answer, next_steps 형식 (step07 AnswerPayload)
   → 분류 확신도 검사: none인데 확신도가 0.93보다 낮으면 "확인 필요"
-  → LangChain: 라벨별 정책 + 원문으로 프롬프트를 만듦
-  → 생성 모델: 기본은 로컬 gemma4:e4b(Ollama), 요청에 provider를 적으면 OpenAI gpt-6-luna
   → 고친 댓글 다시 검사: 같은 분류 모델에 고친 댓글을 넣어 none이 아니면 "확인 필요"
   → 뜻 검사: 판정 모델 qwen3:4b-instruct(Ollama)가 원문과 고친 댓글을 비교해 뜻이 바뀌었으면 "확인 필요"
-  → 응답: status, classification, classification_check, result(answer_check, meaning_check 포함)
+  → 응답: status, classification, classification_check, result(answer_check, meaning_check 포함),
+          pipeline(공통 파이프라인 결과 원본)
 ```
+
+요청·응답 형식 전체는 [docs/COMMENTS_API.md](../../../../docs/COMMENTS_API.md)에 있습니다.
 
 "확인 필요"로 표시하는 검사가 세 가지 있습니다. 모두 답을 막지 않고 사람이 확인하도록 알리기만 합니다. 세 검사 모두 놓치는 답과 잘못 짚는 답이 있기 때문입니다(아래 "한계").
 
@@ -106,7 +111,7 @@ uv run python scripts/summarize_comments_review_rules.py review_rules01
 
 # 5. 서비스: 직접 켜서 쓰거나, 정상·실패 요청 기록을 다시 만들기
 uv run python steps/step10_serve_api.py
-uv run python scripts/check_comments_service.py service_check02
+uv run python scripts/check_comments_service.py service_check03
 
 # 6. 사용자 화면 (도전 실습 B): 5번의 서버를 켠 채로 다른 터미널에서
 uv run --group ui streamlit run scripts/comments_streamlit_app.py
@@ -246,7 +251,18 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
   - 실행 전에 막힘(모델 호출 0번): 빈 입력, 글자 수 초과, 입력 필드 이름 오류, 등록하지 않은 LLM 이름
   - 조합별로 기록: LLM 단독은 prompt, Ollama 연결 실패는 llm, 형식 강제를 끈 응답(코드 블록)은 parse_output, 토큰 한도로 잘린 응답은 incomplete
 - **지원하지 않는 것:** LLM 단독(분류기 없이 LLM이 라벨까지 고르기). 서비스 프롬프트가 라벨별 정책을 전제로 하고, `AnswerPayload`에 label 필드가 없습니다.
-- **엔진에 넣지 않은 것:** 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI 서비스(step10)에만 있습니다.
+- **엔진에 넣지 않은 것:** 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI 서비스(step10)가 파이프라인 결과 뒤에 붙입니다.
+
+### 공통 파이프라인을 API에 연결 (service_check02)
+
+FastAPI 서비스(step10)의 `/generate`, `/compare`가 요청마다 공통 파이프라인을 실행하도록 바꿨습니다. 기존 응답 필드는 그대로 두고, 파이프라인 결과 원본을 `pipeline` 필드에 더했습니다. 형식: [docs/COMMENTS_API.md](../../../../docs/COMMENTS_API.md), 기록: [service_check.md](service_checks/service_check02/service_check.md)
+
+- **실제 모델로 요청 13개가 모두 기대대로 처리됐습니다.** service_check01과 같은 요청입니다. 정상 6개는 200(`ok`, 파이프라인 `success`), 잘못된 입력 6개는 422, Ollama 연결 실패는 502(`generation_error`, 파이프라인 `error (llm)`)였습니다.
+- **`pipeline`이 기존 필드와 맞는지도 봤습니다.** `pipeline`이 있는 응답 6개(결과 항목 7개) 모두 `status`, 분류 라벨, 모델 run_id, 고친 댓글이 파이프라인 결과와 같았습니다.
+- **사람 검토 검사는 그대로 돕니다.** offensive-01은 로컬·상용 모두 뜻 검사에서 "확인 필요"였습니다. hate-01의 로컬 답은 다시 검사와 뜻 검사를 통과했고, 상용 답은 게시 불가 안내라 뜻 검사를 하지 않았습니다.
+- **속도와 메모리는 연결 전과 비슷합니다.** 첫 요청 6.9초(모델 올리기 5.6초), 그다음 로컬 생성 1.3~1.9초, GPU 3.0GB(gemma4:e4b), 서버 RAM 1.1GB입니다.
+- **화면:** 새 서버에 Streamlit 화면(AppTest)을 붙여 단건 검수, 두 모델 비교, 공백 입력 안내, 탭 4개, 대량 검수(시연용 12건, 4개씩 동시, 17.1초)가 오류 없이 도는 것을 확인했습니다.
+- **바뀐 동작:** 분류나 프롬프트 단계가 실패하면 HTTP 500과 실패 단계(`detail`)를 돌려줍니다. 같은 PC의 브라우저 화면(`http://localhost:*`, `http://127.0.0.1:*`)에서 API를 부를 수 있게 CORS를 열었습니다. `/compare`는 조합마다 분류를 한 번씩 하므로 분류를 두 번 합니다(같은 입력이라 판정과 프롬프트는 같습니다).
 
 ### 사용자 화면 (도전 실습 B)
 
@@ -325,6 +341,7 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 | `.../comparisons/review_rules01` | 나쁜 답을 사람 검토로 보내는 규칙 두 가지 (확신도 규칙, 뜻 검사) |
 | `.../service_checks/service_check01` | 서비스 정상·실패 요청 기록 |
 | `.../service_checks/common_pipeline01` | 팀 공통 파이프라인에 연결한 뒤 정상·오류 요청 기록 |
+| `.../service_checks/service_check02` | 공통 파이프라인을 API에 연결한 뒤 서비스 정상·실패 요청 기록 |
 
 ## 출처
 
