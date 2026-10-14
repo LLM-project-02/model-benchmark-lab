@@ -1,5 +1,9 @@
 """보고서 검수 API (FastAPI). 판정기와 LLM 설명을 하나의 요청으로 제공한다.
 
+- 설명 LLM 기본: 상용(OpenAI). 대체 경로: 로컬(Ollama)
+- 상용을 쓸 수 없거나 호출이 실패하면 자동으로 로컬로 설명한다 (fallback=true, 기본값)
+- 비공개 문서는 provider를 "ollama"로 지정해 로컬에서만 처리한다
+
 실행: uv run python nli/serve_api.py
 문서 화면(시연용): http://127.0.0.1:8000/docs
 """
@@ -18,12 +22,13 @@ from explainer import explain, make_chain
 from predictor import Checker
 
 STATE = {}  # 서버가 켜져 있는 동안 모델과 LLM 연결을 보관
+DEFAULT_PROVIDER = "openai"   # 서비스 기본 LLM (model_selection.md의 생성 모델 선정)
+BACKUP_PROVIDER = "ollama"    # 대체 경로
 
 
 @asynccontextmanager
 async def lifespan(app):
-    # 서버가 켜질 때 분류기를 한 번만 불러 둔다. 요청마다 부르면 매우 느려진다.
-    STATE["checker"] = Checker()
+    STATE["checker"] = Checker()  # 분류기는 서버가 켜질 때 한 번만 불러 둔다
     STATE["chains"] = {}
     yield
     STATE.clear()
@@ -31,7 +36,9 @@ async def lifespan(app):
 
 app = FastAPI(
     title="AI 보고서 검수관",
-    description="원문과 보고서를 받아 문장마다 근거를 찾고, 학습한 분류기로 판정한 뒤 LLM이 설명과 수정안을 제시합니다.",
+    description=("원문과 보고서를 받아 문장마다 근거를 찾고, 학습한 분류기로 판정한 뒤 "
+                 "LLM이 설명과 수정안을 제시합니다. 설명 LLM은 상용이 기본이며, "
+                 "상용을 쓸 수 없으면 로컬 LLM으로 대신합니다."),
     lifespan=lifespan,
 )
 
@@ -41,17 +48,16 @@ class CheckRequest(BaseModel):
                         description="원문 (회의록, 기사 등)")
     report: str = Field(..., min_length=1, max_length=config.MAX_INPUT_CHARS,
                         description="검토할 보고서")
-    provider: Literal["ollama", "openai"] = Field("ollama", description="설명을 작성할 LLM")
+    provider: Literal["openai", "ollama"] = Field(
+        DEFAULT_PROVIDER, description="설명 LLM (기본: openai, 비공개 문서는 ollama)")
     with_explanation: bool = Field(True, description="False면 판정만 돌려준다 (LLM 호출 없음)")
+    fallback: bool = Field(True, description="상용 LLM을 쓸 수 없으면 로컬 LLM으로 대신 설명")
 
 
 def get_chain(provider):
-    """LLM 연결은 처음 쓸 때 한 번만 만든다."""
+    """LLM 연결은 처음 쓸 때 한 번만 만든다. 만들 수 없으면 RuntimeError."""
     if provider not in STATE["chains"]:
-        try:
-            STATE["chains"][provider] = make_chain(provider)
-        except RuntimeError as error:  # 예: OpenAI 키 없음
-            raise HTTPException(status_code=503, detail=str(error))
+        STATE["chains"][provider] = make_chain(provider)
     return STATE["chains"][provider]
 
 
@@ -61,8 +67,8 @@ def health():
     checker = STATE.get("checker")
     if checker is None:
         return {"status": "loading"}
-    return {"status": "ok", "classifier": checker.run_name,
-            "temperature": checker.temperature, "device": checker.device}
+    return {"status": "ok", "classifier": checker.run_name, "temperature": checker.temperature,
+            "device": checker.device, "default_llm": DEFAULT_PROVIDER, "backup_llm": BACKUP_PROVIDER}
 
 
 @app.post("/check")
@@ -79,21 +85,45 @@ def check(request: CheckRequest):
     classify_seconds = time.perf_counter() - started
 
     # 2. 판정에 따라 LLM 설명 (분류기의 실제 예측으로 지시문을 고른다)
+    fallback_count = 0
     if request.with_explanation:
-        chain = get_chain(request.provider)
+        primary = request.provider
+        backup = BACKUP_PROVIDER if primary != BACKUP_PROVIDER else None
+
+        # 2-1. 요청한 LLM에 연결. 안 되면 대체 경로로
+        try:
+            chain, used, reason = get_chain(primary), primary, None
+        except RuntimeError as error:
+            if not (request.fallback and backup):
+                raise HTTPException(status_code=503, detail=str(error))
+            chain, used, reason = get_chain(backup), backup, f"{primary} 사용 불가: {error}"
+
+        # 2-2. 문장마다 설명. 호출이 실패하면 그 문장만 대체 경로로 다시
         for result in results:
             output = explain(chain, result)
+            row_used, row_reason = used, reason
+            if output.get("error") and request.fallback and used == primary and backup:
+                row_reason = f"{primary} 호출 실패: {output['error']}"
+                output = explain(get_chain(backup), result)
+                row_used = backup
+            if row_used != primary:
+                fallback_count += 1
             result["explanation"] = output.get("explanation")
             result["suggestion"] = output.get("suggestion")
-            result["llm"] = {key: output.get(key) for key in (
-                "provider", "model", "seconds", "input_tokens", "output_tokens",
-                "parse_ok", "error")}
+            result["llm"] = {
+                **{key: output.get(key) for key in ("model", "seconds", "input_tokens",
+                                                    "output_tokens", "parse_ok", "error")},
+                "requested_provider": primary,
+                "used_provider": row_used,
+                "fallback_reason": row_reason,
+            }
 
     counts = Counter(result["label_ko"] for result in results)
     return {
         "classifier": checker.run_name,
         "temperature": checker.temperature,
         "provider": request.provider if request.with_explanation else None,
+        "fallback_used": fallback_count,
         "summary": {
             "sentences": len(results),
             "needs_review": sum(1 for r in results if r["label"] != "entailment"),

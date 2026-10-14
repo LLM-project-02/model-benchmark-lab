@@ -46,7 +46,7 @@
 | --- | --- | --- |
 | `05_LLM비교/eval_summary.md` | eval 자동 집계 (시간, 형식, 지시 위반, 비용) | 있음 |
 | `05_LLM비교/REPORT.md` | LLM 비교 실험 보고서 | 있음 |
-| `05_LLM비교/eval_final_scores.md` | 블라인드 채점 합산 결과 (채점 후 생성) | **없음** |
+| `05_LLM비교/eval_final_scores.md` | 블라인드 채점 합산 결과 (채점 후 생성) | 있음 |
 
 ## 06_한계와개선
 

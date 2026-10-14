@@ -1,68 +1,101 @@
 {
-  "case": "02_classify_only",
+  "name": "02_classify_only",
   "description": "판정만 요청: LLM 호출 없음",
   "expected_status": 200,
   "status": 200,
-  "as_expected": true,
+  "passed": true,
   "request": {
-    "source": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다. 김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
-    "report": "우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다. 김봉진 대표는 아시아 8개국 사업을 총괄한다.",
+    "source": "2026년 10월 7일 제품기획팀 회의에서 신규 앱 '오늘장보기'의 출시일을 11월 10일로 확정했다. 마케팅 예산은 3억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다. 유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
+    "report": "마케팅 예산은 5억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다. 출시 첫 달 목표 가입자는 10만 명이다.",
     "with_explanation": false
   },
   "response": {
     "classifier": "roberta_lr2e5_ep6",
     "temperature": 2.77,
     "provider": null,
+    "fallback_used": 0,
     "summary": {
-      "sentences": 2,
-      "needs_review": 1,
+      "sentences": 3,
+      "needs_review": 2,
       "by_label": {
+        "모순됨": 1,
         "뒷받침함": 1,
-        "모순됨": 1
+        "확인 불가": 1
       }
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
     "seconds": {
-      "classify": 0.01,
-      "total": 0.01
+      "classify": 0.05,
+      "total": 0.05
     },
     "results": [
       {
-        "claim": "우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다.",
-        "evidence": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다.",
-        "evidence_similarity": 0.511,
+        "claim": "마케팅 예산은 5억 원으로 승인되었다.",
+        "evidence": "마케팅 예산은 3억 원으로 승인되었다.",
+        "evidence_similarity": 0.848,
         "other_candidates": [
           {
-            "sentence": "김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
-            "similarity": 0.036
-          }
-        ],
-        "label": "entailment",
-        "label_ko": "뒷받침함",
-        "confidence": 0.908,
-        "probabilities": {
-          "entailment": 0.908,
-          "neutral": 0.042,
-          "contradiction": 0.05
-        }
-      },
-      {
-        "claim": "김봉진 대표는 아시아 8개국 사업을 총괄한다.",
-        "evidence": "김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
-        "evidence_similarity": 0.451,
-        "other_candidates": [
+            "sentence": "유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
+            "similarity": 0.028
+          },
           {
-            "sentence": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다.",
-            "similarity": 0.02
+            "sentence": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다.",
+            "similarity": 0.024
           }
         ],
         "label": "contradiction",
         "label_ko": "모순됨",
-        "confidence": 0.921,
+        "confidence": 0.917,
         "probabilities": {
-          "entailment": 0.034,
-          "neutral": 0.044,
-          "contradiction": 0.921
+          "entailment": 0.037,
+          "neutral": 0.045,
+          "contradiction": 0.917
+        }
+      },
+      {
+        "claim": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다.",
+        "evidence": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다.",
+        "evidence_similarity": 0.808,
+        "other_candidates": [
+          {
+            "sentence": "2026년 10월 7일 제품기획팀 회의에서 신규 앱 '오늘장보기'의 출시일을 11월 10일로 확정했다.",
+            "similarity": 0.109
+          },
+          {
+            "sentence": "유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
+            "similarity": 0.098
+          }
+        ],
+        "label": "entailment",
+        "label_ko": "뒷받침함",
+        "confidence": 0.909,
+        "probabilities": {
+          "entailment": 0.909,
+          "neutral": 0.041,
+          "contradiction": 0.05
+        }
+      },
+      {
+        "claim": "출시 첫 달 목표 가입자는 10만 명이다.",
+        "evidence": "2026년 10월 7일 제품기획팀 회의에서 신규 앱 '오늘장보기'의 출시일을 11월 10일로 확정했다.",
+        "evidence_similarity": 0.067,
+        "other_candidates": [
+          {
+            "sentence": "유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
+            "similarity": 0.04
+          },
+          {
+            "sentence": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다.",
+            "similarity": 0.034
+          }
+        ],
+        "label": "neutral",
+        "label_ko": "확인 불가",
+        "confidence": 0.918,
+        "probabilities": {
+          "entailment": 0.037,
+          "neutral": 0.918,
+          "contradiction": 0.045
         }
       }
     ]
