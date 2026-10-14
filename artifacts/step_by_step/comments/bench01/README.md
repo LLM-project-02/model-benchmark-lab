@@ -110,6 +110,9 @@ uv run python scripts/check_comments_service.py service_check02
 
 # 6. 사용자 화면 (도전 실습 B): 5번의 서버를 켠 채로 다른 터미널에서
 uv run --group ui streamlit run scripts/comments_streamlit_app.py
+
+# 7. 팀 공통 파이프라인(common_pipeline)에 연결해 정상·오류 요청 확인 (새 이름으로 실행)
+uv run python scripts/check_comments_common_pipeline.py common_pipeline02
 ```
 
 - 결과 폴더는 저장소에 이미 있습니다. 같은 이름으로 실행하면 덮어쓰지 않고 멈추므로, 다시 돌릴 때는 새 이름(예: `final03`)을 씁니다. test 평가(step11)는 `test_metrics.json`이 있으면 다시 돌지 않습니다.
@@ -230,6 +233,18 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 - 넣은 뒤에는 GPU 메모리 여유가 400~500MB뿐이라, GPU를 쓰는 다른 프로그램이 함께 돌면 모델 일부가 CPU로 밀려 더 느려질 수 있습니다.
 - 같은 12건을 여러 번 보내면 권장 조치가 한 건쯤 달라집니다. 생성 모델이 매번 조금 다른 문장을 내고(temperature 0.2), 검사 결과가 그 문장에 따라 달라지기 때문입니다.
 
+### 팀 공통 파이프라인 연결 (common_pipeline01)
+
+팀 공통 엔진(`common_pipeline`, `feature/common-pipeline-parser-support`의 44c8944)에 이 서비스의 기존 함수를 연결했습니다. 연결 코드: [scripts/comments_common_pipeline.py](../../../../scripts/comments_common_pipeline.py), 기록: [check.md](service_checks/common_pipeline01/check.md)
+
+- **연결한 함수:** 분류(KcELECTRA, 세 라벨의 확률을 반올림 전 값으로 넘김), 프롬프트(step08 `apply_policy` 그대로), LLM(step07 `call_model`: 로컬 gemma4:e4b, 상용 gpt-6-luna), 파서(step07 `AnswerPayload`). 새 파서나 새 프롬프트는 만들지 않았습니다.
+- **정상 요청:** 라벨마다 개발 입력의 첫 댓글 3건을 로컬·상용 두 조합으로 보내 6개 모두 success였습니다. success는 호출과 형식 검사가 통과했다는 뜻이고, 내용 품질 판정은 아닙니다.
+- **오류 요청 8개가 모두 기대한 단계에서 막혔습니다.**
+  - 실행 전에 막힘(모델 호출 0번): 빈 입력, 글자 수 초과, 입력 필드 이름 오류, 등록하지 않은 LLM 이름
+  - 조합별로 기록: LLM 단독은 prompt, Ollama 연결 실패는 llm, 형식 강제를 끈 응답(코드 블록)은 parse_output, 토큰 한도로 잘린 응답은 incomplete
+- **지원하지 않는 것:** LLM 단독(분류기 없이 LLM이 라벨까지 고르기). 서비스 프롬프트가 라벨별 정책을 전제로 하고, `AnswerPayload`에 label 필드가 없습니다.
+- **엔진에 넣지 않은 것:** 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI 서비스(step10)에만 있습니다.
+
 ### 사용자 화면 (도전 실습 B)
 
 [scripts/comments_streamlit_app.py](../../../../scripts/comments_streamlit_app.py)는 업무용(B2B) 검수 콘솔처럼 꾸민 Streamlit 화면입니다. FastAPI 서버에 요청을 보내고 결과를 보여 주기만 하며, 분류와 생성은 서버가 합니다. 색과 글꼴은 `.streamlit/config.toml`의 `[theme]`에 있습니다.
@@ -306,6 +321,7 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 | `.../comparisons/final02` | 로컬 vs 상용 최종 비교 |
 | `.../comparisons/review_rules01` | 나쁜 답을 사람 검토로 보내는 규칙 두 가지 (확신도 규칙, 뜻 검사) |
 | `.../service_checks/service_check01` | 서비스 정상·실패 요청 기록 |
+| `.../service_checks/common_pipeline01` | 팀 공통 파이프라인에 연결한 뒤 정상·오류 요청 기록 |
 
 ## 출처
 

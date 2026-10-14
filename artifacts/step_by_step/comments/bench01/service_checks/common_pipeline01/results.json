@@ -1,0 +1,494 @@
+{
+  "engine_commit": "44c8944",
+  "checked_at": "2026-10-14T14:39:11+0900",
+  "normal": [
+    {
+      "case_id": "none-01",
+      "schema_version": 2,
+      "service_id": "comments",
+      "policy_version": "bench01-development03",
+      "input_data": {
+        "text": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요"
+      },
+      "results": [
+        {
+          "classifier": "kcelectra",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "none",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.9633595943450928,
+              "offensive": 0.03194165229797363,
+              "hate": 0.004698770586401224
+            }
+          },
+          "label": "none",
+          "generated_text": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요",
+          "service_output": {
+            "answer": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요",
+            "next_steps": []
+          },
+          "generation": {
+            "raw_text": "{\n  \"answer\": \"드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요\",\n  \"next_steps\": []\n}",
+            "model_id": "gemma4:e4b",
+            "input_tokens": 386,
+            "output_tokens": 42,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.08296219981275499,
+            "llm_seconds": 1.2670873999595642,
+            "total_seconds": 1.3502405998297036
+          },
+          "error": null
+        },
+        {
+          "classifier": "kcelectra",
+          "llm": "openai",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "none",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.9633595943450928,
+              "offensive": 0.03194165229797363,
+              "hate": 0.004698770586401224
+            }
+          },
+          "label": "none",
+          "generated_text": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요",
+          "service_output": {
+            "answer": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요",
+            "next_steps": []
+          },
+          "generation": {
+            "raw_text": "{\"answer\":\"드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요\",\"next_steps\":[]}",
+            "model_id": "gpt-6-luna",
+            "input_tokens": 377,
+            "output_tokens": 35,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.019554799888283014,
+            "llm_seconds": 2.1502697998657823,
+            "total_seconds": 2.1699620001018047
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 3.520204999949783
+    },
+    {
+      "case_id": "offensive-01",
+      "schema_version": 2,
+      "service_id": "comments",
+      "policy_version": "bench01-development03",
+      "input_data": {
+        "text": "한혜진 진짜 지루해서 채널 돌렸다 하차해라"
+      },
+      "results": [
+        {
+          "classifier": "kcelectra",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "offensive",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.2292780727148056,
+              "offensive": 0.722418487071991,
+              "hate": 0.048303455114364624
+            }
+          },
+          "label": "offensive",
+          "generated_text": "한혜진 씨가 지루해서 채널을 돌렸다고 하니, 방송 활동에 대해 다시 생각해 봐야 할 것 같아요.",
+          "service_output": {
+            "answer": "한혜진 씨가 지루해서 채널을 돌렸다고 하니, 방송 활동에 대해 다시 생각해 봐야 할 것 같아요.",
+            "next_steps": []
+          },
+          "generation": {
+            "raw_text": "{\n  \"answer\": \"한혜진 씨가 지루해서 채널을 돌렸다고 하니, 방송 활동에 대해 다시 생각해 봐야 할 것 같아요.\",\n  \"next_steps\": []\n}",
+            "model_id": "gemma4:e4b",
+            "input_tokens": 394,
+            "output_tokens": 46,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.017731100087985396,
+            "llm_seconds": 1.3572965001221746,
+            "total_seconds": 1.375149100087583
+          },
+          "error": null
+        },
+        {
+          "classifier": "kcelectra",
+          "llm": "openai",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "offensive",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.2292780727148056,
+              "offensive": 0.722418487071991,
+              "hate": 0.048303455114364624
+            }
+          },
+          "label": "offensive",
+          "generated_text": "한혜진 씨가 나와서 지루해 채널을 돌렸어요. 하차했으면 좋겠어요.",
+          "service_output": {
+            "answer": "한혜진 씨가 나와서 지루해 채널을 돌렸어요. 하차했으면 좋겠어요.",
+            "next_steps": []
+          },
+          "generation": {
+            "raw_text": "{\"answer\":\"한혜진 씨가 나와서 지루해 채널을 돌렸어요. 하차했으면 좋겠어요.\",\"next_steps\":[]}",
+            "model_id": "gpt-6-luna",
+            "input_tokens": 391,
+            "output_tokens": 37,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.018707500072196126,
+            "llm_seconds": 1.5563221001066267,
+            "total_seconds": 1.5751887999940664
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 2.9503420998807997
+    },
+    {
+      "case_id": "hate-01",
+      "schema_version": 2,
+      "service_id": "comments",
+      "policy_version": "bench01-development03",
+      "input_data": {
+        "text": "박해미정도 글래머면 이혼하고 재결합까지도 얼마안걸릴듯 아직도섹시해서 돈있는영감님들사이에선 최고의인기녀지"
+      },
+      "results": [
+        {
+          "classifier": "kcelectra",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "hate",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.046347156167030334,
+              "offensive": 0.41433584690093994,
+              "hate": 0.5393169522285461
+            }
+          },
+          "label": "hate",
+          "generated_text": "박해미 씨는 글래머러스한 외모를 가지고 있고, 여전히 매력적이어서 주변에서 인기가 많을 것 같아요.",
+          "service_output": {
+            "answer": "박해미 씨는 글래머러스한 외모를 가지고 있고, 여전히 매력적이어서 주변에서 인기가 많을 것 같아요.",
+            "next_steps": []
+          },
+          "generation": {
+            "raw_text": "{\n  \"answer\": \"박해미 씨는 글래머러스한 외모를 가지고 있고, 여전히 매력적이어서 주변에서 인기가 많을 것 같아요.\",\n  \"next_steps\": []\n}",
+            "model_id": "gemma4:e4b",
+            "input_tokens": 461,
+            "output_tokens": 49,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.020549000008031726,
+            "llm_seconds": 1.4134829000104219,
+            "total_seconds": 1.4341519998852164
+          },
+          "error": null
+        },
+        {
+          "classifier": "kcelectra",
+          "llm": "openai",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "hate",
+            "model_id": "bench01/kcelectra-base_lr2e5_s44",
+            "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+            "probabilities": {
+              "none": 0.046347156167030334,
+              "offensive": 0.41433584690093994,
+              "hate": 0.5393169522285461
+            }
+          },
+          "label": "hate",
+          "generated_text": "이 댓글은 그대로 게시하기 어렵습니다.",
+          "service_output": {
+            "answer": "이 댓글은 그대로 게시하기 어렵습니다.",
+            "next_steps": [
+              "개인에 대한 모욕적이거나 대상화하는 표현을 빼고 다시 작성해 주세요."
+            ]
+          },
+          "generation": {
+            "raw_text": "{\"answer\":\"이 댓글은 그대로 게시하기 어렵습니다.\",\"next_steps\":[\"개인에 대한 모욕적이거나 대상화하는 표현을 빼고 다시 작성해 주세요.\"]}",
+            "model_id": "gpt-6-luna",
+            "input_tokens": 454,
+            "output_tokens": 43,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.020249499939382076,
+            "llm_seconds": 1.9191419000271708,
+            "total_seconds": 1.9395371999125928
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 3.3736916999332607
+    }
+  ],
+  "before_errors": [
+    {
+      "name": "빈 입력 (공백만)",
+      "raised": "ValueError",
+      "message": "서비스 입력 검증에 실패했습니다.",
+      "model_calls": 0,
+      "passed": true
+    },
+    {
+      "name": "글자 수 초과 (4001자)",
+      "raised": "ValueError",
+      "message": "서비스 입력 검증에 실패했습니다.",
+      "model_calls": 0,
+      "passed": true
+    },
+    {
+      "name": "입력 필드 이름이 다름 (comment)",
+      "raised": "ValueError",
+      "message": "서비스 입력 검증에 실패했습니다.",
+      "model_calls": 0,
+      "passed": true
+    },
+    {
+      "name": "등록하지 않은 LLM 이름",
+      "raised": "ValueError",
+      "message": "등록된 LLM 함수가 없습니다: claude",
+      "model_calls": 0,
+      "passed": true
+    }
+  ],
+  "during_errors": {
+    "schema_version": 2,
+    "service_id": "comments",
+    "policy_version": "bench01-development03",
+    "input_data": {
+      "text": "한혜진 진짜 지루해서 채널 돌렸다 하차해라"
+    },
+    "results": [
+      {
+        "classifier": null,
+        "llm": "ollama",
+        "mode": "llm_only",
+        "status": "error",
+        "success": false,
+        "classification": null,
+        "label": null,
+        "generated_text": null,
+        "service_output": null,
+        "generation": {
+          "raw_text": null,
+          "model_id": null,
+          "input_tokens": null,
+          "output_tokens": null,
+          "generation_complete": null,
+          "request_attempts": null
+        },
+        "llm_invocations": 0,
+        "timings": {
+          "classification_seconds": null,
+          "llm_seconds": null,
+          "total_seconds": 1.8499791622161865e-05
+        },
+        "error": {
+          "stage": "prompt",
+          "type": "ValueError",
+          "message": "prompt 함수 실행에 실패했습니다."
+        }
+      },
+      {
+        "classifier": "kcelectra",
+        "llm": "ollama_closed",
+        "mode": "classifier_llm",
+        "status": "error",
+        "success": false,
+        "classification": {
+          "label": "offensive",
+          "model_id": "bench01/kcelectra-base_lr2e5_s44",
+          "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+          "probabilities": {
+            "none": 0.2292780727148056,
+            "offensive": 0.722418487071991,
+            "hate": 0.048303455114364624
+          }
+        },
+        "label": "offensive",
+        "generated_text": null,
+        "service_output": null,
+        "generation": {
+          "raw_text": null,
+          "model_id": null,
+          "input_tokens": null,
+          "output_tokens": null,
+          "generation_complete": null,
+          "request_attempts": null
+        },
+        "llm_invocations": 1,
+        "timings": {
+          "classification_seconds": 0.015548199880868196,
+          "llm_seconds": 2.2461934001185,
+          "total_seconds": 2.2618047001305968
+        },
+        "error": {
+          "stage": "llm",
+          "type": "RuntimeError",
+          "message": "llm 함수 실행에 실패했습니다."
+        }
+      },
+      {
+        "classifier": "kcelectra",
+        "llm": "ollama_prompt_only",
+        "mode": "classifier_llm",
+        "status": "error",
+        "success": false,
+        "classification": {
+          "label": "offensive",
+          "model_id": "bench01/kcelectra-base_lr2e5_s44",
+          "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+          "probabilities": {
+            "none": 0.2292780727148056,
+            "offensive": 0.722418487071991,
+            "hate": 0.048303455114364624
+          }
+        },
+        "label": "offensive",
+        "generated_text": null,
+        "service_output": null,
+        "generation": {
+          "raw_text": "```json\n{\n  \"answer\": \"한혜진 씨가 지루해서 채널을 돌렸다고 하니, 방송 활동에 대해 다시 생각해 보시는 게 어떨까요?\",\n  \"next_steps\": []\n}\n```",
+          "model_id": "gemma4:e4b",
+          "input_tokens": 394,
+          "output_tokens": 53,
+          "generation_complete": true,
+          "request_attempts": 1
+        },
+        "llm_invocations": 1,
+        "timings": {
+          "classification_seconds": 0.01660420000553131,
+          "llm_seconds": 1.4521815001498908,
+          "total_seconds": 1.4688814000692219
+        },
+        "error": {
+          "stage": "parse_output",
+          "type": "ValidationError",
+          "message": "parse_output 함수 실행에 실패했습니다."
+        }
+      },
+      {
+        "classifier": "kcelectra",
+        "llm": "ollama_cut_short",
+        "mode": "classifier_llm",
+        "status": "incomplete",
+        "success": false,
+        "classification": {
+          "label": "offensive",
+          "model_id": "bench01/kcelectra-base_lr2e5_s44",
+          "run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+          "probabilities": {
+            "none": 0.2292780727148056,
+            "offensive": 0.722418487071991,
+            "hate": 0.048303455114364624
+          }
+        },
+        "label": "offensive",
+        "generated_text": null,
+        "service_output": null,
+        "generation": {
+          "raw_text": "{\n  \"answer\": \"한",
+          "model_id": "gemma4:e4b",
+          "input_tokens": 394,
+          "output_tokens": 8,
+          "generation_complete": false,
+          "request_attempts": 1
+        },
+        "llm_invocations": 1,
+        "timings": {
+          "classification_seconds": 0.017632799921557307,
+          "llm_seconds": 0.4674106000456959,
+          "total_seconds": 0.4851081999950111
+        },
+        "error": {
+          "stage": "generation",
+          "type": "IncompleteGeneration",
+          "message": "LLM이 생성 미완료를 보고했습니다."
+        }
+      }
+    ],
+    "total_seconds": 4.215816100127995
+  },
+  "during_checks": [
+    {
+      "name": "LLM 단독 (분류기 없음)",
+      "expected": "error / prompt",
+      "actual": "error / prompt",
+      "error_type": "ValueError",
+      "raw_text_kept": false,
+      "passed": true
+    },
+    {
+      "name": "Ollama 연결 실패",
+      "expected": "error / llm",
+      "actual": "error / llm",
+      "error_type": "RuntimeError",
+      "raw_text_kept": false,
+      "passed": true
+    },
+    {
+      "name": "형식 강제를 끈 응답",
+      "expected": "error / parse_output",
+      "actual": "error / parse_output",
+      "error_type": "ValidationError",
+      "raw_text_kept": true,
+      "passed": true
+    },
+    {
+      "name": "토큰 한도로 잘린 응답",
+      "expected": "incomplete / generation",
+      "actual": "incomplete / generation",
+      "error_type": "IncompleteGeneration",
+      "raw_text_kept": true,
+      "passed": true
+    }
+  ]
+}

@@ -147,6 +147,11 @@ def predict_text(text: str, bundle: dict) -> dict:
     return {
         "label": bundle["labels"][index],
         "confidence": float(probabilities[index]),
+        # 라벨마다의 확률(반올림 전, 합계 1). 공통 파이프라인(common_pipeline)이 전체 확률을 받는다.
+        "probabilities": {
+            label: float(value)
+            for label, value in zip(bundle["labels"], probabilities, strict=True)
+        },
         "truncated": truncated,
         "model": bundle["identity"],
     }
