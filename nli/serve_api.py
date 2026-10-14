@@ -5,7 +5,8 @@
 - 비공개 문서는 provider를 "ollama"로 지정해 로컬에서만 처리한다
 
 실행: uv run python nli/serve_api.py
-문서 화면(시연용): http://127.0.0.1:8000/docs
+사용자 화면(시연용): http://127.0.0.1:8000/
+개발자용 문서 화면:  http://127.0.0.1:8000/docs
 """
 
 import time
@@ -15,11 +16,13 @@ from typing import Literal
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 import config
 from explainer import explain, make_chain
 from predictor import Checker
+from web_page import PAGE
 
 STATE = {}  # 서버가 켜져 있는 동안 모델과 LLM 연결을 보관
 DEFAULT_PROVIDER = "openai"   # 서비스 기본 LLM (model_selection.md의 생성 모델 선정)
@@ -59,6 +62,12 @@ def get_chain(provider):
     if provider not in STATE["chains"]:
         STATE["chains"][provider] = make_chain(provider)
     return STATE["chains"][provider]
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+def home():
+    """사용자 화면: 원문과 보고서를 넣고 판정별로 정리된 결과를 본다."""
+    return PAGE
 
 
 @app.get("/health")
