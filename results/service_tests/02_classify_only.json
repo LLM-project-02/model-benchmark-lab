@@ -25,8 +25,8 @@
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
     "seconds": {
-      "classify": 0.05,
-      "total": 0.05
+      "classify": 0.06,
+      "total": 0.06
     },
     "results": [
       {

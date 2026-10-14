@@ -24,8 +24,8 @@
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
     "seconds": {
-      "classify": 0.07,
-      "total": 5.51
+      "classify": 0.41,
+      "total": 6.69
     },
     "results": [
       {
@@ -50,18 +50,19 @@
           "neutral": 0.045,
           "contradiction": 0.917
         },
-        "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서 문장은 5억 원으로 적고 있습니다.",
+        "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서에는 5억 원으로 기재되어 있습니다.",
         "suggestion": "마케팅 예산은 3억 원으로 승인되었다.",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 1.68,
+          "seconds": 2.15,
           "input_tokens": 319,
-          "output_tokens": 91,
+          "output_tokens": 75,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
           "used_provider": "openai",
-          "fallback_reason": null
+          "fallback_reason": null,
+          "postprocessed": false
         }
       },
       {
@@ -86,18 +87,19 @@
           "neutral": 0.041,
           "contradiction": 0.05
         },
-        "explanation": "원문에서 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 했으며, 보고서의 ‘넘기기로 했다’는 같은 내용을 나타냅니다.",
+        "explanation": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서의 ‘넘기기로 했다’는 같은 내용을 나타냅니다.",
         "suggestion": null,
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 1.42,
+          "seconds": 1.88,
           "input_tokens": 328,
-          "output_tokens": 76,
+          "output_tokens": 81,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
           "used_provider": "openai",
-          "fallback_reason": null
+          "fallback_reason": null,
+          "postprocessed": false
         }
       },
       {
@@ -122,18 +124,19 @@
           "neutral": 0.918,
           "contradiction": 0.045
         },
-        "explanation": "출시 첫 달 목표 가입자 수는 원문에서 확인할 수 없습니다.",
-        "suggestion": "출시 첫 달 목표 가입자 10만 명의 출처나 근거 자료를 알려주시겠습니까?",
+        "explanation": "원문에서 출시 첫 달 목표 가입자 10만 명을 확인할 수 없습니다.",
+        "suggestion": "이 목표 가입자 수의 출처나 근거 자료를 알려주시겠습니까?",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 2.33,
+          "seconds": 2.17,
           "input_tokens": 361,
-          "output_tokens": 118,
+          "output_tokens": 124,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
           "used_provider": "openai",
-          "fallback_reason": null
+          "fallback_reason": null,
+          "postprocessed": false
         }
       }
     ]

@@ -3,6 +3,7 @@
 - 설명 LLM 기본: 상용(OpenAI). 대체 경로: 로컬(Ollama)
 - 상용을 쓸 수 없거나 호출이 실패하면 자동으로 로컬로 설명한다 (fallback=true, 기본값)
 - 비공개 문서는 provider를 "ollama"로 지정해 로컬에서만 처리한다
+- 로컬이 설명한 답은 금지 표현을 바꾸는 후처리를 적용한다 (대체 경로 확인 실험의 결정)
 
 실행: uv run python nli/serve_api.py
 사용자 화면(시연용): http://127.0.0.1:8000/
@@ -21,12 +22,13 @@ from pydantic import BaseModel, Field
 
 import config
 from explainer import explain, make_chain
+from postprocess import soften
 from predictor import Checker
 from web_page import PAGE
 
 STATE = {}  # 서버가 켜져 있는 동안 모델과 LLM 연결을 보관
 DEFAULT_PROVIDER = "openai"   # 서비스 기본 LLM (model_selection.md의 생성 모델 선정)
-BACKUP_PROVIDER = "ollama"    # 대체 경로
+BACKUP_PROVIDER = "ollama"    # 대체 경로 (local_4b + 후처리)
 
 
 @asynccontextmanager
@@ -117,14 +119,21 @@ def check(request: CheckRequest):
                 row_used = backup
             if row_used != primary:
                 fallback_count += 1
-            result["explanation"] = output.get("explanation")
-            result["suggestion"] = output.get("suggestion")
+
+            # 대체 경로(로컬)의 답은 금지 표현을 바꾼다 (대체 경로 확인 실험의 결정: local_4b+후처리)
+            postprocessed = row_used == BACKUP_PROVIDER
+            explanation, suggestion = output.get("explanation"), output.get("suggestion")
+            if postprocessed:
+                explanation, suggestion = soften(explanation), soften(suggestion)
+            result["explanation"] = explanation
+            result["suggestion"] = suggestion
             result["llm"] = {
                 **{key: output.get(key) for key in ("model", "seconds", "input_tokens",
                                                     "output_tokens", "parse_ok", "error")},
                 "requested_provider": primary,
                 "used_provider": row_used,
                 "fallback_reason": row_reason,
+                "postprocessed": postprocessed,
             }
 
     counts = Counter(result["label_ko"] for result in results)
