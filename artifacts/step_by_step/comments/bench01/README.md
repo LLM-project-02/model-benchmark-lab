@@ -29,14 +29,24 @@
 ```
 FastAPI 요청(text)
   → 분류 모델 KcELECTRA-base (CPU): 라벨과 확신도
+  → 분류 확신도 검사: none인데 확신도가 0.93보다 낮으면 "확인 필요"
   → LangChain: 라벨별 정책 + 원문으로 프롬프트를 만듦
   → 생성 모델: 기본은 로컬 gemma4:e4b(Ollama), 요청에 provider를 적으면 OpenAI gpt-6-luna
-  → 고친 댓글 다시 검사: 같은 분류 모델에 고친 댓글을 넣어 none이 아니면 "확인 필요"로 표시
-  → 응답: status, classification, result(answer_check 포함)
+  → 고친 댓글 다시 검사: 같은 분류 모델에 고친 댓글을 넣어 none이 아니면 "확인 필요"
+  → 뜻 검사: 판정 모델 qwen3:4b-instruct(Ollama)가 원문과 고친 댓글을 비교해 뜻이 바뀌었으면 "확인 필요"
+  → 응답: status, classification, classification_check, result(answer_check, meaning_check 포함)
 ```
 
-- `result.answer_check`는 `{label, confidence, needs_review}`입니다. 댓글 주제에서 쓸 수 있는 답변일 때만 채우고, 다른 주제나 형식이 틀린 답변이면 `null`입니다.
-- 다시 검사는 답을 막지 않습니다. 분류 모델이 표현만 보기 때문에 놓치는 답과 잘못 짚는 답이 있어서(아래 "한계"), 사람이 확인하도록 알리기만 합니다.
+"확인 필요"로 표시하는 검사가 세 가지 있습니다. 모두 답을 막지 않고 사람이 확인하도록 알리기만 합니다. 세 검사 모두 놓치는 답과 잘못 짚는 답이 있기 때문입니다(아래 "한계").
+
+| 응답 필드 | 내용 | 채우는 때 |
+|---|---|---|
+| `classification_check` | `{threshold, needs_review}`. none으로 판정했는데 확신도가 0.93 미만이면 `needs_review`가 true | 댓글 주제 |
+| `result.answer_check` | `{label, confidence, needs_review}`. 고친 댓글을 다시 판정해 none이 아니면 true | 댓글 주제의 쓸 수 있는 답변 |
+| `result.meaning_check` | `{meaning_kept, reason, needs_review, model, latency_seconds, error}`. 뜻이 바뀌었거나 판정에 실패하면 true | offensive·hate로 판정돼 고쳐 쓴 답변 (게시 불가 안내는 제외) |
+
+- 채우지 않는 때는 `null`입니다.
+- 확신도 기준값 0.93과 뜻 검사 판정 모델은 [review_rules01](comparisons/review_rules01/README.md)에서 골랐습니다.
 
 ## 데이터
 
@@ -55,7 +65,7 @@ FastAPI 요청(text)
 
 ## 실행 방법
 
-이 브랜치(`exp/comments-bench01`)는 `steps/lesson_settings.py`의 `DATASET`이 `"comments"`입니다. `.env`에는 `LEARNER=bench01`, `OLLAMA_MODEL=gemma4:e4b`를 적고, 로컬 모델은 `ollama pull gemma4:e4b`로 받습니다.
+이 브랜치(`exp/comments-bench01`)는 `steps/lesson_settings.py`의 `DATASET`이 `"comments"`입니다. `.env`에는 `LEARNER=bench01`, `OLLAMA_MODEL=gemma4:e4b`를 적습니다. 로컬 모델은 두 개를 받습니다: 생성 모델 `ollama pull gemma4:e4b`, 뜻 검사 판정 모델 `ollama pull qwen3:4b-instruct-2507-q4_K_M`.
 
 ```powershell
 # 1. 데이터 만들기와 점검
@@ -89,6 +99,10 @@ uv run python scripts/run_comments_comparison.py final final02
 uv run python scripts/check_comments_generation.py final02
 uv run python scripts/judge_comments_generation.py sheet final02          # 채점 뒤 apply
 uv run python scripts/summarize_comments_final.py final02 --input-usd-per-1m 0.10 --output-usd-per-1m 0.50
+uv run python scripts/compare_comments_meaning_judges.py develop review_rules01   # 사람 검토 규칙 고르기
+uv run python scripts/summarize_comments_review_rules.py review_rules01
+uv run python scripts/compare_comments_meaning_judges.py final review_rules01 --judge qwen3:4b-instruct-2507-q4_K_M
+uv run python scripts/summarize_comments_review_rules.py review_rules01
 
 # 5. 서비스: 직접 켜서 쓰거나, 정상·실패 요청 기록을 다시 만들기
 uv run python steps/step10_serve_api.py
@@ -100,7 +114,8 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
 
 - 결과 폴더는 저장소에 이미 있습니다. 같은 이름으로 실행하면 덮어쓰지 않고 멈추므로, 다시 돌릴 때는 새 이름(예: `final03`)을 씁니다. test 평가(step11)는 `test_metrics.json`이 있으면 다시 돌지 않습니다.
 - `judge_comments_generation.py sheet`는 모델 이름을 가린 채점표를 만듭니다. `blind_scores.csv`를 채운 뒤 `apply`로 점수를 모델별로 옮깁니다.
-- 분류 모델 가중치는 용량이 커서 저장소에 올리지 않습니다(`checkpoint/`는 gitignore). 2~3번을 다시 돌리면 만들어집니다.
+- 분류 모델 가중치는 용량이 커서 저장소에 올리지 않습니다(`checkpoint/`는 gitignore). 2~3번을 다시 돌리면 만들어집니다. 다시 학습하지 않고 따로 받은 `checkpoint.zip`을 쓰려면 `kcelectra-base_lr2e5_s44/` 안에 풀고, 파일의 sha256이 [checkpoint_sha256.json](kcelectra-base_lr2e5_s44/checkpoint_sha256.json)과 같은지 확인합니다.
+- 테스트는 `uv run python -m pytest`입니다. 화면의 권장 조치 규칙 테스트(`tests/test_comments_console.py`)는 Streamlit이 있어야 해서 `uv run --group ui python -m pytest`로 돌립니다(없으면 건너뜁니다).
 
 ## 결과 요약
 
@@ -176,6 +191,23 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
 - 조건 차이: JSON 형식 강제는 로컬에만 있습니다. 생각 단계는 양쪽 모두 껐습니다.
 - [final01](comparisons/final01/)은 로컬 모델을 바꾸기 전(qwen3:4b) 기록이라 채점하지 않고 남겨 뒀습니다. final02는 로컬 모델만 바꾼 추가 실험이고 입력, 프롬프트, 분류 결과는 같습니다.
 
+### 사람 검토로 보내는 규칙 (review_rules01)
+
+결과: [review_rules_summary.md](comparisons/review_rules01/review_rules_summary.md), [고르기 그래프](comparisons/review_rules01/review_rules_develop.png), [최종 그래프](comparisons/review_rules01/review_rules_final.png), 조건과 해석: [review_rules01 README](comparisons/review_rules01/README.md)
+
+final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개는, 분류 모델이 악플을 none으로 골라 원문이 그대로 게시된 경우였습니다. 그래서 나쁜 답을 사람 검토로 보내는 규칙 두 가지를 개발 데이터로 고르고, 최종 비교(final02의 답 96개)로 한 번 쟀습니다.
+
+| 규칙 | 나쁜 답(4점 이하)을 게시 전에 잡음 | 좋은 답(8점)을 사람 검토로 보냄 | 전체 답 중 사람 검토 |
+|---|---:|---:|---:|
+| 이전 (다시 검사만) | 7/20 | 2/54 | 12% |
+| + 확신도 규칙 | 15/20 | 6/54 | 25% |
+| + 뜻 검사 | 8/20 | 3/54 | 21% |
+| + 둘 다 (서비스에 반영) | 16/20 | 7/54 | 33% |
+
+- **확신도 규칙:** none으로 판정했어도 확신도가 0.93 미만이면 사람 검토로 보냅니다. 기준값은 validation 840건에서 (놓친 악플을 잡은 비율 - 멀쩡한 댓글을 검토로 보낸 비율)이 가장 큰 값입니다. validation에서는 놓친 악플 67건 중 55건을 잡고, 멀쩡한 댓글 309건 중 104건을 검토로 보냅니다.
+- **뜻 검사:** 판정 모델이 원문과 고친 댓글을 비교합니다. 판정 모델 후보 11개(로컬 10개와 OpenAI 참고값)를 개발 답 159개로 비교해 qwen3:4b-instruct를 골랐습니다(점수 0.23, 95% 구간 -0.33~0.64). 모든 후보의 구간이 0을 포함해, 뜻이 바뀐 답을 확실히 가려낸다고는 말할 수 없습니다.
+- 값은 모두 실측입니다. 최종 입력이 24건이라 한두 개 차이는 우연일 수 있습니다.
+
 ### 서비스 확인 (service_check01)
 
 요청 13개가 모두 기대대로 처리됐습니다. 기록: [service_check.md](service_checks/service_check01/service_check.md), [README](service_checks/service_check01/README.md)
@@ -184,6 +216,19 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
 - 서버를 켠 뒤 첫 요청은 7.4초(로컬 모델 로딩 6.1초), 그다음은 1.3~1.8초입니다.
 - 서비스 중 로컬 생성 모델이 GPU 3.0GB, 서버(분류 모델 포함)가 RAM 1.1GB를 씁니다.
 - 이 기록은 고친 댓글 다시 검사(`answer_check`)를 넣기 전의 서버로 만들었습니다. 다시 검사는 테스트(`tests/test_lesson_service.py`)와 따로 켠 서버로 확인했습니다. 로컬 모델이 혐오 표현을 그대로 남긴 hate-06 답변과, 고치지 않고 둔 "올려치기 가즈아"가 "확인 필요"로 표시됐습니다.
+- **검토 규칙 두 가지를 넣은 뒤의 속도와 메모리(2026-10-14, 따로 켠 서버로 실측):** 뜻 검사는 판정 모델을 한 번 더 부르므로 느려지고 GPU를 더 씁니다.
+
+| 항목 | 넣기 전 | 넣은 뒤 |
+|---|---:|---:|
+| 서버를 켠 뒤 첫 요청 (모델 올리기 포함) | 6.5~6.9초 | 11.8초 |
+| 고쳐 쓰는 요청 하나 (offensive, 6번 평균) | 재지 않음 (final02의 로컬 평균 1.13초) | 2.8초 (생성 1.1초 + 뜻 검사 1.7초) |
+| none 요청 하나 (4번 평균) | 재지 않음 | 0.9초 (뜻 검사 없음) |
+| 시연용 12건을 4개씩 동시에 | 10.7~11.6초 (2번) | 16~23초 (8번) |
+| GPU 메모리 사용량 (전체 8,151MB) | 5,108~5,290MB | 7,626~7,759MB |
+
+- 넣기 전은 반영 직전 커밋의 코드로 같은 요청을 보낸 값입니다. 12건은 [demo_comments.csv](demo/demo_comments.csv)입니다.
+- 넣은 뒤에는 GPU 메모리 여유가 400~500MB뿐이라, GPU를 쓰는 다른 프로그램이 함께 돌면 모델 일부가 CPU로 밀려 더 느려질 수 있습니다.
+- 같은 12건을 여러 번 보내면 권장 조치가 한 건쯤 달라집니다. 생성 모델이 매번 조금 다른 문장을 내고(temperature 0.2), 검사 결과가 그 문장에 따라 달라지기 때문입니다.
 
 ### 사용자 화면 (도전 실습 B)
 
@@ -194,20 +239,22 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
   - 그대로 게시: 문제 없음(none)으로 판정된 댓글. 생성 모델이 문장을 바꿨어도 원문을 그대로 올립니다.
   - 순화 후 게시: 문제 표현을 고쳐 쓴 댓글.
   - 게시 보류: 남길 의견이 없어 게시하기 어렵다고 안내한 댓글. 그 안내 문장을 글쓴이에게 보낼 안내로 보여 줍니다.
-  - 사람 검토: 고친 댓글을 분류 모델로 다시 판정했을 때도 문제가 남은 댓글.
+  - 사람 검토: 세 검사 가운데 하나라도 걸린 댓글. 분류 확신도가 낮은 none 판정, 고친 댓글에도 문제 표현이 남은 댓글, 뜻이 바뀌었을 수 있는 댓글입니다. 화면은 어느 검사에 걸렸는지와 뜻 검사의 판정 이유를 함께 보여 줍니다.
   - 처리 실패: 생성 호출 실패, 잘린 답변, 형식 오류.
-- **대량 검수:** CSV를 올리고 댓글 열, 처리할 건수, 동시 처리 수(기본 4)를 고른 뒤 시작하면, 요청을 여러 개씩 동시에 보내 처리합니다. 권장 조치별 건수와 처리 시간을 카드와 차트로, 줄마다 결과를 표로 보여 주고, 결과를 CSV로 내려받습니다. 엑셀에서 저장한 한국어 CSV(cp949)도 읽고, 내려받은 파일은 엑셀에서 한글이 깨지지 않습니다.
-- **동시 처리:** 로컬 모델에 같은 요청 8건을 한 줄씩 보내면 10.9초, 4개씩 동시에 보내면 7.1초였습니다(1.5배). 상용 모델은 네트워크 대기가 길어 효과가 더 큽니다.
+- **대량 검수:** CSV를 올리고 댓글 열, 처리할 건수, 동시 처리 수(기본 4)를 고른 뒤 시작하면, 요청을 여러 개씩 동시에 보내 처리합니다. 권장 조치별 건수와 처리 시간을 카드와 차트로, 줄마다 결과(권장 조치, 검토 이유, 다시 검사, 뜻 검사 등)를 표로 보여 주고, 결과를 CSV로 내려받습니다. 엑셀에서 저장한 한국어 CSV(cp949)도 읽고, 내려받은 파일은 엑셀에서 한글이 깨지지 않습니다.
+- **동시 처리:** 로컬 모델에 같은 요청 8건을 한 줄씩 보내면 10.9초, 4개씩 동시에 보내면 7.1초였습니다(1.5배, 검토 규칙을 넣기 전에 잰 값). 상용 모델은 네트워크 대기가 길어 효과가 더 큽니다. 검토 규칙을 넣은 뒤에는 시연용 12건이 16~23초 걸립니다(위 "서비스 확인").
 - **처리 기준, API 연동 탭:** 라벨별 처리 정책과 권장 조치 기준, 서버를 직접 부르는 Python 예시와 응답 코드를 보여 줍니다.
 - **오류 안내:** 서버가 꺼져 있으면 켜는 명령을, 입력이 잘못되면(422) 한국어 안내를, 생성 모델 호출이 실패하면(502) 실패와 판정 결과를 보여 줍니다.
 - **설치:** Streamlit은 팀 공통 설치에 넣지 않고 `pyproject.toml`의 `ui` 묶음에만 넣었습니다. `uv run --group ui ...`로 실행하면 그때 설치됩니다. 다른 주소의 서버를 쓰려면 `COMMENTS_API_URL` 환경 변수로 바꿉니다.
 - **접속 범위:** `.streamlit/config.toml`에서 이 노트북(127.0.0.1)에서만 열리게 했습니다. 기본값이면 같은 네트워크의 다른 기기가 화면에 들어와 이 노트북의 OpenAI 키로 요청을 보낼 수 있습니다.
-- **확인한 것:** Streamlit AppTest로 서버가 꺼진 경우와 권장 조치 규칙을 확인했습니다. 새 코드로 서버와 화면을 따로 켜고 Edge 브라우저(Playwright, 화면 없이 실행)로 단건 검수, 두 모델 비교, 대량 검수(8건), 처리 기준, API 연동 화면을 직접 눌러 보고 화면을 찍어 확인했습니다.
+- **확인한 것:** Streamlit AppTest로 서버가 꺼진 경우와 권장 조치 규칙을 확인했습니다. 새 코드로 서버와 화면을 따로 켜고 Edge 브라우저(Playwright, 화면 없이 실행)로 단건 검수, 두 모델 비교, 대량 검수(8건), 처리 기준, API 연동 화면을 직접 눌러 보고 화면을 찍어 확인했습니다. 검토 규칙을 넣은 뒤(2026-10-14)에도 같은 방법으로 세 가지 사람 검토 이유와 게시 보류가 화면에 나오는지 확인했고, 권장 조치 규칙은 `tests/test_comments_console.py`로도 확인합니다.
+- **시연:** 시연 영상 대본과 대량 검수용 예시 CSV는 [demo](demo/) 폴더에 있습니다. 예시 댓글은 실제 댓글이 아니라 직접 만든 문장입니다.
 
 ## 최종 선정과 이유
 
 - **분류 모델: KcELECTRA-base.** validation에서 시드를 바꿔도 1위였고, test에서도 기준 모델보다 Macro F1이 0.127 높았습니다.
 - **생성 모델: 로컬 gemma4:e4b.** 상용과의 품질 차이가 우연 범위라 품질로는 고를 수 없었습니다. 남은 기준에서 로컬이 앞섭니다. 응답이 2배 빠르고, API 요금이 없고, 댓글이 노트북 밖으로 나가지 않습니다. 상용 모델은 요청에 `provider: "openai"`를 적으면 쓸 수 있습니다.
+- **사람 검토 규칙: 확신도 규칙과 뜻 검사를 둘 다 넣었습니다.** 최종 비교에서 나쁜 답을 게시 전에 가장 많이 잡은 조합입니다(20개 중 16개, 이전 7개). 대신 사람 검토가 답의 12%에서 33%로 늘고, 대량 처리가 1.5~2배 느려지고, GPU 메모리 여유가 거의 없습니다(위 "서비스 확인").
 
 ## 한계와 개선할 점
 
@@ -218,7 +265,10 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
   - 고쳐 쓰면서 뜻이 바뀐 답은 8개였고 7개는 다시 검사가 잡았습니다. 다만 서비스 확인의 hate-01처럼 성적인 평가를 정중한 말로 바꿔 남긴 답은 none(96%)으로 통과했습니다.
   - 반대로 8점(만점)을 받은 좋은 답 2개를 "확인 필요"로 잘못 짚었습니다.
   - 처음에는 놓친 13개를 한데 묶어 "뜻이 바뀐 답을 놓치는 것이 가장 위험하다"고 적었습니다. 원인을 나눠 세지 않은 잘못된 설명이라 2026-10-14에 바로잡았습니다.
-- **분류 오류가 그대로 이어집니다.** 최종 입력 24건 중 7건은 분류 모델이 정답과 다른 라벨을 골라 다른 정책이 적용됐습니다. 그중 3건은 악플을 none으로 놓쳐 고치지 않은 채 게시됐습니다.
+  - 이 결과로 만든 검토 규칙 두 가지를 넣은 뒤에는 20개 중 16개를 게시 전에 잡습니다. 남은 4개는 모두 분류 모델이 확신도 0.96으로 none을 고른 offensive-03입니다(두 모델 x 2회). 분류 모델이 확신하며 틀린 댓글은 여전히 그대로 게시됩니다.
+- **분류 오류가 그대로 이어집니다.** 최종 입력 24건 중 7건은 분류 모델이 정답과 다른 라벨을 골라 다른 정책이 적용됐습니다. 그중 3건은 악플을 none으로 놓쳐 고치지 않은 채 게시됐습니다(검토 규칙을 넣기 전).
+- **사람 검토가 늘었습니다.** 검토 규칙을 넣은 뒤 최종 비교 답의 33%가 사람 검토로 갑니다(이전 12%). 좋은 답 54개 중 7개도 검토로 갑니다. validation 기준으로는 확신도 규칙 하나만으로 전체 댓글의 약 19%가 검토로 갑니다.
+- **뜻 검사는 믿을 만하다고 말하기 어렵습니다.** 개발 데이터에서 판정 모델 11개 모두 점수의 95% 구간이 0을 포함했습니다. 최종 비교에서도 비하하는 말만 지운 좋은 답(8점)을 "뜻이 바뀌었다"고 짚었습니다. 그래서 답을 막지 않고 사람 검토로만 보냅니다.
 - **채점의 한계:** 생성 답변은 Claude(Anthropic)가 모델 이름을 가린 채 채점했습니다. 두 생성 모델과 다른 회사의 모델이지만, 채점자가 이전 비교에서 일부 답변을 모델 이름과 함께 본 적이 있습니다. 최종 비교(final02)는 사람이 10건을 확인해 10건 모두 동의했습니다. 처음에 보류한 2건은 채점 이유 문장을 쉽게 고치고 라벨 기준을 설명한 뒤 동의로 바뀌었습니다([사람 확인](comparisons/final02/README.md#사람-확인-llm_spotcheckcsv)). 로컬 모델 비교(local_models01)도 사람이 10건을 확인해 10건 모두 동의했습니다.
 - **채점 규칙을 한 번 보완했습니다.** 사람 확인에서 "원문과 상관없는 말을 지어낸 답이 '욕설이 없다'만으로 필수 내용 1점을 받는다"는 문제가 드러나, 그런 답은 필수 내용 0점으로 바꿨습니다. 두 비교에서 34개 답의 점수가 1점씩 내려갔고, 순위와 결론은 바뀌지 않았습니다.
 - **입력이 적습니다.** 로컬 모델 선택은 15건, 최종 비교는 24건이라 작은 차이는 우연일 수 있습니다.
@@ -227,7 +277,8 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
   - **사람 검토로 보내는 규칙 두 가지를 시험했습니다**([review_rules01](comparisons/review_rules01/README.md), 2026-10-14). 개발 데이터로 고르고 최종 비교로 한 번 쟀습니다.
     - 확신도 규칙(none인데 확신도 0.93 미만이면 사람 검토): 나쁜 답을 자동 게시 전에 잡은 수가 20개 중 7개에서 15개로 늘었습니다. 대신 좋은 답을 사람 검토로 보낸 수도 54개 중 2개에서 6개로 늘었습니다.
     - 뜻 검사(로컬 판정 모델 qwen3:4b-instruct): 1개만 더 잡았습니다. 개발 데이터에서도 판정 모델 11개 모두 점수의 95% 구간이 0을 포함해, 뜻이 바뀐 답을 확실히 가려내지 못했습니다.
-    - 서비스 반영은 결과를 보고 정합니다.
+    - 2026-10-14에 두 규칙을 모두 서비스(API와 화면)에 넣었습니다.
+  - **뜻 검사를 더 다듬을 수 있습니다.** 판정 프롬프트를 여러 개 비교하지 않았고, 고친 답이 댓글이 아니라 안내문인 경우("이 댓글은 수정해야 합니다")를 따로 가려내지 않았습니다. 이런 안내문은 지금 화면에서 고친 댓글로 게시될 수 있어, 뜻 검사가 잡아 주는 경우가 있습니다([review_rules01](comparisons/review_rules01/README.md#정답채점과-서비스-목적이-어긋나는-점-사후-분석-선택에는-쓰지-않음)).
   - **hate는 고쳐 쓰지 않고 게시 불가로 처리하는 정책**을 개발 입력으로 시험해 볼 수 있습니다. 로컬 모델이 혐오·성적 표현을 남긴 실패(hate-06, hate-01)는 hate 댓글을 고쳐 쓰다가 나왔습니다.
   - **offensive와 hate의 경계를 더 잘 가르는 분류 모델**이 필요합니다. 분류 오류는 정책 선택과 다시 검사 양쪽에 그대로 이어집니다.
 

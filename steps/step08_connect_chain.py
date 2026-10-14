@@ -9,9 +9,9 @@ from typing import TypedDict
 
 import lesson_settings as lesson
 from langchain_core.runnables import RunnableLambda
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 from step06_predict import load_classifier, predict_text
-from step07_call_models import call_model
+from step07_call_models import call_judge, call_model
 
 # lesson_settings.py의 학습 결과를 load_classifier가 불러온다.
 SAMPLE_INPUTS = {
@@ -36,6 +36,11 @@ INQUIRY_RULES = (
 DOCUMENT_RULES = "원문을 근거로 요약하고 원문에 없는 사실을 덧붙이지 않는다."
 # 댓글 정책의 평가 기준은 scripts/prepare_comments_generation.py에 있다. 정책을 바꾸면 함께 맞춘다.
 COMMENT_LABELS = {"none", "offensive", "hate"}
+REFUSAL_PHRASE = "게시하기 어렵"  # hate 정책의 게시 불가 안내에 들어가는 말
+# 확신도 규칙(comparisons/review_rules01): none이면 원문을 그대로 게시하므로, 확신도가 이 값보다
+# 낮으면 사람이 먼저 본다. validation에서 (놓친 악플을 잡은 비율 - 멀쩡한 댓글을 검토로 보낸 비율)이
+# 가장 큰 값이다.
+NONE_REVIEW_THRESHOLD = 0.93
 COMMENT_RULES = (
     "글쓴이의 의견과 요지는 유지하고 원문에 없는 내용을 더하지 않는다. "
     "욕설이나 혐오 표현을 다른 말로 바꿔 남기지 않는다."
@@ -186,6 +191,49 @@ def meaning_prompt(original, answer):
         "원문(JSON 문자열): " + json.dumps(original, ensure_ascii=False) + "\n"
         "고친 댓글(JSON 문자열): " + json.dumps(answer, ensure_ascii=False)
     )
+
+
+def review_classification(classification):
+    """분류 결과를 그대로 믿어도 되는지 본다. 댓글 주제가 아니면 None.
+
+    none으로 판정한 댓글은 고치지 않고 그대로 게시하므로, 확신도가 낮으면 사람이 확인하게 한다.
+    """
+    if classification["label"] not in COMMENT_LABELS:
+        return None
+    return {
+        "threshold": NONE_REVIEW_THRESHOLD,
+        "needs_review": classification["label"] == "none"
+        and classification["confidence"] < NONE_REVIEW_THRESHOLD,
+    }
+
+
+def review_meaning(result, label, text):
+    """고친 댓글이 원문의 뜻을 지켰는지 판정 모델로 본다(뜻 검사).
+
+    고쳐 쓰지 않는 none, 게시 불가 안내, 쓸 수 없는 답은 None을 돌려준다. 판정 모델은 개발
+    데이터에서도 뜻이 바뀐 답을 확실히 가려내지 못했으므로(comparisons/review_rules01) 답을 막지
+    않고 사람이 확인하라고만 알린다. 판정이 실패하면 확인할 수 없으므로 사람이 확인하게 한다.
+    """
+    if label not in COMMENT_LABELS - {"none"}:
+        return None
+    if result.get("error") or not result.get("output_format_valid"):
+        return None
+    answer = json.loads(result["text"])["answer"]
+    if REFUSAL_PHRASE in answer:
+        return None
+    judged = call_judge(meaning_prompt(text, answer), MeaningVerdict.model_json_schema())
+    try:
+        verdict = MeaningVerdict.model_validate_json(judged["text"])
+    except ValidationError:
+        verdict = None
+    return {
+        "meaning_kept": verdict.meaning_kept if verdict else None,
+        "reason": verdict.reason if verdict else None,
+        "needs_review": verdict is None or not verdict.meaning_kept,
+        "model": judged["model"],
+        "latency_seconds": judged["latency_seconds"],
+        "error": judged["error"],
+    }
 
 
 def compare_prepared(prepared: Prepared):

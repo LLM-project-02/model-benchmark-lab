@@ -29,6 +29,7 @@ SAMPLE_INPUTS = {
 INPUT_TEXT = SAMPLE_INPUTS[lesson.DATASET]
 OLLAMA_URL = lesson.OLLAMA_URL
 OLLAMA_MODEL = lesson.OLLAMA_MODEL
+MEANING_JUDGE_MODEL = lesson.MEANING_JUDGE_MODEL
 OPENAI_MODEL = lesson.OPENAI_MODEL
 MAX_OUTPUT_TOKENS = lesson.MAX_OUTPUT_TOKENS
 TIMEOUT_SECONDS = lesson.TIMEOUT_SECONDS
@@ -169,6 +170,38 @@ def call_model(provider, prompt):
         "provider": provider,
         "latency_seconds": time.perf_counter() - started,
         "output_format_valid": valid_output(output["text"]),  # 약속한 JSON 형식을 지켰는지
+        "error": error,
+    }
+
+
+def call_judge(prompt, schema, model=MEANING_JUDGE_MODEL):
+    """판정용 로컬 모델을 부른다(댓글 주제의 뜻 검사). 생성 호출과 달리 매번 같은 판정이 나오도록
+    temperature 0으로 부르고, 응답 JSON 모양을 schema로 강제한다.
+
+    요청 내용은 판정 모델을 고른 scripts/compare_comments_meaning_judges.py와 같다.
+    """
+    request_body = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False,
+        "think": False,  # 생각 단계 없이 바로 판정
+        "format": schema,
+        "keep_alive": "5m",
+        "options": {"temperature": 0, "num_predict": 256, "num_ctx": 4096},
+    }
+    started = time.perf_counter()
+    text, error = "", None
+    try:
+        with httpx.Client(timeout=TIMEOUT_SECONDS, trust_env=False) as client:
+            response = client.post(OLLAMA_URL.rstrip("/") + "/api/generate", json=request_body)
+            response.raise_for_status()
+            text = response.json()["response"]
+    except Exception as exc:  # noqa: BLE001 - 실패도 결과로 돌려주고, 예외 원문은 내보내지 않는다.
+        error = type(exc).__name__
+    return {
+        "text": text,
+        "model": model,
+        "latency_seconds": time.perf_counter() - started,
         "error": error,
     }
 

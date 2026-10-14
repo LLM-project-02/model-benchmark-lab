@@ -58,6 +58,7 @@ STATUS = {
 }
 PROVIDERS = {"로컬": "ollama", "상용": "openai"}
 PROVIDER_MODELS = {"ollama": "Ollama gemma4:e4b", "openai": "OpenAI gpt-6-luna"}
+JUDGE_MODEL = "Ollama qwen3:4b-instruct"  # 뜻 검사 판정 모델 (comparisons/review_rules01)
 # 서버가 422와 함께 알려 주는 오류 종류(FastAPI, 영어 문장)를 화면에 보일 한국어 문장으로 바꾼다.
 INPUT_ERRORS = {
     "string_too_short": "댓글을 입력해 주세요.",
@@ -69,7 +70,11 @@ INPUT_ERRORS = {
 
 
 def call_api(url, path, payload=None):
-    """서버에 요청하고 {code, body, error}를 돌려준다. 서버에 닿지 못하면 code는 None이다."""
+    """서버에 요청하고 {code, body, error, seconds}를 돌려준다. 서버에 닿지 못하면 code는 None이다.
+
+    seconds는 요청을 보내고 응답을 받기까지 걸린 시간이다(분류, 생성, 검사를 모두 포함).
+    """
+    started = time.perf_counter()
     try:
         with httpx.Client(timeout=TIMEOUT_SECONDS, trust_env=False) as client:
             if payload is None:
@@ -77,12 +82,22 @@ def call_api(url, path, payload=None):
             else:
                 response = client.post(url.rstrip("/") + path, json=payload)
     except httpx.HTTPError as exc:
-        return {"code": None, "body": None, "error": type(exc).__name__}
+        return {
+            "code": None,
+            "body": None,
+            "error": type(exc).__name__,
+            "seconds": time.perf_counter() - started,
+        }
     try:
         body = response.json()
     except ValueError:
         body = {"raw_text": response.text[:500]}
-    return {"code": response.status_code, "body": body, "error": None}
+    return {
+        "code": response.status_code,
+        "body": body,
+        "error": None,
+        "seconds": time.perf_counter() - started,
+    }
 
 
 def parse_answer(result):
@@ -116,27 +131,60 @@ def plain(text):
     return re.sub(r"([\\`*_{}\[\]()#+\-.!~|>:$])", r"\\\1", text)
 
 
-def recommended_action(label, answer, result):
+def recommended_action(label, answer, result, classification_check=None):
     """운영자에게 보일 권장 조치를 정한다.
 
     문제 없음(none)으로 판정되면 원문을 그대로 올린다. 생성 모델이 문장을 바꿨어도 원문을 쓴다.
-    나머지는 게시 불가 안내면 게시 보류, 고친 댓글을 다시 판정해 none이 아니면 사람 검토,
+    다만 분류 확신도가 낮으면(classification_check) 사람 검토로 보낸다.
+    나머지는 게시 불가 안내면 게시 보류, 고친 댓글 다시 검사나 뜻 검사에 걸리면 사람 검토,
     그 밖에는 순화 후 게시다.
     """
     if not result or result.get("error") or not result.get("output_format_valid"):
         return "처리 실패"
     if label == "none":
-        return "그대로 게시"
+        return "사람 검토" if (classification_check or {}).get("needs_review") else "그대로 게시"
     if "게시하기 어렵" in answer:
         return "게시 보류"
-    if (result.get("answer_check") or {}).get("needs_review"):
+    if any(
+        (result.get(key) or {}).get("needs_review") for key in ("answer_check", "meaning_check")
+    ):
         return "사람 검토"
     return "순화 후 게시"
 
 
-def posted_text(original, answer, action):
-    """권장 조치대로 하면 실제로 올라갈 문장. 게시 보류나 처리 실패면 빈 문자열."""
-    if action == "그대로 게시":
+def review_reasons(label, result, classification_check=None):
+    """사람 검토로 보낸 이유. 권장 조치가 사람 검토일 때 화면과 결과 표에 보여 준다."""
+    reasons = []
+    if label == "none":
+        if (classification_check or {}).get("needs_review"):
+            reasons.append(f"분류 확신도 {classification_check['threshold']:.0%} 미만")
+        return reasons
+    check = result.get("answer_check") or {}
+    if check.get("needs_review"):
+        reasons.append(f"고친 댓글도 {check['label']}로 판정")
+    meaning = result.get("meaning_check") or {}
+    if meaning.get("needs_review"):
+        reasons.append(
+            "뜻이 바뀌었을 수 있음" if meaning["meaning_kept"] is False else "뜻 검사 실패"
+        )
+    return reasons
+
+
+def meaning_summary(meaning):
+    """뜻 검사 결과를 표에 넣을 짧은 문장으로 만든다. 검사하지 않았으면 빈 문자열."""
+    if not meaning:
+        return ""
+    if meaning["meaning_kept"] is None:
+        return "판정 실패"
+    return "뜻을 지킴" if meaning["meaning_kept"] else f"바뀌었을 수 있음: {meaning['reason']}"
+
+
+def posted_text(original, answer, action, label=None):
+    """권장 조치대로 하면 실제로 올라갈 문장. 게시 보류나 처리 실패면 빈 문자열.
+
+    none 판정은 고쳐 쓰지 않으므로, 사람 검토로 가도 원문이 게시 후보다.
+    """
+    if action == "그대로 게시" or (action == "사람 검토" and label == "none"):
         return original
     if action in ("순화 후 게시", "사람 검토"):
         return answer
@@ -158,13 +206,15 @@ def batch_row(text, response):
     row = {
         "원문": text,
         "권장 조치": "처리 실패",
+        "검토 이유": "",
         "라벨": "",
         "분류 확신도": None,
         "게시할 댓글": "",
         "글쓴이 안내": "",
         "다시 검사": "",
+        "뜻 검사": "",
         "생성 모델 답": "",
-        "응답 시간(초)": None,
+        "처리 시간(초)": round(response["seconds"], 2),
         "생성 모델": "",
         "상태": "",
         "오류": "",
@@ -177,28 +227,30 @@ def batch_row(text, response):
         row["오류"] = "입력 오류: " + input_error(body)
         return row
     classification = body.get("classification") or {}
+    classification_check = body.get("classification_check")  # none인데 확신도가 낮은지
     result = body.get("result") or {}
     answer, next_steps = parse_answer(result)
     check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
     label = classification.get("label", "")
-    action = recommended_action(label, answer, result)
+    action = recommended_action(label, answer, result, classification_check)
     notice = " / ".join(next_steps)
     if action == "게시 보류":  # 게시하지 않으므로 생성 모델의 안내 문장을 글쓴이에게 보낸다
         notice = " / ".join([answer, *next_steps])
     row.update(
         {
             "권장 조치": action,
+            "검토 이유": " / ".join(review_reasons(label, result, classification_check))
+            if action == "사람 검토"
+            else "",
             "라벨": label,
             "분류 확신도": classification.get("confidence"),
-            "게시할 댓글": posted_text(text, answer, action),
+            "게시할 댓글": posted_text(text, answer, action, label),
             "글쓴이 안내": notice,
             "다시 검사": f"{check['label']} ({check['confidence']:.0%})"
             if check and label != "none"
             else "",
+            "뜻 검사": meaning_summary(result.get("meaning_check")),
             "생성 모델 답": answer,
-            "응답 시간(초)": round(result["latency_seconds"], 2)
-            if "latency_seconds" in result
-            else None,
             "생성 모델": result.get("model") or "",
             "상태": body.get("status", ""),
             "오류": result.get("error") or "",
@@ -228,21 +280,59 @@ def action_badge(action):
     st.badge(action, icon=icon, color=color)
 
 
-def show_classification(classification):
+def show_classification(classification, check=None):
     title, color, policy = LABELS.get(
         classification["label"], (classification["label"], "gray", "")
     )
     with st.container(horizontal=True, vertical_alignment="center"):
         st.badge(f"{title} ({classification['label']})", color=color)
         st.badge(f"분류 확신도 {classification['confidence']:.0%}", color="gray")
+        if check and check["needs_review"]:
+            st.badge("확신도 낮음", icon=":material/person_search:", color="orange")
     # 확신도는 분류 모델이 낸 값이다. 생성 모델은 이 라벨을 받기만 하므로 두 모델 비교에서도 하나다.
     st.caption(
         f"적용한 정책: {policy} 확신도는 분류 모델(KcELECTRA)이 이 라벨을 얼마나 확신하는지이고, "
         "생성 모델과는 관계없습니다."
     )
+    if check and check["needs_review"]:
+        st.warning(
+            f"분류 모델은 문제 없음으로 봤지만 확신도가 {classification['confidence']:.0%}로 기준"
+            f"({check['threshold']:.0%})보다 낮습니다. 비꼼처럼 분류 모델이 놓치기 쉬운 댓글일 수 "
+            "있으니 게시하기 전에 사람이 확인해 주세요.",
+            icon=":material/person_search:",
+        )
 
 
-def show_result(original, label, result, status, title=None):
+def show_checks(label, result, action):
+    """고친 댓글을 검사한 두 결과(다시 검사, 뜻 검사)를 보여 준다."""
+    if label == "none" or action == "게시 보류":
+        return
+    check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
+    if check and check["needs_review"]:
+        check_title = LABELS.get(check["label"], (check["label"],))[0]
+        st.warning(
+            f"다시 검사: 고친 댓글도 분류 모델이 {check_title}({check['label']}, "
+            f"{check['confidence']:.0%})로 봤습니다. 게시하기 전에 사람이 확인해 주세요.",
+            icon=":material/person_search:",
+        )
+    elif check:
+        st.caption(f"다시 검사: 고친 댓글은 문제 없음(none, {check['confidence']:.0%})")
+    meaning = result.get("meaning_check")  # 고친 댓글이 원문의 뜻을 지켰는지 판정 모델이 본 결과
+    if meaning and meaning["meaning_kept"] is False:
+        st.warning(
+            f"뜻 검사: 고친 댓글이 원문의 뜻과 달라졌을 수 있습니다. 판정 이유: {plain(meaning['reason'])}",
+            icon=":material/compare_arrows:",
+        )
+    elif meaning and meaning["needs_review"]:
+        st.warning(
+            "뜻 검사를 하지 못했습니다(판정 모델 응답 오류). 게시하기 전에 사람이 확인해 주세요.",
+            icon=":material/help:",
+        )
+    elif meaning:
+        st.caption("뜻 검사: 원문의 뜻을 지켰다고 판정했습니다. 판정 모델도 틀릴 수 있습니다.")
+
+
+def show_result(original, label, result, status, title=None, classification_check=None):
     """생성 모델 하나의 결과 카드."""
     with st.container(border=True):
         if title:
@@ -255,7 +345,7 @@ def show_result(original, label, result, status, title=None):
             )
             return
         answer, next_steps = parse_answer(result)
-        action = recommended_action(label, answer, result)
+        action = recommended_action(label, answer, result, classification_check)
         action_badge(action)
         if action == "게시 보류":
             st.markdown("**글쓴이에게 보낼 안내**")
@@ -266,30 +356,20 @@ def show_result(original, label, result, status, title=None):
         else:
             st.markdown("**게시할 댓글**")
             with st.container(border=True):
-                st.markdown(plain(posted_text(original, answer, action)) or "(빈 답변)")
+                st.markdown(plain(posted_text(original, answer, action, label)) or "(빈 답변)")
             for step in next_steps:
                 st.markdown(f":material/arrow_right: {plain(step)}")
-        if action == "그대로 게시" and normalized(answer) != normalized(original):
+        if label == "none" and normalized(answer) != normalized(original):
             # 생성 모델이 문제 없는 댓글까지 고친 경우. 원문을 그대로 쓴다.
             st.caption(
                 f'생성 모델이 "{plain(answer)}"(으)로 바꿨지만, 문제 없는 댓글이라 원문을 그대로 올립니다.'
             )
-        check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
-        if label != "none" and check and check["needs_review"]:
-            check_title = LABELS.get(check["label"], (check["label"],))[0]
-            st.warning(
-                f"고친 댓글도 분류 모델이 {check_title}({check['label']}, {check['confidence']:.0%})로 "
-                "봤습니다. 게시하기 전에 사람이 확인해 주세요.",
-                icon=":material/person_search:",
-            )
-        elif label != "none" and check and action != "게시 보류":
-            st.caption(
-                f"고친 댓글 다시 검사: 문제 없음(none, {check['confidence']:.0%}). 분류 모델은 표현만 보므로, "
-                "뜻이 바뀌었는지는 사람이 확인해야 합니다."
-            )
-        st.caption(
-            f"{STATUS.get(status, status)} · {result.get('model')} · {result['latency_seconds']:.2f}초"
-        )
+        show_checks(label, result, action)
+        meaning = result.get("meaning_check")
+        times = f"{result['latency_seconds']:.2f}초"
+        if meaning:
+            times += f" · 뜻 검사 {meaning['latency_seconds']:.2f}초"
+        st.caption(f"{STATUS.get(status, status)} · {result.get('model')} · {times}")
 
 
 def single_tab(url, provider):
@@ -341,17 +421,18 @@ def single_tab(url, provider):
             st.error(f"예상하지 못한 응답입니다 (HTTP {response['code']}).")
             return
         label = body["classification"]["label"]
+        check = body.get("classification_check")  # none인데 확신도가 낮은지
         with st.container(border=True):
             st.markdown("**판정**")
-            show_classification(body["classification"])
+            show_classification(body["classification"], check)
         if "results" in body:  # 두 모델 비교
             columns = st.columns(len(body["results"]))
             for column, result in zip(columns, body["results"], strict=True):
                 with column:
                     name = "로컬" if result["provider"] == "ollama" else "상용"
-                    show_result(original, label, result, result.get("status"), title=name)
+                    show_result(original, label, result, result.get("status"), name, check)
         else:
-            show_result(original, label, body["result"], body.get("status"))
+            show_result(original, label, body["result"], body.get("status"), None, check)
 
 
 def batch_tab(url, provider):
@@ -418,7 +499,7 @@ def batch_tab(url, provider):
         return
     run = st.session_state.get("batch_run", {})
     counts = result["권장 조치"].value_counts()
-    latencies = [value for value in result["응답 시간(초)"] if pd.notna(value)]
+    latencies = [value for value in result["처리 시간(초)"] if pd.notna(value)]
     with st.container(horizontal=True):
         st.metric("처리 건수", f"{len(result):,}", border=True)
         for action in ("그대로 게시", "순화 후 게시", "게시 보류", "사람 검토"):
@@ -430,7 +511,8 @@ def batch_tab(url, provider):
             help=(
                 f"동시 {run.get('workers', '-')}개로 보낸 전체 시간입니다. "
                 + (
-                    f"한 건의 평균 응답은 {statistics.mean(latencies):.2f}초입니다."
+                    f"한 건이 끝나기까지 평균 {statistics.mean(latencies):.2f}초 걸렸습니다"
+                    "(서버에서 차례를 기다린 시간 포함)."
                     if latencies
                     else ""
                 )
@@ -453,19 +535,22 @@ def batch_tab(url, provider):
     with table, st.container(border=True):
         st.markdown("**결과 표**")
         st.caption(
-            "사람 검토: 고친 댓글을 분류 모델에 다시 넣었을 때 none이 아니었던 줄입니다. "
-            "분류 모델은 표현만 보므로, 말투는 정중한데 뜻이 바뀐 답은 여기에 잡히지 않습니다."
+            "사람 검토로 보낸 이유는 '검토 이유' 열에 있습니다. 분류 확신도가 낮은 none 판정, "
+            "고친 댓글에도 문제 표현이 남은 줄, 뜻이 바뀌었을 수 있는 줄입니다."
         )
         st.dataframe(
             result,
             hide_index=True,
             alt="대량 검수 결과",
+            # 줄이 적으면 스크롤 없이 모두 보이게 한다
+            height="content" if len(result) <= 20 else 600,
             column_config={
                 "원문": st.column_config.TextColumn(pinned=True),
+                "검토 이유": st.column_config.TextColumn(width="medium"),
                 "분류 확신도": st.column_config.ProgressColumn(
                     format="percent", min_value=0.0, max_value=1.0
                 ),
-                "응답 시간(초)": st.column_config.NumberColumn(format="%.2f"),
+                "처리 시간(초)": st.column_config.NumberColumn(format="%.2f"),
             },
         )
         st.download_button(
@@ -494,15 +579,28 @@ def policy_tab():
                 "그대로 게시": "문제 없음으로 판정된 댓글. 생성 모델이 문장을 바꿨어도 원문을 그대로 올림",
                 "순화 후 게시": "문제 표현을 고쳐 쓴 댓글",
                 "게시 보류": "남길 의견이 없어 게시하기 어렵다고 안내한 댓글",
-                "사람 검토": "고친 댓글을 분류 모델로 다시 판정했을 때도 문제가 남은 댓글",
+                "사람 검토": "아래 세 검사 가운데 하나라도 걸린 댓글",
                 "처리 실패": "생성 모델 호출 실패, 잘린 답변, 형식 오류",
             },
             border="horizontal",
             alt="권장 조치 기준",
         )
+    with st.container(border=True):
+        st.markdown("**사람 검토로 보내는 검사**")
+        st.table(
+            {
+                "분류 확신도": "문제 없음(none)으로 판정했지만 확신도가 93% 미만. "
+                "none은 고치지 않고 그대로 게시되므로 먼저 확인",
+                "다시 검사": "고친 댓글을 같은 분류 모델로 다시 판정해 none이 아님",
+                "뜻 검사": f"판정 모델({JUDGE_MODEL})이 원문과 고친 댓글을 비교해 뜻이 바뀌었다고 봄",
+            },
+            border="horizontal",
+            alt="사람 검토로 보내는 검사",
+        )
     st.caption(
-        "판정은 KcELECTRA 분류 모델(test Macro F1 0.667)이 합니다. 분류가 틀리면 다른 정책이 적용되고, "
-        "다시 검사는 뜻이 바뀐 답을 잡지 못하므로 중요한 게시물은 사람이 한 번 더 봐 주세요."
+        "판정은 KcELECTRA 분류 모델(test Macro F1 0.667)이 합니다. 최종 비교에서 세 검사는 나쁜 답 "
+        "20개 중 16개를 게시 전에 잡았고, 좋은 답 54개 중 7개를 사람 검토로 보냈습니다. 검사도 틀릴 "
+        "수 있으니 중요한 게시물은 사람이 한 번 더 봐 주세요."
     )
 
 
@@ -517,7 +615,10 @@ def api_tab(url):
             'body["status"]                              # ok, incomplete, invalid_format, generation_error\n'
             'body["classification"]["label"]             # none, offensive, hate\n'
             'json.loads(body["result"]["text"])["answer"]  # 게시할 댓글이나 안내 문장\n'
-            'body["result"]["answer_check"]["needs_review"]  # True면 사람 검토',
+            "# 아래 셋 중 하나라도 True면 사람 검토. 검사하지 않은 항목은 None\n"
+            'body["classification_check"]["needs_review"]   # none인데 확신도가 낮음\n'
+            'body["result"]["answer_check"]["needs_review"]   # 고친 댓글에도 문제 표현\n'
+            'body["result"]["meaning_check"]["needs_review"]  # 뜻이 바뀌었을 수 있음',
             language="python",
         )
     with st.container(border=True):
@@ -560,7 +661,9 @@ def main():
         )
         provider = PROVIDERS[choice]
         st.caption(f"{PROVIDER_MODELS[provider]}로 고쳐 씁니다.")
-        st.caption("서버를 켠 뒤 첫 요청은 로컬 모델을 메모리에 올리느라 7초쯤 걸립니다.")
+        st.caption(
+            "서버를 켠 뒤 첫 요청은 생성 모델과 뜻 검사 모델을 메모리에 올리느라 12초쯤 걸립니다."
+        )
 
     st.title("댓글 검수 콘솔", icon=":material/shield:")
     st.caption(

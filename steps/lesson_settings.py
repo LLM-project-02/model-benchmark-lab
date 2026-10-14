@@ -35,6 +35,8 @@ DEVELOPMENT_INPUT = DATA_DIR / "generation_development.jsonl"  # 생성 흐름 �
 # os.getenv(이름, 기본값): .env에 값이 없으면 오른쪽 기본값을 쓴다.
 # 로컬 생성 모델은 comparisons/local_models01의 비교로 골랐다(복습 키트 기본값은 qwen3:4b-instruct-2507-q4_K_M).
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma4:e4b")
+# 댓글 주제에서 고친 댓글의 뜻을 판정하는 모델. comparisons/review_rules01의 비교로 골랐다.
+MEANING_JUDGE_MODEL = os.getenv("MEANING_JUDGE_MODEL", "qwen3:4b-instruct-2507-q4_K_M")
 OLLAMA_URL = os.getenv(
     "OLLAMA_BASE_URL", "http://127.0.0.1:11434"
 )  # 내 PC에서 실행 중인 Ollama 주소

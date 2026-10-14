@@ -18,6 +18,8 @@ from step08_connect_chain import (
     create_chain,
     generate_prepared,
     review_answer,
+    review_classification,
+    review_meaning,
 )
 
 HOST = "127.0.0.1"
@@ -76,14 +78,15 @@ def generate(body: GenerateRequest, request: Request):
     # 요청 검증에 실패하면 함수 실행 전 422를 반환한다.
     prepared = request.app.state.chain.invoke(body.text)  # 분류 + 프롬프트 준비
     result = generate_prepared(prepared, body.provider)
-    # 댓글 주제: 고친 댓글을 다시 판정한 결과. 다른 주제는 None
-    result["answer_check"] = review_answer(
-        result, prepared["classification"]["label"], request.app.state.classifier
-    )
+    label = prepared["classification"]["label"]
+    # 댓글 주제의 검사 세 가지. 답을 막지 않고 사람이 확인할지만 알린다. 다른 주제는 None
+    result["answer_check"] = review_answer(result, label, request.app.state.classifier)
+    result["meaning_check"] = review_meaning(result, label, prepared["text"])
     # HTTP 200은 모델이 응답했다는 뜻이다. 답변을 쓸 수 있는지는 status로 확인한다.
     response = {
         "status": answer_status(result),
         "classification": prepared["classification"],
+        "classification_check": review_classification(prepared["classification"]),
         "result": result,
     }
     return JSONResponse(response, status_code=502 if result["error"] else 200)  # 생성 실패 시 502
@@ -95,11 +98,13 @@ def compare(body: TextRequest, request: Request):
     prepared = request.app.state.chain.invoke(body.text)
     result = compare_prepared(prepared)
     label = prepared["classification"]["label"]
+    result["classification_check"] = review_classification(prepared["classification"])
     result["results"] = [
         {
             **row,
             "status": answer_status(row),
             "answer_check": review_answer(row, label, request.app.state.classifier),
+            "meaning_check": review_meaning(row, label, prepared["text"]),
         }
         for row in result["results"]
     ]

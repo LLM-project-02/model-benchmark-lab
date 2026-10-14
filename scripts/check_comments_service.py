@@ -35,6 +35,7 @@ from lesson_settings import (
     DEVELOPMENT_INPUT,
     LEARNER_DIR,
     MAX_INPUT_CHARS,
+    MEANING_JUDGE_MODEL,
     OLLAMA_MODEL,
     OLLAMA_URL,
     OPENAI_MODEL,
@@ -103,13 +104,13 @@ def running_server(log_path, ollama_url=None):
 
 
 def unload_local_model(client):
-    """로컬 생성 모델을 메모리에서 내린다. 서버를 켠 직후의 첫 요청을 재기 위해서다."""
-    client.post(
-        OLLAMA_URL.rstrip("/") + "/api/generate", json={"model": OLLAMA_MODEL, "keep_alive": 0}
-    )
+    """로컬 생성 모델과 뜻 검사 판정 모델을 메모리에서 내린다. 서버를 켠 직후의 첫 요청을 재기 위해서다."""
+    names = {OLLAMA_MODEL, MEANING_JUDGE_MODEL}
+    for name in names:
+        client.post(OLLAMA_URL.rstrip("/") + "/api/generate", json={"model": name, "keep_alive": 0})
     for _ in range(60):
         running = client.get(OLLAMA_URL.rstrip("/") + "/api/ps").json().get("models", [])
-        if all(model["name"] != OLLAMA_MODEL for model in running):
+        if all(model["name"] not in names for model in running):
             return
         time.sleep(0.5)
 
@@ -142,11 +143,16 @@ def send(client, spec):
 
 
 def recheck_text(result):
-    """고친 댓글을 다시 판정한 결과(answer_check)를 짧게 적는다. 없으면 빈 문자열."""
+    """고친 댓글의 두 검사(answer_check, meaning_check)를 짧게 적는다. 없으면 빈 문자열."""
+    text = ""
     check = result.get("answer_check")
-    if not check:
-        return ""
-    return f", 다시 검사 {check['label']}" + (" → 확인 필요" if check["needs_review"] else "")
+    if check:
+        text += f", 다시 검사 {check['label']}" + (" → 확인 필요" if check["needs_review"] else "")
+    meaning = result.get("meaning_check")
+    if meaning:
+        verdict = {True: "지킴", False: "바뀜", None: "판정 실패"}[meaning["meaning_kept"]]
+        text += f", 뜻 검사 {verdict}" + (" → 확인 필요" if meaning["needs_review"] else "")
+    return text
 
 
 def outcome(record):
@@ -167,7 +173,11 @@ def classification_text(record):
     classification = record["response"].get("classification")
     if not classification:
         return "-"
-    return f"{classification['label']} ({classification['confidence']:.2f})"
+    # none인데 확신도가 낮으면(classification_check) 사람이 확인하라고 알린다
+    review = (record["response"].get("classification_check") or {}).get("needs_review")
+    return f"{classification['label']} ({classification['confidence']:.2f})" + (
+        " → 확인 필요" if review else ""
+    )
 
 
 def passed(record):

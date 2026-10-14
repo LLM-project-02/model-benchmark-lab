@@ -188,7 +188,7 @@ def test_output_schema_rejects_invalid_structure(raw):
 
 @pytest.fixture
 def service_stub(monkeypatch):
-    observations = {"predictions": [], "generations": []}
+    observations = {"predictions": [], "generations": [], "judgements": []}
     result_settings = {"confidence": 0.8, "truncated": False, "label": "refund"}
 
     def predict(text, bundle):
@@ -210,8 +210,19 @@ def service_stub(monkeypatch):
             "error": "TimeoutError" if failed else None,
         }
 
+    def judge(prompt, schema):
+        # 뜻 검사 판정 모델 대신: 기본은 뜻을 지켰다고 판정한다
+        observations["judgements"].append(prompt)
+        return {
+            "text": json.dumps({"reason": "대상과 평가가 같다.", "meaning_kept": True}),
+            "model": "judge-only",
+            "latency_seconds": 0.5,
+            "error": None,
+        }
+
     monkeypatch.setattr(chain, "predict_text", predict)
     monkeypatch.setattr(chain, "call_model", call)
+    monkeypatch.setattr(chain, "call_judge", judge)
     return chain.create_chain(object()), observations, result_settings
 
 
@@ -288,7 +299,7 @@ def test_bad_comparison_inputs_fail_before_generation(service_stub, tmp_path, ca
     runnable, seen, _ = service_stub
     with pytest.raises(ValueError):
         comparison.run_comparison(runnable, cases, tmp_path / "bad")
-    assert seen == {"predictions": [], "generations": []}
+    assert seen == {"predictions": [], "generations": [], "judgements": []}
 
 
 def test_api_loads_once_validates_input_and_keeps_partial_failure(service_stub, monkeypatch):
@@ -551,6 +562,116 @@ def test_api_rechecks_rewritten_comment_and_flags_without_blocking(service_stub,
     }
     assert [row["answer_check"]["needs_review"] for row in compared["results"]] == [True, True]
     assert [text for text, _ in seen["predictions"]].count(rewritten) == 3
+    # 뜻 검사도 고친 답마다 한 번씩 하고, 고쳐 쓰는 라벨이면 확신도 규칙에는 걸리지 않는다
+    assert body["result"]["meaning_check"]["needs_review"] is False
+    assert [row["meaning_check"]["meaning_kept"] for row in compared["results"]] == [True, True]
+    assert len(seen["judgements"]) == 3
+    assert body["classification_check"] == {
+        "threshold": chain.NONE_REVIEW_THRESHOLD,
+        "needs_review": False,
+    }
+    assert compared["classification_check"]["needs_review"] is False
+
+
+def test_api_sends_low_confidence_none_to_review_without_judging_meaning(service_stub, monkeypatch):
+    _, seen, settings = service_stub
+    settings.update(label="none", confidence=chain.NONE_REVIEW_THRESHOLD - 0.2)
+    monkeypatch.setattr(api, "load_classifier", lambda: object())
+    with TestClient(api.app) as client:
+        body = client.post("/generate", json={"text": "애매한 댓글"}).json()
+    assert body["classification_check"]["needs_review"] is True
+    # none은 고쳐 쓰지 않으므로 뜻 검사를 하지 않는다
+    assert body["result"]["meaning_check"] is None
+    assert seen["judgements"] == []
+
+
+def test_classification_check_threshold():
+    threshold = chain.NONE_REVIEW_THRESHOLD
+    check = chain.review_classification
+    assert check({"label": "none", "confidence": threshold - 0.01})["needs_review"] is True
+    assert check({"label": "none", "confidence": threshold})["needs_review"] is False
+    # 고쳐 쓰는 라벨은 생성과 다시 검사가 다루므로 확신도로 보내지 않는다
+    assert check({"label": "offensive", "confidence": 0.4})["needs_review"] is False
+    assert check({"label": "refund", "confidence": 0.4}) is None  # 댓글 주제가 아님
+
+
+def test_meaning_check_flags_changed_or_unreadable_verdicts_and_skips_the_rest(
+    service_stub, monkeypatch
+):
+    _, seen, _ = service_stub
+    rewritten = {
+        "error": None,
+        "output_format_valid": True,
+        "text": json.dumps({"answer": "고친 댓글", "next_steps": []}, ensure_ascii=False),
+    }
+    verdicts = iter(
+        [
+            json.dumps({"reason": "불만이 감사로 바뀌었다.", "meaning_kept": False}),
+            "형식이 틀린 판정",
+        ]
+    )
+
+    def judge(prompt, schema):
+        seen["judgements"].append(prompt)
+        return {
+            "text": next(verdicts),
+            "model": "judge-only",
+            "latency_seconds": 0.5,
+            "error": None,
+        }
+
+    monkeypatch.setattr(chain, "call_judge", judge)
+    changed = chain.review_meaning(rewritten, "offensive", "원문 댓글")
+    assert changed["needs_review"] is True
+    assert changed["meaning_kept"] is False
+    assert changed["reason"] == "불만이 감사로 바뀌었다."
+    assert "원문 댓글" in seen["judgements"][0] and "고친 댓글" in seen["judgements"][0]
+    # 판정 형식이 틀리면 확인할 수 없으므로 사람이 본다
+    unreadable = chain.review_meaning(rewritten, "hate", "원문 댓글")
+    assert unreadable["needs_review"] is True
+    assert unreadable["meaning_kept"] is None
+    # 판정하지 않는 경우: none, 게시 불가 안내, 쓸 수 없는 답, 다른 주제
+    refusal = {
+        **rewritten,
+        "text": json.dumps(
+            {"answer": "이 댓글은 그대로 게시하기 어렵습니다.", "next_steps": ["다시 써 주세요."]},
+            ensure_ascii=False,
+        ),
+    }
+    failed = {"error": "TimeoutError", "output_format_valid": False, "text": ""}
+    assert chain.review_meaning(rewritten, "none", "원문 댓글") is None
+    assert chain.review_meaning(refusal, "hate", "원문 댓글") is None
+    assert chain.review_meaning(failed, "hate", "원문 댓글") is None
+    assert chain.review_meaning(rewritten, "refund", "원문 댓글") is None
+    assert len(seen["judgements"]) == 2
+
+
+def test_judge_request_is_repeatable_and_bound_to_the_schema(monkeypatch):
+    seen = []
+    verdict = '{"reason":"같다","meaning_kept":true}'
+
+    def handler(request):
+        seen.append(request)
+        if len(seen) > 1:
+            return httpx.Response(500, json={"error": "server"})
+        return httpx.Response(200, json={"response": verdict, "done": True})
+
+    install_http_transport(monkeypatch, handler)
+    schema = chain.MeaningVerdict.model_json_schema()
+    result = models.call_judge("판정 프롬프트", schema)
+    body = json.loads(seen[0].content)
+    assert seen[0].url.path == "/api/generate"
+    assert body["model"] == models.MEANING_JUDGE_MODEL
+    assert body["prompt"] == "판정 프롬프트"
+    assert body["think"] is False
+    assert body["stream"] is False
+    assert body["format"] == schema
+    assert body["options"]["temperature"] == 0  # 같은 답에 같은 판정
+    assert result["text"] == verdict
+    assert result["error"] is None
+    failed = models.call_judge("판정 프롬프트", schema)
+    assert failed["text"] == ""
+    assert failed["error"] == "HTTPStatusError"
 
 
 def test_answer_recheck_is_skipped_for_other_topics_and_unusable_answers(service_stub):
