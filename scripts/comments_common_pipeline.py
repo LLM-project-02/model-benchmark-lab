@@ -8,7 +8,8 @@
 
 LLM 단독(분류기 없이 LLM이 라벨까지 고르기)은 지원하지 않는다. 서비스 프롬프트가 라벨별 정책을 전제로 하고
 AnswerPayload에 label 필드가 없어서다. 그 조합은 프롬프트 단계에서 실패로 기록된다(docs/COMMON_PIPELINE.md).
-서비스의 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI(step10)에만 있고 이 연결에는 넣지 않았다.
+FastAPI 서비스(step10)는 이 연결로 요청을 실행한다. 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는
+엔진 범위 밖이라 step10이 파이프라인 결과 뒤에 붙인다.
 """
 
 import json
@@ -77,13 +78,17 @@ def build_service():
     }
 
 
-def make_classifier(bundle):
-    """미리 불러온 분류 모델(step06 load_classifier)을 엔진의 분류 함수로 감싼다."""
+def make_classifier(bundle, predict_fn=None):
+    """미리 불러온 분류 모델(step06 load_classifier)을 엔진의 분류 함수로 감싼다.
+
+    predict_fn은 step06 predict_text와 같은 모양의 함수다. FastAPI(step10)가 판정 원본을 함께 모을 때 넘긴다.
+    """
+    predict_fn = predict_fn or predict_text
     identity = bundle["identity"]
     model_id = f"{identity['learner']}/{identity['run_name']}"  # 미세조정한 체크포인트
 
     def predict(input_data):
-        verdict = predict_text(input_data["text"], bundle)
+        verdict = predict_fn(input_data["text"], bundle)
         return {
             "label": verdict["label"],
             "probabilities": verdict["probabilities"],

@@ -226,6 +226,9 @@ def batch_row(text, response):
     if response["code"] == 422:
         row["오류"] = "입력 오류: " + input_error(body)
         return row
+    if "classification" not in body:  # 분류·프롬프트 단계 실패(500) 등
+        row["오류"] = f"서버 오류 (HTTP {response['code']}) {body.get('detail', '')}".strip()
+        return row
     classification = body.get("classification") or {}
     classification_check = body.get("classification_check")  # none인데 확신도가 낮은지
     result = body.get("result") or {}
@@ -417,8 +420,11 @@ def single_tab(url, provider):
         if response["code"] == 422:
             st.warning("입력을 확인해 주세요: " + input_error(body), icon=":material/edit:")
             return
-        if "classification" not in body:
-            st.error(f"예상하지 못한 응답입니다 (HTTP {response['code']}).")
+        if "classification" not in body:  # 분류·프롬프트 단계 실패(500) 등
+            st.error(
+                f"서버가 처리하지 못했습니다 (HTTP {response['code']}). {body.get('detail', '')}",
+                icon=":material/error:",
+            )
             return
         label = body["classification"]["label"]
         check = body.get("classification_check")  # none인데 확신도가 낮은지
@@ -618,7 +624,9 @@ def api_tab(url):
             "# 아래 셋 중 하나라도 True면 사람 검토. 검사하지 않은 항목은 None\n"
             'body["classification_check"]["needs_review"]   # none인데 확신도가 낮음\n'
             'body["result"]["answer_check"]["needs_review"]   # 고친 댓글에도 문제 표현\n'
-            'body["result"]["meaning_check"]["needs_review"]  # 뜻이 바뀌었을 수 있음',
+            'body["result"]["meaning_check"]["needs_review"]  # 뜻이 바뀌었을 수 있음\n'
+            "# 팀 공통 파이프라인 결과 원본 (schema_version 2)\n"
+            'body["pipeline"]["results"][0]["service_output"]  # answer, next_steps',
             language="python",
         )
     with st.container(border=True):
@@ -630,12 +638,15 @@ def api_tab(url):
                 "POST /compare": "같은 판정과 지침으로 두 생성 모델의 결과를 함께 돌려줌",
                 "200": "판정과 생성이 끝남. 답을 그대로 써도 되는지는 status로 확인",
                 "422": "잘못된 입력(빈 입력, 4,000자 초과, 없는 provider). 판정 전에 거절",
+                "500": "서버 안의 분류·프롬프트 단계 실패. detail에 실패한 단계를 알려 줌",
                 "502": "생성 모델 호출 실패. 판정 결과는 함께 돌려줌",
             },
             border="horizontal",
             alt="API 엔드포인트와 응답 코드",
         )
-    st.caption(f"API 문서 화면: {url.rstrip('/')}/docs")
+    st.caption(
+        f"API 문서 화면: {url.rstrip('/')}/docs · 응답 형식 전체: 저장소의 docs/COMMENTS_API.md"
+    )
 
 
 def main():

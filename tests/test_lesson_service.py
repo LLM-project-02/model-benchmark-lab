@@ -186,6 +186,12 @@ def test_output_schema_rejects_invalid_structure(raw):
     assert models.valid_output(raw) is False
 
 
+def comment_probabilities(label, confidence):
+    """댓글 세 라벨의 확률(합계 1). label에 confidence를 주고 나머지 둘이 남은 값을 나눈다."""
+    rest = (1 - confidence) / 2
+    return {name: confidence if name == label else rest for name in ("none", "offensive", "hate")}
+
+
 @pytest.fixture
 def service_stub(monkeypatch):
     observations = {"predictions": [], "generations": [], "judgements": []}
@@ -193,7 +199,13 @@ def service_stub(monkeypatch):
 
     def predict(text, bundle):
         observations["predictions"].append((text, bundle))
-        return {**result_settings, "model": {"run_name": "test-only"}}
+        return {
+            **result_settings,
+            "probabilities": comment_probabilities(
+                result_settings["label"], result_settings["confidence"]
+            ),
+            "model": {"run_name": "test-only"},
+        }
 
     def call(provider, prompt):
         observations["generations"].append((provider, prompt))
@@ -224,6 +236,24 @@ def service_stub(monkeypatch):
     monkeypatch.setattr(chain, "call_model", call)
     monkeypatch.setattr(chain, "call_judge", judge)
     return chain.create_chain(object()), observations, result_settings
+
+
+# FastAPI 서버가 불러온 분류 모델 대신. 공통 파이프라인 연결이 identity로 model_id, run_id를 만든다.
+FAKE_BUNDLE = {"identity": {"learner": "test", "run_name": "test-only", "run_id": "run-test"}}
+
+
+@pytest.fixture
+def api_stub(service_stub, monkeypatch):
+    """서버가 공통 파이프라인 안에서 부르는 분류·생성 함수도 service_stub의 가짜로 보낸다.
+
+    테스트가 chain의 가짜를 다시 바꿔도 서버가 따라가도록 호출할 때 찾는다. 라벨은 댓글 라벨로 바꾼다.
+    """
+    _, seen, settings = service_stub
+    settings["label"] = "offensive"
+    monkeypatch.setattr(api, "load_classifier", lambda: FAKE_BUNDLE)
+    monkeypatch.setattr(api, "predict_text", lambda text, bundle: chain.predict_text(text, bundle))
+    monkeypatch.setattr(api, "call_model", lambda name, prompt: chain.call_model(name, prompt))
+    return seen, settings
 
 
 def test_chain_classifies_once_and_shares_prompt(service_stub):
@@ -302,13 +332,13 @@ def test_bad_comparison_inputs_fail_before_generation(service_stub, tmp_path, ca
     assert seen == {"predictions": [], "generations": [], "judgements": []}
 
 
-def test_api_loads_once_validates_input_and_keeps_partial_failure(service_stub, monkeypatch):
-    _, seen, _ = service_stub
+def test_api_loads_once_validates_input_and_keeps_partial_failure(api_stub, monkeypatch):
+    seen, _ = api_stub
     loads = []
 
     def loader():
         loads.append(True)
-        return object()
+        return FAKE_BUNDLE
 
     monkeypatch.setattr(api, "load_classifier", loader)
     with TestClient(api.app) as client:
@@ -320,14 +350,83 @@ def test_api_loads_once_validates_input_and_keeps_partial_failure(service_stub, 
             client.post("/generate", json={"text": "문의", "provider": "other"}).status_code == 422
         )
         assert client.post("/compare", json={"text": "   "}).status_code == 422
+        assert seen["predictions"] == []  # 422는 분류 전에 거절한다
         good = client.post("/generate", json={"text": "  문의  "})
         assert good.status_code == 200
-        assert seen["predictions"][-1][0] == "문의"
+        assert seen["predictions"][0][0] == "문의"
         comparison_result = client.post("/compare", json={"text": "문의"})
         assert comparison_result.status_code == 502
         assert len(comparison_result.json()["results"]) == 2
         assert client.post("/generate", json={"text": "가" * 4001}).status_code == 422
     assert loads == [True]
+
+
+def test_api_runs_through_common_pipeline_and_keeps_existing_fields(api_stub):
+    seen, settings = api_stub
+    with TestClient(api.app) as client:
+        body = client.post("/generate", json={"text": "  원문 댓글  "}).json()
+        compared = client.post("/compare", json={"text": "원문 댓글"}).json()
+    # 기존 필드는 그대로다
+    assert body["status"] == "ok"
+    assert body["classification"]["label"] == "offensive"
+    assert body["classification"]["confidence"] == settings["confidence"]
+    assert body["classification"]["truncated"] is False
+    assert body["result"]["text"] == VALID_TEXT
+    assert body["result"]["provider"] == "ollama"
+    # 생성 모델에는 파이프라인이 서비스 프롬프트(step08 apply_policy)를 보냈다
+    expected = chain.apply_policy({"text": "원문 댓글", "classification": {"label": "offensive"}})
+    assert seen["generations"][0] == ("ollama", expected["prompt"])
+    pipeline = body["pipeline"]
+    assert pipeline["schema_version"] == 2
+    assert pipeline["service_id"] == "comments"
+    assert pipeline["input_data"] == {"text": "원문 댓글"}
+    item = pipeline["results"][0]
+    assert (item["classifier"], item["llm"], item["status"]) == ("kcelectra", "ollama", "success")
+    assert item["classification"]["run_id"] == "run-test"
+    assert item["generated_text"] == "상태를 확인해 주세요."
+    assert item["service_output"] == json.loads(VALID_TEXT)
+    assert item["generation"]["raw_text"] == VALID_TEXT
+    # 비교는 두 모델에 같은 프롬프트를 보내고, 실패한 상용 호출을 llm 단계 실패로 남긴다
+    assert seen["generations"][1][1] == seen["generations"][2][1] == expected["prompt"]
+    assert [row["llm"] for row in compared["pipeline"]["results"]] == ["ollama", "openai"]
+    assert compared["pipeline"]["results"][1]["error"]["stage"] == "llm"
+    assert compared["results"][1]["error"] == "TimeoutError"  # 예외 종류는 기존 필드에 남는다
+
+
+@pytest.mark.parametrize("failure", ["classifier_error", "unknown_label"])
+def test_api_classification_failure_is_server_error_without_generation(
+    api_stub, monkeypatch, failure
+):
+    seen, settings = api_stub
+
+    def broken(text, bundle):
+        raise RuntimeError("private-path-do-not-publish")
+
+    if failure == "classifier_error":
+        monkeypatch.setattr(chain, "predict_text", broken)
+    else:
+        settings["label"] = "refund"  # 댓글 서비스에 없는 라벨
+    with TestClient(api.app) as client:
+        response = client.post("/generate", json={"text": "원문 댓글"})
+        compared = client.post("/compare", json={"text": "원문 댓글"})
+    assert response.status_code == compared.status_code == 500
+    stage = "classification" if failure == "classifier_error" else "classification_contract"
+    assert response.json()["detail"].startswith(stage + " ")
+    assert "private-path" not in response.text  # 예외 원문은 내보내지 않는다
+    assert seen["generations"] == []
+
+
+def test_api_allows_browser_calls_only_from_local_pages(api_stub):
+    def preflight(client, origin):
+        headers = {"Origin": origin, "Access-Control-Request-Method": "POST"}
+        return client.options("/generate", headers=headers).headers
+
+    with TestClient(api.app) as client:
+        assert preflight(client, "http://localhost:5173")["access-control-allow-origin"] == (
+            "http://localhost:5173"
+        )
+        assert "access-control-allow-origin" in preflight(client, "http://127.0.0.1:8501")
+        assert "access-control-allow-origin" not in preflight(client, "https://example.com")
 
 
 def test_api_model_loading_failure_stops_server_startup(monkeypatch):
@@ -339,22 +438,33 @@ def test_api_model_loading_failure_stops_server_startup(monkeypatch):
         pytest.fail("모델 로딩 실패 후에는 요청을 받을 수 없어야 한다.")
 
 
-def test_api_http_success_does_not_hide_invalid_or_incomplete_output(service_stub, monkeypatch):
+@pytest.mark.parametrize(
+    ("complete", "status", "stage"),
+    [(False, "incomplete", "generation"), (True, "invalid_format", "parse_output")],
+)
+def test_api_http_success_does_not_hide_invalid_or_incomplete_output(
+    api_stub, monkeypatch, complete, status, stage
+):
     def invalid(provider, prompt):
         return {
             "error": None,
             "text": "unfinished",
-            "generation_complete": False,
+            "model": "test-only",
+            "usage": {"input_tokens": None, "output_tokens": None},
+            "generation_complete": complete,
             "output_format_valid": False,
         }
 
     monkeypatch.setattr(chain, "call_model", invalid)
-    monkeypatch.setattr(api, "load_classifier", lambda: object())
     with TestClient(api.app) as client:
         response = client.post("/generate", json={"text": "문의"})
-        assert response.status_code == 200
-        assert response.json()["result"]["generation_complete"] is False
-        assert response.json()["result"]["output_format_valid"] is False
+    body = response.json()
+    assert response.status_code == 200
+    assert body["status"] == status
+    assert body["result"]["generation_complete"] is complete
+    assert body["result"]["output_format_valid"] is False
+    assert body["pipeline"]["results"][0]["error"]["stage"] == stage
+    assert body["pipeline"]["results"][0]["service_output"] is None
 
 
 def test_summary_denominators_keep_failed_and_incomplete_calls():
@@ -508,30 +618,38 @@ def test_summary_separates_call_errors_from_incomplete_or_invalid_answers():
     assert summary["usable_rate_all_calls"] == 0.25
 
 
-def test_api_status_tells_whether_the_answer_is_usable(service_stub, monkeypatch):
-    monkeypatch.setattr(api, "load_classifier", lambda: object())
+def test_api_status_tells_whether_the_answer_is_usable(api_stub):
     with TestClient(api.app) as client:
         assert client.post("/generate", json={"text": "문의"}).json()["status"] == "ok"
         compared = client.post("/compare", json={"text": "문의"}).json()
         assert [row["status"] for row in compared["results"]] == ["ok", "generation_error"]
-    for complete, valid, expected in (
-        (False, False, "incomplete"),
-        (True, False, "invalid_format"),
+    # 파이프라인 결과 항목의 status와 실패 단계로 정한다
+    for item, expected in (
+        ({"status": "success", "error": None}, "ok"),
+        ({"status": "incomplete", "error": {"stage": "generation"}}, "incomplete"),
+        ({"status": "error", "error": {"stage": "llm"}}, "generation_error"),
+        ({"status": "error", "error": {"stage": "llm_contract"}}, "generation_error"),
+        ({"status": "error", "error": {"stage": "parse_output"}}, "invalid_format"),
+        ({"status": "error", "error": {"stage": "output_contract"}}, "invalid_format"),
     ):
-        result = {"error": None, "generation_complete": complete, "output_format_valid": valid}
-        assert api.answer_status(result) == expected
+        assert api.answer_status(item) == expected
 
 
-def test_api_rechecks_rewritten_comment_and_flags_without_blocking(service_stub, monkeypatch):
-    _, seen, settings = service_stub
-    settings["label"] = "offensive"  # 원문은 댓글 라벨로 분류된다
+def test_api_rechecks_rewritten_comment_and_flags_without_blocking(api_stub, monkeypatch):
+    seen, settings = api_stub  # 원문은 댓글 라벨(offensive)로 분류된다
     rewritten = "고친 댓글"
 
     def predict(text, bundle):
         seen["predictions"].append((text, bundle))
         # 고친 댓글에도 문제 표현이 남았다고 판정하는 상황
         label = "hate" if text == rewritten else settings["label"]
-        return {"label": label, "confidence": 0.7, "truncated": False, "model": {}}
+        return {
+            "label": label,
+            "confidence": 0.7,
+            "probabilities": comment_probabilities(label, 0.7),
+            "truncated": False,
+            "model": {},
+        }
 
     def call(provider, prompt):
         seen["generations"].append((provider, prompt))
@@ -549,7 +667,6 @@ def test_api_rechecks_rewritten_comment_and_flags_without_blocking(service_stub,
 
     monkeypatch.setattr(chain, "predict_text", predict)
     monkeypatch.setattr(chain, "call_model", call)
-    monkeypatch.setattr(api, "load_classifier", lambda: object())
     with TestClient(api.app) as client:
         body = client.post("/generate", json={"text": "원문 댓글"}).json()
         compared = client.post("/compare", json={"text": "원문 댓글"}).json()
@@ -573,10 +690,9 @@ def test_api_rechecks_rewritten_comment_and_flags_without_blocking(service_stub,
     assert compared["classification_check"]["needs_review"] is False
 
 
-def test_api_sends_low_confidence_none_to_review_without_judging_meaning(service_stub, monkeypatch):
-    _, seen, settings = service_stub
+def test_api_sends_low_confidence_none_to_review_without_judging_meaning(api_stub):
+    seen, settings = api_stub
     settings.update(label="none", confidence=chain.NONE_REVIEW_THRESHOLD - 0.2)
-    monkeypatch.setattr(api, "load_classifier", lambda: object())
     with TestClient(api.app) as client:
         body = client.post("/generate", json={"text": "애매한 댓글"}).json()
     assert body["classification_check"]["needs_review"] is True
