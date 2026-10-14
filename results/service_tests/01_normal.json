@@ -24,8 +24,8 @@
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
     "seconds": {
-      "classify": 0.58,
-      "total": 7.21
+      "classify": 0.07,
+      "total": 5.51
     },
     "results": [
       {
@@ -50,13 +50,13 @@
           "neutral": 0.045,
           "contradiction": 0.917
         },
-        "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서 문장에는 5억 원으로 적혀 있습니다.",
+        "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서 문장은 5억 원으로 적고 있습니다.",
         "suggestion": "마케팅 예산은 3억 원으로 승인되었다.",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 2.57,
+          "seconds": 1.68,
           "input_tokens": 319,
-          "output_tokens": 81,
+          "output_tokens": 91,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
@@ -86,13 +86,13 @@
           "neutral": 0.041,
           "contradiction": 0.05
         },
-        "explanation": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서의 ‘넘기기로 했다’는 같은 내용을 표현합니다.",
+        "explanation": "원문에서 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 했으며, 보고서의 ‘넘기기로 했다’는 같은 내용을 나타냅니다.",
         "suggestion": null,
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 1.63,
+          "seconds": 1.42,
           "input_tokens": 328,
-          "output_tokens": 78,
+          "output_tokens": 76,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
@@ -122,13 +122,13 @@
           "neutral": 0.918,
           "contradiction": 0.045
         },
-        "explanation": "원문에서 출시 첫 달 목표 가입자가 10만 명이라는 내용은 확인할 수 없습니다.",
-        "suggestion": "이 목표 가입자 수의 출처나 근거 자료를 알려주시겠습니까?",
+        "explanation": "출시 첫 달 목표 가입자 수는 원문에서 확인할 수 없습니다.",
+        "suggestion": "출시 첫 달 목표 가입자 10만 명의 출처나 근거 자료를 알려주시겠습니까?",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 2.38,
+          "seconds": 2.33,
           "input_tokens": 361,
-          "output_tokens": 106,
+          "output_tokens": 118,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
