@@ -280,6 +280,8 @@ CLAUDE.local.md
 .DS_Store
 Thumbs.db
 Desktop.ini
+# PowerPoint·Word·Excel이 파일을 열어 둔 동안 만드는 잠금 파일(~$로 시작)은 올리지 않는다.
+~$*
 
 
 # 8. Project2 step-by-step outputs
