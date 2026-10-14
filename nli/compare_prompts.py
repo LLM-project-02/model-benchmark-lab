@@ -1,11 +1,14 @@
 """지시문 v1 vs v2 비교 (상용·로컬 각각).
 
 A. 실제 서비스형 (cases_v2.jsonl): 근거 찾기 + 분류기 판정 → 지시문 v1/v2 → LLM
-   v2가 평소 품질을 해치지 않는지 본다 (맞는 문장 오경보, 형식, 지시 위반, 숫자 정답).
+   v2가 평소 품질을 해치지 않는지 본다 (맞는 문장 오경보, 형식, 단정 표현, 숫자 정답).
 B. 판정 강제형 (stress2_cases.jsonl): '뒷받침함' 판정을 일부러 붙여 전달
    v2가 재검토 표시와 수정안 제시를 늘리는지, 맞는 문장에 괜히 경고하지 않는지 본다.
 
 - 로컬 답은 서비스처럼 후처리를 적용한다. 지시 위반은 후처리 전 기준으로 센다.
+- 지시 위반은 두 가지로 나눈다.
+  단정 표현('명확한 오류' 등): 두 지시문 모두 금지 → 채택 규칙에 사용
+  확인 불가에서 '원문과 다르다': v2가 근거 불일치 시 허용하고, 글자로만 세어 부정확 → 표에만 기록
 - 설정별로 차례로 실행한다 (모델 교체 시간이 응답 시간에 섞이지 않게).
 
 실행
@@ -46,15 +49,17 @@ def run_one(chain, module, provider, result):
     out = module.explain(chain, result)
     raw_exp, raw_sug = out.get("explanation"), out.get("suggestion")
     violations = check_violations({"explanation": raw_exp, "suggestion": raw_sug}, result["label"])
+    assertive = [v for v in violations if not v.startswith("원문과 다르")]  # 단정 표현만
     exp, sug = (soften(raw_exp), soften(raw_sug)) if provider == "ollama" else (raw_exp, raw_sug)
     text = f"{exp or ''} {sug or ''}"
     return {"model": out.get("model"), "explanation": exp, "suggestion": sug,
             "parse_ok": out.get("parse_ok"), "error": out.get("error"), "seconds": out.get("seconds"),
-            "cost_usd": cost_usd(provider, out), "violations": violations,
+            "cost_usd": cost_usd(provider, out), "violations": violations, "assertive": assertive,
             "flagged": "재검토" in text, "noticed": any(w in text for w in NOTICE_WORDS)}
 
 
 def forced(case):
+    """분류기가 '뒷받침함'으로 판정했다고 가정한 입력."""
     return {"claim": case["report"], "evidence": case["evidence"],
             "label": "entailment", "label_ko": "뒷받침함", "confidence": GIVEN_CONFIDENCE}
 
@@ -122,6 +127,10 @@ def main():
     def frac(rs, key):
         return f"{count(rs, key)}/{len(rs)}" if rs else "-"
 
+    def neutral_diff(part, c):
+        rs = rows(part, c)
+        return f"{sum(1 for r in rs if len(r['violations']) > len(r['assertive']))}/{len(rs)}"
+
     names = [label(c) for c in CONFIGS]
     lines = [
         f"# 지시문 v1 vs v2 비교 ({args.split})",
@@ -129,6 +138,7 @@ def main():
         f"- 지시문 지문: v1 `{file_digest(config.ROOT / 'nli' / 'explainer.py')[:16]}...`, "
         f"v2 `{file_digest(config.ROOT / 'nli' / 'explainer_v2.py')[:16]}...`",
         f"- A 분류기 판정 정답: {correct}/{len(judged)}. 로컬 답은 후처리 적용, 지시 위반은 후처리 전 기준",
+        "- '확인 불가에서 원문과 다르다'는 글자로만 세어 부정확하고 v2에서 일부 허용되므로 채택 규칙에 쓰지 않는다",
         "",
         "## A. 실제 서비스형 (평소 품질)",
         "",
@@ -137,7 +147,8 @@ def main():
     ]
     a_table = [
         ("JSON 형식 정상", lambda c: frac(rows("A", c), "parse_ok")),
-        ("지시 위반 (후처리 전)", lambda c: f"{sum(1 for r in rows('A', c) if r['violations'])}/{len(rows('A', c))}"),
+        ("단정 표현 (후처리 전)", lambda c: frac(rows("A", c), "assertive")),
+        ("확인 불가에서 '원문과 다르다' (참고)", lambda c: neutral_diff("A", c)),
         ("숫자 정답 포함", lambda c: f"{sum(1 for r in rows('A', c) if r['numeric_ok'])}/"
                                     f"{sum(1 for r in rows('A', c) if r['numeric_ok'] is not None)}"),
         ("맞는 문장 오경보 (재검토 또는 수정안)", lambda c: (lambda rs: f"{sum(1 for r in rs if r['flagged'] or r['suggestion'])}/{len(rs)}")(
@@ -158,7 +169,7 @@ def main():
         ("위험: 모순 지적", lambda c: frac(rows("B", c, danger), "noticed")),
         ("위험: 수정안에 바른 내용", lambda c: frac(rows("B", c, danger), "fix_in_suggestion")),
         ("대조: 오경보", lambda c: frac(rows("B", c, control), "false_alarm")),
-        ("지시 위반 (후처리 전)", lambda c: f"{sum(1 for r in rows('B', c) if r['violations'])}/{len(rows('B', c))}"),
+        ("단정 표현 (후처리 전)", lambda c: frac(rows("B", c), "assertive")),
         ("응답 시간 평균", lambda c: f"{mean(r['seconds'] for r in rows('B', c)):.2f}초" if rows("B", c) else "-"),
     ]
     for name, fn in b_table:
@@ -173,13 +184,13 @@ def main():
                                          and r["classifier_label"] == "entailment")
                          if r["flagged"] or r["suggestion"])
     parse_a = lambda c: count(rows("A", c), "parse_ok")
-    viol = lambda c: sum(1 for p in ("A", "B") for r in rows(p, c) if r["violations"])
+    assertive = lambda c: sum(1 for p in ("A", "B") for r in rows(p, c) if r["assertive"])
     checks = {
         "R1 로컬 수정안 5건 이상 증가": fix(ol2) - fix(ol1) >= 5,
         "R2 상용 재검토·수정안 유지": flag(oa2) >= flag(oa1) - 2 and fix(oa2) >= fix(oa1) - 2,
         "R3 대조 오경보 유지": fa_b(oa2) <= fa_b(oa1) + 1 and fa_b(ol2) <= fa_b(ol1) + 1,
         "R4 평소 품질 유지": all(fa_a(v2c) <= fa_a(v1c) + 1 and parse_a(v2c) >= parse_a(v1c) - 1
-                              and viol(v2c) <= viol(v1c) for v1c, v2c in ((oa1, oa2), (ol1, ol2))),
+                              and assertive(v2c) <= assertive(v1c) for v1c, v2c in ((oa1, oa2), (ol1, ol2))),
     }
     lines += ["", "## 채택 규칙 판단" + (" (점검용, 의미 없음)" if args.split == "dev2" else ""), ""]
     for name, ok in checks.items():
