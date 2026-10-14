@@ -5,6 +5,45 @@
 # 이 노트북의 OpenAI 키로 요청을 보낼 수 있다. 다른 기기에서 시연하려면 Cloudflare Tunnel 등을 따로 쓴다.
 address = "127.0.0.1"
 
+[client]
+# 오른쪽 위의 Deploy 같은 개발자 메뉴를 숨긴다.
+toolbarMode = "minimal"
+
 [browser]
 # 사용 통계를 Streamlit으로 보내지 않는다.
 gatherUsageStats = false
+
+# 업무용(B2B) 콘솔 느낌의 밝은 테마. 글꼴은 한글이 있는 IBM Plex Sans KR(Google Fonts)을 쓴다.
+# 인터넷이 없으면 기본 글꼴로 보인다.
+[theme]
+base = "light"
+primaryColor = "#3451D1"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7FB"
+codeBackgroundColor = "#F1F4F9"
+textColor = "#0F172A"
+linkColor = "#3451D1"
+borderColor = "#E2E8F0"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "8px"
+buttonRadius = "8px"
+font = "'IBM Plex Sans KR':https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"
+codeFont = "'JetBrains Mono':https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+codeFontSize = "0.85rem"
+baseFontSize = 15
+headingFontWeights = [700, 600, 600, 600, 600, 600]
+linkUnderline = false
+greenColor = "#15803D"
+orangeColor = "#C2410C"
+redColor = "#B91C1C"
+blueColor = "#3451D1"
+grayColor = "#64748B"
+chartCategoricalColors = ["#3451D1", "#15803D", "#C2410C", "#B91C1C", "#64748B", "#7C3AED"]
+dataframeBorderColor = "#E2E8F0"
+dataframeHeaderBackgroundColor = "#F1F4F9"
+
+[theme.sidebar]
+backgroundColor = "#F5F7FB"
+secondaryBackgroundColor = "#EAEFF7"
+borderColor = "#E2E8F0"

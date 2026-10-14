@@ -1,29 +1,54 @@
-"""악성댓글 분류 + 순화 서비스의 사용자 화면 (도전 실습 B, Streamlit).
+"""악성댓글 분류 + 순화 서비스의 업무용 콘솔 화면 (도전 실습 B, Streamlit).
 
 터미널 1: uv run python steps/step10_serve_api.py
 터미널 2: uv run --group ui streamlit run scripts/comments_streamlit_app.py
 
 이 화면은 step10 FastAPI 서버에 요청을 보내고 결과를 보여 주기만 한다. 분류와 생성은 서버가 한다.
-- 댓글 하나: 분류 결과, 적용한 정책, 고친 댓글을 보여 준다. 두 생성 모델을 나란히 비교할 수도 있다.
-- CSV 여러 건: 한 열의 댓글을 차례로 보내고, 결과 표를 CSV로 내려받는다.
+- 단건 검수: 판정, 권장 조치, 게시할 댓글을 카드로 보여 준다. 로컬과 상용 결과를 나란히 비교할 수도 있다.
+- 대량 검수: CSV의 댓글을 여러 개씩 동시에 보내 처리하고, 요약 지표와 결과 표를 CSV로 내려받는다.
+- 정책, API 연동: 라벨별 처리 기준과 서버를 직접 부르는 방법을 보여 준다.
+화면 색과 글꼴은 .streamlit/config.toml의 [theme]에 있다.
 """
 
 import io
 import json
+import os
+import re
+import statistics
+import time
+import unicodedata
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import httpx
 import pandas as pd
 import streamlit as st
 
-API_URL = "http://127.0.0.1:8000"  # step10_serve_api.py의 HOST, PORT
+# step10_serve_api.py의 HOST, PORT. 다른 주소의 서버를 쓰려면 COMMENTS_API_URL 환경 변수로 바꾼다.
+API_URL = os.getenv("COMMENTS_API_URL", "http://127.0.0.1:8000")
 TIMEOUT_SECONDS = 300  # 서버를 켠 뒤 첫 요청은 로컬 모델을 올리느라 오래 걸린다
+# 로컬 모델에 4개씩 보내면 한 줄씩 보낼 때보다 1.5배쯤 빨랐다(8건 10.9초 → 7.1초)
+DEFAULT_WORKERS = 4
+# 라벨: (화면 이름, 배지 색, 처리 정책)
 LABELS = {
-    "none": ("문제 없음", "원문을 그대로 둡니다."),
-    "offensive": ("불쾌한 표현", "욕설, 비속어, 비꼼을 걷어 내고 정중한 문장으로 고쳐 씁니다."),
+    "none": ("문제 없음", "green", "원문을 그대로 둡니다."),
+    "offensive": (
+        "불쾌한 표현",
+        "orange",
+        "욕설, 비속어, 비꼼을 걷어 내고 의견은 남긴 채 정중한 문장으로 고쳐 씁니다.",
+    ),
     "hate": (
         "혐오 표현",
+        "red",
         "혐오, 차별, 모욕 표현을 지웁니다. 남길 의견이 없으면 게시하기 어렵다고 알립니다.",
     ),
+}
+# 권장 조치: (배지 색, 아이콘). 화면이 API 응답으로 정하는 운영자용 안내다.
+ACTIONS = {
+    "그대로 게시": ("green", ":material/check_circle:"),
+    "순화 후 게시": ("blue", ":material/edit_note:"),
+    "게시 보류": ("red", ":material/block:"),
+    "사람 검토": ("orange", ":material/person_search:"),
+    "처리 실패": ("gray", ":material/error:"),
 }
 STATUS = {
     "ok": "그대로 쓸 수 있는 답변",
@@ -31,8 +56,16 @@ STATUS = {
     "invalid_format": "약속한 JSON 형식이 아님",
     "generation_error": "생성 모델 호출 실패",
 }
-PROVIDERS = {"로컬 (Ollama)": "ollama", "상용 (OpenAI)": "openai"}
-COMPARE = "두 모델 비교"
+PROVIDERS = {"로컬": "ollama", "상용": "openai"}
+PROVIDER_MODELS = {"ollama": "Ollama gemma4:e4b", "openai": "OpenAI gpt-6-luna"}
+# 서버가 422와 함께 알려 주는 오류 종류(FastAPI, 영어 문장)를 화면에 보일 한국어 문장으로 바꾼다.
+INPUT_ERRORS = {
+    "string_too_short": "댓글을 입력해 주세요.",
+    "missing": "댓글을 입력해 주세요.",
+    "string_too_long": "댓글은 4,000자까지 입력할 수 있습니다.",
+    "literal_error": "생성 모델은 ollama 또는 openai만 고를 수 있습니다.",
+    "json_invalid": "요청 본문이 JSON 형식이 아닙니다.",
+}
 
 
 def call_api(url, path, payload=None):
@@ -61,16 +94,6 @@ def parse_answer(result):
         return result.get("text") or "", []
 
 
-# 서버가 422와 함께 알려 주는 오류 종류(FastAPI, 영어 문장)를 화면에 보일 한국어 문장으로 바꾼다.
-INPUT_ERRORS = {
-    "string_too_short": "댓글을 입력해 주세요.",
-    "missing": "댓글을 입력해 주세요.",
-    "string_too_long": "댓글은 4,000자까지 입력할 수 있습니다.",
-    "literal_error": "생성 모델은 ollama 또는 openai만 고를 수 있습니다.",
-    "json_invalid": "요청 본문이 JSON 형식이 아닙니다.",
-}
-
-
 def input_error(body):
     """422 응답에서 사람이 읽을 오류 문장을 만든다."""
     details = body.get("detail") if isinstance(body, dict) else None
@@ -84,6 +107,42 @@ def input_error(body):
     return " / ".join(dict.fromkeys(messages))  # 같은 문장은 한 번만
 
 
+def normalized(text):
+    return " ".join(unicodedata.normalize("NFKC", text).split())
+
+
+def plain(text):
+    """댓글을 마크다운으로 보여 줄 때 ~~, *, # 같은 기호가 서식으로 바뀌지 않게 막는다."""
+    return re.sub(r"([\\`*_{}\[\]()#+\-.!~|>:$])", r"\\\1", text)
+
+
+def recommended_action(label, answer, result):
+    """운영자에게 보일 권장 조치를 정한다.
+
+    문제 없음(none)으로 판정되면 원문을 그대로 올린다. 생성 모델이 문장을 바꿨어도 원문을 쓴다.
+    나머지는 게시 불가 안내면 게시 보류, 고친 댓글을 다시 판정해 none이 아니면 사람 검토,
+    그 밖에는 순화 후 게시다.
+    """
+    if not result or result.get("error") or not result.get("output_format_valid"):
+        return "처리 실패"
+    if label == "none":
+        return "그대로 게시"
+    if "게시하기 어렵" in answer:
+        return "게시 보류"
+    if (result.get("answer_check") or {}).get("needs_review"):
+        return "사람 검토"
+    return "순화 후 게시"
+
+
+def posted_text(original, answer, action):
+    """권장 조치대로 하면 실제로 올라갈 문장. 게시 보류나 처리 실패면 빈 문자열."""
+    if action == "그대로 게시":
+        return original
+    if action in ("순화 후 게시", "사람 검토"):
+        return answer
+    return ""
+
+
 def read_csv_bytes(data):
     """올린 CSV를 읽는다. 엑셀에서 저장한 한국어 CSV(cp949)도 읽는다."""
     for encoding in ("utf-8-sig", "cp949"):
@@ -95,18 +154,19 @@ def read_csv_bytes(data):
 
 
 def batch_row(text, response):
-    """CSV 처리 결과 한 줄."""
+    """대량 검수 결과 한 줄."""
     row = {
         "원문": text,
+        "권장 조치": "처리 실패",
         "라벨": "",
         "분류 확신도": None,
-        "고친 댓글": "",
-        "다음 안내": "",
-        "상태": "",
+        "게시할 댓글": "",
+        "글쓴이 안내": "",
         "다시 검사": "",
-        "확인 필요": "",
+        "생성 모델 답": "",
         "응답 시간(초)": None,
         "생성 모델": "",
+        "상태": "",
         "오류": "",
     }
     body = response["body"] or {}
@@ -120,187 +180,409 @@ def batch_row(text, response):
     result = body.get("result") or {}
     answer, next_steps = parse_answer(result)
     check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
-    if check:
-        row["다시 검사"] = f"{check['label']} ({check['confidence']:.0%})"
-        row["확인 필요"] = "예" if check["needs_review"] else "아니오"
+    label = classification.get("label", "")
+    action = recommended_action(label, answer, result)
+    notice = " / ".join(next_steps)
+    if action == "게시 보류":  # 게시하지 않으므로 생성 모델의 안내 문장을 글쓴이에게 보낸다
+        notice = " / ".join([answer, *next_steps])
     row.update(
         {
-            "라벨": classification.get("label", ""),
-            "분류 확신도": round(classification["confidence"], 3)
-            if "confidence" in classification
-            else None,
-            "고친 댓글": answer,
-            "다음 안내": " / ".join(next_steps),
-            "상태": body.get("status", ""),
+            "권장 조치": action,
+            "라벨": label,
+            "분류 확신도": classification.get("confidence"),
+            "게시할 댓글": posted_text(text, answer, action),
+            "글쓴이 안내": notice,
+            "다시 검사": f"{check['label']} ({check['confidence']:.0%})"
+            if check and label != "none"
+            else "",
+            "생성 모델 답": answer,
             "응답 시간(초)": round(result["latency_seconds"], 2)
             if "latency_seconds" in result
             else None,
             "생성 모델": result.get("model") or "",
+            "상태": body.get("status", ""),
             "오류": result.get("error") or "",
         }
     )
     return row
 
 
+def process_batch(url, texts, provider, workers, on_progress=None):
+    """댓글 여러 개를 workers개씩 동시에 보내고, 입력 순서대로 결과 줄을 돌려준다."""
+    rows = [None] * len(texts)
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {
+            pool.submit(call_api, url, "/generate", {"text": text, "provider": provider}): index
+            for index, text in enumerate(texts)
+        }
+        for done, future in enumerate(as_completed(futures), start=1):
+            index = futures[future]
+            rows[index] = batch_row(texts[index], future.result())
+            if on_progress:
+                on_progress(done, len(texts))
+    return rows
+
+
+def action_badge(action):
+    color, icon = ACTIONS[action]
+    st.badge(action, icon=icon, color=color)
+
+
 def show_classification(classification):
-    label = classification["label"]
-    title, policy = LABELS.get(label, (label, ""))
-    left, right = st.columns(2)
-    left.metric("분류 결과", f"{title} ({label})")
-    right.metric("분류 확신도", f"{classification['confidence']:.0%}")
+    title, color, policy = LABELS.get(
+        classification["label"], (classification["label"], "gray", "")
+    )
+    with st.container(horizontal=True, vertical_alignment="center"):
+        st.badge(f"{title} ({classification['label']})", color=color)
+        st.badge(f"분류 확신도 {classification['confidence']:.0%}", color="gray")
     # 확신도는 분류 모델이 낸 값이다. 생성 모델은 이 라벨을 받기만 하므로 두 모델 비교에서도 하나다.
     st.caption(
-        f"적용한 정책: {policy} · 확신도는 분류 모델(KcELECTRA)이 이 라벨을 얼마나 확신하는지이고, "
+        f"적용한 정책: {policy} 확신도는 분류 모델(KcELECTRA)이 이 라벨을 얼마나 확신하는지이고, "
         "생성 모델과는 관계없습니다."
     )
 
 
-def show_result(result, status):
-    """생성 모델 하나의 결과."""
-    if result.get("error"):
-        st.error(f"생성 모델 호출에 실패했습니다 ({result['error']}). 분류 결과는 위와 같습니다.")
-        return
-    answer, next_steps = parse_answer(result)
-    st.markdown("**고친 댓글**")
-    if status == "ok":
-        st.success(answer)
-    else:
-        st.warning(answer or "(빈 답변)")
-    for step in next_steps:
-        st.markdown(f"- {step}")
-    check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
-    if check and check["needs_review"]:
-        title = LABELS.get(check["label"], (check["label"],))[0]
-        st.warning(
-            f"다시 확인 필요: 고친 댓글도 분류 모델이 {title}({check['label']}, "
-            f"{check['confidence']:.0%})로 봤습니다. 게시하기 전에 사람이 확인해 주세요."
-        )
-    elif check:
+def show_result(original, label, result, status, title=None):
+    """생성 모델 하나의 결과 카드."""
+    with st.container(border=True):
+        if title:
+            st.markdown(f"**{title}**")
+        if result.get("error"):
+            action_badge("처리 실패")
+            st.error(
+                f"생성 모델 호출에 실패했습니다 ({result['error']}). 분류 결과는 위와 같습니다.",
+                icon=":material/error:",
+            )
+            return
+        answer, next_steps = parse_answer(result)
+        action = recommended_action(label, answer, result)
+        action_badge(action)
+        if action == "게시 보류":
+            st.markdown("**글쓴이에게 보낼 안내**")
+            with st.container(border=True):
+                st.markdown(plain(answer))
+                for step in next_steps:
+                    st.markdown(f":material/arrow_right: {plain(step)}")
+        else:
+            st.markdown("**게시할 댓글**")
+            with st.container(border=True):
+                st.markdown(plain(posted_text(original, answer, action)) or "(빈 답변)")
+            for step in next_steps:
+                st.markdown(f":material/arrow_right: {plain(step)}")
+        if action == "그대로 게시" and normalized(answer) != normalized(original):
+            # 생성 모델이 문제 없는 댓글까지 고친 경우. 원문을 그대로 쓴다.
+            st.caption(
+                f'생성 모델이 "{plain(answer)}"(으)로 바꿨지만, 문제 없는 댓글이라 원문을 그대로 올립니다.'
+            )
+        check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
+        if label != "none" and check and check["needs_review"]:
+            check_title = LABELS.get(check["label"], (check["label"],))[0]
+            st.warning(
+                f"고친 댓글도 분류 모델이 {check_title}({check['label']}, {check['confidence']:.0%})로 "
+                "봤습니다. 게시하기 전에 사람이 확인해 주세요.",
+                icon=":material/person_search:",
+            )
+        elif label != "none" and check and action != "게시 보류":
+            st.caption(
+                f"고친 댓글 다시 검사: 문제 없음(none, {check['confidence']:.0%}). 분류 모델은 표현만 보므로, "
+                "뜻이 바뀌었는지는 사람이 확인해야 합니다."
+            )
         st.caption(
-            f"고친 댓글 다시 검사: 문제 없음(none, {check['confidence']:.0%}). 분류 모델은 표현만 보므로, "
-            "뜻이 바뀌었는지는 사람이 확인해야 합니다."
+            f"{STATUS.get(status, status)} · {result.get('model')} · {result['latency_seconds']:.2f}초"
         )
-    st.caption(
-        f"{STATUS.get(status, status)} · {result.get('model')} · {result['latency_seconds']:.2f}초"
-    )
 
 
-def single_tab(url):
-    text = st.text_area("댓글", height=120, max_chars=4000, placeholder="확인할 댓글을 입력하세요.")
-    mode = st.radio("생성 모델", [*PROVIDERS, COMPARE], horizontal=True)
-    if st.button("확인", type="primary"):
-        with st.spinner("분류하고 고쳐 쓰는 중입니다."):
-            if mode == COMPARE:
-                response = call_api(url, "/compare", {"text": text})
-            else:
-                response = call_api(url, "/generate", {"text": text, "provider": PROVIDERS[mode]})
-        st.session_state["single"] = response
-
-    response = st.session_state.get("single")
-    if not response:
-        return
-    body = response["body"] or {}
-    if response["code"] is None:
-        st.error(
-            f"서버에 연결하지 못했습니다 ({response['error']}). 왼쪽 안내대로 서버를 먼저 켜 주세요."
+def single_tab(url, provider):
+    left, right = st.columns([5, 7], gap="large")
+    with left, st.container(border=True):
+        st.markdown("**검수할 댓글**")
+        text = st.text_area(
+            "검수할 댓글",
+            height=180,
+            max_chars=4000,
+            placeholder="게시 전에 확인할 댓글을 붙여 넣으세요.",
+            label_visibility="collapsed",
         )
-        return
-    if response["code"] == 422:
-        st.warning("입력을 확인해 주세요: " + input_error(body))
-        return
-    if "classification" not in body:
-        st.error(f"예상하지 못한 응답입니다 (HTTP {response['code']}).")
-        return
-    show_classification(body["classification"])
-    if "results" in body:  # 두 모델 비교
-        columns = st.columns(len(body["results"]))
-        for column, result in zip(columns, body["results"], strict=True):
-            with column:
-                st.subheader("로컬" if result["provider"] == "ollama" else "상용")
-                show_result(result, result.get("status"))
-    else:
-        show_result(body["result"], body.get("status"))
+        compare = st.toggle("로컬과 상용 결과 나란히 비교", key="compare")
+        st.caption(
+            "비교를 켜면 두 생성 모델에 같은 판정과 같은 지침을 보냅니다."
+            if compare
+            else f"생성 모델: {PROVIDER_MODELS[provider]} (왼쪽 메뉴에서 바꿀 수 있습니다)"
+        )
+        if st.button("검수하기", type="primary", icon=":material/fact_check:", width="stretch"):
+            with st.spinner("분류하고 고쳐 쓰는 중입니다."):
+                if compare:
+                    response = call_api(url, "/compare", {"text": text})
+                else:
+                    response = call_api(url, "/generate", {"text": text, "provider": provider})
+            st.session_state["single"] = {"text": text.strip(), "response": response}
+
+    with right:
+        saved = st.session_state.get("single")
+        if not saved:
+            with st.container(border=True):
+                st.markdown("**검수 결과**")
+                st.caption(
+                    "댓글을 넣고 검수하기를 누르면 판정, 권장 조치, 게시할 댓글이 여기에 나옵니다."
+                )
+            return
+        response, original = saved["response"], saved["text"]
+        body = response["body"] or {}
+        if response["code"] is None:
+            st.error(
+                f"서버에 연결하지 못했습니다 ({response['error']}). 왼쪽 메뉴의 안내대로 서버를 먼저 켜 주세요.",
+                icon=":material/cloud_off:",
+            )
+            return
+        if response["code"] == 422:
+            st.warning("입력을 확인해 주세요: " + input_error(body), icon=":material/edit:")
+            return
+        if "classification" not in body:
+            st.error(f"예상하지 못한 응답입니다 (HTTP {response['code']}).")
+            return
+        label = body["classification"]["label"]
+        with st.container(border=True):
+            st.markdown("**판정**")
+            show_classification(body["classification"])
+        if "results" in body:  # 두 모델 비교
+            columns = st.columns(len(body["results"]))
+            for column, result in zip(columns, body["results"], strict=True):
+                with column:
+                    name = "로컬" if result["provider"] == "ollama" else "상용"
+                    show_result(original, label, result, result.get("status"), title=name)
+        else:
+            show_result(original, label, body["result"], body.get("status"))
 
 
-def batch_tab(url):
-    uploaded = st.file_uploader("CSV 파일", type="csv")
-    if not uploaded:
-        st.caption("댓글이 한 열에 들어 있는 CSV를 올리면 한 줄씩 분류하고 고쳐 씁니다.")
-        return
-    try:
-        frame = read_csv_bytes(uploaded.getvalue())
-    except (ValueError, pd.errors.ParserError) as exc:
-        st.error(str(exc))
-        return
-    if frame.empty:
-        st.warning("CSV에 행이 없습니다.")
-        return
-    columns = list(frame.columns)
-    column = st.selectbox(
-        "댓글이 든 열", columns, index=columns.index("text") if "text" in columns else 0
-    )
-    limit = st.number_input(
-        "처리할 최대 건수", min_value=1, max_value=len(frame), value=min(len(frame), 50)
-    )
-    provider = st.radio("생성 모델", list(PROVIDERS), horizontal=True, key="batch_provider")
-    st.caption(
-        f"{len(frame):,}행 중 앞에서 {int(limit):,}건을 처리합니다. 로컬 모델은 한 건에 1~2초쯤 걸립니다."
-    )
-    if st.button("처리 시작", type="primary"):
-        texts = frame[column].head(int(limit)).fillna("").astype(str).tolist()
-        progress = st.progress(0.0)
-        rows = []
-        for index, text in enumerate(texts, start=1):
-            response = call_api(url, "/generate", {"text": text, "provider": PROVIDERS[provider]})
-            rows.append(batch_row(text, response))
-            progress.progress(index / len(texts), text=f"{index}/{len(texts)}건 처리")
-        st.session_state["batch"] = pd.DataFrame(rows)
+def batch_tab(url, provider):
+    with st.container(border=True):
+        st.markdown("**CSV 올리기**")
+        uploaded = st.file_uploader(
+            "CSV 파일",
+            type="csv",
+            help="댓글이 한 열에 들어 있는 CSV. 엑셀에서 저장한 파일도 됩니다.",
+            label_visibility="collapsed",
+        )
+        if not uploaded:
+            st.caption("댓글이 한 열에 들어 있는 CSV를 올리면 줄마다 판정하고 고쳐 씁니다.")
+        else:
+            try:
+                frame = read_csv_bytes(uploaded.getvalue())
+            except (ValueError, pd.errors.ParserError) as exc:
+                st.error(str(exc))
+                return
+            if frame.empty:
+                st.warning("CSV에 행이 없습니다.")
+                return
+            columns = list(frame.columns)
+            column_box, limit_box, workers_box = st.columns(3)
+            column = column_box.selectbox(
+                "댓글 열", columns, index=columns.index("text") if "text" in columns else 0
+            )
+            limit = limit_box.number_input(
+                "처리할 건수", min_value=1, max_value=len(frame), value=min(len(frame), 50)
+            )
+            workers = workers_box.number_input(
+                "동시 처리 수",
+                min_value=1,
+                max_value=8,
+                value=DEFAULT_WORKERS,
+                help="서버에 한 번에 보내는 요청 수입니다. 로컬 모델은 4개일 때 한 줄씩보다 1.5배쯤 빨랐습니다.",
+            )
+            st.caption(
+                f"{len(frame):,}행 중 앞에서 {int(limit):,}건을 {PROVIDER_MODELS[provider]}(으)로 처리합니다."
+            )
+            if st.button("대량 검수 시작", type="primary", icon=":material/play_arrow:"):
+                texts = frame[column].head(int(limit)).fillna("").astype(str).tolist()
+                progress = st.progress(0.0, text="처리를 시작합니다.")
+                started = time.perf_counter()
+                rows = process_batch(
+                    url,
+                    texts,
+                    provider,
+                    int(workers),
+                    lambda done, total: progress.progress(
+                        done / total, text=f"{done}/{total}건 처리"
+                    ),
+                )
+                progress.empty()
+                st.session_state["batch"] = pd.DataFrame(rows)
+                st.session_state["batch_run"] = {
+                    "seconds": time.perf_counter() - started,
+                    "workers": int(workers),
+                }
+                st.toast(f"{len(rows)}건을 처리했습니다.", icon=":material/task_alt:")
 
     result = st.session_state.get("batch")
     if result is None:
         return
-    counts = result["라벨"].replace("", "처리 못 함").value_counts()
-    st.markdown(
-        "**결과:** "
-        + ", ".join(f"{label} {count}건" for label, count in counts.items())
-        + f" · 그대로 쓸 수 있는 답변 {(result['상태'] == 'ok').sum()}/{len(result)}건"
-        + f" · 다시 확인 필요 {(result['확인 필요'] == '예').sum()}건"
-    )
+    run = st.session_state.get("batch_run", {})
+    counts = result["권장 조치"].value_counts()
+    latencies = [value for value in result["응답 시간(초)"] if pd.notna(value)]
+    with st.container(horizontal=True):
+        st.metric("처리 건수", f"{len(result):,}", border=True)
+        for action in ("그대로 게시", "순화 후 게시", "게시 보류", "사람 검토"):
+            st.metric(action, f"{int(counts.get(action, 0)):,}", border=True)
+        st.metric(
+            "처리 시간",
+            f"{run['seconds']:.1f}초" if run else "-",
+            border=True,
+            help=(
+                f"동시 {run.get('workers', '-')}개로 보낸 전체 시간입니다. "
+                + (
+                    f"한 건의 평균 응답은 {statistics.mean(latencies):.2f}초입니다."
+                    if latencies
+                    else ""
+                )
+            ),
+        )
+    chart, table = st.columns([1, 2], gap="medium")
+    with chart, st.container(border=True):
+        st.markdown("**권장 조치별 건수**")
+        order = [action for action in ACTIONS if counts.get(action, 0)]
+        st.bar_chart(
+            pd.DataFrame({"권장 조치": order, "건수": [int(counts[action]) for action in order]}),
+            x="권장 조치",
+            y="건수",
+            x_label="",
+            y_label="",
+            sort=False,
+            horizontal=True,
+            alt="권장 조치별 댓글 건수",
+        )
+    with table, st.container(border=True):
+        st.markdown("**결과 표**")
+        st.caption(
+            "사람 검토: 고친 댓글을 분류 모델에 다시 넣었을 때 none이 아니었던 줄입니다. "
+            "분류 모델은 표현만 보므로, 말투는 정중한데 뜻이 바뀐 답은 여기에 잡히지 않습니다."
+        )
+        st.dataframe(
+            result,
+            hide_index=True,
+            alt="대량 검수 결과",
+            column_config={
+                "원문": st.column_config.TextColumn(pinned=True),
+                "분류 확신도": st.column_config.ProgressColumn(
+                    format="percent", min_value=0.0, max_value=1.0
+                ),
+                "응답 시간(초)": st.column_config.NumberColumn(format="%.2f"),
+            },
+        )
+        st.download_button(
+            "결과 CSV 내려받기",
+            result.to_csv(index=False).encode(
+                "utf-8-sig"
+            ),  # 엑셀에서 한글이 깨지지 않게 BOM을 붙인다
+            file_name="comments_result.csv",
+            mime="text/csv",
+            icon=":material/download:",
+        )
+
+
+def policy_tab():
+    with st.container(border=True):
+        st.markdown("**라벨별 처리 기준**")
+        st.table(
+            {f"{title} ({label})": policy for label, (title, _, policy) in LABELS.items()},
+            border="horizontal",
+            alt="라벨별 처리 정책",
+        )
+    with st.container(border=True):
+        st.markdown("**권장 조치 기준**")
+        st.table(
+            {
+                "그대로 게시": "문제 없음으로 판정된 댓글. 생성 모델이 문장을 바꿨어도 원문을 그대로 올림",
+                "순화 후 게시": "문제 표현을 고쳐 쓴 댓글",
+                "게시 보류": "남길 의견이 없어 게시하기 어렵다고 안내한 댓글",
+                "사람 검토": "고친 댓글을 분류 모델로 다시 판정했을 때도 문제가 남은 댓글",
+                "처리 실패": "생성 모델 호출 실패, 잘린 답변, 형식 오류",
+            },
+            border="horizontal",
+            alt="권장 조치 기준",
+        )
     st.caption(
-        "다시 확인 필요: 고친 댓글을 분류 모델에 다시 넣었을 때 none이 아니었던 줄입니다. "
-        "분류 모델은 표현만 보므로, 말투는 정중한데 뜻이 바뀐 답은 여기에 잡히지 않습니다."
+        "판정은 KcELECTRA 분류 모델(test Macro F1 0.667)이 합니다. 분류가 틀리면 다른 정책이 적용되고, "
+        "다시 검사는 뜻이 바뀐 답을 잡지 못하므로 중요한 게시물은 사람이 한 번 더 봐 주세요."
     )
-    st.dataframe(result, width="stretch", hide_index=True)
-    st.download_button(
-        "결과 CSV 내려받기",
-        result.to_csv(index=False).encode("utf-8-sig"),  # 엑셀에서 한글이 깨지지 않게 BOM을 붙인다
-        file_name="comments_result.csv",
-        mime="text/csv",
-    )
+
+
+def api_tab(url):
+    with st.container(border=True):
+        st.markdown("**서버 직접 호출 (Python)**")
+        st.code(
+            "import json, httpx\n\n"
+            f'response = httpx.post("{url.rstrip("/")}/generate",\n'
+            '                      json={"text": "검수할 댓글", "provider": "ollama"}, timeout=180)\n'
+            "body = response.json()\n"
+            'body["status"]                              # ok, incomplete, invalid_format, generation_error\n'
+            'body["classification"]["label"]             # none, offensive, hate\n'
+            'json.loads(body["result"]["text"])["answer"]  # 게시할 댓글이나 안내 문장\n'
+            'body["result"]["answer_check"]["needs_review"]  # True면 사람 검토',
+            language="python",
+        )
+    with st.container(border=True):
+        st.markdown("**엔드포인트와 응답 코드**")
+        st.table(
+            {
+                "GET /health": "서버가 켜져 있는지 확인",
+                "POST /generate": "댓글 하나를 판정하고 고쳐 씀. provider는 ollama(기본) 또는 openai",
+                "POST /compare": "같은 판정과 지침으로 두 생성 모델의 결과를 함께 돌려줌",
+                "200": "판정과 생성이 끝남. 답을 그대로 써도 되는지는 status로 확인",
+                "422": "잘못된 입력(빈 입력, 4,000자 초과, 없는 provider). 판정 전에 거절",
+                "502": "생성 모델 호출 실패. 판정 결과는 함께 돌려줌",
+            },
+            border="horizontal",
+            alt="API 엔드포인트와 응답 코드",
+        )
+    st.caption(f"API 문서 화면: {url.rstrip('/')}/docs")
 
 
 def main():
-    st.set_page_config(page_title="악성댓글 분류 + 순화", layout="wide")
-    st.title("악성댓글 분류 + 순화")
-    st.caption(
-        "학습한 분류 모델(KcELECTRA)이 댓글을 none·offensive·hate로 나누고, "
-        "생성 모델이 라벨별 정책에 따라 댓글을 고쳐 씁니다."
-    )
+    st.set_page_config(page_title="댓글 검수 콘솔", page_icon=":material/shield:", layout="wide")
     with st.sidebar:
+        st.markdown("**API 서버**")
         url = st.text_input("서버 주소", API_URL)
         health = call_api(url, "/health")
         if health["code"] == 200:
-            st.success("서버에 연결됨")
+            st.badge("연결됨", icon=":material/check_circle:", color="green")
         else:
-            st.error("서버가 꺼져 있습니다.")
+            st.badge("연결 안 됨", icon=":material/error:", color="red")
             st.code("uv run python steps/step10_serve_api.py", language="powershell")
             st.caption("다른 터미널에서 위 명령으로 서버를 먼저 켜 주세요.")
+        st.markdown("**생성 모델**")
+        choice = st.segmented_control(
+            "생성 모델",
+            list(PROVIDERS),
+            default="로컬",
+            required=True,
+            key="provider",
+            label_visibility="collapsed",
+        )
+        provider = PROVIDERS[choice]
+        st.caption(f"{PROVIDER_MODELS[provider]}로 고쳐 씁니다.")
         st.caption("서버를 켠 뒤 첫 요청은 로컬 모델을 메모리에 올리느라 7초쯤 걸립니다.")
-    single, batch = st.tabs(["댓글 하나", "CSV 여러 건"])
+
+    st.title("댓글 검수 콘솔", icon=":material/shield:")
+    st.caption(
+        "악성댓글을 판정하고, 의견은 살린 채 순화합니다. "
+        "판정은 직접 학습한 분류 모델(KcELECTRA), 순화는 생성 모델이 맡습니다."
+    )
+    single, batch, policy, api = st.tabs(
+        [
+            ":material/fact_check: 단건 검수",
+            ":material/table_view: 대량 검수",
+            ":material/policy: 처리 기준",
+            ":material/code: API 연동",
+        ]
+    )
     with single:
-        single_tab(url)
+        single_tab(url, provider)
     with batch:
-        batch_tab(url)
+        batch_tab(url, provider)
+    with policy:
+        policy_tab()
+    with api:
+        api_tab(url)
 
 
 if __name__ == "__main__":
