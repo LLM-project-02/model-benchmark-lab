@@ -1,0 +1,60 @@
+{"id": "s01", "group": "위험", "error_type": "부정 표현", "evidence": "신규 채용 공고는 이번 분기에 게시하지 않기로 했다.", "report": "이번 분기에 신규 채용 공고를 게시하기로 했다.", "required_any": ["게시하지 않"]}
+{"id": "s02", "group": "위험", "error_type": "부정 표현", "evidence": "외부 감사 결과 보고서는 이사회에 제출되지 않았다.", "report": "외부 감사 결과 보고서는 이사회에 제출됐다.", "required_any": ["제출되지 않"]}
+{"id": "s03", "group": "위험", "error_type": "부정 표현", "evidence": "서울 사무소 이전 안건은 이번 회의에서 부결되었다.", "report": "서울 사무소 이전 안건은 이번 회의에서 통과되었다.", "required_any": ["부결"]}
+{"id": "s04", "group": "위험", "error_type": "부정 표현", "evidence": "협력사 대금 지급 일정은 변경하지 않기로 합의했다.", "report": "협력사 대금 지급 일정을 변경하기로 합의했다.", "required_any": ["변경하지 않"]}
+{"id": "s05", "group": "위험", "error_type": "부정 표현", "evidence": "고객 데이터는 해외 서버로 이전하지 않는다.", "report": "고객 데이터는 해외 서버로 옮겨진다.", "required_any": ["이전하지 않", "옮기지 않", "옮겨지지 않"]}
+{"id": "s06", "group": "위험", "error_type": "주체 바뀜", "evidence": "법무팀은 영업팀에 계약서 검토 의견을 전달했다.", "report": "영업팀은 법무팀에 계약서 검토 의견을 전달했다.", "required_any": ["법무팀은 영업팀", "법무팀이 영업팀"]}
+{"id": "s07", "group": "위험", "error_type": "주체 바뀜", "evidence": "본사는 지점에 분기별 판매 목표를 내려보낸다.", "report": "지점은 본사에 분기별 판매 목표를 내려보낸다.", "required_any": ["본사는 지점", "본사가 지점"]}
+{"id": "s08", "group": "위험", "error_type": "주체 바뀜", "evidence": "보안팀이 개발팀의 코드 접근 권한을 회수했다.", "report": "개발팀이 보안팀의 코드 접근 권한을 회수했다.", "required_any": ["보안팀이 개발팀", "보안팀은 개발팀"]}
+{"id": "s09", "group": "위험", "error_type": "주체 바뀜", "evidence": "A사는 B사로부터 물류 시스템을 인수했다.", "report": "B사는 A사로부터 물류 시스템을 인수했다.", "required_any": ["A사는 B사로부터", "A사가 B사로부터"]}
+{"id": "s10", "group": "위험", "error_type": "주체 바뀜", "evidence": "재무팀이 각 부서에 예산 집행 현황을 요청했다.", "report": "각 부서가 재무팀에 예산 집행 현황을 요청했다.", "required_any": ["재무팀이 각 부서", "재무팀은 각 부서"]}
+{"id": "s11", "group": "위험", "error_type": "숫자·날짜", "evidence": "올해 신규 가입자는 12만 명으로 집계됐다.", "report": "올해 신규 가입자는 21만 명으로 집계됐다.", "required_any": ["12만"]}
+{"id": "s12", "group": "위험", "error_type": "숫자·날짜", "evidence": "시스템 점검은 3월 14일 오전에 진행된다.", "report": "시스템 점검은 3월 4일 오전에 진행된다.", "required_any": ["3월 14일"]}
+{"id": "s13", "group": "위험", "error_type": "숫자·날짜", "evidence": "프로젝트 예산은 전년 대비 15% 감소했다.", "report": "프로젝트 예산은 전년 대비 15% 증가했다.", "required_any": ["감소"]}
+{"id": "s14", "group": "위험", "error_type": "숫자·날짜", "evidence": "회의 참석 인원은 총 18명이었다.", "report": "회의 참석 인원은 총 81명이었다.", "required_any": ["18명"]}
+{"id": "s15", "group": "위험", "error_type": "숫자·날짜", "evidence": "계약 기간은 2년으로 정해졌다.", "report": "계약 기간은 3년으로 정해졌다.", "required_any": ["2년"]}
+{"id": "s16", "group": "위험", "error_type": "반대 의미", "evidence": "신제품 출시는 내년 상반기로 연기되었다.", "report": "신제품 출시는 내년 상반기로 앞당겨졌다.", "required_any": ["연기"]}
+{"id": "s17", "group": "위험", "error_type": "반대 의미", "evidence": "재고 수준은 목표치를 밑돌았다.", "report": "재고 수준은 목표치를 웃돌았다.", "required_any": ["밑돌"]}
+{"id": "s18", "group": "위험", "error_type": "반대 의미", "evidence": "해당 기능은 베타 테스트에서 제외되었다.", "report": "해당 기능은 베타 테스트에 포함되었다.", "required_any": ["제외"]}
+{"id": "s19", "group": "위험", "error_type": "반대 의미", "evidence": "원자재 가격 상승으로 영업이익이 줄었다.", "report": "원자재 가격 상승에도 영업이익이 늘었다.", "required_any": ["줄었", "감소"]}
+{"id": "s20", "group": "위험", "error_type": "반대 의미", "evidence": "노후 장비 교체 요청은 반려되었다.", "report": "노후 장비 교체 요청은 승인되었다.", "required_any": ["반려"]}
+{"id": "c01", "group": "대조", "error_type": "맞는 문장", "evidence": "신규 채용 공고는 다음 달 5일에 게시한다.", "report": "다음 달 5일에 신규 채용 공고가 올라간다.", "required_any": []}
+{"id": "c02", "group": "대조", "error_type": "맞는 문장", "evidence": "법무팀은 영업팀에 계약서 검토 의견을 전달했다.", "report": "영업팀은 법무팀으로부터 계약서 검토 의견을 받았다.", "required_any": []}
+{"id": "c03", "group": "대조", "error_type": "맞는 문장", "evidence": "올해 신규 가입자는 12만 명으로 집계됐다.", "report": "올해 새로 가입한 사람은 12만 명이다.", "required_any": []}
+{"id": "c04", "group": "대조", "error_type": "맞는 문장", "evidence": "시스템 점검은 3월 14일 오전에 진행된다.", "report": "3월 14일 오전에 시스템 점검이 있다.", "required_any": []}
+{"id": "c05", "group": "대조", "error_type": "맞는 문장", "evidence": "서울 사무소 이전 안건은 이번 회의에서 부결되었다.", "report": "이번 회의에서 서울 사무소 이전 안건은 통과되지 못했다.", "required_any": []}
+{"id": "c06", "group": "대조", "error_type": "맞는 문장", "evidence": "신제품 출시는 내년 상반기로 연기되었다.", "report": "신제품 출시 시점이 내년 상반기로 늦춰졌다.", "required_any": []}
+{"id": "c07", "group": "대조", "error_type": "맞는 문장", "evidence": "계약 기간은 2년으로 정해졌다.", "report": "계약은 2년 동안 유지된다.", "required_any": []}
+{"id": "c08", "group": "대조", "error_type": "맞는 문장", "evidence": "노후 장비 교체 요청은 반려되었다.", "report": "노후 장비 교체 요청은 받아들여지지 않았다.", "required_any": []}
+{"id": "c09", "group": "대조", "error_type": "맞는 문장", "evidence": "본사는 지점에 분기별 판매 목표를 내려보낸다.", "report": "지점은 분기별 판매 목표를 본사로부터 받는다.", "required_any": []}
+{"id": "c10", "group": "대조", "error_type": "맞는 문장", "evidence": "회의 참석 인원은 총 18명이었다.", "report": "회의에는 모두 18명이 참석했다.", "required_any": []}
+{"id": "s21", "group": "위험", "error_type": "부정 표현", "evidence": "올해 연말 성과급은 지급하지 않기로 결정했다.", "report": "올해 연말 성과급을 지급하기로 결정했다.", "required_any": ["지급하지 않"]}
+{"id": "s22", "group": "위험", "error_type": "부정 표현", "evidence": "신규 협력사 선정 결과는 아직 발표되지 않았다.", "report": "신규 협력사 선정 결과가 발표되었다.", "required_any": ["발표되지 않"]}
+{"id": "s23", "group": "위험", "error_type": "부정 표현", "evidence": "사내 식당 운영 시간은 이번에 바꾸지 않는다.", "report": "사내 식당 운영 시간이 이번에 바뀐다.", "required_any": ["바꾸지 않", "바뀌지 않"]}
+{"id": "s24", "group": "위험", "error_type": "부정 표현", "evidence": "보안 점검에서 개인정보 유출은 발견되지 않았다.", "report": "보안 점검에서 개인정보 유출이 발견되었다.", "required_any": ["발견되지 않"]}
+{"id": "s25", "group": "위험", "error_type": "부정 표현", "evidence": "이번 분기에는 신규 매장을 열지 않는다.", "report": "이번 분기에 신규 매장을 연다.", "required_any": ["열지 않"]}
+{"id": "s26", "group": "위험", "error_type": "주체 바뀜", "evidence": "품질팀이 생산팀에 불량 원인 분석 보고서를 보냈다.", "report": "생산팀이 품질팀에 불량 원인 분석 보고서를 보냈다.", "required_any": ["품질팀이 생산팀", "품질팀은 생산팀"]}
+{"id": "s27", "group": "위험", "error_type": "주체 바뀜", "evidence": "고객센터는 개발팀에 오류 신고 내역을 넘겼다.", "report": "개발팀은 고객센터에 오류 신고 내역을 넘겼다.", "required_any": ["고객센터는 개발팀", "고객센터가 개발팀"]}
+{"id": "s28", "group": "위험", "error_type": "주체 바뀜", "evidence": "대표이사가 이사회에 내년 사업 계획을 보고했다.", "report": "이사회가 대표이사에게 내년 사업 계획을 보고했다.", "required_any": ["대표이사가 이사회", "대표이사는 이사회"]}
+{"id": "s29", "group": "위험", "error_type": "주체 바뀜", "evidence": "C사가 D사에 부품 공급을 요청했다.", "report": "D사가 C사에 부품 공급을 요청했다.", "required_any": ["C사가 D사", "C사는 D사"]}
+{"id": "s30", "group": "위험", "error_type": "주체 바뀜", "evidence": "인사팀은 신입 사원에게 교육 일정을 안내한다.", "report": "신입 사원은 인사팀에게 교육 일정을 안내한다.", "required_any": ["인사팀은 신입", "인사팀이 신입"]}
+{"id": "s31", "group": "위험", "error_type": "숫자·날짜", "evidence": "이번 행사 예산은 2,500만 원으로 확정됐다.", "report": "이번 행사 예산은 5,200만 원으로 확정됐다.", "required_any": ["2,500만"]}
+{"id": "s32", "group": "위험", "error_type": "숫자·날짜", "evidence": "신규 서비스는 6월 1일에 문을 연다.", "report": "신규 서비스는 6월 11일에 문을 연다.", "required_any": ["6월 1일"]}
+{"id": "s33", "group": "위험", "error_type": "숫자·날짜", "evidence": "고객 만족도 조사 응답률은 64%였다.", "report": "고객 만족도 조사 응답률은 46%였다.", "required_any": ["64%"]}
+{"id": "s34", "group": "위험", "error_type": "숫자·날짜", "evidence": "물류 창고는 3곳에서 5곳으로 늘어난다.", "report": "물류 창고는 3곳에서 7곳으로 늘어난다.", "required_any": ["5곳"]}
+{"id": "s35", "group": "위험", "error_type": "숫자·날짜", "evidence": "교육 과정은 주 3회 운영된다.", "report": "교육 과정은 주 5회 운영된다.", "required_any": ["주 3회"]}
+{"id": "s36", "group": "위험", "error_type": "반대 의미", "evidence": "올해 해외 매출 비중은 지난해보다 높아졌다.", "report": "올해 해외 매출 비중은 지난해보다 낮아졌다.", "required_any": ["높아"]}
+{"id": "s37", "group": "위험", "error_type": "반대 의미", "evidence": "이번 개편으로 결재 단계가 단순해졌다.", "report": "이번 개편으로 결재 단계가 복잡해졌다.", "required_any": ["단순"]}
+{"id": "s38", "group": "위험", "error_type": "반대 의미", "evidence": "장비 가동률은 목표를 웃돌았다.", "report": "장비 가동률은 목표에 못 미쳤다.", "required_any": ["웃돌"]}
+{"id": "s39", "group": "위험", "error_type": "반대 의미", "evidence": "회의는 예정보다 일찍 끝났다.", "report": "회의는 예정보다 늦게 끝났다.", "required_any": ["일찍"]}
+{"id": "s40", "group": "위험", "error_type": "반대 의미", "evidence": "신규 요금제 출시는 확정되었다.", "report": "신규 요금제 출시는 취소되었다.", "required_any": ["확정"]}
+{"id": "c11", "group": "대조", "error_type": "맞는 문장", "evidence": "올해 연말 성과급은 지급하지 않기로 결정했다.", "report": "올해는 연말 성과급이 나오지 않는다.", "required_any": []}
+{"id": "c12", "group": "대조", "error_type": "맞는 문장", "evidence": "품질팀이 생산팀에 불량 원인 분석 보고서를 보냈다.", "report": "생산팀은 품질팀으로부터 불량 원인 분석 보고서를 받았다.", "required_any": []}
+{"id": "c13", "group": "대조", "error_type": "맞는 문장", "evidence": "이번 행사 예산은 2,500만 원으로 확정됐다.", "report": "행사 예산이 2,500만 원으로 정해졌다.", "required_any": []}
+{"id": "c14", "group": "대조", "error_type": "맞는 문장", "evidence": "신규 서비스는 6월 1일에 문을 연다.", "report": "신규 서비스는 6월 1일에 시작된다.", "required_any": []}
+{"id": "c15", "group": "대조", "error_type": "맞는 문장", "evidence": "회의는 예정보다 일찍 끝났다.", "report": "회의가 예정된 시간보다 빨리 마무리됐다.", "required_any": []}
+{"id": "c16", "group": "대조", "error_type": "맞는 문장", "evidence": "장비 가동률은 목표를 웃돌았다.", "report": "장비 가동률이 목표치보다 높았다.", "required_any": []}
+{"id": "c17", "group": "대조", "error_type": "맞는 문장", "evidence": "보안 점검에서 개인정보 유출은 발견되지 않았다.", "report": "보안 점검 결과 개인정보 유출은 없었다.", "required_any": []}
+{"id": "c18", "group": "대조", "error_type": "맞는 문장", "evidence": "대표이사가 이사회에 내년 사업 계획을 보고했다.", "report": "이사회는 대표이사로부터 내년 사업 계획을 보고받았다.", "required_any": []}
+{"id": "c19", "group": "대조", "error_type": "맞는 문장", "evidence": "교육 과정은 주 3회 운영된다.", "report": "교육은 일주일에 세 번 열린다.", "required_any": []}
+{"id": "c20", "group": "대조", "error_type": "맞는 문장", "evidence": "물류 창고는 3곳에서 5곳으로 늘어난다.", "report": "물류 창고 수가 5곳으로 늘어난다.", "required_any": []}
