@@ -6,6 +6,7 @@ serve_api.py가 첫 주소(/)에서 이 페이지를 제공한다.
   - 뒷받침함: 같은 단어 표시, 뒷받침 설명, 보고서 문장을 그대로 결과로 출력
   - 모순됨: 다른 단어 표시, 다른 부분 설명, 수정안 출력
   - 확인 불가: 근거에 없는 단어 표시, 확인할 수 없는 이유, 확인 질문 출력
+- 공통 파이프라인 처리 상태: 설명 실패(error)·생성 미완료(incomplete)를 카드에 따로 표시한다
 """
 
 PAGE = r"""<!doctype html>
@@ -43,6 +44,7 @@ PAGE = r"""<!doctype html>
   .contradiction .badge { background: #c62828; }
   .neutral .badge { background: #ef6c00; }
   .conf { color: #666; font-size: 13px; margin-left: 8px; }
+  .state { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
   .k { color: #666; font-size: 13px; margin-top: 12px; }
   .v { margin-top: 3px; line-height: 1.7; }
   mark.same { background: #c8e6c9; }
@@ -51,6 +53,7 @@ PAGE = r"""<!doctype html>
   .entailment .result { background: #e8f5e9; }
   .contradiction .result { background: #ffebee; }
   .neutral .result { background: #fff3e0; }
+  .warn { margin-top: 12px; padding: 8px 10px; border-radius: 6px; background: #fff8e1; border: 1px solid #ffe082; color: #6d4c00; font-size: 14px; }
   .meta { color: #888; font-size: 12px; margin-top: 12px; }
 </style>
 </head>
@@ -111,6 +114,9 @@ const PRESETS = [
     report: "인사위원회는 2027년 상반기에 신입 개발자 12명을 뽑기로 했다. 채용 공고는 1월 5일에 올라간다. 신입 개발자의 연봉은 4,500만 원으로 정해졌다."
   }
 ];
+
+// 공통 파이프라인 처리 상태를 사람이 읽는 말로 바꾼다
+const STATUS_TEXT = { success: "설명 완료", error: "설명 실패", incomplete: "설명 미완료", skipped: "판정만" };
 
 const $ = id => document.getElementById(id);
 
@@ -199,31 +205,56 @@ function field(card, key, value, isResult) {
   card.append(k, v);
 }
 
+// 오류는 {stage, type, message} 묶음으로 온다. 사람이 읽는 한 줄로 바꾼다
+function errorText(error) {
+  if (!error) return "";
+  if (typeof error === "string") return error;
+  return (error.stage || "?") + " 단계" + (error.type ? " (" + error.type + ")" : "");
+}
+
 function renderCard(r, index) {
   const card = document.createElement("div");
   card.className = "card " + r.label;
+  const ok = !r.status || r.status === "success" || r.status === "skipped";
 
   const head = document.createElement("div");
   head.innerHTML = '<span class="badge"></span><span class="conf"></span>';
   head.querySelector(".badge").textContent = (index + 1) + ". " + r.label_ko;
   head.querySelector(".conf").textContent = "확신도 " + Number(r.confidence).toFixed(2);
+  if (!ok) {
+    const state = document.createElement("span");
+    state.className = "state";
+    state.textContent = STATUS_TEXT[r.status] || r.status;
+    head.appendChild(state);
+  }
   card.appendChild(head);
 
+  // 설명이 실패·미완료면 설명 칸에 '-' 대신 이유를 보여준다
+  const missing = ok ? null : "(설명을 만들지 못했습니다)";
   if (r.label === "entailment") {
     field(card, "보고서 문장 (원문과 같은 단어 표시)", marked(r.claim, r.evidence, "same"));
     field(card, "근거 문장 (원문)", marked(r.evidence, r.claim, "same"));
-    field(card, "뒷받침하는 부분", r.explanation);
+    field(card, "뒷받침하는 부분", r.explanation || missing);
     field(card, "결과 (수정 없음)", r.claim, true);
   } else if (r.label === "contradiction") {
     field(card, "보고서 문장 (원문과 다른 단어 표시)", marked(r.claim, r.evidence, "diff"));
     field(card, "근거 문장 (원문)", marked(r.evidence, r.claim, "diff"));
-    field(card, "원문과 다른 부분", r.explanation);
-    field(card, "수정안", r.suggestion, true);
+    field(card, "원문과 다른 부분", r.explanation || missing);
+    field(card, "수정안", r.suggestion || missing, true);
   } else {
     field(card, "보고서 문장 (원문에 없는 단어 표시)", marked(r.claim, r.evidence, "diff"));
     field(card, "가장 가까운 원문 문장", r.evidence);
-    field(card, "확인할 수 없는 이유", r.explanation);
-    field(card, "확인 질문", r.suggestion, true);
+    field(card, "확인할 수 없는 이유", r.explanation || missing);
+    field(card, "확인 질문", r.suggestion || missing, true);
+  }
+
+  if (!ok) {
+    const warn = document.createElement("div");
+    warn.className = "warn";
+    warn.textContent = r.status === "incomplete"
+      ? "LLM 답변이 중간에 끊겨 설명을 표시하지 않습니다. 판정과 근거 문장은 위와 같으니 직접 확인하세요."
+      : "설명을 만드는 중 문제가 생겼습니다 (" + errorText(r.llm && r.llm.error) + "). 판정과 근거 문장은 위와 같으니 직접 확인하세요.";
+    card.appendChild(warn);
   }
 
   if (r.llm) {
@@ -231,7 +262,7 @@ function renderCard(r, index) {
     meta.className = "meta";
     let text = "설명: " + (r.llm.model || "-") + " (" + (r.llm.used_provider || "-") + ")";
     if (r.llm.fallback_reason) text += " · 대체 경로 사용: " + r.llm.fallback_reason;
-    if (r.llm.error) text += " · 오류: " + r.llm.error;
+    if (r.llm.error) text += " · 오류: " + errorText(r.llm.error);
     meta.textContent = text;
     card.appendChild(meta);
   }
@@ -243,9 +274,12 @@ function render(data) {
   out.innerHTML = "";
   const s = data.summary;
   const labels = Object.entries(s.by_label).map(([k, v]) => k + " " + v).join(" · ");
+  const states = Object.entries(s.by_status || {})
+    .map(([k, v]) => (STATUS_TEXT[k] || k) + " " + v).join(" · ");
   const summary = document.createElement("div");
   summary.className = "summary";
   summary.textContent = "문장 " + s.sentences + "개 · 검토 필요 " + s.needs_review + "개 (" + labels + ")"
+    + (states ? " · 처리 상태: " + states : "")
     + " · 단어 색 표시는 두 문장을 글자 그대로 비교한 참고용입니다.";
   out.appendChild(summary);
   data.results.forEach((r, i) => out.appendChild(renderCard(r, i)));

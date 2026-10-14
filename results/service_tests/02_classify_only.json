@@ -4,6 +4,12 @@
   "expected_status": 200,
   "status": 200,
   "passed": true,
+  "checks": {
+    "상태 코드": true,
+    "문장 수 3": true,
+    "모두 판정만": true,
+    "LLM 호출 없음": true
+  },
   "request": {
     "source": "2026년 10월 7일 제품기획팀 회의에서 신규 앱 '오늘장보기'의 출시일을 11월 10일로 확정했다. 마케팅 예산은 3억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다. 유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
     "report": "마케팅 예산은 5억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다. 출시 첫 달 목표 가입자는 10만 명이다.",
@@ -14,6 +20,11 @@
     "temperature": 2.77,
     "provider": null,
     "fallback_used": 0,
+    "pipeline": {
+      "service_id": "nli_report_checker",
+      "policy_version": "v1",
+      "classifier_name": "roberta"
+    },
     "summary": {
       "sentences": 3,
       "needs_review": 2,
@@ -21,6 +32,9 @@
         "모순됨": 1,
         "뒷받침함": 1,
         "확인 불가": 1
+      },
+      "by_status": {
+        "skipped": 3
       }
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
@@ -50,7 +64,8 @@
           "entailment": 0.037,
           "neutral": 0.045,
           "contradiction": 0.917
-        }
+        },
+        "status": "skipped"
       },
       {
         "claim": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다.",
@@ -73,7 +88,8 @@
           "entailment": 0.909,
           "neutral": 0.041,
           "contradiction": 0.05
-        }
+        },
+        "status": "skipped"
       },
       {
         "claim": "출시 첫 달 목표 가입자는 10만 명이다.",
@@ -96,7 +112,8 @@
           "entailment": 0.037,
           "neutral": 0.918,
           "contradiction": 0.045
-        }
+        },
+        "status": "skipped"
       }
     ]
   }

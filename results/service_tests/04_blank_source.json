@@ -4,6 +4,9 @@
   "expected_status": 400,
   "status": 400,
   "passed": true,
+  "checks": {
+    "상태 코드": true
+  },
   "request": {
     "source": "   ",
     "report": "마케팅 예산은 5억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다. 출시 첫 달 목표 가입자는 10만 명이다."

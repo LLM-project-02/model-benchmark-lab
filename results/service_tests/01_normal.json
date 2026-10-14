@@ -4,6 +4,18 @@
   "expected_status": 200,
   "status": 200,
   "passed": true,
+  "checks": {
+    "상태 코드": true,
+    "문장 수 3": true,
+    "요약 문장 수 일치": true,
+    "화면 필드 유지": true,
+    "모든 문장 성공": true,
+    "공통 기록 있음": true,
+    "원본 응답 보존": true,
+    "실제 분류기 사용": true,
+    "확률 합 1": true,
+    "사용한 LLM openai": true
+  },
   "request": {
     "source": "2026년 10월 7일 제품기획팀 회의에서 신규 앱 '오늘장보기'의 출시일을 11월 10일로 확정했다. 마케팅 예산은 3억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다. 유료 구독 기능은 이번 출시에 포함하지 않기로 했다.",
     "report": "마케팅 예산은 5억 원으로 승인되었다. 디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다. 출시 첫 달 목표 가입자는 10만 명이다."
@@ -13,6 +25,11 @@
     "temperature": 2.77,
     "provider": "openai",
     "fallback_used": 0,
+    "pipeline": {
+      "service_id": "nli_report_checker",
+      "policy_version": "v1",
+      "classifier_name": "roberta"
+    },
     "summary": {
       "sentences": 3,
       "needs_review": 2,
@@ -20,12 +37,15 @@
         "모순됨": 1,
         "뒷받침함": 1,
         "확인 불가": 1
+      },
+      "by_status": {
+        "success": 3
       }
     },
     "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
     "seconds": {
       "classify": 0.41,
-      "total": 6.69
+      "total": 7.45
     },
     "results": [
       {
@@ -52,18 +72,59 @@
         },
         "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서에는 5억 원으로 기재되어 있습니다.",
         "suggestion": "마케팅 예산은 3억 원으로 승인되었다.",
+        "status": "success",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 2.15,
+          "seconds": 3.154169899993576,
           "input_tokens": 319,
-          "output_tokens": 75,
+          "output_tokens": 90,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
           "used_provider": "openai",
           "fallback_reason": null,
           "postprocessed": false
-        }
+        },
+        "pipeline": [
+          {
+            "classifier": "roberta",
+            "llm": "openai",
+            "mode": "classifier_llm",
+            "status": "success",
+            "success": true,
+            "classification": {
+              "label": "contradiction",
+              "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+              "run_id": "roberta_lr2e5_ep6",
+              "probabilities": {
+                "entailment": 0.03720587491989136,
+                "neutral": 0.045463088899850845,
+                "contradiction": 0.9173310399055481
+              }
+            },
+            "label": "contradiction",
+            "generated_text": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서에는 5억 원으로 기재되어 있습니다.",
+            "service_output": {
+              "explanation": "원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서에는 5억 원으로 기재되어 있습니다.",
+              "suggestion": "마케팅 예산은 3억 원으로 승인되었다."
+            },
+            "generation": {
+              "raw_text": "{\"explanation\":\"원문은 마케팅 예산이 3억 원으로 승인되었다고 하지만, 보고서에는 5억 원으로 기재되어 있습니다.\",\"suggestion\":\"마케팅 예산은 3억 원으로 승인되었다.\"}",
+              "model_id": "gpt-6-luna",
+              "input_tokens": 319,
+              "output_tokens": 90,
+              "generation_complete": true,
+              "request_attempts": 1
+            },
+            "llm_invocations": 1,
+            "timings": {
+              "classification_seconds": 0.04428350005764514,
+              "llm_seconds": 3.154169899993576,
+              "total_seconds": 3.199047999922186
+            },
+            "error": null
+          }
+        ]
       },
       {
         "claim": "디자인팀은 10월 24일까지 최종 화면을 개발팀에 넘기기로 했다.",
@@ -87,11 +148,12 @@
           "neutral": 0.041,
           "contradiction": 0.05
         },
-        "explanation": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서의 ‘넘기기로 했다’는 같은 내용을 나타냅니다.",
+        "explanation": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서 문장의 ‘넘기기로 했다’와 의미가 같습니다.",
         "suggestion": null,
+        "status": "success",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 1.88,
+          "seconds": 1.9814712998922914,
           "input_tokens": 328,
           "output_tokens": 81,
           "parse_ok": true,
@@ -100,7 +162,47 @@
           "used_provider": "openai",
           "fallback_reason": null,
           "postprocessed": false
-        }
+        },
+        "pipeline": [
+          {
+            "classifier": "roberta",
+            "llm": "openai",
+            "mode": "classifier_llm",
+            "status": "success",
+            "success": true,
+            "classification": {
+              "label": "entailment",
+              "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+              "run_id": "roberta_lr2e5_ep6",
+              "probabilities": {
+                "entailment": 0.9089384078979492,
+                "neutral": 0.04098916053771973,
+                "contradiction": 0.050072357058525085
+              }
+            },
+            "label": "entailment",
+            "generated_text": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서 문장의 ‘넘기기로 했다’와 의미가 같습니다.",
+            "service_output": {
+              "explanation": "원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서 문장의 ‘넘기기로 했다’와 의미가 같습니다.",
+              "suggestion": null
+            },
+            "generation": {
+              "raw_text": "{\"explanation\":\"원문은 디자인팀이 10월 24일까지 최종 화면을 개발팀에 전달하기로 했다고 하며, 보고서 문장의 ‘넘기기로 했다’와 의미가 같습니다.\",\"suggestion\":null}",
+              "model_id": "gpt-6-luna",
+              "input_tokens": 328,
+              "output_tokens": 81,
+              "generation_complete": true,
+              "request_attempts": 1
+            },
+            "llm_invocations": 1,
+            "timings": {
+              "classification_seconds": 0.04032150004059076,
+              "llm_seconds": 1.9814712998922914,
+              "total_seconds": 2.0222437999909744
+            },
+            "error": null
+          }
+        ]
       },
       {
         "claim": "출시 첫 달 목표 가입자는 10만 명이다.",
@@ -124,20 +226,61 @@
           "neutral": 0.918,
           "contradiction": 0.045
         },
-        "explanation": "원문에서 출시 첫 달 목표 가입자 10만 명을 확인할 수 없습니다.",
-        "suggestion": "이 목표 가입자 수의 출처나 근거 자료를 알려주시겠습니까?",
+        "explanation": "원문에는 출시 첫 달 목표 가입자 수가 나와 있지 않아 확인할 수 없습니다.",
+        "suggestion": "출시 첫 달 목표 가입자 10만 명의 출처나 근거 자료를 알려주시겠습니까?",
+        "status": "success",
         "llm": {
           "model": "gpt-6-luna",
-          "seconds": 2.17,
+          "seconds": 1.7285960000008345,
           "input_tokens": 361,
-          "output_tokens": 124,
+          "output_tokens": 88,
           "parse_ok": true,
           "error": null,
           "requested_provider": "openai",
           "used_provider": "openai",
           "fallback_reason": null,
           "postprocessed": false
-        }
+        },
+        "pipeline": [
+          {
+            "classifier": "roberta",
+            "llm": "openai",
+            "mode": "classifier_llm",
+            "status": "success",
+            "success": true,
+            "classification": {
+              "label": "neutral",
+              "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+              "run_id": "roberta_lr2e5_ep6",
+              "probabilities": {
+                "entailment": 0.037416987121105194,
+                "neutral": 0.9176188111305237,
+                "contradiction": 0.044964246451854706
+              }
+            },
+            "label": "neutral",
+            "generated_text": "원문에는 출시 첫 달 목표 가입자 수가 나와 있지 않아 확인할 수 없습니다.",
+            "service_output": {
+              "explanation": "원문에는 출시 첫 달 목표 가입자 수가 나와 있지 않아 확인할 수 없습니다.",
+              "suggestion": "출시 첫 달 목표 가입자 10만 명의 출처나 근거 자료를 알려주시겠습니까?"
+            },
+            "generation": {
+              "raw_text": "{\"explanation\":\"원문에는 출시 첫 달 목표 가입자 수가 나와 있지 않아 확인할 수 없습니다.\",\"suggestion\":\"출시 첫 달 목표 가입자 10만 명의 출처나 근거 자료를 알려주시겠습니까?\"}",
+              "model_id": "gpt-6-luna",
+              "input_tokens": 361,
+              "output_tokens": 88,
+              "generation_complete": true,
+              "request_attempts": 1
+            },
+            "llm_invocations": 1,
+            "timings": {
+              "classification_seconds": 0.039597900002263486,
+              "llm_seconds": 1.7285960000008345,
+              "total_seconds": 1.7685855000745505
+            },
+            "error": null
+          }
+        ]
       }
     ]
   }

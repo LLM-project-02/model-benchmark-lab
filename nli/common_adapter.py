@@ -74,7 +74,7 @@ def build_prompt(input_data, context):
 
     messages = PROMPT.format_messages(
         label_ko=LABEL_KO[label],
-        confidence=probabilities[label],
+        confidence=round(probabilities[label], 3),  # 기존 Checker.check와 같은 세 자리 표시
         policy=context["policies"][label],
         evidence=input_data["evidence"],
         claim=input_data["claim"],
