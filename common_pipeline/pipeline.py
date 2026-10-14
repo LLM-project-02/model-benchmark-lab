@@ -1,7 +1,8 @@
 """주입된 함수를 실행하고 공통 계약·라벨·시간·실패를 기록하는 순차 실행 엔진.
 
 서비스가 입력·정책·프롬프트를 정의하고, 모델 어댑터가 API 호출과 사용량을 제공한다.
-현재 기본 응답 계약은 generated_text이며 서비스별 출력 파서·비즈니스 검증은 구현하지 않는다.
+기본 응답 계약은 generated_text이다. 서비스는 parse_output으로 기존 출력 파서를 주입할 수 있고,
+엔진은 그 반환값의 정규화 계약과 라벨만 검사한다. 서비스별 파서·비즈니스 검증은 구현하지 않는다.
 """
 
 import json
@@ -63,7 +64,7 @@ def _configuration(service, classifiers, llms, combinations):
         }
     if config["label_definitions"].keys() != config["policies"].keys():
         raise ValueError("label_definitions와 policies의 라벨 집합이 일치해야 합니다.")
-    for field in ("validate_input", "build_prompt"):
+    for field in ("validate_input", "build_prompt", "parse_output"):
         callback = service.get(field)
         if callback is not None and not callable(callback):
             raise ValueError(f"service.{field}는 함수여야 합니다.")
@@ -146,7 +147,8 @@ def _generation(result):
     return {field: result[field] for field in required}
 
 
-def _context(config, mode, label):
+def _context(config, mode, classification):
+    label = None if classification is None else classification["label"]
     labels = config["label_definitions"] if label is None else [label]
     return {
         "service_id": config["id"], "policy_version": config["policy_version"],
@@ -155,6 +157,8 @@ def _context(config, mode, label):
         "policies": {key: config["policies"][key] for key in labels},
         # 현재 기본 계약을 프롬프트에 알리는 값이며 사용자 정의 출력 스키마가 아니다.
         "output_fields": ["label", "generated_text"] if label is None else ["generated_text"],
+        # 엔진이 검증한 분류 결과의 복사본. LLM 단독은 None이다.
+        "classification": deepcopy(classification),
     }
 
 
@@ -169,8 +173,10 @@ def _default_prompt(input_data, context):
         instruction += "분류 기준으로 라벨 하나를 선택해 label에 넣고 해당 정책으로 생성하세요."
     else:
         instruction += "이미 선택된 label을 유지하세요. 출력에는 generated_text만 필요합니다."
+    # classification은 사용자 정의 builder·parser용이다. 기본 프롬프트의 payload는 바꾸지 않는다.
+    payload = {key: value for key, value in context.items() if key != "classification"}
     return instruction + "\n" + json.dumps(
-        {"input_data": input_data, **context}, ensure_ascii=False, allow_nan=False
+        {"input_data": input_data, **payload}, ensure_ascii=False, allow_nan=False
     )
 
 
@@ -189,6 +195,7 @@ def _parse(raw_text, llm_only):
 
     JSON 해석은 표준 라이브러리를 사용한다. step07의 answer/next_steps 검증은
     해당 서비스의 Pydantic 모델에 맡기며 이 함수로 복제하거나 자동 변환하지 않는다.
+    서비스 파서는 service.parse_output으로 주입한다.
     """
     output = json.loads(raw_text, object_pairs_hook=_unique_fields)
     if not isinstance(output, dict) or not output.keys() <= {"label", "generated_text"}:
@@ -196,6 +203,39 @@ def _parse(raw_text, llm_only):
     _text(output.get("generated_text"), "generated_text")
     if llm_only:
         _text(output.get("label"), "label")
+    return output
+
+
+PARSED_FIELDS = {"generated_text", "label", "service_output"}
+
+
+def _parsed_output(result, llm_only):
+    """parse_output 반환값의 정규화 계약을 검사한다. 서비스 출력의 의미는 판정하지 않는다."""
+    if not isinstance(result, dict):
+        raise TypeError("parse_output은 딕셔너리를 반환해야 합니다.")
+    unknown = set(result) - PARSED_FIELDS
+    if unknown:
+        names = ", ".join(sorted(map(str, unknown)))
+        raise ValueError(f"parse_output 반환에 허용되지 않은 필드가 있습니다: {names}")
+    output = {"generated_text": _text(result.get("generated_text"), "generated_text")}
+    # 선택 필드는 생략한다. 키가 있으면 None도 허용하지 않고 규격을 검사한다.
+    if "label" in result:
+        output["label"] = _text(result["label"], "label")
+    elif llm_only:
+        raise ValueError("LLM 단독 방식의 parse_output은 label을 반환해야 합니다.")
+    if "service_output" in result:
+        service_output = result["service_output"]
+        if not isinstance(service_output, dict):
+            raise TypeError("service_output은 딕셔너리여야 합니다.")
+        try:
+            json.dumps(service_output, allow_nan=False)  # 순환 참조·NaN·무한대 검사
+            _check_json_types(service_output)
+        except (TypeError, ValueError, RecursionError) as exc:
+            raise ValueError(
+                "service_output은 문자열 키를 가진 JSON 호환 딕셔너리여야 합니다."
+            ) from exc
+        # 파서가 반환한 객체를 나중에 바꿔도 결과가 변하지 않도록 복사해 기록한다.
+        output["service_output"] = deepcopy(service_output)
     return output
 
 
@@ -211,7 +251,8 @@ def compare(
 
     실행 중 오류는 해당 results 항목에 남기고 다음 조합을 계속한다.
     success는 호출과 출력 구조의 성공이며 생성 문장의 품질 판정이 아니다.
-    build_prompt는 프롬프트만 교체한다. generated_text 기본 출력 계약은 유지한다.
+    build_prompt는 프롬프트만 교체한다. parse_output이 없으면 generated_text 기본 계약으로
+    해석하고, 있으면 서비스 파서의 정규화 반환값(ParsedOutput)을 검사한다.
     상세 계약과 가짜 함수 예제: docs/COMMON_PIPELINE.md
     """
     config, requested = _configuration(service, classifiers, llms, combinations)
@@ -233,6 +274,7 @@ def compare(
             "classifier": classifier_name, "llm": llm_name, "mode": mode,
             "status": "error", "success": False,
             "classification": None, "label": None, "generated_text": None,
+            "service_output": None,  # parse_output이 성공했을 때만 검증된 복사본을 기록한다
             "generation": {
                 "raw_text": None, "model_id": None, "input_tokens": None,
                 "output_tokens": None, "generation_complete": None, "request_attempts": None,
@@ -260,7 +302,8 @@ def compare(
                 result["label"] = result["classification"]["label"]
 
             stage = "prompt"
-            context = _context(config, mode, result["label"])
+            # 엔진이 원본 context를 보관하고 builder와 parser에는 각각 독립된 복사본을 전달한다.
+            context = _context(config, mode, result["classification"])
             builder = _default_prompt if config["build_prompt"] is None else config["build_prompt"]
             prompt = _text(builder(deepcopy(data), deepcopy(context)), "prompt")
             stage = "llm"
@@ -283,20 +326,29 @@ def compare(
                     "message": "LLM이 생성 미완료를 보고했습니다.",
                 }
             else:
-                stage = "parse"
-                parsed = _parse(result["generation"]["raw_text"], mode == "llm_only")
-                # 출력 본문의 최소 형식 검사와 서비스에 등록된 공통 라벨 검증을 구분한다.
+                raw_text = result["generation"]["raw_text"]
+                if config["parse_output"] is None:
+                    stage = "parse"
+                    parsed = _parse(raw_text, mode == "llm_only")
+                else:
+                    stage = "parse_output"
+                    returned = config["parse_output"](raw_text, deepcopy(context))
+                    stage = "output_contract"
+                    parsed = _parsed_output(returned, mode == "llm_only")
+                # 출력 본문의 형식 검사와 서비스에 등록된 공통 라벨 검증을 구분한다.
+                # 아래 라벨 규칙은 기본 파서와 사용자 정의 파서에 똑같이 적용한다.
                 stage = "label"
                 if mode == "llm_only":
                     result["label"] = _label(parsed["label"], config["label_definitions"])
                 elif "label" in parsed and parsed["label"] != result["label"]:
                     raise ValueError("LLM이 분류기의 예측 라벨을 변경했습니다.")
                 result["generated_text"] = parsed["generated_text"]
+                result["service_output"] = parsed.get("service_output")
                 result["status"] = "success"
                 result["success"] = True
         except Exception as exc:  # noqa: BLE001 - 실패한 조합을 기록하고 다음 조합을 실행한다.
-            # 외부 함수 예외에는 요청·인증 정보가 포함될 수 있어 타입과 단계만 공개한다.
-            external = stage in ("classification", "prompt", "llm")
+            # 외부 함수 예외에는 요청·인증·응답 원문이 포함될 수 있어 타입과 단계만 공개한다.
+            external = stage in ("classification", "prompt", "llm", "parse_output")
             result["error"] = {
                 "stage": stage, "type": type(exc).__name__,
                 "message": f"{stage} 함수 실행에 실패했습니다." if external else str(exc),
@@ -307,7 +359,7 @@ def compare(
 
     # LLM 단독의 분류 시간·미제공 사용량을 0으로 추정하지 않고 None으로 남긴다.
     return {
-        "schema_version": 1, "service_id": config["id"],
+        "schema_version": 2, "service_id": config["id"],
         "policy_version": config["policy_version"], "input_data": data,
         "results": results, "total_seconds": time.perf_counter() - comparison_started,
     }
