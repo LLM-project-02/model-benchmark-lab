@@ -1,0 +1,97 @@
+﻿case_id,repeat,provider,expected_label,predicted_label,confidence,total,usable,refusal,low_confidence,recheck,meaning_flag:qwen3:4b-instruct-2507-q4_K_M,meaning_flag:gpt-6-luna,route_now,route_both
+comments-generation_eval-none-01,1,ollama,none,none,0.9597346782684326,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-01,1,openai,none,none,0.9597346782684326,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-01,2,ollama,none,none,0.9597346782684326,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-01,2,openai,none,none,0.9597346782684326,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-02,1,ollama,none,none,0.9733072519302368,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-02,1,openai,none,none,0.9733072519302368,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-02,2,ollama,none,none,0.9733072519302368,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-02,2,openai,none,none,0.9733072519302368,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-03,1,ollama,none,none,0.9704411625862122,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-03,1,openai,none,none,0.9704411625862122,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-03,2,ollama,none,none,0.9704411625862122,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-03,2,openai,none,none,0.9704411625862122,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-04,1,ollama,none,none,0.9727344512939453,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-04,1,openai,none,none,0.9727344512939453,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-04,2,ollama,none,none,0.9727344512939453,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-04,2,openai,none,none,0.9727344512939453,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-05,1,ollama,none,none,0.96499103307724,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-05,1,openai,none,none,0.96499103307724,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-05,2,ollama,none,none,0.96499103307724,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-05,2,openai,none,none,0.96499103307724,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-06,1,ollama,none,none,0.9769450426101685,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-06,1,openai,none,none,0.9769450426101685,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-06,2,ollama,none,none,0.9769450426101685,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-06,2,openai,none,none,0.9769450426101685,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-07,1,ollama,none,none,0.8677842020988464,8,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-none-07,1,openai,none,none,0.8677842020988464,8,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-none-07,2,ollama,none,none,0.8677842020988464,8,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-none-07,2,openai,none,none,0.8677842020988464,8,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-none-08,1,ollama,none,none,0.9391185641288757,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-08,1,openai,none,none,0.9391185641288757,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-08,2,ollama,none,none,0.9391185641288757,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-none-08,2,openai,none,none,0.9391185641288757,8,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-offensive-01,1,ollama,offensive,offensive,0.6956510543823242,8,True,False,False,False,True,False,순화 후 게시,사람 검토
+comments-generation_eval-offensive-01,1,openai,offensive,offensive,0.6956510543823242,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-01,2,ollama,offensive,offensive,0.6956510543823242,7,True,False,False,False,True,False,순화 후 게시,사람 검토
+comments-generation_eval-offensive-01,2,openai,offensive,offensive,0.6956510543823242,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-02,1,ollama,offensive,offensive,0.5677584409713745,6,True,False,False,True,True,True,사람 검토,사람 검토
+comments-generation_eval-offensive-02,1,openai,offensive,offensive,0.5677584409713745,4,True,False,False,True,True,True,사람 검토,사람 검토
+comments-generation_eval-offensive-02,2,ollama,offensive,offensive,0.5677584409713745,2,True,False,False,False,True,True,순화 후 게시,사람 검토
+comments-generation_eval-offensive-02,2,openai,offensive,offensive,0.5677584409713745,5,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-offensive-03,1,ollama,offensive,none,0.9630563259124756,4,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-offensive-03,1,openai,offensive,none,0.9630563259124756,4,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-offensive-03,2,ollama,offensive,none,0.9630563259124756,4,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-offensive-03,2,openai,offensive,none,0.9630563259124756,4,True,False,False,False,False,False,그대로 게시,그대로 게시
+comments-generation_eval-offensive-04,1,ollama,offensive,hate,0.5910232663154602,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-04,1,openai,offensive,hate,0.5910232663154602,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-04,2,ollama,offensive,hate,0.5910232663154602,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-04,2,openai,offensive,hate,0.5910232663154602,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-05,1,ollama,offensive,hate,0.4957057237625122,7,True,False,False,False,True,False,순화 후 게시,사람 검토
+comments-generation_eval-offensive-05,1,openai,offensive,hate,0.4957057237625122,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-05,2,ollama,offensive,hate,0.4957057237625122,7,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-05,2,openai,offensive,hate,0.4957057237625122,5,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-offensive-06,1,ollama,offensive,offensive,0.4952550232410431,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-06,1,openai,offensive,offensive,0.4952550232410431,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-06,2,ollama,offensive,offensive,0.4952550232410431,7,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-06,2,openai,offensive,offensive,0.4952550232410431,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-07,1,ollama,offensive,none,0.7475277781486511,4,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-offensive-07,1,openai,offensive,none,0.7475277781486511,4,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-offensive-07,2,ollama,offensive,none,0.7475277781486511,4,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-offensive-07,2,openai,offensive,none,0.7475277781486511,4,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-offensive-08,1,ollama,offensive,offensive,0.7058588862419128,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-08,1,openai,offensive,offensive,0.7058588862419128,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-08,2,ollama,offensive,offensive,0.7058588862419128,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-offensive-08,2,openai,offensive,offensive,0.7058588862419128,8,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-01,1,ollama,hate,offensive,0.7942945957183838,5,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-01,1,openai,hate,offensive,0.7942945957183838,5,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-01,2,ollama,hate,offensive,0.7942945957183838,5,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-01,2,openai,hate,offensive,0.7942945957183838,8,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-02,1,ollama,hate,hate,0.9223673343658447,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-02,1,openai,hate,hate,0.9223673343658447,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-02,2,ollama,hate,hate,0.9223673343658447,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-02,2,openai,hate,hate,0.9223673343658447,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-03,1,ollama,hate,offensive,0.4967430531978607,5,True,False,False,False,False,False,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-03,1,openai,hate,offensive,0.4967430531978607,5,True,False,False,False,True,False,순화 후 게시,사람 검토
+comments-generation_eval-hate-03,2,ollama,hate,offensive,0.4967430531978607,5,True,False,False,False,False,True,순화 후 게시,순화 후 게시
+comments-generation_eval-hate-03,2,openai,hate,offensive,0.4967430531978607,5,True,False,False,False,True,False,순화 후 게시,사람 검토
+comments-generation_eval-hate-04,1,ollama,hate,hate,0.7685568332672119,5,True,False,False,False,True,True,순화 후 게시,사람 검토
+comments-generation_eval-hate-04,1,openai,hate,hate,0.7685568332672119,8,True,False,False,True,True,False,사람 검토,사람 검토
+comments-generation_eval-hate-04,2,ollama,hate,hate,0.7685568332672119,7,True,False,False,False,True,True,순화 후 게시,사람 검토
+comments-generation_eval-hate-04,2,openai,hate,hate,0.7685568332672119,6,True,False,False,True,True,False,사람 검토,사람 검토
+comments-generation_eval-hate-05,1,ollama,hate,none,0.7986060380935669,2,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-hate-05,1,openai,hate,none,0.7986060380935669,2,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-hate-05,2,ollama,hate,none,0.7986060380935669,2,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-hate-05,2,openai,hate,none,0.7986060380935669,2,True,False,True,False,False,False,그대로 게시,사람 검토
+comments-generation_eval-hate-06,1,ollama,hate,hate,0.8627237677574158,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-06,1,openai,hate,hate,0.8627237677574158,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-06,2,ollama,hate,hate,0.8627237677574158,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-06,2,openai,hate,hate,0.8627237677574158,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-07,1,ollama,hate,hate,0.7056906223297119,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-07,1,openai,hate,hate,0.7056906223297119,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-07,2,ollama,hate,hate,0.7056906223297119,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-07,2,openai,hate,hate,0.7056906223297119,2,True,False,False,True,False,False,사람 검토,사람 검토
+comments-generation_eval-hate-08,1,ollama,hate,hate,0.7997778058052063,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-08,1,openai,hate,hate,0.7997778058052063,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-08,2,ollama,hate,hate,0.7997778058052063,8,True,True,False,False,False,False,게시 보류,게시 보류
+comments-generation_eval-hate-08,2,openai,hate,hate,0.7997778058052063,8,True,True,False,False,False,False,게시 보류,게시 보류

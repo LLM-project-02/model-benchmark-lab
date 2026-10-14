@@ -1,0 +1,40 @@
+{
+  "mode": "final",
+  "source": "final02",
+  "pairs": 28,
+  "answers": 36,
+  "ollama_version": "0.35.0",
+  "judge_config": {
+    "prompt": "steps/step08_connect_chain.py meaning_prompt",
+    "schema": "MeaningVerdict(reason, meaning_kept)",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "ollama": {
+      "num_ctx": 4096,
+      "think": false,
+      "format": "json_schema"
+    },
+    "openai": {
+      "reasoning_effort": "none",
+      "text_format": "json_schema strict"
+    },
+    "warmup": "Ollama 모델마다 기록하지 않는 호출 한 번으로 먼저 메모리에 올린다."
+  },
+  "judges": [
+    {
+      "name": "gpt-6-luna",
+      "provider": "openai",
+      "role": "참고값"
+    },
+    {
+      "name": "qwen3:4b-instruct-2507-q4_K_M",
+      "provider": "ollama",
+      "digest": "0edcdef34593",
+      "parameter_size": "4.0B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 3.0934957,
+      "loaded_gb": 2.9598828116431832,
+      "vram_gb": 2.9598828116431832
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "mode": "develop",
+  "source": "local_models01",
+  "pairs": 159,
+  "answers": 209,
+  "ollama_version": "0.35.0",
+  "judge_config": {
+    "prompt": "steps/step08_connect_chain.py meaning_prompt",
+    "schema": "MeaningVerdict(reason, meaning_kept)",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "ollama": {
+      "num_ctx": 4096,
+      "think": false,
+      "format": "json_schema"
+    },
+    "openai": {
+      "reasoning_effort": "none",
+      "text_format": "json_schema strict"
+    },
+    "warmup": "Ollama 모델마다 기록하지 않는 호출 한 번으로 먼저 메모리에 올린다."
+  },
+  "judges": [
+    {
+      "name": "gpt-6-luna",
+      "provider": "openai",
+      "role": "참고값"
+    },
+    {
+      "name": "kanana2-3b-chatml:q4km",
+      "provider": "ollama",
+      "digest": "ab937df3c73d",
+      "parameter_size": "3.5B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 2.5297105,
+      "loaded_gb": 2.404638670384884,
+      "vram_gb": 2.404638670384884
+    },
+    {
+      "name": "hf.co/mradermacher/kanana-2-3b-instruct-GGUF:Q4_K_M",
+      "provider": "ollama",
+      "digest": "d5a16a4a92bc",
+      "parameter_size": "3.51B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 2.1351965,
+      "loaded_gb": 2.404638670384884,
+      "vram_gb": 2.404638670384884
+    },
+    {
+      "name": "qwen3:4b-instruct-2507-q4_K_M",
+      "provider": "ollama",
+      "digest": "0edcdef34593",
+      "parameter_size": "4.0B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 2.7953777,
+      "loaded_gb": 2.9598828116431832,
+      "vram_gb": 2.9598828116431832
+    },
+    {
+      "name": "gemma3:4b",
+      "provider": "ollama",
+      "digest": "a2af6cc3eb7f",
+      "parameter_size": "4.3B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 4.3495,
+      "loaded_gb": 2.6780371088534594,
+      "vram_gb": 2.6780371088534594
+    },
+    {
+      "name": "qwen3.5:4b",
+      "provider": "ollama",
+      "digest": "2a654d98e6fb",
+      "parameter_size": "4.7B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 4.6611188,
+      "loaded_gb": 2.9132128888741136,
+      "vram_gb": 2.9132128888741136
+    },
+    {
+      "name": "exaone3.5:7.8b",
+      "provider": "ollama",
+      "digest": "c7c4e3d1ca22",
+      "parameter_size": "7.8B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 3.8561734,
+      "loaded_gb": 4.828759764321148,
+      "vram_gb": 4.828759764321148
+    },
+    {
+      "name": "qwen3.5:9b",
+      "provider": "ollama",
+      "digest": "6488c96fa5fa",
+      "parameter_size": "9.7B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 5.8948893,
+      "loaded_gb": 5.113037107512355,
+      "vram_gb": 5.113037107512355
+    },
+    {
+      "name": "gemma4:e2b",
+      "provider": "ollama",
+      "digest": "7fbdbf8f5e45",
+      "parameter_size": "5.1B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 4.4074542,
+      "loaded_gb": 1.5910644521936774,
+      "vram_gb": 1.5910644521936774
+    },
+    {
+      "name": "gemma4:e4b",
+      "provider": "ollama",
+      "digest": "c6eb396dbd59",
+      "parameter_size": "8.0B",
+      "quantization": "Q4_K_M",
+      "load_seconds": 5.0801252,
+      "loaded_gb": 3.0047656232491136,
+      "vram_gb": 3.0047656232491136
+    },
+    {
+      "name": "gemma4:e4b-it-q8_0",
+      "provider": "ollama",
+      "digest": "9dcc35808b42",
+      "parameter_size": "8.0B",
+      "quantization": "Q8_0",
+      "load_seconds": 6.6964537,
+      "loaded_gb": 4.893281248398125,
+      "vram_gb": 4.893281248398125
+    }
+  ]
+}
