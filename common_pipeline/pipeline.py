@@ -245,7 +245,7 @@ def compare(
     service: dict,
     classifiers: dict,
     llms: dict,
-    combinations: list[tuple[str | None, str]],    
+    combinations: list[tuple[str | None, str]],
 ) -> dict:
     """명시한 조합만 순서대로 실행한다. 설정·입력 오류는 호출 전에 예외로 알린다.
 

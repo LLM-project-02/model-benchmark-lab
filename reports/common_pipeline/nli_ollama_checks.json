@@ -1,0 +1,164 @@
+[
+  {
+    "expected_label": "entailment",
+    "label_matches": true,
+    "result": {
+      "schema_version": 2,
+      "service_id": "nli_report_checker",
+      "policy_version": "v1",
+      "input_data": {
+        "evidence": "출시일은 11월 10일로 확정되었다.",
+        "claim": "출시일은 11월 10일로 확정되었다."
+      },
+      "results": [
+        {
+          "classifier": "selected_classifier",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "entailment",
+            "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+            "run_id": "roberta_lr2e5_ep6",
+            "probabilities": {
+              "entailment": 0.9093312621116638,
+              "neutral": 0.045095961540937424,
+              "contradiction": 0.04557270184159279
+            }
+          },
+          "label": "entailment",
+          "generated_text": "보고서 문장과 원문 근거의 내용이 정확히 일치한다. '출시일은 11월 10일로 확정되었다'는 문장이 원문에서 직접적으로 나와 있다.",
+          "service_output": {
+            "explanation": "보고서 문장과 원문 근거의 내용이 정확히 일치한다. '출시일은 11월 10일로 확정되었다'는 문장이 원문에서 직접적으로 나와 있다.",
+            "suggestion": null
+          },
+          "generation": {
+            "raw_text": "{\"explanation\": \"보고서 문장과 원문 근거의 내용이 정확히 일치한다. '출시일은 11월 10일로 확정되었다'는 문장이 원문에서 직접적으로 나와 있다.\", \"suggestion\": null}",
+            "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+            "input_tokens": 361,
+            "output_tokens": 63,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.29882489994633943,
+            "llm_seconds": 1.368984599946998,
+            "total_seconds": 1.668306199950166
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 1.6683085999684408
+    }
+  },
+  {
+    "expected_label": "neutral",
+    "label_matches": true,
+    "result": {
+      "schema_version": 2,
+      "service_id": "nli_report_checker",
+      "policy_version": "v1",
+      "input_data": {
+        "evidence": "출시일은 11월 10일로 확정되었다.",
+        "claim": "제품의 가격은 5만 원이다."
+      },
+      "results": [
+        {
+          "classifier": "selected_classifier",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "neutral",
+            "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+            "run_id": "roberta_lr2e5_ep6",
+            "probabilities": {
+              "entailment": 0.04020901024341583,
+              "neutral": 0.9179153442382812,
+              "contradiction": 0.04187573119997978
+            }
+          },
+          "label": "neutral",
+          "generated_text": "원문에서 제품의 가격에 대한 정보가 없으므로, 원문에서 확인할 수 없다.",
+          "service_output": {
+            "explanation": "원문에서 제품의 가격에 대한 정보가 없으므로, 원문에서 확인할 수 없다.",
+            "suggestion": "제품의 가격에 대한 정보는 원문에 기재되어 있나요?"
+          },
+          "generation": {
+            "raw_text": "{\"explanation\": \"원문에서 제품의 가격에 대한 정보가 없으므로, 원문에서 확인할 수 없다.\", \"suggestion\": \"제품의 가격에 대한 정보는 원문에 기재되어 있나요?\"}",
+            "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+            "input_tokens": 379,
+            "output_tokens": 54,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.01181870000436902,
+            "llm_seconds": 0.7040283000096679,
+            "total_seconds": 0.7161552999168634
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 0.7161567999282852
+    }
+  },
+  {
+    "expected_label": "contradiction",
+    "label_matches": true,
+    "result": {
+      "schema_version": 2,
+      "service_id": "nli_report_checker",
+      "policy_version": "v1",
+      "input_data": {
+        "evidence": "출시일은 11월 10일로 확정되었다.",
+        "claim": "출시일은 11월 20일로 확정되었다."
+      },
+      "results": [
+        {
+          "classifier": "selected_classifier",
+          "llm": "ollama",
+          "mode": "classifier_llm",
+          "status": "success",
+          "success": true,
+          "classification": {
+            "label": "contradiction",
+            "model_id": "artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint",
+            "run_id": "roberta_lr2e5_ep6",
+            "probabilities": {
+              "entailment": 0.035830188542604446,
+              "neutral": 0.04139689728617668,
+              "contradiction": 0.9227728843688965
+            }
+          },
+          "label": "contradiction",
+          "generated_text": "원문에 따르면 출시일은 11월 10일로 확정되었다. 보고서는 11월 20일이라고 했고, 이는 원문과 다르다. 따라서 문장이 원문과 충돌한다.",
+          "service_output": {
+            "explanation": "원문에 따르면 출시일은 11월 10일로 확정되었다. 보고서는 11월 20일이라고 했고, 이는 원문과 다르다. 따라서 문장이 원문과 충돌한다.",
+            "suggestion": "출시일은 11월 10일로 확정되었다."
+          },
+          "generation": {
+            "raw_text": "{\"explanation\": \"원문에 따르면 출시일은 11월 10일로 확정되었다. 보고서는 11월 20일이라고 했고, 이는 원문과 다르다. 따라서 문장이 원문과 충돌한다.\", \"suggestion\": \"출시일은 11월 10일로 확정되었다.\"}",
+            "model_id": "qwen3:4b-instruct-2507-q4_K_M",
+            "input_tokens": 367,
+            "output_tokens": 91,
+            "generation_complete": true,
+            "request_attempts": 1
+          },
+          "llm_invocations": 1,
+          "timings": {
+            "classification_seconds": 0.009151899954304099,
+            "llm_seconds": 1.25590920005925,
+            "total_seconds": 1.265297899954021
+          },
+          "error": null
+        }
+      ],
+      "total_seconds": 1.265298799960874
+    }
+  }
+]
