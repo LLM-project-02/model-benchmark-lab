@@ -36,7 +36,7 @@ explicit = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests/test_lesson_training.py", "tests/test_lesson_service.py"]
-pythonpath = ["steps"]
+pythonpath = [".", "steps"]
 
 [tool.ruff]
 line-length = 100
