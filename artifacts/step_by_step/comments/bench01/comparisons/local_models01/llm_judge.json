@@ -4,6 +4,6 @@
   "answers": 600,
   "unusable_answers_scored_zero": 215,
   "unique_answers_judged": 222,
-  "human_spotcheck": "사람이 llm_spotcheck.csv의 10건 가운데 7건에 동의했고, 동의하지 않은 건은 없습니다. 3건은 판단을 보류했습니다.",
+  "human_spotcheck": "사람이 llm_spotcheck.csv의 10건 가운데 10건에 동의했고, 동의하지 않은 건은 없습니다.",
   "notes": "채점표에 어느 모델의 답변인지 적지 않았다. 같은 입력에 같은 답변은 한 번만 채점했다."
 }
