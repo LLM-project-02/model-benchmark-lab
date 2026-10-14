@@ -1,0 +1,92 @@
+{
+  "case": "01_normal",
+  "description": "정상 요청: 판정 + LLM 설명",
+  "expected_status": 200,
+  "status": 200,
+  "as_expected": true,
+  "request": {
+    "source": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다. 김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
+    "report": "우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다. 김봉진 대표는 아시아 8개국 사업을 총괄한다.",
+    "provider": "ollama"
+  },
+  "response": {
+    "classifier": "roberta_lr2e5_ep6",
+    "temperature": 2.77,
+    "provider": "ollama",
+    "summary": {
+      "sentences": 2,
+      "needs_review": 1,
+      "by_label": {
+        "뒷받침함": 1,
+        "모순됨": 1
+      }
+    },
+    "notice": "판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 근거 문장과 함께 검토하세요.",
+    "seconds": {
+      "classify": 0.05,
+      "total": 2.9
+    },
+    "results": [
+      {
+        "claim": "우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다.",
+        "evidence": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다.",
+        "evidence_similarity": 0.511,
+        "other_candidates": [
+          {
+            "sentence": "김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
+            "similarity": 0.036
+          }
+        ],
+        "label": "entailment",
+        "label_ko": "뒷받침함",
+        "confidence": 0.908,
+        "probabilities": {
+          "entailment": 0.908,
+          "neutral": 0.042,
+          "contradiction": 0.05
+        },
+        "explanation": "원문에서 '독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다'라고 명시되어 있으며, 보고서 문장 '우아한형제들의 기업가치는 약 4조8000억원으로 평가됐다'는 내용은 이 문장의 핵심 정보를 정확히 반영하고 있다. '평가한'과 '평가됐다'는 의미가 일치하며, 기업가치의 금액도 동일하다.",
+        "suggestion": null,
+        "llm": {
+          "provider": "ollama",
+          "model": "qwen3:4b-instruct-2507-q4_K_M",
+          "seconds": 1.8,
+          "input_tokens": 382,
+          "output_tokens": 147,
+          "parse_ok": true,
+          "error": null
+        }
+      },
+      {
+        "claim": "김봉진 대표는 아시아 8개국 사업을 총괄한다.",
+        "evidence": "김봉진 대표는 우아DH아시아의 책임자로서 아시아 11개국 사업을 총괄하게 된다.",
+        "evidence_similarity": 0.451,
+        "other_candidates": [
+          {
+            "sentence": "독일계 음식 배달서비스업체 DH가 평가한 우아한형제들의 기업가치는 약 4조8000억원이다.",
+            "similarity": 0.02
+          }
+        ],
+        "label": "contradiction",
+        "label_ko": "모순됨",
+        "confidence": 0.921,
+        "probabilities": {
+          "entailment": 0.034,
+          "neutral": 0.044,
+          "contradiction": 0.921
+        },
+        "explanation": "원문은 '아시아 11개국 사업'을 명시하고 있으나, 보고서는 '아시아 8개국 사업'으로 기재되어 있어 숫자가 다름. 이는 원문과 충돌한다. ",
+        "suggestion": "김봉진 대표는 아시아 11개국 사업을 총괄하게 된다.",
+        "llm": {
+          "provider": "ollama",
+          "model": "qwen3:4b-instruct-2507-q4_K_M",
+          "seconds": 1.05,
+          "input_tokens": 372,
+          "output_tokens": 92,
+          "parse_ok": true,
+          "error": null
+        }
+      }
+    ]
+  }
+}
