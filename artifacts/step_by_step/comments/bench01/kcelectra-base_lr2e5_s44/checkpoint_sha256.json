@@ -1,0 +1,36 @@
+{
+  "run_name": "kcelectra-base_lr2e5_s44",
+  "model": "beomi/KcELECTRA-base-v2022",
+  "checked_at": "2026-10-14",
+  "validation_reproduced": "840/840",
+  "checkpoint_zip": {
+    "bytes": 512903990,
+    "sha256": "7eb7028497a522ed4eac69c108533358d1cf5289f1750e0dffda924676e74966"
+  },
+  "files": {
+    "checkpoint/config.json": {
+      "bytes": 1020,
+      "sha256": "54b9bfc11dd6d78361a10bef3006bb7182673cbe0dbff80df5c9278465c3223a"
+    },
+    "checkpoint/model.safetensors": {
+      "bytes": 511140444,
+      "sha256": "3b1b0b6536220c9cf5b2a8c5d22ea5f7c35750889c6c37746fe573c9cee4cd16"
+    },
+    "checkpoint/special_tokens_map.json": {
+      "bytes": 132,
+      "sha256": "3c3507f36dff57bce437223db3b3081d1e2b52ec3e56ee55438193ecb2c94dd6"
+    },
+    "checkpoint/tokenizer.json": {
+      "bytes": 1310690,
+      "sha256": "e36230d6bb953a55ca6e67fcdfde94620646b023222897b1c4a543e9b194d917"
+    },
+    "checkpoint/tokenizer_config.json": {
+      "bytes": 1323,
+      "sha256": "a788593c2a971a160d8ae85149b6cc4da9df3fb7d58139d3f3494ed77e59d0ce"
+    },
+    "checkpoint/vocab.txt": {
+      "bytes": 449581,
+      "sha256": "324d50377df9b16001916d553fa01dca83c9fc54965f9671a50d6454cf85b70c"
+    }
+  }
+}
