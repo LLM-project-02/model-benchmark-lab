@@ -3,7 +3,8 @@
 uv run python scripts/check_comments_common_pipeline.py common_pipeline01
 
 - 정상 요청: 라벨마다 개발 입력의 첫 댓글을 분류기(KcELECTRA) + 로컬, 분류기 + 상용 조합으로 보낸다.
-  OpenAI 호출은 3번이다.
+  OpenAI 호출은 3번이다. LLM에 보낸 프롬프트에 예측 라벨의 정책만 들어갔는지와,
+  결과의 run_id가 selected.json의 선택 모델과 같은지도 확인한다.
 - 실행 전에 막히는 오류: 빈 입력, 글자 수 초과, 입력 필드 이름이 다름, 등록하지 않은 LLM 이름
 - 실행 중 오류(조합별 기록): LLM 단독, Ollama 연결 실패, 형식 강제를 끈 응답(코드 블록), 토큰 한도로 잘린 응답
 결과는 artifacts/.../<LEARNER>/service_checks/<이름>/에 results.json과 check.md로 남긴다.
@@ -27,7 +28,7 @@ import step07_call_models as models
 from compare_comments_local_models import call_local
 from lesson_settings import DATASET, DEVELOPMENT_INPUT, LEARNER_DIR, MAX_INPUT_CHARS
 from step06_predict import load_classifier
-from step08_connect_chain import REFUSAL_PHRASE
+from step08_connect_chain import POLICIES, REFUSAL_PHRASE
 
 from common_pipeline import compare
 
@@ -181,6 +182,15 @@ def short(text, limit=60):
     return text if len(text) <= limit else text[:limit] + "…"
 
 
+def policy_check(result, prompt):
+    """LLM에 보낸 프롬프트에 예측 라벨의 정책만 들어갔는지 본다. LLM을 부르지 않았으면 None."""
+    if prompt is None or result["label"] is None:
+        return None
+    label = result["label"]
+    others = [other for other in connect.LABEL_DEFINITIONS if other != label]
+    return POLICIES[label] in prompt and not any(POLICIES[other] in prompt for other in others)
+
+
 def handling(result, original):
     """고친 댓글을 문서에 그대로 옮기지 않고 처리 방식만 적는다(실제 댓글의 실명·혐오 표현을 피함)."""
     if not result["success"]:
@@ -191,7 +201,7 @@ def handling(result, original):
     return "게시 불가 안내" if REFUSAL_PHRASE in answer else "고쳐 씀"
 
 
-def write_markdown(path, name, normal, before, during_checks, identity):
+def write_markdown(path, name, normal, before, during_checks, identity, selected_ok):
     lines = [
         f"# 공통 파이프라인 연결 확인 ({name})",
         "",
@@ -209,7 +219,8 @@ def write_markdown(path, name, normal, before, during_checks, identity):
         ),
         (
             f"- 분류기 `kcelectra`: `{identity['learner']}/{identity['run_name']}` "
-            f"(beomi/KcELECTRA-base-v2022 미세조정, run_id `{identity['run_id']}`), CPU"
+            f"(beomi/KcELECTRA-base-v2022 미세조정, run_id `{identity['run_id']}`), CPU. "
+            f"결과의 run_id가 `selected.json`의 선택 모델과 같음: {'예' if selected_ok else '아니오'}"
         ),
         f"- LLM `ollama`: `{models.OLLAMA_MODEL}`, `openai`: `{models.OPENAI_MODEL}`",
         "- 프롬프트와 파서: 서비스의 step08 `apply_policy`와 step07 `AnswerPayload`를 그대로 씀",
@@ -217,20 +228,41 @@ def write_markdown(path, name, normal, before, during_checks, identity):
         "",
         "## 정상 요청",
         "",
-        "| 입력 | 조합 | 결과 | 라벨 (확률) | 처리 (generated_text) | 분류 | LLM | 전체 |",
-        "|---|---|---|---|---|---:|---:|---:|",
+        (
+            "'정책'은 LLM에 실제로 보낸 프롬프트에 예측 라벨의 정책만 들어갔는지입니다"
+            "(다른 라벨의 정책은 없어야 함)."
+        ),
+        "",
+        "| 입력 | 조합 | 결과 | 라벨 (확률) | 정책 | 처리 (generated_text) | 분류 | LLM | 전체 |",
+        "|---|---|---|---|:---:|---|---:|---:|---:|",
     ]
     for case_id, output in normal_rows(normal):
         original = output["input_data"]["text"]
-        for result in output["results"]:
+        for result, policy_ok in zip(output["results"], output["policy_checks"], strict=True):
             probability = (result["classification"] or {}).get("probabilities") or {}
             label = result["label"]
             timings = result["timings"]
             lines.append(
                 f"| {case_id} | {result['classifier']} + {result['llm']} | {result['status']} | "
-                f"{label} ({probability.get(label, 0):.2f}) | {handling(result, original)} | "
-                f"{timings['classification_seconds']:.2f}초 | {timings['llm_seconds']:.2f}초 | "
-                f"{timings['total_seconds']:.2f}초 |"
+                f"{label} ({probability.get(label, 0):.2f}) | {'예' if policy_ok else '아니오'} | "
+                f"{handling(result, original)} | {timings['classification_seconds']:.2f}초 | "
+                f"{timings['llm_seconds']:.2f}초 | {timings['total_seconds']:.2f}초 |"
+            )
+    lines += [
+        "",
+        "### 호출 정보 (generation)",
+        "",
+        "| 입력 | LLM | model_id | 입력 / 출력 토큰 | 완료 | 요청 시도 | 원본 응답 | service_output |",
+        "|---|---|---|---:|:---:|---:|---|---|",
+    ]
+    for case_id, output in normal_rows(normal):
+        for result in output["results"]:
+            call = result["generation"]
+            fields = ", ".join(sorted(result["service_output"] or {}))
+            lines.append(
+                f"| {case_id} | {result['llm']} | `{call['model_id']}` | {call['input_tokens']} / "
+                f"{call['output_tokens']} | {'예' if call['generation_complete'] else '아니오'} | "
+                f"{call['request_attempts']} | 보존 ({len(call['raw_text'])}자) | {fields} |"
             )
     lines += [
         "",
@@ -305,14 +337,25 @@ def main():
         raise FileExistsError("결과 폴더가 있습니다. 새 이름으로 실행하세요.")
 
     bundle = load_classifier()
+    selected = json.loads((LEARNER_DIR / "selected.json").read_text(encoding="utf-8"))
     service = connect.build_service()
     classifiers = {"kcelectra": connect.make_classifier(bundle)}
-    llms = {"ollama": connect.make_llm("ollama"), "openai": connect.make_llm("openai")}
+    prompts = []  # LLM 함수가 실제로 받은 프롬프트 (정책 확인용)
+
+    def recording(generate):
+        def wrapped(prompt):
+            prompts.append(prompt)
+            return generate(prompt)
+
+        return wrapped
+
+    llms = {name: recording(connect.make_llm(name)) for name in ("ollama", "openai")}
     cases = first_cases()
 
     models.call_model("ollama", "준비 확인")  # 로컬 모델을 먼저 올린다 (기록하지 않음)
     normal = []
     for case in cases:
+        prompts.clear()
         output = compare(
             {"text": case["text"]},
             service=service,
@@ -320,7 +363,26 @@ def main():
             llms=llms,
             combinations=[("kcelectra", "ollama"), ("kcelectra", "openai")],
         )
-        normal.append({"case_id": case["id"].split("development-")[-1], **output})
+        sent = iter(list(prompts))  # 조합 순서대로 불렸다. LLM을 부르지 않은 조합은 None
+        per_result = [
+            next(sent) if result["llm_invocations"] else None for result in output["results"]
+        ]
+        normal.append(
+            {
+                "case_id": case["id"].split("development-")[-1],
+                **output,
+                "prompts": per_result,
+                "policy_checks": [
+                    policy_check(result, prompt)
+                    for result, prompt in zip(output["results"], per_result, strict=True)
+                ],
+            }
+        )
+    selected_ok = all(
+        result["classification"]["run_id"] == selected["run_id"]
+        for output in normal
+        for result in output["results"]
+    )
     before = run_before_errors(service, classifiers, llms, cases[1]["text"])
     during, during_checks = run_during_errors(service, classifiers, cases[1]["text"])
 
@@ -337,9 +399,17 @@ def main():
         json.dumps(record, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8"
     )
     write_markdown(
-        folder / "check.md", args.name, normal, before, during_checks, bundle["identity"]
+        folder / "check.md",
+        args.name,
+        normal,
+        before,
+        during_checks,
+        bundle["identity"],
+        selected_ok,
     )
     ok_normal = all(result["success"] for output in normal for result in output["results"])
+    ok_policy = all(check for output in normal for check in output["policy_checks"])
+    print(f"선택 모델 사용: {selected_ok}, 라벨에 맞는 정책 전달: {ok_policy}")
     ok_errors = all(item["passed"] for item in before + during_checks)
     print(f"정상 요청 {sum(len(o['results']) for o in normal)}개 모두 성공: {ok_normal}")
     print(f"오류 요청 {len(before) + len(during_checks)}개 모두 기대대로: {ok_errors}")

@@ -238,7 +238,10 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 팀 공통 엔진(`common_pipeline`, `feature/common-pipeline-parser-support`의 44c8944)에 이 서비스의 기존 함수를 연결했습니다. 연결 코드: [scripts/comments_common_pipeline.py](../../../../scripts/comments_common_pipeline.py), 기록: [check.md](service_checks/common_pipeline01/check.md)
 
 - **연결한 함수:** 분류(KcELECTRA, 세 라벨의 확률을 반올림 전 값으로 넘김), 프롬프트(step08 `apply_policy` 그대로), LLM(step07 `call_model`: 로컬 gemma4:e4b, 상용 gpt-6-luna), 파서(step07 `AnswerPayload`). 새 파서나 새 프롬프트는 만들지 않았습니다.
+- **1차 테스트 (가짜 분류·LLM 함수로 엔진 확인):** `uv run --frozen --group dev python -m pytest -q tests/test_common_pipeline.py` 101개가 통과했습니다.
 - **정상 요청:** 라벨마다 개발 입력의 첫 댓글 3건을 로컬·상용 두 조합으로 보내 6개 모두 success였습니다. success는 호출과 형식 검사가 통과했다는 뜻이고, 내용 품질 판정은 아닙니다.
+  - LLM에 실제로 보낸 프롬프트에 예측 라벨의 정책만 들어갔고, 결과의 run_id가 `selected.json`의 선택 모델과 같았습니다.
+  - 원본 응답, 모델 ID, 토큰 수, 완료 여부, 요청 시도 수(1)가 결과에 기록됐습니다.
 - **오류 요청 8개가 모두 기대한 단계에서 막혔습니다.**
   - 실행 전에 막힘(모델 호출 0번): 빈 입력, 글자 수 초과, 입력 필드 이름 오류, 등록하지 않은 LLM 이름
   - 조합별로 기록: LLM 단독은 prompt, Ollama 연결 실패는 llm, 형식 강제를 끈 응답(코드 블록)은 parse_output, 토큰 한도로 잘린 응답은 incomplete

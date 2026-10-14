@@ -5,21 +5,34 @@
 ## 설정
 
 - 서비스: `comments`, 정책 버전 `bench01-development03`, 결과 형식 `schema_version` 2
-- 분류기 `kcelectra`: `bench01/kcelectra-base_lr2e5_s44` (beomi/KcELECTRA-base-v2022 미세조정, run_id `0fdf19bdf6b04d0390d8a8421c219898`), CPU
+- 분류기 `kcelectra`: `bench01/kcelectra-base_lr2e5_s44` (beomi/KcELECTRA-base-v2022 미세조정, run_id `0fdf19bdf6b04d0390d8a8421c219898`), CPU. 결과의 run_id가 `selected.json`의 선택 모델과 같음: 예
 - LLM `ollama`: `gemma4:e4b`, `openai`: `gpt-6-luna`
 - 프롬프트와 파서: 서비스의 step08 `apply_policy`와 step07 `AnswerPayload`를 그대로 씀
 - 로컬 모델은 기록하지 않는 호출 한 번으로 먼저 메모리에 올렸습니다.
 
 ## 정상 요청
 
-| 입력 | 조합 | 결과 | 라벨 (확률) | 처리 (generated_text) | 분류 | LLM | 전체 |
-|---|---|---|---|---|---:|---:|---:|
-| none-01 | kcelectra + ollama | success | none (0.96) | 원문 그대로 | 0.08초 | 1.27초 | 1.35초 |
-| none-01 | kcelectra + openai | success | none (0.96) | 원문 그대로 | 0.02초 | 2.15초 | 2.17초 |
-| offensive-01 | kcelectra + ollama | success | offensive (0.72) | 고쳐 씀 | 0.02초 | 1.36초 | 1.38초 |
-| offensive-01 | kcelectra + openai | success | offensive (0.72) | 고쳐 씀 | 0.02초 | 1.56초 | 1.58초 |
-| hate-01 | kcelectra + ollama | success | hate (0.54) | 고쳐 씀 | 0.02초 | 1.41초 | 1.43초 |
-| hate-01 | kcelectra + openai | success | hate (0.54) | 게시 불가 안내 | 0.02초 | 1.92초 | 1.94초 |
+'정책'은 LLM에 실제로 보낸 프롬프트에 예측 라벨의 정책만 들어갔는지입니다(다른 라벨의 정책은 없어야 함).
+
+| 입력 | 조합 | 결과 | 라벨 (확률) | 정책 | 처리 (generated_text) | 분류 | LLM | 전체 |
+|---|---|---|---|:---:|---|---:|---:|---:|
+| none-01 | kcelectra + ollama | success | none (0.96) | 예 | 원문 그대로 | 0.16초 | 1.17초 | 1.34초 |
+| none-01 | kcelectra + openai | success | none (0.96) | 예 | 원문 그대로 | 0.02초 | 2.62초 | 2.64초 |
+| offensive-01 | kcelectra + ollama | success | offensive (0.72) | 예 | 고쳐 씀 | 0.02초 | 1.35초 | 1.37초 |
+| offensive-01 | kcelectra + openai | success | offensive (0.72) | 예 | 고쳐 씀 | 0.02초 | 2.13초 | 2.15초 |
+| hate-01 | kcelectra + ollama | success | hate (0.54) | 예 | 고쳐 씀 | 0.02초 | 1.41초 | 1.44초 |
+| hate-01 | kcelectra + openai | success | hate (0.54) | 예 | 게시 불가 안내 | 0.02초 | 2.03초 | 2.06초 |
+
+### 호출 정보 (generation)
+
+| 입력 | LLM | model_id | 입력 / 출력 토큰 | 완료 | 요청 시도 | 원본 응답 | service_output |
+|---|---|---|---:|:---:|---:|---|---|
+| none-01 | ollama | `gemma4:e4b` | 386 / 42 | 예 | 1 | 보존 (71자) | answer, next_steps |
+| none-01 | openai | `gpt-6-luna` | 377 / 35 | 예 | 1 | 보존 (62자) | answer, next_steps |
+| offensive-01 | ollama | `gemma4:e4b` | 394 / 47 | 예 | 1 | 보존 (94자) | answer, next_steps |
+| offensive-01 | openai | `gpt-6-luna` | 391 / 37 | 예 | 1 | 보존 (65자) | answer, next_steps |
+| hate-01 | ollama | `gemma4:e4b` | 461 / 71 | 예 | 1 | 보존 (146자) | answer, next_steps |
+| hate-01 | openai | `gpt-6-luna` | 454 / 43 | 예 | 1 | 보존 (87자) | answer, next_steps |
 
 - **success의 뜻:** 호출과 형식 검사(분류 결과, 생성 응답, `AnswerPayload`)가 통과했다는 뜻입니다. 고친 댓글의 내용이 적절한지는 엔진이 판단하지 않습니다. 내용 품질은 `comparisons/final02`의 채점에, 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI 서비스(step10)에 있습니다.
 - **내용 주의:** 입력은 실제 댓글이라 실명과 혐오 표현이 들어 있어, 고친 댓글은 이 문서에 옮기지 않고 처리 방식만 적었습니다. 원문과 고친 댓글은 results.json에 있습니다.
