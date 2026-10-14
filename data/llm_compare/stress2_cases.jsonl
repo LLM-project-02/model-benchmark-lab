@@ -1,0 +1,35 @@
+{"id": "ds1", "split": "dev2", "group": "위험", "error_type": "부정 표현", "evidence": "올해 상반기에는 신입 공채를 진행하지 않는다.", "report": "올해 상반기에 신입 공채를 진행한다.", "required_any": ["진행하지 않"]}
+{"id": "ds2", "split": "dev2", "group": "위험", "error_type": "주체 바뀜", "evidence": "경영지원팀이 영업팀에 출장비 정산 기준을 안내했다.", "report": "영업팀이 경영지원팀에 출장비 정산 기준을 안내했다.", "required_any": ["경영지원팀이 영업팀", "경영지원팀은 영업팀"]}
+{"id": "ds3", "split": "dev2", "group": "위험", "error_type": "숫자·날짜", "evidence": "신규 지점은 7곳이 문을 연다.", "report": "신규 지점은 9곳이 문을 연다.", "required_any": ["7곳"]}
+{"id": "dc1", "split": "dev2", "group": "대조", "error_type": "맞는 문장", "evidence": "점심시간은 낮 12시부터 1시간이다.", "report": "점심시간은 정오부터 한 시간 동안이다.", "required_any": []}
+{"id": "dc2", "split": "dev2", "group": "대조", "error_type": "맞는 문장", "evidence": "디자인팀이 개발팀에 화면 설계서를 넘겼다.", "report": "개발팀은 디자인팀으로부터 화면 설계서를 받았다.", "required_any": []}
+{"id": "t01", "split": "eval2", "group": "위험", "error_type": "부정 표현", "evidence": "이번 분기 광고비는 늘리지 않기로 했다.", "report": "이번 분기 광고비를 늘리기로 했다.", "required_any": ["늘리지 않"]}
+{"id": "t02", "split": "eval2", "group": "위험", "error_type": "부정 표현", "evidence": "사내 체육대회는 올해 열리지 않는다.", "report": "사내 체육대회가 올해 열린다.", "required_any": ["열리지 않"]}
+{"id": "t03", "split": "eval2", "group": "위험", "error_type": "부정 표현", "evidence": "해당 거래처와의 계약은 갱신되지 않았다.", "report": "해당 거래처와의 계약이 갱신되었다.", "required_any": ["갱신되지 않"]}
+{"id": "t04", "split": "eval2", "group": "위험", "error_type": "부정 표현", "evidence": "신규 직원에게는 법인카드를 지급하지 않는다.", "report": "신규 직원에게도 법인카드를 지급한다.", "required_any": ["지급하지 않"]}
+{"id": "t05", "split": "eval2", "group": "위험", "error_type": "부정 표현", "evidence": "시스템 장애로 인한 고객 정보 손실은 없었다.", "report": "시스템 장애로 고객 정보가 손실되었다.", "required_any": ["손실은 없었", "손실되지 않"]}
+{"id": "t06", "split": "eval2", "group": "위험", "error_type": "주체 바뀜", "evidence": "기획팀이 재무팀에 예산 증액을 요청했다.", "report": "재무팀이 기획팀에 예산 증액을 요청했다.", "required_any": ["기획팀이 재무팀", "기획팀은 재무팀"]}
+{"id": "t07", "split": "eval2", "group": "위험", "error_type": "주체 바뀜", "evidence": "본부장이 팀장들에게 연말 평가 기준을 설명했다.", "report": "팀장들이 본부장에게 연말 평가 기준을 설명했다.", "required_any": ["본부장이 팀장", "본부장은 팀장"]}
+{"id": "t08", "split": "eval2", "group": "위험", "error_type": "주체 바뀜", "evidence": "E사는 F사에 기술 이전 대가로 5억 원을 지급했다.", "report": "F사는 E사에 기술 이전 대가로 5억 원을 지급했다.", "required_any": ["E사는 F사", "E사가 F사"]}
+{"id": "t09", "split": "eval2", "group": "위험", "error_type": "주체 바뀜", "evidence": "물류팀이 매장에 재고 현황을 매일 공유한다.", "report": "매장이 물류팀에 재고 현황을 매일 공유한다.", "required_any": ["물류팀이 매장", "물류팀은 매장"]}
+{"id": "t10", "split": "eval2", "group": "위험", "error_type": "주체 바뀜", "evidence": "감사팀은 회계팀에 지출 증빙 자료를 요구했다.", "report": "회계팀은 감사팀에 지출 증빙 자료를 요구했다.", "required_any": ["감사팀은 회계팀", "감사팀이 회계팀"]}
+{"id": "t11", "split": "eval2", "group": "위험", "error_type": "숫자·날짜", "evidence": "올해 매출 목표는 120억 원이다.", "report": "올해 매출 목표는 210억 원이다.", "required_any": ["120억"]}
+{"id": "t12", "split": "eval2", "group": "위험", "error_type": "숫자·날짜", "evidence": "고객 설문은 11월 20일에 마감된다.", "report": "고객 설문은 11월 2일에 마감된다.", "required_any": ["11월 20일"]}
+{"id": "t13", "split": "eval2", "group": "위험", "error_type": "숫자·날짜", "evidence": "이번 교육 참가자는 모두 35명이다.", "report": "이번 교육 참가자는 모두 53명이다.", "required_any": ["35명"]}
+{"id": "t14", "split": "eval2", "group": "위험", "error_type": "숫자·날짜", "evidence": "배송 기간은 평균 2일로 줄었다.", "report": "배송 기간은 평균 4일로 줄었다.", "required_any": ["2일"]}
+{"id": "t15", "split": "eval2", "group": "위험", "error_type": "숫자·날짜", "evidence": "제품 불량률은 0.8%로 집계됐다.", "report": "제품 불량률은 8%로 집계됐다.", "required_any": ["0.8%"]}
+{"id": "t16", "split": "eval2", "group": "위험", "error_type": "반대 의미", "evidence": "신규 가입자 수는 전월보다 감소했다.", "report": "신규 가입자 수는 전월보다 증가했다.", "required_any": ["감소"]}
+{"id": "t17", "split": "eval2", "group": "위험", "error_type": "반대 의미", "evidence": "프로젝트 일정은 2주 앞당겨졌다.", "report": "프로젝트 일정은 2주 늦춰졌다.", "required_any": ["앞당겨"]}
+{"id": "t18", "split": "eval2", "group": "위험", "error_type": "반대 의미", "evidence": "서버 응답 속도가 이전보다 빨라졌다.", "report": "서버 응답 속도가 이전보다 느려졌다.", "required_any": ["빨라"]}
+{"id": "t19", "split": "eval2", "group": "위험", "error_type": "반대 의미", "evidence": "해외 출장 규정이 완화되었다.", "report": "해외 출장 규정이 강화되었다.", "required_any": ["완화"]}
+{"id": "t20", "split": "eval2", "group": "위험", "error_type": "반대 의미", "evidence": "이번 설문에서 재택근무 찬성 의견이 다수였다.", "report": "이번 설문에서 재택근무 반대 의견이 다수였다.", "required_any": ["찬성"]}
+{"id": "u01", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "이번 분기 광고비는 늘리지 않기로 했다.", "report": "이번 분기에는 광고비를 증액하지 않는다.", "required_any": []}
+{"id": "u02", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "기획팀이 재무팀에 예산 증액을 요청했다.", "report": "재무팀은 기획팀으로부터 예산 증액 요청을 받았다.", "required_any": []}
+{"id": "u03", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "올해 매출 목표는 120억 원이다.", "report": "올해 목표로 잡은 매출액은 120억 원이다.", "required_any": []}
+{"id": "u04", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "고객 설문은 11월 20일에 마감된다.", "report": "11월 20일이 고객 설문 마감일이다.", "required_any": []}
+{"id": "u05", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "프로젝트 일정은 2주 앞당겨졌다.", "report": "프로젝트 일정이 2주 빨라졌다.", "required_any": []}
+{"id": "u06", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "서버 응답 속도가 이전보다 빨라졌다.", "report": "서버가 예전보다 더 빠르게 응답한다.", "required_any": []}
+{"id": "u07", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "본부장이 팀장들에게 연말 평가 기준을 설명했다.", "report": "팀장들은 본부장에게서 연말 평가 기준에 대한 설명을 들었다.", "required_any": []}
+{"id": "u08", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "시스템 장애로 인한 고객 정보 손실은 없었다.", "report": "시스템 장애가 있었지만 고객 정보는 손실되지 않았다.", "required_any": []}
+{"id": "u09", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "이번 교육 참가자는 모두 35명이다.", "report": "교육에 35명이 참가했다.", "required_any": []}
+{"id": "u10", "split": "eval2", "group": "대조", "error_type": "맞는 문장", "evidence": "해외 출장 규정이 완화되었다.", "report": "해외 출장 규정이 이전보다 느슨해졌다.", "required_any": []}
