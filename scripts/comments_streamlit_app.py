@@ -390,7 +390,11 @@ def show_result(original, label, result, status, title=None, classification_chec
                 for step in next_steps:
                     st.markdown(f":material/arrow_right: {plain(step)}")
         else:
-            st.markdown("**게시할 댓글**")
+            # 사람 검토는 사람이 확인하기 전까지 게시하지 않으므로 '게시 후보'로 보여 준다
+            if action == "사람 검토":
+                st.markdown("**게시 후보** (사람이 확인한 뒤 게시)")
+            else:
+                st.markdown("**게시할 댓글**")
             with st.container(border=True):
                 st.markdown(plain(posted_text(original, answer, action, label)) or "(빈 답변)")
             for step in next_steps:
