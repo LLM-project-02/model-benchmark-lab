@@ -6,7 +6,7 @@
 
 - 분류 모델: `klue/roberta-base`를 KLUE-NLI로 파인튜닝 (test Macro-F1 0.864)
 - 생성 모델: 상용 `gpt-6-luna` (기본) / 로컬 `qwen3:4b` + 후처리 (대체 경로)
-- 서비스: FastAPI + LangChain, 사용자 화면 제공
+- 서비스: FastAPI + LangChain, 팀 공통 파이프라인 연결, 사용자 화면 제공
 
 판정은 학습한 모델의 예측이며 확정된 오류가 아닙니다. 서비스는 판정을 **"검토가 필요한 부분"**으로 보여 주고 근거 문장을 함께 제시합니다.
 
@@ -14,7 +14,7 @@
 
 ## 0. 빠른 실행
 
-학습을 다시 하지 않고 서비스를 바로 띄우는 방법입니다.
+학습한 가중치를 만든 뒤 서비스를 띄우는 방법입니다.
 
 ```powershell
 # 1. 설치
@@ -24,8 +24,8 @@ ollama pull qwen3:4b-instruct-2507-q4_K_M
 # 2. 환경 변수: .env.example을 복사해 OPENAI_API_KEY 등을 채운다
 Copy-Item .env.example .env
 
-# 3. 모델 가중치: checkpoint 폴더를 아래 위치에 넣는다 (3장 참고)
-#    artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/
+# 3. 모델 가중치 만들기 (RTX 5060 기준 약 12분, 3장 참고)
+uv run python nli/train_bert.py --model klue/roberta-base --run roberta_lr2e5_ep6 --epochs 6
 
 # 4. 서버 실행
 uv run python nli/serve_api.py
@@ -66,19 +66,23 @@ uv run python nli/serve_api.py
 ```
 원문 + 보고서
   → ① 문장 나누기 · 근거 찾기   보고서 문장마다 TF-IDF로 가장 비슷한 원문 문장 선택
-  → ② 판정                      학습한 RoBERTa: (근거 문장, 보고서 문장) → 3개 라벨 + 보정한 확신도
-  → ③ 지시문 고르기             분류기의 실제 예측에 따라 판정별 지시문 선택  ┐
-  → ④ 설명 작성                 생성 LLM (기본: 상용, 대체: 로컬 + 후처리)  ┘ LangChain
-  → ⑤ 응답                      문장별 판정 · 근거 · 설명 · 수정안 · 요약 (FastAPI)
+  → 문장마다 팀 공통 파이프라인 compare()
+       ② 판정        학습한 RoBERTa: (근거 문장, 보고서 문장) → 3개 라벨 + 보정한 확률
+       ③ 지시문      분류기의 실제 예측에 따라 판정별 지시문 선택
+       ④ 설명 작성   생성 LLM (기본: 상용, 대체: 로컬 + 후처리)
+       ⑤ 해석        기존 파서로 설명·수정안 해석, 실패는 오류로 기록
+  → ⑥ 응답          문장별 판정 · 근거 · 설명 · 수정안 · 처리 상태 · 실행 기록 (FastAPI)
 ```
 
 | 구성 요소 | 파일 | 역할 |
 | --- | --- | --- |
 | FastAPI 서버 | `nli/serve_api.py` | 사용자 화면(`/`), 검수 API(`/check`), 상태 확인(`/health`) |
+| 공통 파이프라인 | `common_pipeline/` | 팀 공통 엔진. 판정 → 지시문 → LLM → 해석 순서 실행, 형식 검사, 실패 기록 (수정하지 않고 사용) |
+| 연결 어댑터 | `nli/common_adapter.py` | 우리 분류기·LLM·지시문·파서를 공통 파이프라인 형식에 맞춰 연결 |
 | 판정기 | `nli/predictor.py` | 문장 나누기, 근거 찾기, RoBERTa 판정, 확신도 보정 (T = 2.77) |
 | LangChain 체인 | `nli/explainer.py` | 판정별 지시문 템플릿 + LLM 연결 + 결과(JSON) 정리 |
 | 후처리 | `nli/postprocess.py` | 로컬 LLM 답의 단정 표현을 바꿈 |
-| 사용자 화면 | `nli/web_page.py` | 입력(직접·예시·파일), 판정별 결과 카드 |
+| 사용자 화면 | `nli/web_page.py` | 입력(직접·예시·파일), 판정별 결과 카드, 설명 실패·미완료 표시 |
 
 ### LangChain 사용
 
@@ -93,7 +97,7 @@ uv run python nli/serve_api.py
 | 기본 | 상용 LLM이 설명 |
 | 상용을 쓸 수 없음 (API 키 없음, 네트워크·API 오류) | 자동으로 로컬 LLM이 설명하고, 응답에 바꾼 이유를 기록 |
 | 비공개 문서 | `provider: ollama`로 처음부터 로컬에서만 처리 (외부 전송 없음) |
-| 로컬이 설명한 경우 | '명확한 오류', '틀렸다' 같은 단정 표현을 '원문과 다른 부분입니다' 등으로 바꾸는 후처리 적용 |
+| 로컬이 설명한 경우 | '명확한 오류', '틀렸다' 같은 단정 표현을 '원문과 다른 부분입니다' 등으로 바꾸는 후처리 적용 (공통 기록의 원본 응답은 그대로) |
 
 ---
 
@@ -135,7 +139,6 @@ Ollama 앱이 실행 중이어야 로컬 LLM을 사용할 수 있습니다.
 
 | 방법 | 내용 |
 | --- | --- |
-| 받기 | [구글 드라이브](<!-- 링크 넣기 -->)의 ZIP을 `artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/`에 풉니다 |
 | 재학습 | `uv run python nli/train_bert.py --model klue/roberta-base --run roberta_lr2e5_ep6 --epochs 6` (RTX 5060 기준 약 12분) |
 
 경로의 `wanwi`는 `nli/config.py`의 `LEARNER` 값입니다.
@@ -145,7 +148,7 @@ TF-IDF 베이스라인 모델(`baseline.joblib`)도 저장소에 없으며, 필�
 
 - 다른 가상환경이 켜져 있으면 uv가 `VIRTUAL_ENV ... will be ignored` 경고를 냅니다. 이 폴더의 `.venv`를 사용하므로 결과에는 영향이 없습니다. 새 터미널을 열거나 `deactivate` 후 실행하면 경고가 사라집니다.
 - 8000번 주소를 다른 서버가 쓰고 있으면 서버가 켜지지 않습니다 (`Errno 10048`). 기존 서버를 끈 뒤 실행합니다.
-- 서버가 쓰는 파일(`serve_api.py`, `predictor.py`, `explainer.py`, `postprocess.py`, `web_page.py`)을 고친 뒤에는 서버를 다시 켜야 반영됩니다.
+- 서버가 쓰는 파일(`serve_api.py`, `common_adapter.py`, `predictor.py`, `explainer.py`, `postprocess.py`, `web_page.py`)을 고친 뒤에는 서버를 다시 켜야 반영됩니다.
 
 ---
 
@@ -267,7 +270,7 @@ uv run python nli/serve_api.py
 | --- | --- |
 | http://127.0.0.1:8000/ | **사용자 화면** |
 | http://127.0.0.1:8000/docs | 개발자용 API 문서·시험 화면 |
-| http://127.0.0.1:8000/health | 서버 상태, 분류기, 보정값, 기본·대체 LLM |
+| http://127.0.0.1:8000/health | 서버 상태, 분류기, 보정값, 기본·대체 LLM, 공통 파이프라인 정보 |
 
 ### 사용자 화면
 
@@ -281,6 +284,7 @@ uv run python nli/serve_api.py
 | 모순됨 (빨강) | 원문과 다른 단어 표시, 다른 부분, **수정안** |
 | 확인 불가 (주황) | 원문에 없는 단어 표시, 확인할 수 없는 이유, **확인 질문** |
 
+설명을 만들지 못한 문장은 카드에 **"설명 실패" / "설명 미완료"**로 따로 표시하고, 판정과 근거 문장은 그대로 보여 줍니다.
 단어 색 표시는 두 문장을 글자 그대로 비교한 참고용입니다.
 
 ### API (`POST /check`)
@@ -302,7 +306,14 @@ uv run python nli/serve_api.py
 | `with_explanation` | `false`면 판정만 반환 (LLM 호출 없음) |
 | `fallback` | 상용 LLM을 쓸 수 없으면 로컬 LLM으로 대신 설명 (기본 `true`) |
 
-응답에는 문장별 판정·확신도·근거 문장·설명·수정안, 실제로 사용한 LLM(`used_provider`), 후처리 여부(`postprocessed`), 전체 요약(문장 수, 검토가 필요한 문장 수)이 들어 있습니다.
+응답에는 문장별 판정·확신도·근거 문장·설명·수정안, 실제로 사용한 LLM(`used_provider`), 후처리 여부(`postprocessed`)가 들어 있습니다.
+팀 공통 파이프라인 연결 후 다음이 추가되었습니다.
+
+| 필드 | 위치 | 내용 |
+| --- | --- | --- |
+| `status` | 문장별 | `success` / `error` / `incomplete` / `skipped`(판정만 요청) |
+| `pipeline` | 문장별 | 공통 파이프라인 실행 기록 (LLM 원본 응답 `raw_text`, 오류 단계, 시간). 대체 경로를 탔으면 두 개 |
+| `summary.by_status` | 전체 | 처리 상태별 문장 수 |
 
 ### 정상·실패 처리 시험
 
@@ -312,16 +323,26 @@ uv run python nli/serve_api.py
 uv run python nli/test_api.py
 ```
 
-| 시험 | 기대 | 결과 |
-| --- | --- | --- |
-| 정상 요청 (기본 LLM: 상용, 후처리 없음) | 200 | ✅ |
-| 판정만 요청 | 200 | ✅ |
-| 빈 원문 | 422 | ✅ |
-| 공백만 있는 원문 | 400 | ✅ |
-| 원문 4,000자 초과 | 422 | ✅ |
-| 대체 경로 (로컬 직접 지정, 후처리 적용) | 200 | ✅ |
+상태 코드와 함께 응답 내용(문장 수, 처리 상태, 공통 기록, 원본 응답, 실제 분류기·LLM, 확률 합)도 검사합니다.
+
+| 시험 | 기대 | 검사 | 결과 |
+| --- | --- | --- | --- |
+| 정상 요청 (기본 LLM: 상용) | 200 | 10/10 | ✅ |
+| 판정만 요청 (LLM 호출 없음) | 200 | 4/4 | ✅ |
+| 빈 원문 | 422 | 1/1 | ✅ |
+| 공백만 있는 원문 | 400 | 1/1 | ✅ |
+| 원문 4,000자 초과 | 422 | 1/1 | ✅ |
+| 대체 경로 (로컬 직접 지정, 후처리 적용) | 200 | 11/11 | ✅ |
+| 여러 문장 (보고서 5문장) | 200 | 10/10 | ✅ |
+| 지원하지 않는 LLM 이름 | 422 | 1/1 | ✅ |
 
 요청·응답 원본: `results/service_tests/`
+
+공통 파이프라인과 연결 어댑터는 단위 테스트로도 확인합니다 (가짜 함수로 파싱 실패·생성 미완료·LLM 예외 포함).
+
+```powershell
+uv run --frozen --group dev python -m pytest -q tests/test_common_pipeline.py tests/test_nli_common_adapter.py   # 112 passed
+```
 
 ---
 
@@ -346,7 +367,7 @@ uv run python nli/test_api.py
 | 판정 오류 문제에서 재검토 표시 | 1/10 | 4/10 |
 | 위험한 오답(모순→뒷받침) 3건 대응 | 반대 내용은 짚었으나 수정안 0건 | 3건 모두 재검토 표시 + 수정안 |
 | 응답 시간 평균 | 1.81초 | 2.52초 |
-| 비용 | API 비용 없음 (장비·전력 별도) | $0.002039 (20건, 문장당 약 $0.0001) |
+| 비용 | API 비용 없음 (장비·전력 별도) | USD 0.002039 (20건, 문장당 약 USD 0.0001) |
 | 데이터 | 노트북 밖으로 나가지 않음 | 외부 API로 전송 |
 
 **선정: 서비스 기본은 상용 gpt-6-luna, 대체 경로는 로컬 qwen3 4B**
@@ -471,6 +492,9 @@ uv run python nli/evaluate_final.py
 uv run python nli/serve_api.py
 uv run python nli/test_api.py
 
+# 공통 파이프라인·연결 어댑터 테스트
+uv run --frozen --group dev python -m pytest -q tests/test_common_pipeline.py tests/test_nli_common_adapter.py
+
 # 생성 모델 비교 (Ollama 실행, OpenAI 키 필요)
 uv run python nli/check_cases.py
 uv run python nli/compare_llms.py --split dev
@@ -495,7 +519,7 @@ uv run python nli/compare_prompts.py --split eval2           # 지시문 v2 실�
 ### 재실행 확인 기록
 
 GitHub 저장소를 새 폴더에 받아 처음 사용하는 사람처럼 실행했습니다.
-결과 재생성 후 `git status`에 변경이 없어 **저장소의 결과와 완전히 같음**을 확인했고, 받은 가중치로 서비스 시험 6종을 모두 통과했습니다.
+결과 재생성 후 `git status`에 변경이 없어 **저장소의 결과와 완전히 같음**을 확인했고, 같은 가중치로 서비스 시험을 모두 통과했습니다.
 상세: `results/rerun_check.md`
 
 ---
@@ -528,7 +552,10 @@ GitHub 저장소를 새 폴더에 받아 처음 사용하는 사람처럼 실행
 
 ```
 .
-├─ nli/                  코드 (데이터, 학습, 보정, 평가, 서비스, LLM 비교, 추가 실험)
+├─ common_pipeline/      팀 공통 파이프라인 (수정하지 않고 사용)
+├─ nli/                  코드 (데이터, 학습, 보정, 평가, 서비스, 연결 어댑터, LLM 비교, 추가 실험)
+├─ tests/                공통 파이프라인·연결 어댑터 테스트
+├─ docs/                 공통 파이프라인 연결 문서 (COMMON_PIPELINE.md)
 ├─ data/
 │  ├─ klue_nli/          분할한 KLUE-NLI (train, validation, test, labels.json)
 │  └─ llm_compare/       직접 작성한 가상 회의록과 확인 실험 문장
@@ -541,8 +568,9 @@ GitHub 저장소를 새 폴더에 받아 처음 사용하는 사람처럼 실행
 
 ---
 
-### 참고
+## 12. 참고
 
 - 수업 제공 프로젝트 키트의 단계 구성과 코드 구조를 참고했습니다. 데이터 분할, 실험 설계, 선정 규칙, 서비스 정책과 사용자 화면, 가상 회의록, LLM 비교·채점 방식, 추가 실험은 이 프로젝트에서 새로 설계했습니다.
+- 팀 공통 파이프라인(`common_pipeline/`)은 팀에서 공유한 코드를 그대로 사용하고, NLI 서비스 연결 부분(`nli/common_adapter.py`)만 작성했습니다.
 - 사전학습 모델: [klue/roberta-base](https://huggingface.co/klue/roberta-base), [klue/bert-base](https://huggingface.co/klue/bert-base)
 - 데이터: [KLUE benchmark](https://github.com/KLUE-benchmark/KLUE) (CC BY-SA 4.0)
