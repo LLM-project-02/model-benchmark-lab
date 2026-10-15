@@ -118,6 +118,9 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
 
 # 7. 팀 공통 파이프라인(common_pipeline)에 연결해 정상·오류 요청 확인 (새 이름으로 실행)
 uv run python scripts/check_comments_common_pipeline.py common_pipeline02
+
+# 8. 긴 댓글 확인: 분류 모델에 긴 글을 넣고, 일부를 실제 서버로 보낸다 (5번 서버는 끈 채로)
+uv run --group ui python scripts/check_comments_long_input.py long_comment02
 ```
 
 - 결과 폴더는 저장소에 이미 있습니다. 같은 이름으로 실행하면 덮어쓰지 않고 멈추므로, 다시 돌릴 때는 새 이름(예: `final03`)을 씁니다. test 평가(step11)는 `test_metrics.json`이 있으면 다시 돌지 않습니다.
@@ -264,6 +267,20 @@ FastAPI 서비스(step10)의 `/generate`, `/compare`가 요청마다 공통 파�
 - **화면:** 새 서버에 Streamlit 화면(AppTest)을 붙여 단건 검수, 두 모델 비교, 공백 입력 안내, 탭 4개, 대량 검수(시연용 12건, 4개씩 동시, 17.1초)가 오류 없이 도는 것을 확인했습니다.
 - **바뀐 동작:** 분류나 프롬프트 단계가 실패하면 HTTP 500과 실패 단계(`detail`)를 돌려줍니다. 같은 PC의 브라우저 화면(`http://localhost:*`, `http://127.0.0.1:*`)에서 API를 부를 수 있게 CORS를 열었습니다. `/compare`는 조합마다 분류를 한 번씩 하므로 분류를 두 번 합니다(같은 입력이라 판정과 프롬프트는 같습니다).
 
+### 긴 댓글 확인 (long_comment01)
+
+서비스는 댓글을 4,000자까지 받지만, 분류 모델은 앞 128토큰(약 280자)만 읽고 학습·평가 댓글은 가장 길어도 137자(69토큰)였습니다. 긴 글을 평가한 적이 없어서 2026-10-15에 만들어 넣어 봤습니다. 결과: [README](service_checks/long_comment01/README.md), [summary.md](service_checks/long_comment01/summary.md), [그래프](service_checks/long_comment01/long_comment.png)
+
+| validation 혐오 댓글 136건(혼자 넣으면 모두 hate)을 | 악플로 판정 | 사람 검토 | 그대로 게시 |
+|---|---:|---:|---:|
+| 앞에 평범한 댓글 100자를 붙여서 | 5% | 46% | 49% |
+| 앞에 300자 이상을 붙여서 | 0% | 0% | 100% |
+| 맨 앞에 두고 뒤에 1,000자를 붙여서 | 7% | 33% | 60% |
+
+- 혐오 댓글이 앞 128토큰 안에 다 들어 있어도(100자) 거의 못 잡습니다. 분류 모델이 글 전체의 분위기로 판단하기 때문입니다. 300자를 넘으면 혐오 댓글이 잘려 아예 읽지 못합니다.
+- 실제 서버(gemma4:e4b)에 보내 보니 300자 글 5건은 모두 혐오 댓글이 든 채 '그대로 게시'였고, 1,000자 글 5건은 모두 '처리 실패'였습니다. none 지침대로 원문을 돌려주다 출력 한도(512토큰)를 넘겼습니다.
+- 긴 글은 짧은 댓글을 이어 붙여 만들었으므로 진짜 긴 댓글과 다를 수 있습니다.
+
 ### 사용자 화면 (도전 실습 B)
 
 [scripts/comments_streamlit_app.py](../../../../scripts/comments_streamlit_app.py)는 업무용(B2B) 검수 콘솔처럼 꾸민 Streamlit 화면입니다. FastAPI 서버에 요청을 보내고 결과를 보여 주기만 하며, 분류와 생성은 서버가 합니다. 색과 글꼴은 `.streamlit/config.toml`의 `[theme]`에 있습니다.
@@ -292,6 +309,7 @@ FastAPI 서비스(step10)의 `/generate`, `/compare`가 요청마다 공통 파�
 
 ## 한계와 개선할 점
 
+- **긴 댓글과 섞인 글을 못 잡습니다.** 평범한 글이 100자만 섞여도 혐오 댓글의 5%만 악플로 판정하고, 300자를 넘으면 잘려서 모두 그대로 게시됩니다([long_comment01](service_checks/long_comment01/README.md)). 평가 데이터가 짧은 댓글뿐이라 서비스가 받는 입력(최대 4,000자)과 달랐고, 이 차이를 2026-10-15에야 확인했습니다. 1,000자 글은 생성 단계에서 처리 실패가 납니다.
 - **hate 댓글에 약합니다.** 로컬 모델의 hate 점수가 상용보다 1.06점 낮았습니다. final02의 hate-06과 서비스 확인의 hate-01에서 혐오·성적 표현을 정중한 말로 바꿔 남겼습니다. 상용 모델은 두 경우 모두 게시를 막았습니다.
 - **나쁜 답이 그대로 게시될 수 있고, 가장 큰 원인은 분류 모델입니다.** 최종 비교 답변 96개에 고친 댓글 다시 검사를 대 보면 다음과 같습니다([rewrite_check.csv](comparisons/final02/rewrite_check.csv)와 채점 비교).
   - 채점이 4점 이하(8점 만점)인 나쁜 답 20개 가운데 7개만 "확인 필요"로 잡았습니다. 혐오 표현을 그대로 남긴 답(hate-06)과 고치지 않은 답(hate-07)은 잡았습니다.
@@ -342,6 +360,7 @@ FastAPI 서비스(step10)의 `/generate`, `/compare`가 요청마다 공통 파�
 | `.../service_checks/service_check01` | 서비스 정상·실패 요청 기록 |
 | `.../service_checks/common_pipeline01` | 팀 공통 파이프라인에 연결한 뒤 정상·오류 요청 기록 |
 | `.../service_checks/service_check02` | 공통 파이프라인을 API에 연결한 뒤 서비스 정상·실패 요청 기록 |
+| `.../service_checks/long_comment01` | 긴 댓글에서 혐오 표현을 잡는지 확인 (분류 모델, 실제 서버 10건) |
 
 ## 출처
 

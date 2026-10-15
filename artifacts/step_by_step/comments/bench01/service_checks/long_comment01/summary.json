@@ -1,0 +1,316 @@
+{
+  "settings": {
+    "created_at": "2026-10-15T10:23:52+09:00",
+    "classifier_run": "kcelectra-base_lr2e5_s44",
+    "classifier_run_id": "0fdf19bdf6b04d0390d8a8421c219898",
+    "max_length": 128,
+    "max_input_chars": 4000,
+    "none_review_threshold": 0.93,
+    "validation_hate": 199,
+    "hate_count": 136,
+    "pool_count": 205,
+    "padding_chars": [
+      100,
+      200,
+      300,
+      500,
+      1000,
+      3000
+    ],
+    "front_padding_chars": 1000,
+    "seed": 42,
+    "stride": 7,
+    "generation_model": "gemma4:e4b"
+  },
+  "summary": [
+    {
+      "condition": "② 혐오 댓글만",
+      "padding_chars": 0,
+      "count": 136,
+      "median_text_chars": 34.5,
+      "median_tokens": 18.0,
+      "truncated": 0,
+      "hate_seen": {
+        "다 보임": 136
+      },
+      "labels": {
+        "hate": 136
+      },
+      "routes": {
+        "그대로 게시": 0,
+        "사람 검토": 0,
+        "악플로 판정": 136
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 100,
+      "count": 136,
+      "median_text_chars": 164.5,
+      "median_tokens": 75.5,
+      "truncated": 1,
+      "hate_seen": {
+        "다 보임": 135,
+        "일부만 보임": 1
+      },
+      "labels": {
+        "none": 129,
+        "offensive": 3,
+        "hate": 4
+      },
+      "routes": {
+        "그대로 게시": 67,
+        "사람 검토": 62,
+        "악플로 판정": 7
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 200,
+      "count": 136,
+      "median_text_chars": 267.0,
+      "median_tokens": 122.5,
+      "truncated": 55,
+      "hate_seen": {
+        "다 보임": 81,
+        "일부만 보임": 45,
+        "안 보임": 10
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 118,
+        "사람 검토": 18,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 300,
+      "count": 136,
+      "median_text_chars": 360.0,
+      "median_tokens": 163.5,
+      "truncated": 136,
+      "hate_seen": {
+        "안 보임": 131,
+        "일부만 보임": 5
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 500,
+      "count": 136,
+      "median_text_chars": 568.5,
+      "median_tokens": 257.0,
+      "truncated": 136,
+      "hate_seen": {
+        "안 보임": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 1000,
+      "count": 136,
+      "median_text_chars": 1068.0,
+      "median_tokens": 485.0,
+      "truncated": 136,
+      "hate_seen": {
+        "안 보임": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "④ 혐오 댓글을 맨 뒤에",
+      "padding_chars": 3000,
+      "count": 136,
+      "median_text_chars": 3061.5,
+      "median_tokens": 1390.0,
+      "truncated": 136,
+      "hate_seen": {
+        "안 보임": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "③ 혐오 댓글을 맨 앞에",
+      "padding_chars": 1000,
+      "count": 136,
+      "median_text_chars": 1068.0,
+      "median_tokens": 485.0,
+      "truncated": 136,
+      "hate_seen": {
+        "다 보임": 136
+      },
+      "labels": {
+        "none": 126,
+        "offensive": 5,
+        "hate": 5
+      },
+      "routes": {
+        "그대로 게시": 81,
+        "사람 검토": 45,
+        "악플로 판정": 10
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 100,
+      "count": 136,
+      "median_text_chars": 119.0,
+      "median_tokens": 57.0,
+      "truncated": 0,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 133,
+        "사람 검토": 3,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 200,
+      "count": 136,
+      "median_text_chars": 217.5,
+      "median_tokens": 101.0,
+      "truncated": 8,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 300,
+      "count": 136,
+      "median_text_chars": 315.0,
+      "median_tokens": 145.0,
+      "truncated": 130,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 500,
+      "count": 136,
+      "median_text_chars": 522.5,
+      "median_tokens": 239.5,
+      "truncated": 136,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 1000,
+      "count": 136,
+      "median_text_chars": 1020.0,
+      "median_tokens": 467.0,
+      "truncated": 136,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    },
+    {
+      "condition": "① 평범한 글만",
+      "padding_chars": 3000,
+      "count": 136,
+      "median_text_chars": 3018.5,
+      "median_tokens": 1369.0,
+      "truncated": 136,
+      "hate_seen": {
+        "-": 136
+      },
+      "labels": {
+        "none": 136
+      },
+      "routes": {
+        "그대로 게시": 136,
+        "사람 검토": 0,
+        "악플로 판정": 0
+      }
+    }
+  ],
+  "server": {
+    "startup_seconds": 4.784738800000923,
+    "actions": [
+      {
+        "padding_chars": 300,
+        "action": "그대로 게시",
+        "count": 5
+      },
+      {
+        "padding_chars": 1000,
+        "action": "처리 실패",
+        "count": 5
+      }
+    ]
+  }
+}
