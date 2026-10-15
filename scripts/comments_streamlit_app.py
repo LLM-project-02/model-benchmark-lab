@@ -260,7 +260,10 @@ def batch_row(text, response):
             else "",
             "라벨": label,
             "분류 확신도": classification.get("confidence"),
-            "게시할 댓글": posted_text(text, answer, action, label),
+            # 고친 댓글인지 안내인지 알 수 없는 답은 게시할 댓글 칸을 비운다(답은 '생성 모델 답' 칸에)
+            "게시할 댓글": ""
+            if unclear_answer(label, result)
+            else posted_text(text, answer, action, label),
             "글쓴이 안내": notice,
             "다시 검사": f"{check['label']} ({check['confidence']:.0%})"
             if check and label != "none"
@@ -375,6 +378,12 @@ def show_result(original, label, result, status, title=None, classification_chec
             st.markdown("**글쓴이에게 보낼 안내**")
             with st.container(border=True):
                 st.markdown(plain(answer))
+                for step in next_steps:
+                    st.markdown(f":material/arrow_right: {plain(step)}")
+        elif unclear_answer(label, result):  # 안내일 수도 있으므로 게시할 댓글로 보이지 않는다
+            st.markdown("**생성 모델의 답** (게시할 댓글인지 글쓴이 안내인지 사람이 정합니다)")
+            with st.container(border=True):
+                st.markdown(plain(answer) or "(빈 답변)")
                 for step in next_steps:
                     st.markdown(f":material/arrow_right: {plain(step)}")
         else:

@@ -89,6 +89,9 @@ def test_answer_with_next_steps_but_no_refusal_goes_to_review():
     assert row["검토 이유"] == "고친 댓글인지 안내인지 불분명"
     assert row["다시 검사"] == ""
     assert row["글쓴이 안내"] == "댓글을 다시 작성해 주세요."
+    # 안내일 수도 있으므로 게시할 댓글로 내보내지 않는다. 답은 '생성 모델 답' 칸에 남긴다
+    assert row["게시할 댓글"] == ""
+    assert row["생성 모델 답"] == advice
     # none은 고쳐 쓰지 않으므로 next_steps가 있어도 이 규칙과 상관없다
     assert app.unclear_answer("none", unclear) is False
     assert app.unclear_answer("hate", generated(advice)) is False
