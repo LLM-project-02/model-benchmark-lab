@@ -30,11 +30,11 @@ KEPT = {
 CHANGED = {**KEPT, "meaning_kept": False, "reason": "불만이 감사로 바뀌었다.", "needs_review": True}
 
 
-def generated(answer="고친 댓글", answer_check=None, meaning_check=None):
+def generated(answer="고친 댓글", answer_check=None, meaning_check=None, next_steps=()):
     return {
         "error": None,
         "output_format_valid": True,
-        "text": json.dumps({"answer": answer, "next_steps": []}, ensure_ascii=False),
+        "text": json.dumps({"answer": answer, "next_steps": list(next_steps)}, ensure_ascii=False),
         "answer_check": answer_check,
         "meaning_check": meaning_check,
         "latency_seconds": 1.0,
@@ -66,6 +66,32 @@ def test_rewrite_goes_to_review_when_either_check_flags_it():
     # 게시 불가 안내는 검사 결과와 관계없이 게시 보류
     refusal = "이 댓글은 그대로 게시하기 어렵습니다."
     assert app.recommended_action("hate", refusal, generated(refusal, TOXIC), SURE) == "게시 보류"
+    guided = generated(refusal, next_steps=["표현을 고쳐 다시 써 주세요."])
+    assert app.recommended_action("hate", refusal, guided, SURE) == "게시 보류"
+
+
+def test_answer_with_next_steps_but_no_refusal_goes_to_review():
+    # 지침상 고친 댓글은 next_steps가 비어 있다. 안내 문구 없이 다시 쓰라는 안내만 붙으면
+    # 고친 댓글인지 안내인지 알 수 없으므로, 서버는 검사하지 않고(None) 화면은 사람 검토로 보낸다
+    advice = "운전 실력보다는 사고 원인에 대해 이야기하는 것이 좋겠습니다."
+    unclear = generated(advice, next_steps=["댓글을 다시 작성해 주세요."])
+    assert app.unclear_answer("hate", unclear) is True
+    assert app.recommended_action("hate", advice, unclear, SURE) == "사람 검토"
+    assert app.review_reasons("hate", unclear) == ["고친 댓글인지 안내인지 불분명"]
+    body = {
+        "status": "ok",
+        "classification": {"label": "hate", "confidence": 0.68},
+        "classification_check": SURE,
+        "result": unclear,
+    }
+    row = app.batch_row("원문", {"code": 200, "body": body, "error": None, "seconds": 1.5})
+    assert row["권장 조치"] == "사람 검토"
+    assert row["검토 이유"] == "고친 댓글인지 안내인지 불분명"
+    assert row["다시 검사"] == ""
+    assert row["글쓴이 안내"] == "댓글을 다시 작성해 주세요."
+    # none은 고쳐 쓰지 않으므로 next_steps가 있어도 이 규칙과 상관없다
+    assert app.unclear_answer("none", unclear) is False
+    assert app.unclear_answer("hate", generated(advice)) is False
 
 
 def test_batch_row_explains_why_a_comment_needs_review():

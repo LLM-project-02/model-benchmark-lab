@@ -755,8 +755,17 @@ def test_meaning_check_flags_changed_or_unreadable_verdicts_and_skips_the_rest(
         ),
     }
     failed = {"error": "TimeoutError", "output_format_valid": False, "text": ""}
+    # 안내 문구 없이 다시 쓰라는 안내가 붙은 답: 고친 댓글인지 안내인지 알 수 없다
+    unclear = {
+        **rewritten,
+        "text": json.dumps(
+            {"answer": "사고 원인을 이야기해 주세요.", "next_steps": ["다시 써 주세요."]},
+            ensure_ascii=False,
+        ),
+    }
     assert chain.review_meaning(rewritten, "none", "원문 댓글") is None
     assert chain.review_meaning(refusal, "hate", "원문 댓글") is None
+    assert chain.review_meaning(unclear, "hate", "원문 댓글") is None
     assert chain.review_meaning(failed, "hate", "원문 댓글") is None
     assert chain.review_meaning(rewritten, "refund", "원문 댓글") is None
     assert len(seen["judgements"]) == 2
@@ -798,6 +807,18 @@ def test_answer_recheck_is_skipped_for_other_topics_and_unusable_answers(service
     assert chain.review_answer(broken, "hate", object()) is None
     failed = {"error": "TimeoutError", "output_format_valid": False, "text": ""}
     assert chain.review_answer(failed, "none", object()) is None
+    # 고친 댓글이 아닌 답도 다시 판정하지 않는다: none(원문을 그대로 게시), 게시 불가 안내,
+    # 안내 문구 없이 다시 쓰라는 안내가 붙은 답(VALID_TEXT는 next_steps가 있음)
+    refusal = {
+        **usable,
+        "text": json.dumps(
+            {"answer": "이 댓글은 그대로 게시하기 어렵습니다.", "next_steps": []},
+            ensure_ascii=False,
+        ),
+    }
+    assert chain.review_answer(usable, "none", object()) is None
+    assert chain.review_answer(refusal, "hate", object()) is None
+    assert chain.review_answer(usable, "hate", object()) is None
     assert seen["predictions"] == []
 
 

@@ -144,16 +144,34 @@ def generate_prepared(prepared: Prepared, provider):
     return call_model(provider, prepared["prompt"])
 
 
+def rewritten_answer(result, label):
+    """생성 모델의 답이 고친 댓글이면 그 문장을, 아니면 None을 돌려준다.
+
+    다시 검사와 뜻 검사는 고친 댓글만 본다. 고쳐 쓰지 않는 none, 게시 불가 안내, 쓸 수 없는 답,
+    댓글이 아닌 주제는 고친 댓글이 아니다. 지침상 고친 댓글은 next_steps가 비어 있으므로, 안내
+    문구 없이 다시 쓰라는 안내(next_steps)가 붙은 답도 고친 댓글인지 안내인지 알 수 없어 검사하지
+    않는다. 이런 답은 화면이 사람 검토로 보낸다.
+    """
+    if label not in COMMENT_LABELS - {"none"}:
+        return None
+    if result.get("error") or not result.get("output_format_valid"):
+        return None
+    payload = json.loads(result["text"])
+    if REFUSAL_PHRASE in payload["answer"] or payload["next_steps"]:
+        return None
+    return payload["answer"]
+
+
 def review_answer(result, label, classifier):
-    """댓글 주제에서 생성 모델이 고친 댓글을 분류 모델로 한 번 더 판정한다.
+    """생성 모델이 고친 댓글을 분류 모델로 한 번 더 판정한다(다시 검사).
 
     고친 댓글에도 문제 표현이 남았는지 보는 안전장치다. 분류 모델은 표현만 보므로 말투는 정중한데
     뜻이 바뀐 답은 잡지 못하고, 멀쩡한 답을 잘못 짚기도 한다. 그래서 답을 막지 않고 사람이
-    확인해야 한다고만 알린다. 댓글 주제가 아니거나 쓸 수 있는 답변이 아니면 None을 돌려준다.
+    확인해야 한다고만 알린다. 고친 댓글이 아니면(rewritten_answer) None을 돌려준다.
     """
-    if label not in COMMENT_LABELS or result.get("error") or not result.get("output_format_valid"):
+    answer = rewritten_answer(result, label)
+    if answer is None:
         return None
-    answer = json.loads(result["text"])["answer"]
     verdict = predict_text(answer, classifier)  # 원문을 분류한 것과 같은 모델
     return {
         "label": verdict["label"],
@@ -210,16 +228,12 @@ def review_classification(classification):
 def review_meaning(result, label, text):
     """고친 댓글이 원문의 뜻을 지켰는지 판정 모델로 본다(뜻 검사).
 
-    고쳐 쓰지 않는 none, 게시 불가 안내, 쓸 수 없는 답은 None을 돌려준다. 판정 모델은 개발
+    고친 댓글이 아니면(rewritten_answer) None을 돌려준다. 판정 모델은 개발
     데이터에서도 뜻이 바뀐 답을 확실히 가려내지 못했으므로(comparisons/review_rules01) 답을 막지
     않고 사람이 확인하라고만 알린다. 판정이 실패하면 확인할 수 없으므로 사람이 확인하게 한다.
     """
-    if label not in COMMENT_LABELS - {"none"}:
-        return None
-    if result.get("error") or not result.get("output_format_valid"):
-        return None
-    answer = json.loads(result["text"])["answer"]
-    if REFUSAL_PHRASE in answer:
+    answer = rewritten_answer(result, label)
+    if answer is None:
         return None
     judged = call_judge(meaning_prompt(text, answer), MeaningVerdict.model_json_schema())
     try:

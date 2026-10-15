@@ -143,16 +143,19 @@ API는 답을 막지 않고 표시만 합니다.
 | 값 | 뜻 | 검사하는 경우 |
 |---|---|---|
 | `classification_check.needs_review` | `none` 판정인데 확신도가 93% 미만 | 항상 |
-| `result.answer_check.needs_review` | 고친 댓글을 같은 분류 모델로 다시 봤더니 `none`이 아님 | 형식이 맞는 답이 있을 때 |
-| `result.meaning_check.needs_review` | 판정 모델이 원문과 고친 댓글의 뜻이 다르다고 봄(판정 실패도 `true`) | `offensive`, `hate`이고 게시 불가 안내가 아닐 때 |
+| `result.answer_check.needs_review` | 고친 댓글을 같은 분류 모델로 다시 봤더니 `none`이 아님 | `offensive`, `hate`이고 고친 댓글일 때 |
+| `result.meaning_check.needs_review` | 판정 모델이 원문과 고친 댓글의 뜻이 다르다고 봄(판정 실패도 `true`) | `offensive`, `hate`이고 고친 댓글일 때 |
+
+두 검사는 고친 댓글에만 합니다(2026-10-15 바꿈). 게시 불가 안내(`answer`에 "게시하기 어렵")와, 이 안내 문구 없이 `next_steps`가 붙은 답은 검사하지 않습니다. 지침상 고친 댓글은 `next_steps`가 비어 있어서, 뒤의 답은 고친 댓글인지 글쓴이에게 보낼 안내인지 알 수 없기 때문입니다.
 
 현재 Streamlit 화면(`scripts/comments_streamlit_app.py`의 `recommended_action`)은 아래 순서로 권장 조치를 정합니다.
 
 1. `status`가 `ok`가 아니면 **처리 실패**
 2. 라벨이 `none`이면 확신도 검사에 걸릴 때 **사람 검토**, 아니면 원문을 **그대로 게시** (생성 모델이 문장을 바꿨어도 원문을 씀)
 3. `answer`에 "게시하기 어렵"이 있으면 **게시 보류** (`answer`와 `next_steps`를 글쓴이 안내로 보여 줌)
-4. 다시 검사나 뜻 검사에 걸리면 **사람 검토**
-5. 나머지는 **순화 후 게시**
+4. 그 문구 없이 `next_steps`가 있으면 **사람 검토** (고친 댓글인지 안내인지 알 수 없음, 검토 이유 "고친 댓글인지 안내인지 불분명")
+5. 다시 검사나 뜻 검사에 걸리면 **사람 검토**
+6. 나머지는 **순화 후 게시**
 
 ## POST /compare 응답
 

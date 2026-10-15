@@ -59,6 +59,7 @@ STATUS = {
 PROVIDERS = {"로컬": "ollama", "상용": "openai"}
 PROVIDER_MODELS = {"ollama": "Ollama gemma4:e4b", "openai": "OpenAI gpt-6-luna"}
 JUDGE_MODEL = "Ollama qwen3:4b-instruct"  # 뜻 검사 판정 모델 (comparisons/review_rules01)
+REFUSAL = "게시하기 어렵"  # hate 지침의 게시 불가 안내에 들어가는 말 (step08 REFUSAL_PHRASE)
 # 서버가 422와 함께 알려 주는 오류 종류(FastAPI, 영어 문장)를 화면에 보일 한국어 문장으로 바꾼다.
 INPUT_ERRORS = {
     "string_too_short": "댓글을 입력해 주세요.",
@@ -131,20 +132,33 @@ def plain(text):
     return re.sub(r"([\\`*_{}\[\]()#+\-.!~|>:$])", r"\\\1", text)
 
 
+def unclear_answer(label, result):
+    """생성 모델의 답이 고친 댓글인지 게시 불가 안내인지 알 수 없는지 본다.
+
+    지침상 고친 댓글은 next_steps가 비어 있고, 게시 불가 안내는 '게시하기 어렵다'를 쓴다.
+    안내 문구 없이 다시 쓰라는 안내(next_steps)만 붙은 답은 둘 중 무엇인지 알 수 없어서,
+    서버도 다시 검사와 뜻 검사를 하지 않는다(step08 rewritten_answer).
+    """
+    answer, next_steps = parse_answer(result)
+    return label != "none" and REFUSAL not in answer and bool(next_steps)
+
+
 def recommended_action(label, answer, result, classification_check=None):
     """운영자에게 보일 권장 조치를 정한다.
 
     문제 없음(none)으로 판정되면 원문을 그대로 올린다. 생성 모델이 문장을 바꿨어도 원문을 쓴다.
     다만 분류 확신도가 낮으면(classification_check) 사람 검토로 보낸다.
-    나머지는 게시 불가 안내면 게시 보류, 고친 댓글 다시 검사나 뜻 검사에 걸리면 사람 검토,
-    그 밖에는 순화 후 게시다.
+    나머지는 게시 불가 안내면 게시 보류, 고친 댓글인지 안내인지 알 수 없으면 사람 검토,
+    고친 댓글 다시 검사나 뜻 검사에 걸리면 사람 검토, 그 밖에는 순화 후 게시다.
     """
     if not result or result.get("error") or not result.get("output_format_valid"):
         return "처리 실패"
     if label == "none":
         return "사람 검토" if (classification_check or {}).get("needs_review") else "그대로 게시"
-    if "게시하기 어렵" in answer:
+    if REFUSAL in answer:
         return "게시 보류"
+    if unclear_answer(label, result):
+        return "사람 검토"
     if any(
         (result.get(key) or {}).get("needs_review") for key in ("answer_check", "meaning_check")
     ):
@@ -159,6 +173,8 @@ def review_reasons(label, result, classification_check=None):
         if (classification_check or {}).get("needs_review"):
             reasons.append(f"분류 확신도 {classification_check['threshold']:.0%} 미만")
         return reasons
+    if unclear_answer(label, result):
+        reasons.append("고친 댓글인지 안내인지 불분명")
     check = result.get("answer_check") or {}
     if check.get("needs_review"):
         reasons.append(f"고친 댓글도 {check['label']}로 판정")
@@ -309,6 +325,14 @@ def show_classification(classification, check=None):
 def show_checks(label, result, action):
     """고친 댓글을 검사한 두 결과(다시 검사, 뜻 검사)를 보여 준다."""
     if label == "none" or action == "게시 보류":
+        return
+    if unclear_answer(label, result):  # 고친 댓글인지 알 수 없어 서버가 검사하지 않은 답
+        st.warning(
+            "생성 모델의 답이 지침과 맞지 않습니다. 게시 불가 안내 문구('게시하기 어렵다') 없이 다시 "
+            "쓰라는 안내를 붙여서, 위 문장이 고친 댓글인지 글쓴이에게 보낼 안내인지 알 수 없습니다. "
+            "그래서 다시 검사와 뜻 검사를 하지 않았습니다. 사람이 확인해 주세요.",
+            icon=":material/help:",
+        )
         return
     check = result.get("answer_check")  # 고친 댓글을 분류 모델로 다시 판정한 결과
     if check and check["needs_review"]:
@@ -585,7 +609,8 @@ def policy_tab():
                 "그대로 게시": "문제 없음으로 판정된 댓글. 생성 모델이 문장을 바꿨어도 원문을 그대로 올림",
                 "순화 후 게시": "문제 표현을 고쳐 쓴 댓글",
                 "게시 보류": "남길 의견이 없어 게시하기 어렵다고 안내한 댓글",
-                "사람 검토": "아래 세 검사 가운데 하나라도 걸린 댓글",
+                "사람 검토": "아래 세 검사 가운데 하나라도 걸린 댓글. 생성 모델이 '게시하기 어렵다' "
+                "없이 다시 쓰라는 안내를 붙여 고친 댓글인지 안내인지 알 수 없는 답도 사람 검토",
                 "처리 실패": "생성 모델 호출 실패, 잘린 답변, 형식 오류",
             },
             border="horizontal",
@@ -604,7 +629,7 @@ def policy_tab():
             alt="사람 검토로 보내는 검사",
         )
     st.caption(
-        "판정은 KcELECTRA 분류 모델(test Macro F1 0.667)이 합니다. 최종 비교에서 세 검사는 나쁜 답 "
+        "판정은 KcELECTRA 분류 모델(test Macro F1 0.666)이 합니다. 최종 비교에서 세 검사는 나쁜 답 "
         "20개 중 16개를 게시 전에 잡았고, 좋은 답 54개 중 7개를 사람 검토로 보냈습니다. 검사도 틀릴 "
         "수 있으니 중요한 게시물은 사람이 한 번 더 봐 주세요."
     )
@@ -625,6 +650,8 @@ def api_tab(url):
             'body["classification_check"]["needs_review"]   # none인데 확신도가 낮음\n'
             'body["result"]["answer_check"]["needs_review"]   # 고친 댓글에도 문제 표현\n'
             'body["result"]["meaning_check"]["needs_review"]  # 뜻이 바뀌었을 수 있음\n'
+            "# 두 검사는 고친 댓글에만 함. answer에 '게시하기 어렵'이 없는데 next_steps가 있으면\n"
+            "# 고친 댓글인지 안내인지 알 수 없어 검사하지 않음(None). 이 답도 사람 검토로 보냄\n"
             "# 팀 공통 파이프라인 결과 원본 (schema_version 2)\n"
             'body["pipeline"]["results"][0]["service_output"]  # answer, next_steps',
             language="python",
