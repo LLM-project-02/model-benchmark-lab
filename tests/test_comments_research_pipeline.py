@@ -403,3 +403,57 @@ def test_load_examples_picks_candidate_set_and_keeps_reference_out_of_input():
     assert len(examples) == 24 and set(examples[0]) == {"id", "text", "reference_label"}
     with pytest.raises(ValueError):
         research.load_dev_examples(path, "없는 묶음")
+
+
+PRELIMINARY_EVAL = ROOT / "artifacts/step_by_step/comments/bench01/research/pipeline_compare"
+# 기준 문서(v1)보다 먼저 한 예비 평가. 바이트 그대로 보관한다(.gitattributes artifacts/** -text). 값은 커밋 d468927의 파일.
+PRELIMINARY_EVAL_SHA256 = {
+    "dev15_qwen3_01/results_eval.csv": "9b9cf534bbe1d791105b241a3233df8356826d8417585d4d69bb099af7452754",
+    "dev15_qwen3_01/human_eval_summary.json": "a5df5309bc01e97e4ea843a2f03479c1961a823ddb7c676ae1ee9a26449b13ba",
+    "dev15_qwen3_logreg01/three_paths_eval.csv": "952d45a7c1b8552c75345b8f22c975460c800e872e4c9ec50c40a58f446140f7",
+    "dev15_qwen3_logreg01/three_paths_eval_final.csv": "5c8536d74df9e82062b4a8df09a378cf8cd57f31c2853433bf914bc529ab52ff",
+    "dev15_qwen3_logreg01/three_paths_eval_final_corrected.csv":
+        "1898fddc35475026c2a44d709739c21e00edd13ca5525582c26a3ccb335e96f0",
+    "dev15_qwen3_logreg01/human_eval_summary.json": "2056dbd4d35ac1098b7d1119d2ad2323707dd8fc5c1dea484c7a73b28125cf3c",
+}
+
+
+def test_final_eval_config_references_versioned_criteria_doc():
+    config = json.loads((ROOT / "data/comments_research/final_eval_config.json").read_text(encoding="utf-8"))
+    evaluation = config["evaluation"]
+    assert evaluation["columns"] == ["eval_policy_compliance", "eval_meaning_preserved", "eval_new_facts", "eval_memo"]
+    doc = (ROOT / evaluation["criteria_doc"]).read_text(encoding="utf-8")
+    assert f"기준 버전: `{evaluation['criteria_version']}`" in doc
+    for column in evaluation["columns"]:
+        assert f"`{column}`" in doc
+    # 근거로 인용한 정책 원문이 실제 서비스 정책과 같다 (정책이 바뀌면 기준 문서도 다시 본다)
+    assert chain.COMMENT_RULES in doc
+    for label in research.LABELS:
+        assert chain.POLICIES[label].split(chain.COMMENT_RULES)[0].strip() in doc, label
+
+
+def test_preliminary_eval_files_are_unchanged():
+    import hashlib
+
+    for name, expected in PRELIMINARY_EVAL_SHA256.items():
+        assert hashlib.sha256((PRELIMINARY_EVAL / name).read_bytes()).hexdigest() == expected, name
+
+
+@pytest.mark.parametrize(
+    ("example", "path", "values"),
+    [
+        ("hate-05", "kcelectra", ("no", "yes", "no")),  # 비하 표현을 그대로 반환
+        ("hate-04", "logreg", ("no", "no", "no")),  # 비꼬는 질문 → 정보 공유 요청
+        ("hate-05", "logreg", ("no", "yes", "no")),  # "명심해라" → "명심해 주세요" (정정본)
+        ("offensive-02", "logreg", ("no", "yes", "no")),  # "말합니다"만 붙임
+        ("none-01", "llm_only", ("yes", "yes", "no")),  # 띄어쓰기 정리
+        ("none-05", "llm_only", ("no", "yes", "no")),  # 어조를 바꾸는 부호 삭제
+    ],
+)
+def test_criteria_cases_quote_actual_preliminary_values(example, path, values):
+    rows = list(csv.DictReader(io.StringIO(
+        (PRELIMINARY_EVAL / "dev15_qwen3_logreg01/three_paths_eval_final_corrected.csv").read_text(encoding="utf-8-sig"))))
+    row = next(row for row in rows if row["example_id"].endswith(f"-{example}") and row["path"] == path)
+    assert (row["eval_policy_compliance"], row["eval_meaning_preserved"], row["eval_new_facts"]) == values
+    if example == "hate-05" and path == "kcelectra":
+        assert row["answer"].strip() == row["input_text"].strip()

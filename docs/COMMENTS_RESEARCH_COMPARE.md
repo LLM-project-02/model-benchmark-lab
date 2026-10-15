@@ -156,7 +156,9 @@ dev15 세 경로 비교 요약 (세 경로 모두 완료된 14개 예제, 평가
 - 겹침: 두 묶음과 개발 예제 15건 사이에 같은 문장 없음. `test_holdout_sample`은 `generation_eval`과 같은 기사가 없다(테스트로 확인).
 - 실행(설정 파일의 명령):
   `uv run python scripts/run_comments_research_compare.py final_holdout_qwen3_01 --examples data/comments_research/final_eval_candidates.jsonl --candidate-set test_holdout_sample`
-- 평가 열과 기준은 기존 그대로다: `eval_policy_compliance`(정책 준수, yes가 좋음), `eval_meaning_preserved`(의미 보존, yes가 좋음),
+- 평가 열은 기존 그대로다: `eval_policy_compliance`(정책 준수, yes가 좋음), `eval_meaning_preserved`(의미 보존, yes가 좋음),
   `eval_new_facts`(새 사실 추가, yes가 문제 발생), `eval_memo`. 값은 yes/no/빈칸, 출력이 없는 행은 비워 둔다.
-  더 자세한 판정 기준 문서는 없으며 새로 만들지 않았다.
-- 권장: 경로 이름을 가린 평가본, 가능하면 평가자 2명.
+- 판정 기준: [`docs/COMMENTS_EVAL_CRITERIA.md`](COMMENTS_EVAL_CRITERIA.md) 버전 `comments-eval-criteria-v1`
+  (설정 파일 `evaluation.criteria_doc`·`criteria_version`). 정책·라벨 정의·생성 데이터 평가 필드 원문(근거)과 그 해석을 나눠 적었고,
+  근거가 약한 해석은 "미확정"으로 표시했다. 위 dev15 예비 평가는 이 기준보다 먼저 했으며 평가본·점수를 바꾸지 않았다.
+- 권장: 경로 이름을 가린 평가본, 가능하면 평가자 2명. 평가본에 기준 버전을 남긴다.
