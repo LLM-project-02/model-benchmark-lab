@@ -2,16 +2,19 @@
 
 통합 프론트가 두 백엔드에 보낼 요청과 받을 응답, 화면 표시 방식, 아직 확정되지 않은 부분을 정리했습니다.
 
-- **보고서 검수(NLI)**: `feature/nli-wanwi-common-pipeline`의 `e324cb1`에 실제로 연결해 확인했습니다 (7절).
+- **보고서 검수(NLI)**: `feature/nli-wanwi-common-pipeline`에 실제로 연결해 확인했습니다.
+  처음 확인은 `e324cb1`, 2026-10-15 재확인은 원격 최신 `9c3bd85`입니다(API 코드는 같고 README·데모 문장만 다름). 7절 참고.
+  - `feature/add-common-pipeline-in-nli`(`check-nli` worktree, `2549169`)는 기존 생성 방식(`explainer.explain` 직접 호출, `compare()` 미사용)이 남아 있습니다.
+  - 응답에 `status`·`summary.by_status`·`pipeline`이 없어 이 프론트와 맞지 않으니, 그 브랜치의 서버를 8001에 띄우지 않습니다.
 - **댓글 검수**: `feature/add-common-pipeline-in-comments`의 `dfd8672`에 실제로 연결해 확인했습니다 (7절).
-- **파이프라인 비교(연구용)**: `feature/comments-pipeline-research`(dfd8672 기반, 미커밋)의 연구용 API에 연결합니다.
+- **파이프라인 비교(연구용)**: `feature/comments-pipeline-research`(dfd8672 기반)의 연구용 API에 연결합니다.
   규격은 그 브랜치의 `docs/COMMENTS_RESEARCH_COMPARE.md`에 있습니다.
 
 ## 1. 확인한 근거
 
 | 서비스 | 브랜치 (커밋) | 확인한 파일 |
 |---|---|---|
-| NLI | `origin/feature/nli-wanwi-common-pipeline` (`e324cb1`) | `nli/serve_api.py`, `nli/common_adapter.py`, `nli/web_page.py`, `nli/test_api.py`, `common_pipeline/pipeline.py`, `results/service_tests/01~08*.json` |
+| NLI | `origin/feature/nli-wanwi-common-pipeline` (`e324cb1`, 재확인 `9c3bd85`) | `nli/serve_api.py`, `nli/common_adapter.py`, `nli/web_page.py`, `nli/test_api.py`, `common_pipeline/pipeline.py`, `results/service_tests/01~08*.json` |
 | 댓글 | `origin/feature/add-common-pipeline-in-comments` (`dfd8672`, 처음 확인은 `40ebfbf`) | `steps/step10_serve_api.py`, `docs/COMMENTS_API.md`, `scripts/comments_common_pipeline.py`, `steps/step08_connect_chain.py`, `steps/step07_call_models.py`, `steps/step06_predict.py`, `data/comments/labels.json` |
 | 공통 | `origin/main` (`34914e2`) | `common_pipeline/types.py`, `docs/COMMON_PIPELINE.md` |
 
@@ -105,7 +108,9 @@ NLI 응답 필드는 `results/service_tests/`의 실제 응답(01 정상, 02 판
 두 서비스의 `__main__`은 모두 `127.0.0.1:8000`으로 고정되어 있어 그대로는 함께 켤 수 없습니다. NLI는 아래처럼 8001로 띄웁니다.
 
 ```powershell
-# NLI 서비스 (feature/nli-wanwi-common-pipeline e324cb1 작업 폴더 루트) — 이번 작업에서 실행해 확인함
+# NLI 서비스 (feature/nli-wanwi-common-pipeline 9c3bd85 작업 폴더 루트) — 실행해 확인함
+# feature/add-common-pipeline-in-nli(check-nli)가 아니다. 로컬 설명 모델을 명시한다.
+$env:OLLAMA_MODEL = "qwen3:4b-instruct-2507-q4_K_M"
 uv run uvicorn --app-dir nli serve_api:app --host 127.0.0.1 --port 8001
 
 # 댓글 서비스 (dfd8672 작업 폴더 루트, 8000) — 이번 작업에서 실행해 확인함
@@ -121,6 +126,8 @@ uv run python scripts/comments_research_api.py
   서비스 기본 모델로 확인하려면 `gemma4:e4b`를 받아야 합니다.
 
 - NLI 서버는 `artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/`(git에 없음, 약 422MB)가 있어야 켜집니다.
+  같은 폴더의 `config.json`·`temperature.json` 등은 git에 있습니다.
+- NLI의 `nli/test_api.py`는 pytest 테스트가 아니라, 포트 8000에서 실행 중인 서버에 요청하는 스크립트입니다(`BASE_URL` 고정).
 - `provider: ollama`는 Ollama(`http://127.0.0.1:11434`)와 `qwen3:4b-instruct-2507-q4_K_M` 모델이 필요합니다 (`OLLAMA_MODEL`로 변경 가능).
 - `provider: openai`는 서버 `.env`의 `OPENAI_API_KEY`가 필요합니다. 키가 없으면 `fallback: true`일 때 Ollama로 대신하고, `false`면 503입니다.
 - 개발 proxy는 백엔드 연결을 재사용하고, 쉬는 연결은 4초 뒤 먼저 닫습니다(`vite.config.ts`). 이 설정이 없으면 proxy가 요청마다
@@ -143,7 +150,7 @@ uv run python scripts/comments_research_api.py
 | 10 | 두 서비스 모두 main에 병합되지 않았고, NLI 브랜치는 `origin/main`과 공통 이력이 없음 | 병합 후 경로·실행 명령이 바뀔 수 있음 | 병합 후 5절 명령과 포트 재확인 |
 | 11 | 서버의 `MAX_INPUT_CHARS`는 환경 변수로 바뀜 | 값이 다르면 화면 검사와 서버 검사가 어긋남 | `VITE_MAX_INPUT_CHARS`를 같은 값으로 맞춤 |
 | 12 | 댓글 서비스 기본 로컬 모델 `gemma4:e4b`가 이 PC에 없음 | 기본 설정 그대로는 로컬 생성이 실패함. 이번 확인은 `OLLAMA_MODEL`을 qwen3로 바꿔 실행 | 모델을 받은 뒤 기본 설정으로 다시 확인 |
-| 13 | 파이프라인 비교의 로지스틱 회귀 모델(`bench01/baseline/baseline.joblib`)이 없음 | 그 경로는 "실행 안 함 — 모델 미준비"로 표시하고 통계에서 뺌 | 학습 후 연구 브랜치 문서의 연결 방법대로 지정 |
+| 13 | 파이프라인 비교의 로지스틱 회귀 모델이 `bench01/baseline`에 없었음 | 2026-10-15에 같은 설정·데이터로 다시 학습한 `research_lr01/baseline`을 연구용 API 기본 경로로 연결(모델 파일은 git에 없음). 모델이 없는 PC에서는 "실행 안 함 — 모델 미준비"로 표시하고 통계에서 뺌 | 다른 PC에서는 모델 파일을 전달하거나 같은 명령으로 학습 |
 
 ## 7. 이번에 확인한 범위
 
@@ -162,6 +169,31 @@ uv run python scripts/comments_research_api.py
 
 - 일부 실행에서 문장 일부가 `error`(`llm` 단계, `InternalServerError`)로 돌아왔고, 화면은 이를 `설명 실패`로 표시했습니다.
   Ollama 내부 요청 실패이며 조사 내용은 8절에 있습니다.
+
+**NLI 재확인 (2026-10-15, 원격 최신 9c3bd85)**
+
+실행 환경과 출력 흐름:
+
+| 단계 | 실제 위치 | 확인 |
+|---|---|---|
+| 프론트 요청 | `POST /api/nli/check` → Vite proxy(`vite.config.ts`, `NLI_API_TARGET` 기본 `http://127.0.0.1:8001`) → `POST /check` | 확인 시점에 8001에는 서버가 없었음(요청 실패 상태). 9c3bd85를 내보낸 폴더에서 `uvicorn --app-dir nli serve_api:app --port 8001`로 실행 |
+| 문장 분리·근거 검색 | `serve_api.check` → `predictor.Checker.check` | 보고서 3문장 → 결과 3개 |
+| 공통 compare() | `serve_api.explain_row` → `run_pair` → `common_pipeline.compare`(`common_adapter.SERVICE`, 분류 `roberta`, LLM `ollama`) | 문장마다 `pipeline[]`에 compare() 결과 항목 1개(대체 경로 없음) |
+| 설명·수정안 | `item.service_output.explanation/suggestion` → 로컬이면 `postprocess.soften` → `results[].explanation/suggestion` | 실제 응답 3문장 모두 `explanation`·`suggestion` = `soften(pipeline[0].service_output)`, 판정 = compare() 분류 결과 |
+| 화면 | `features/nli` (`results[].explanation`·`suggestion`·`status`, 개발 확인용 `pipeline`) | 화면 설명·수정안 = 응답 값, 실제 사용 LLM `ollama · qwen3:4b-instruct-2507-q4_K_M` |
+
+상태별 화면 확인 (`provider: ollama`, `fallback: false`, 실제 서버, Edge headless):
+
+| 상태 | 만든 방법 (실행할 때 환경 변수만) | 결과 |
+|---|---|---|
+| 성공 | `OLLAMA_MODEL=qwen3:4b-instruct-2507-q4_K_M` | 3문장 `설명 완료`, 13/13 통과 (`37-real-nli-9c3bd85-success.png`) |
+| 실패 | `OLLAMA_BASE_URL=http://127.0.0.1:9` (닫힌 포트) | 3문장 `설명 실패`(`llm`/`APIConnectionError`), 제목 "모든 문장의 설명 생성 실패", 10/10 (`38-…-error.png`) |
+| 미완료 | `MAX_OUTPUT_TOKENS=16` | 3문장 `설명 미완료`(`generation`/`IncompleteGeneration`), 설명 숨김·끊김 안내, 11/11 (`39-…-incomplete.png`) |
+
+- **고친 화면 결함:** 모든 문장이 미완료이거나, 실패·미완료가 섞여 모든 문장을 차지할 때도 상태 요약이 "일부 문장의 설명을 받지 못함"이었습니다.
+  이제 "모든 문장의 설명을 받지 못함"으로 표시합니다(`NliResult.tsx`). 모든 문장이 실패인 경우와 일부만 실패·미완료인 경우의 표시는 그대로입니다.
+- **참고:** 로컬 LLM을 고르면 "상용 실패 시 대체" 체크박스는 비활성화되지만, 체크 상태가 그대로 `fallback` 값으로 전송됩니다.
+  서버는 `provider: ollama`이면 대체 경로를 만들지 않으므로 동작에는 영향이 없습니다.
 
 **댓글 실제 연결** (dfd8672 서버를 8000으로 실행, `OLLAMA_MODEL=qwen3:4b-instruct-2507-q4_K_M` → Vite proxy → 화면, Edge headless)
 

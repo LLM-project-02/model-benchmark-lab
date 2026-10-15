@@ -45,6 +45,10 @@ function headline(review: NliReview): { tone: Tone; title: string; lines: string
       lines: [...lines, `첫 오류: ${errorText(first)}. 설명 LLM 서버(Ollama 등)가 켜져 있는지, 모델이 받아져 있는지 확인하세요.`],
     }
   }
+  // 실패·미완료가 섞여 모든 문장을 차지하면 '일부'가 아니다 (예: 출력 한도에 걸려 모두 미완료).
+  if (total > 0 && error + incomplete === total) {
+    return { tone: 'warn', title: '모든 문장의 설명을 받지 못함', lines }
+  }
   if (error > 0 || incomplete > 0) return { tone: 'warn', title: '일부 문장의 설명을 받지 못함', lines }
   if (total > 0 && skipped === total) {
     return { tone: summary.needsReview > 0 ? 'review' : 'neutral', title: '판정만 표시 · 설명 생략', lines }

@@ -2,7 +2,7 @@
 
 댓글 서비스와 NLI 보고서 검수 서비스를 한 화면에서 쓰는 React + Vite + TypeScript 프론트입니다.
 
-- **보고서 검수** 탭 (기본 **API 모드**, NLI 서버 `e324cb1`에 연결): 원문·보고서 입력, 설명 LLM(로컬·상용)·설명 생성·대체 경로 선택 →
+- **보고서 검수** 탭 (기본 **API 모드**, NLI 서버 `feature/nli-wanwi-common-pipeline` `9c3bd85`에 연결): 원문·보고서 입력, 설명 LLM(로컬·상용)·설명 생성·대체 경로 선택 →
   전체 요약(`summary`, `summary.by_status`), 문장별 판정·선택된 근거·설명·수정안/확인 질문, 실제 사용한 LLM과 대체 경로 여부,
   개발 확인용 공통 파이프라인 실행 기록
 - **댓글 검수** 탭 (기본 **API 모드**, 댓글 서버 `dfd8672`에 연결): 댓글 입력 → 로컬·상용 LLM 선택 → 분류 라벨·확신도,
@@ -11,7 +11,7 @@
   나란히 비교. 판정 라벨, 적용 정책, 생성 댓글, next_steps, 분류·LLM·전체 시간, 토큰, 상태와 실패 단계, 원본 응답·실행 기록,
   사람 평가 입력, 세션 통계, JSON·CSV 내보내기. 백엔드는 `feature/comments-pipeline-research`의 `scripts/comments_research_api.py`
   (실행·설정: 그 브랜치의 `docs/COMMENTS_RESEARCH_COMPARE.md`, 개발 proxy `RESEARCH_API_TARGET` 기본 `http://127.0.0.1:8002`).
-  서버가 실행할 수 없다고 알린 경로(현재 로지스틱 회귀, 모델 미준비)는 "실행 안 함"으로 표시하고 측정값은 "해당 없음", 통계에서 뺍니다.
+  서버가 실행할 수 없다고 알린 경로(모델 미준비 등)는 "실행 안 함"으로 표시하고 측정값은 "해당 없음", 통계에서 뺍니다.
 
 Mock 모드는 화면 상단 줄무늬 띠·`MOCK` 배지·문서 제목 `[Mock]`으로 표시합니다.
 분류·생성 모델은 프론트에서 직접 부르지 않고 항상 백엔드 API를 거칩니다.
@@ -38,9 +38,11 @@ npm run dev        # http://localhost:5173
 
 ## 보고서 검수를 실제 NLI 서버로 실행
 
-1. NLI 서버를 8001 포트로 켭니다. `feature/nli-wanwi-common-pipeline`(`e324cb1`) 작업 폴더 루트에서:
+1. NLI 서버를 8001 포트로 켭니다. `feature/nli-wanwi-common-pipeline`(`9c3bd85`) 작업 폴더 루트에서 실행합니다.
+   `feature/add-common-pipeline-in-nli`는 기존 생성 방식이라 이 화면과 응답 형식이 맞지 않습니다.
 
    ```powershell
+   $env:OLLAMA_MODEL = "qwen3:4b-instruct-2507-q4_K_M"
    uv run uvicorn --app-dir nli serve_api:app --host 127.0.0.1 --port 8001
    ```
 
@@ -104,6 +106,7 @@ src/
 |---|---|
 | 50~52 | **댓글 검수, 실제 댓글 서버(dfd8672) 연결**: 정상(개발 확인용 기록 펼침), 상용 LLM 502, 서버 연결 실패 |
 | 40~41 | **파이프라인 비교**: 실제 연구용 API(로지스틱 회귀 모델 미준비), Mock 라벨 불일치 |
+| 37~39 | **보고서 검수, 실제 NLI 서버(9c3bd85) 재확인**: 성공, 실패(Ollama 연결 불가), 미완료(출력 한도) |
 | 30~36 | **보고서 검수, 실제 NLI 서버(e324cb1) 연결**: 판정만, Ollama 설명, 실행 기록, 대체 경로, 503, 입력 오류, 서버 연결 실패 |
 | 01~09 | 댓글 검수 Mock 시나리오, 입력 검증, 로딩 |
 | 10~16 | 보고서 검수 Mock 시나리오, 실행 기록, 로딩 |
