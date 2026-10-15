@@ -13,6 +13,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+ROOT = Path(__file__).resolve().parents[1]
+
+import socket
 
 import comments_research_api as api
 import comments_research_pipeline as research
@@ -20,6 +23,28 @@ import run_comments_research_compare as runner
 import step08_connect_chain as chain
 
 TEXT = " 연기를 왜 이렇게 못하냐 "
+
+
+@pytest.fixture(autouse=True)
+def block_real_calls(monkeypatch):
+    """실제 LLM·모델 호출을 막는다. call_llm은 예외를 기록으로 바꾸므로 막힌 시도를 모아 테스트 끝에 실패시킨다."""
+    attempts = []
+
+    def blocker(what):
+        def blocked(*args, **kwargs):
+            attempts.append(what)
+            raise RuntimeError(f"테스트에서 실제 호출은 허용하지 않습니다: {what}")
+
+        return blocked
+
+    monkeypatch.setattr(socket.socket, "connect", blocker("socket.connect"))
+    monkeypatch.setattr(socket, "create_connection", blocker("socket.create_connection"))
+    import transformers
+
+    for name in ("AutoModelForSequenceClassification", "AutoTokenizer"):
+        monkeypatch.setattr(getattr(transformers, name), "from_pretrained", blocker(f"{name}.from_pretrained"))
+    yield attempts
+    assert not attempts, f"실제 모델·LLM 호출을 시도했습니다: {attempts}"
 LLM = research.DEFAULT_LLM
 
 
@@ -343,3 +368,38 @@ def test_api_compare_and_validation(monkeypatch):
         assert [p["status"] for p in body["paths"]] == ["success", "unavailable", "success"]
         assert client.get("/research/examples").json()["examples"][0].keys() == {
             "id", "text", "reference_label"}
+
+
+def test_real_llm_call_is_blocked_and_recorded(block_real_calls):
+    # 기본 생성 호출(실제 Ollama)을 쓰면 연결이 막히고 실패로 기록된다 (이 테스트는 막힌 시도를 확인한 뒤 비운다)
+    result = research.call_llm(LLM, "프롬프트")
+    assert result["error"] == "RuntimeError"
+    assert block_real_calls and all(item.startswith("socket") for item in block_real_calls)
+    block_real_calls.clear()
+
+
+def test_final_candidates_are_reproducible_and_labeled_with_prior_usage(tmp_path):
+    import build_comments_final_candidates as builder
+
+    rows = builder.build()
+    committed = (ROOT / "data" / "comments_research" / "final_eval_candidates.jsonl").read_text(encoding="utf-8")
+    assert "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows) == committed
+    holdout = [row for row in rows if row["candidate_set"] == "test_holdout_sample"]
+    previous = [row for row in rows if row["candidate_set"] == "generation_eval"]
+    assert len(holdout) == 24 and len(previous) == 24
+    assert {row["expected_label"]: 0 for row in holdout}.keys() == set(research.LABELS)
+    articles = [builder.article(row["group_id"]) for row in holdout]
+    assert len(set(articles)) == 24  # 한 기사에서 한 건
+    assert not set(articles) & {builder.article(row["group_id"]) for row in previous}  # generation_eval 기사 제외
+    dev = {row["text"] for row in research.load_dev_examples()}
+    assert not dev & {row["text"] for row in rows}
+    assert all("사용함" in row["prior_usage"] for row in rows)  # 사용 이력을 미사용으로 쓰지 않는다
+    assert all("final01" in row["prior_usage"] for row in previous)
+
+
+def test_load_examples_picks_candidate_set_and_keeps_reference_out_of_input():
+    path = ROOT / "data" / "comments_research" / "final_eval_candidates.jsonl"
+    examples = research.load_dev_examples(path, "test_holdout_sample")
+    assert len(examples) == 24 and set(examples[0]) == {"id", "text", "reference_label"}
+    with pytest.raises(ValueError):
+        research.load_dev_examples(path, "없는 묶음")

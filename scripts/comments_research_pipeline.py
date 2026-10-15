@@ -586,7 +586,15 @@ def to_csv(records):
     return buffer.getvalue()
 
 
-def load_dev_examples(path=DEV_EXAMPLES):
-    """개발용 고정 댓글. 정답 라벨과 평가 메모는 모델 입력에 넣지 않는다(text만 넘긴다)."""
+def load_dev_examples(path=DEV_EXAMPLES, candidate_set=None):
+    """고정 댓글 예제. 정답 라벨과 평가 메모는 모델 입력에 넣지 않는다(text만 넘긴다).
+
+    기본은 개발용 15건이다. 최종 평가 후보 파일(data/comments_research/final_eval_candidates.jsonl)은
+    candidate_set으로 한 묶음만 고른다(묶음을 고르지 않으면 파일 전체).
+    """
     rows = [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()]
+    if candidate_set is not None:
+        rows = [row for row in rows if row.get("candidate_set") == candidate_set]
+        if not rows:
+            raise ValueError(f"후보 묶음이 없습니다: {candidate_set}")
     return [{"id": row["id"], "text": row["text"], "reference_label": row["expected_label"]} for row in rows]

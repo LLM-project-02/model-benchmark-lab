@@ -1,0 +1,63 @@
+{
+  "schema": "comments-research-final-eval-config/v1",
+  "status": "prepared_not_run",
+  "prepared_at": "2026-10-16",
+  "note": "준비만 했다. 최종 평가는 실행하지 않았다. 모델 백업 반영·사전 조건 확인과 사용자 결정 뒤에만 실행한다.",
+  "service": "comments",
+  "candidates_file": "data/comments_research/final_eval_candidates.jsonl",
+  "candidates_builder": "scripts/build_comments_final_candidates.py",
+  "candidate_sets": {
+    "test_holdout_sample": {
+      "role": "주 후보",
+      "rows": 24,
+      "labels": {"none": 8, "offensive": 8, "hate": 8},
+      "selection": "data/comments/test.csv에서 라벨별 8건, seed 20261016, generation_eval 기사 23개 제외, 기사당 1건",
+      "prior_usage": "분류기 최종 평가에 사용함. LLM 생성에 쓴 기록은 git에서 찾지 못함(로컬 실행은 확인 불가) — 미사용으로 단정하지 않음",
+      "caveat": "두 분류기의 test 예측·지표(bench01 test_*_metrics.json)가 이미 공개되어 있다"
+    },
+    "generation_eval": {
+      "role": "이전 사용 데이터 — 재현·비교용",
+      "rows": 24,
+      "labels": {"none": 8, "offensive": 8, "hate": 8},
+      "prior_usage": "bench01 comparisons/final01(같은 qwen3 LLM·같은 KcELECTRA)·final02·review_rules01에 사용함",
+      "caveat": "이미 결과를 본 데이터라 새 최종 평가로 보기 어렵다"
+    }
+  },
+  "run": {
+    "script": "scripts/run_comments_research_compare.py",
+    "commands": [
+      "uv run python scripts/run_comments_research_compare.py final_holdout_qwen3_01 --examples data/comments_research/final_eval_candidates.jsonl --candidate-set test_holdout_sample",
+      "uv run python scripts/run_comments_research_compare.py final_geneval_qwen3_01 --examples data/comments_research/final_eval_candidates.jsonl --candidate-set generation_eval"
+    ],
+    "llm": "qwen3-4b",
+    "paths": ["llm_only", "logreg", "kcelectra"],
+    "order": "예제마다 실행할 수 있는 경로 순서를 한 칸씩 돌린다 (rotated_order)",
+    "warmup": "분류기 워밍업 + LLM 워밍업 1회, 측정에서 제외",
+    "generation_config": "comments_research_pipeline.generation_config('qwen3-4b') — 서비스 step07과 같은 온도·출력 토큰·문맥, 재시도 0, 대체 없음",
+    "repetitions": 1,
+    "output_root": "artifacts/step_by_step/comments/bench01/research/pipeline_compare/"
+  },
+  "preconditions": [
+    "모델 파일 SHA-256이 HANDOFF.md 5절과 같음 (research_lr01/baseline/baseline.joblib, kcelectra-base_lr2e5_s44/checkpoint/*)",
+    "Ollama 모델 qwen3:4b-instruct-2507-q4_K_M (ID 0edcdef34593)",
+    ".env에 LEARNER=bench01",
+    "실행 커밋을 기록 (git rev-parse HEAD)",
+    "/research/options의 available_paths에 세 경로가 모두 있음 (모델 미준비 경로가 있으면 실행하지 않고 원인부터 해결)"
+  ],
+  "evaluation": {
+    "columns": ["eval_policy_compliance", "eval_meaning_preserved", "eval_new_facts", "eval_memo"],
+    "values": "yes / no / 빈칸(판단하지 않음). 형식 검사를 통과한 answer가 없는 행은 비워 둔다",
+    "definitions": {
+      "eval_policy_compliance": "정책 준수: yes가 좋음",
+      "eval_meaning_preserved": "의미 보존: yes가 좋음",
+      "eval_new_facts": "새 사실 추가: yes가 문제 발생"
+    },
+    "definitions_source": "기존 기준 그대로 (pipeline_compare/dev15_qwen3_01/README.md '사람 평가'). 이보다 자세한 판정 기준 문서는 없으며 이번에 새로 만들지 않았다. 분모는 yes/no가 적힌 건수(빈칸은 no로 세지 않음)",
+    "notes_for_evaluator": "후보 파일의 notes_for_evaluator(required_points·forbidden_claims·rubric_note)는 평가 참고용이며 모델 입력이 아니다",
+    "summary_script": "scripts/summarize_comments_research_eval.py <실행 이름> --eval-file <평가본>",
+    "recommendations": [
+      "경로 이름을 가린 평가본으로 평가한다 (이전 평가는 가렸는지 기록이 없음)",
+      "가능하면 평가자 2명, 불일치는 메모로 남긴다"
+    ]
+  }
+}

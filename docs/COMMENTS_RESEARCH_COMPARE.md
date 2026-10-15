@@ -84,8 +84,9 @@ uv run python -m pytest -q tests/test_comments_research_pipeline.py
 | `GET /research/examples` | 개발 예제(id, text, reference_label). reference_label은 사람 확인용 |
 | `POST /research/compare` | `{text, llm, order}` → 세 경로 기록 (`comments-research-compare/v1`). 경로 오류는 HTTP 200 안의 `status`로 |
 
-- 개발 예제는 `data/comments/generation_development.jsonl`(validation에서 뽑은 15건)이다. 최종 test에서 뽑은
-  `generation_eval.jsonl`과 `test.csv`는 쓰지 않는다. 모델 입력은 댓글 text뿐이다.
+- 개발 예제는 `data/comments/generation_development.jsonl`(validation에서 뽑은 15건)이다. 이 연구 비교는 지금까지
+  `generation_eval.jsonl`과 `test.csv`로 실행하지 않았다(최종 평가 후보는 아래 "최종 평가 준비" 참고). 모델 입력은 댓글 text뿐이다.
+  - 주의: `generation_eval.jsonl` 24건 자체는 bench01의 최종 비교(`comparisons/final01`·`final02`)와 `review_rules01`에서 이미 썼다.
 - 실험 스크립트는 워밍업 1회를 따로 기록해 측정에서 빼고, 예제마다 실행할 수 있는 경로의 순서를 한 칸씩 돌린다
   (두 경로면 예제마다 앞뒤가 바뀐다). `results.json`의 `summary`에 경로별 상태 개수와 시간·토큰 평균·중앙값이 있고,
   실행하지 않은 경로는 `excluded: true`, 값은 `null`이다.
@@ -133,3 +134,29 @@ dev15 세 경로 비교 요약 (세 경로 모두 완료된 14개 예제, 평가
 `executed_order`, `classifier_called`, `classifier_verdict`,
 `applied_policy_label`·`applied_policy`, `raw_label`(원본 응답의 label, 참고용), `prompt`, `llm_call`(지연·모델 적재 시간·완료 사유·오류),
 `result`(공통 파이프라인 결과 항목 그대로: classification, label, generated_text, service_output, generation, timings, error).
+
+## 최종 평가 준비 (2026-10-16, 준비만 함 — 실행하지 않음)
+
+후보 목록과 실행 설정만 만들었다. 모델 백업 반영과 사용자 결정 뒤에 실행한다. 확인 방법은 git 전체 브랜치 검색이며,
+커밋하지 않은 로컬 실행(`*.log` 등)은 확인할 수 없어 "미사용"으로 단정하지 않는다.
+
+| 파일 | 내용 |
+|---|---|
+| `scripts/build_comments_final_candidates.py` | 후보 목록을 기존 데이터에서 다시 만든다 (seed 고정, 같은 입력이면 같은 결과) |
+| `data/comments_research/final_eval_candidates.jsonl` | 후보 48건 (`candidate_set` 두 묶음) |
+| `data/comments_research/final_eval_config.json` | 실행 명령·경로·LLM·순서 회전·사전 조건·평가 열 (`status: prepared_not_run`) |
+
+후보 묶음:
+
+| candidate_set | 건수 | 출처·선정 | 이전 사용 |
+|---|---|---|---|
+| `test_holdout_sample` (주 후보) | 24 (라벨별 8) | `test.csv`, seed 20261016, `generation_eval` 기사 23개 제외, 기사당 1건 | 분류기 최종 평가에 사용. LLM 생성 기록은 git에 없음(로컬 미확인) |
+| `generation_eval` | 24 (라벨별 8) | `generation_eval.jsonl` 그대로 | bench01 `final01`(같은 qwen3·같은 KcELECTRA)·`final02`·`review_rules01`에 사용 — 재현·비교용 |
+
+- 겹침: 두 묶음과 개발 예제 15건 사이에 같은 문장 없음. `test_holdout_sample`은 `generation_eval`과 같은 기사가 없다(테스트로 확인).
+- 실행(설정 파일의 명령):
+  `uv run python scripts/run_comments_research_compare.py final_holdout_qwen3_01 --examples data/comments_research/final_eval_candidates.jsonl --candidate-set test_holdout_sample`
+- 평가 열과 기준은 기존 그대로다: `eval_policy_compliance`(정책 준수, yes가 좋음), `eval_meaning_preserved`(의미 보존, yes가 좋음),
+  `eval_new_facts`(새 사실 추가, yes가 문제 발생), `eval_memo`. 값은 yes/no/빈칸, 출력이 없는 행은 비워 둔다.
+  더 자세한 판정 기준 문서는 없으며 새로 만들지 않았다.
+- 권장: 경로 이름을 가린 평가본, 가능하면 평가자 2명.

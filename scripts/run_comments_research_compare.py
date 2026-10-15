@@ -1,6 +1,7 @@
 """연구용: 개발용 고정 댓글로 세 경로를 비교하고 JSON·CSV로 저장한다.
 
-- 입력: data/comments/generation_development.jsonl (validation에서 뽑은 15건). 최종 test 데이터는 쓰지 않는다.
+- 기본 입력: data/comments/generation_development.jsonl (validation에서 뽑은 15건). 최종 평가 후보(test에서 뽑음)는
+  --examples·--candidate-set으로 명시했을 때만 쓴다.
 - 모델 입력은 댓글 text뿐이다. 정답 라벨(reference_label)은 기록에만 남긴다.
 - 워밍업 1회는 따로 기록하고 측정에서 뺀다.
 - 예제마다 실행할 수 있는 경로의 순서를 돌려 가며 바꾼다. 실행하지 못하는 경로(모델 미준비)는 순서에서 빼고
@@ -8,6 +9,8 @@
 - 사람 평가 열(정책 준수, 의미 보존, 새 사실 추가, 메모)은 비워 둔다. 자동 품질 점수는 만들지 않는다.
 
 - --paths로 일부 경로만 실행할 수 있다(예: 이미 실행한 비교에 logreg만 더할 때). 선택하지 않은 경로는 기록하지 않는다.
+- --examples·--candidate-set으로 다른 예제 파일(예: 최종 평가 후보)의 한 묶음을 줄 수 있다.
+  최종 평가 설정: data/comments_research/final_eval_config.json (사람이 확정한 뒤에만 실행한다)
 
 실행(저장소 루트):
   uv run python scripts/run_comments_research_compare.py check01 --limit 2
@@ -46,6 +49,8 @@ def main():
     parser.add_argument("--limit", type=int, default=None, help="앞에서부터 이 개수만 실행")
     parser.add_argument("--paths", nargs="+", choices=research.PATH_IDS, default=list(research.PATH_IDS),
                         help="실행할 경로 (기본: 세 경로 모두)")
+    parser.add_argument("--examples", default=None, help="예제 JSONL (기본: 개발용 generation_development.jsonl)")
+    parser.add_argument("--candidate-set", default=None, help="예제 파일에서 고를 후보 묶음 (최종 평가 후보 파일용)")
     args = parser.parse_args()
 
     out_dir = OUTPUT_ROOT / args.name
@@ -53,7 +58,8 @@ def main():
         raise SystemExit(f"결과 폴더가 이미 있습니다: {out_dir}")
 
     selected = [path_id for path_id in research.PATH_IDS if path_id in args.paths]
-    examples = research.load_dev_examples()[: args.limit]
+    examples_file = Path(args.examples) if args.examples else research.DEV_EXAMPLES
+    examples = research.load_dev_examples(examples_file, args.candidate_set)[: args.limit]
     # 선택한 경로에 필요한 분류기만 불러온다.
     needed = {path["classifier"] for path in research.PATHS if path["id"] in selected} - {None}
     classifiers = research.load_classifiers(
@@ -83,7 +89,11 @@ def main():
     out_dir.mkdir(parents=True)
     summary = {
         "schema": research.SCHEMA,
-        "examples_file": str(research.DEV_EXAMPLES.relative_to(research.ROOT)),
+        "examples_file": (
+            examples_file.resolve().relative_to(research.ROOT).as_posix()
+            if examples_file.resolve().is_relative_to(research.ROOT) else str(examples_file)
+        ),
+        "candidate_set": args.candidate_set,
         "llm": {"key": args.llm, **research.REGISTERED_LLMS[args.llm]},
         "selected_paths": selected,  # 이 실행에서 실행·기록한 경로
         "generation_config": research.generation_config(args.llm),
