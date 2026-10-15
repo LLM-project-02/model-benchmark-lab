@@ -1,0 +1,11 @@
+{
+  "run_learner": "research_lr01",
+  "run_name": "baseline",
+  "run_id": "b2ef934ed9e945958df69a1f89f381fb",
+  "dataset": "comments",
+  "data_sha256": {
+    "train.csv": "b70683b7b296ae8d7f304e55b0bb7534a302b3440ea2ff62e791ac6e23f58ffc",
+    "validation.csv": "1cca19436866566d1aa20bf2843541665110b32f885bff1f0deb6a6fa3392d12",
+    "labels.json": "12147198c34872264eef1117605ec29c61f1ed7e4a064985dbb18fc9b202fa00"
+  }
+}

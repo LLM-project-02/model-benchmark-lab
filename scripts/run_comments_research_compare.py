@@ -7,8 +7,11 @@
   unavailable로 기록하며 summary 통계에서도 뺀다.
 - 사람 평가 열(정책 준수, 의미 보존, 새 사실 추가, 메모)은 비워 둔다. 자동 품질 점수는 만들지 않는다.
 
+- --paths로 일부 경로만 실행할 수 있다(예: 이미 실행한 비교에 logreg만 더할 때). 선택하지 않은 경로는 기록하지 않는다.
+
 실행(저장소 루트):
   uv run python scripts/run_comments_research_compare.py check01 --limit 2
+  uv run python scripts/run_comments_research_compare.py dev15_qwen3_logreg01 --paths logreg
 결과: artifacts/step_by_step/comments/bench01/research/pipeline_compare/<이름>/results.json, results.csv
 """
 
@@ -41,27 +44,36 @@ def main():
     parser.add_argument("name", help="결과 폴더 이름 (이미 있으면 멈춘다)")
     parser.add_argument("--llm", default=research.DEFAULT_LLM, choices=list(research.REGISTERED_LLMS))
     parser.add_argument("--limit", type=int, default=None, help="앞에서부터 이 개수만 실행")
+    parser.add_argument("--paths", nargs="+", choices=research.PATH_IDS, default=list(research.PATH_IDS),
+                        help="실행할 경로 (기본: 세 경로 모두)")
     args = parser.parse_args()
 
     out_dir = OUTPUT_ROOT / args.name
     if out_dir.exists():
         raise SystemExit(f"결과 폴더가 이미 있습니다: {out_dir}")
 
+    selected = [path_id for path_id in research.PATH_IDS if path_id in args.paths]
     examples = research.load_dev_examples()[: args.limit]
-    classifiers = research.load_classifiers()
+    # 선택한 경로에 필요한 분류기만 불러온다.
+    needed = {path["classifier"] for path in research.PATHS if path["id"] in selected} - {None}
+    classifiers = research.load_classifiers(
+        {name: run for name, run in research.CLASSIFIER_RUNS.items() if name in needed}
+    )
+    print("실행 경로:", ", ".join(selected))
     for name, entry in classifiers.items():
         info = entry["info"]
         print(f"분류기 {name}: {'사용' if info['available'] else '사용 불가'} {info.get('model_id') or info['error']}")
     research.warm_up_classifiers(classifiers)
 
-    warmup = research.run_comparison(WARMUP_TEXT, args.llm, classifiers)
+    warmup = research.run_comparison(WARMUP_TEXT, args.llm, classifiers, selected=selected)
     print("워밍업:", ", ".join(f"{p['path']}={p['status']}" for p in warmup["paths"]))
 
-    available = research.available_path_ids(classifiers)
+    available = [p for p in research.available_path_ids(classifiers) if p in selected]
     records = []
     for index, example in enumerate(examples):
         record = research.run_comparison(
-            example["text"], args.llm, classifiers, order=rotated_order(index, available)
+            example["text"], args.llm, classifiers, order=rotated_order(index, available),
+            selected=selected,
         )
         record["example"] = {"id": example["id"], "reference_label": example["reference_label"]}
         records.append(record)
@@ -73,6 +85,7 @@ def main():
         "schema": research.SCHEMA,
         "examples_file": str(research.DEV_EXAMPLES.relative_to(research.ROOT)),
         "llm": {"key": args.llm, **research.REGISTERED_LLMS[args.llm]},
+        "selected_paths": selected,  # 이 실행에서 실행·기록한 경로
         "generation_config": research.generation_config(args.llm),
         "policy_version": research.POLICY_VERSION,
         "classifiers": {name: entry["info"] for name, entry in classifiers.items()},

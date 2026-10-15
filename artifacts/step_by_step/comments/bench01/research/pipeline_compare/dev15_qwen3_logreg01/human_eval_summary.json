@@ -1,0 +1,1688 @@
+{
+ "run": "dev15_qwen3_logreg01",
+ "eval_file": "three_paths_eval_final_corrected.csv",
+ "alignment": {
+  "rows": 45,
+  "matched_by": [
+   "source_run",
+   "example_id",
+   "path"
+  ],
+  "source_runs": [
+   "dev15_qwen3_01",
+   "dev15_qwen3_logreg01"
+  ],
+  "content_diffs": [],
+  "format_only_diffs": {
+   "generation_complete": 45,
+   "llm_seconds": 45,
+   "total_seconds": 45,
+   "classifier_confidence": 30,
+   "classification_seconds": 30
+  },
+  "row_order_same_as_source": false
+ },
+ "paths_compared": [
+  "llm_only",
+  "logreg",
+  "kcelectra"
+ ],
+ "source_runs": {
+  "dev15_qwen3_01": {
+   "first_record_at": "2026-10-15T12:03:06.161+09:00",
+   "last_record_at": "2026-10-15T12:03:36.912+09:00",
+   "llm": {
+    "key": "qwen3-4b",
+    "provider": "ollama",
+    "model": "qwen3:4b-instruct-2507-q4_K_M"
+   },
+   "generation_config": {
+    "provider": "ollama",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "endpoint": "/api/generate",
+    "stream": false,
+    "think": false,
+    "keep_alive": "5m",
+    "temperature": 0.2,
+    "num_predict": 512,
+    "num_ctx": 4096,
+    "format": "json_schema(ResearchPayload)",
+    "timeout_seconds": 120.0,
+    "retries": 0,
+    "fallback": null
+   },
+   "policy_version": "research-v1+bench01-development03"
+  },
+  "dev15_qwen3_logreg01": {
+   "first_record_at": "2026-10-15T17:37:41.977+09:00",
+   "last_record_at": "2026-10-15T17:37:54.046+09:00",
+   "llm": {
+    "key": "qwen3-4b",
+    "provider": "ollama",
+    "model": "qwen3:4b-instruct-2507-q4_K_M"
+   },
+   "generation_config": {
+    "provider": "ollama",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "endpoint": "/api/generate",
+    "stream": false,
+    "think": false,
+    "keep_alive": "5m",
+    "temperature": 0.2,
+    "num_predict": 512,
+    "num_ctx": 4096,
+    "format": "json_schema(ResearchPayload)",
+    "timeout_seconds": 120.0,
+    "retries": 0,
+    "fallback": null
+   },
+   "policy_version": "research-v1+bench01-development03"
+  }
+ },
+ "statuses": {
+  "llm_only": {
+   "source_run": "dev15_qwen3_01",
+   "counts": {
+    "success": 14,
+    "incomplete": 1
+   },
+   "completed": 14,
+   "ran": 15,
+   "completion_rate": 0.9333333333333333,
+   "not_success": [
+    {
+     "example_id": "comments-generation_development-hate-02",
+     "status": "incomplete",
+     "error": {
+      "stage": "generation",
+      "type": "IncompleteGeneration",
+      "message": "LLM이 생성 미완료를 보고했습니다."
+     }
+    }
+   ]
+  },
+  "logreg": {
+   "source_run": "dev15_qwen3_logreg01",
+   "counts": {
+    "success": 15
+   },
+   "completed": 15,
+   "ran": 15,
+   "completion_rate": 1.0,
+   "not_success": []
+  },
+  "kcelectra": {
+   "source_run": "dev15_qwen3_01",
+   "counts": {
+    "success": 15
+   },
+   "completed": 15,
+   "ran": 15,
+   "completion_rate": 1.0,
+   "not_success": []
+  }
+ },
+ "compared_example_ids": [
+  "comments-generation_development-none-01",
+  "comments-generation_development-none-02",
+  "comments-generation_development-none-03",
+  "comments-generation_development-none-04",
+  "comments-generation_development-none-05",
+  "comments-generation_development-offensive-01",
+  "comments-generation_development-offensive-02",
+  "comments-generation_development-offensive-03",
+  "comments-generation_development-offensive-04",
+  "comments-generation_development-offensive-05",
+  "comments-generation_development-hate-01",
+  "comments-generation_development-hate-03",
+  "comments-generation_development-hate-04",
+  "comments-generation_development-hate-05"
+ ],
+ "human_eval": {
+  "eval_policy_compliance": {
+   "title": "정책 준수 (yes 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 6,
+     "no": 8,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.42857142857142855
+    },
+    "logreg": {
+     "yes": 6,
+     "no": 8,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.42857142857142855
+    },
+    "kcelectra": {
+     "yes": 10,
+     "no": 4,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.7142857142857143
+    }
+   },
+   "common": {
+    "n": 14,
+    "example_ids": [
+     "comments-generation_development-none-01",
+     "comments-generation_development-none-02",
+     "comments-generation_development-none-03",
+     "comments-generation_development-none-04",
+     "comments-generation_development-none-05",
+     "comments-generation_development-offensive-01",
+     "comments-generation_development-offensive-02",
+     "comments-generation_development-offensive-03",
+     "comments-generation_development-offensive-04",
+     "comments-generation_development-offensive-05",
+     "comments-generation_development-hate-01",
+     "comments-generation_development-hate-03",
+     "comments-generation_development-hate-04",
+     "comments-generation_development-hate-05"
+    ],
+    "excluded_example_ids": [],
+    "llm_only": {
+     "yes": 6,
+     "yes_rate": 0.42857142857142855
+    },
+    "logreg": {
+     "yes": 6,
+     "yes_rate": 0.42857142857142855
+    },
+    "kcelectra": {
+     "yes": 10,
+     "yes_rate": 0.7142857142857143
+    }
+   },
+   "pairwise": {
+    "llm_only~logreg": {
+     "n": 14,
+     "both_yes": 3,
+     "only_llm_only_yes": 3,
+     "only_logreg_yes": 3,
+     "both_no": 5,
+     "exact_mcnemar_p": 1.0
+    },
+    "llm_only~kcelectra": {
+     "n": 14,
+     "both_yes": 6,
+     "only_llm_only_yes": 0,
+     "only_kcelectra_yes": 4,
+     "both_no": 4,
+     "exact_mcnemar_p": 0.125
+    },
+    "logreg~kcelectra": {
+     "n": 14,
+     "both_yes": 5,
+     "only_logreg_yes": 1,
+     "only_kcelectra_yes": 5,
+     "both_no": 3,
+     "exact_mcnemar_p": 0.21875
+    }
+   },
+   "blanks": []
+  },
+  "eval_meaning_preserved": {
+   "title": "의미 보존 (yes 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 9,
+     "no": 5,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.6428571428571429
+    },
+    "logreg": {
+     "yes": 12,
+     "no": 2,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.8571428571428571
+    },
+    "kcelectra": {
+     "yes": 9,
+     "no": 3,
+     "blank": 2,
+     "other": 0,
+     "evaluated": 12,
+     "yes_rate": 0.75
+    }
+   },
+   "common": {
+    "n": 12,
+    "example_ids": [
+     "comments-generation_development-none-01",
+     "comments-generation_development-none-02",
+     "comments-generation_development-none-03",
+     "comments-generation_development-none-04",
+     "comments-generation_development-none-05",
+     "comments-generation_development-offensive-01",
+     "comments-generation_development-offensive-02",
+     "comments-generation_development-offensive-03",
+     "comments-generation_development-offensive-04",
+     "comments-generation_development-offensive-05",
+     "comments-generation_development-hate-04",
+     "comments-generation_development-hate-05"
+    ],
+    "excluded_example_ids": [
+     "comments-generation_development-hate-01",
+     "comments-generation_development-hate-03"
+    ],
+    "llm_only": {
+     "yes": 7,
+     "yes_rate": 0.5833333333333334
+    },
+    "logreg": {
+     "yes": 10,
+     "yes_rate": 0.8333333333333334
+    },
+    "kcelectra": {
+     "yes": 9,
+     "yes_rate": 0.75
+    }
+   },
+   "pairwise": {
+    "llm_only~logreg": {
+     "n": 12,
+     "both_yes": 6,
+     "only_llm_only_yes": 1,
+     "only_logreg_yes": 4,
+     "both_no": 1,
+     "exact_mcnemar_p": 0.375
+    },
+    "llm_only~kcelectra": {
+     "n": 12,
+     "both_yes": 7,
+     "only_llm_only_yes": 0,
+     "only_kcelectra_yes": 2,
+     "both_no": 3,
+     "exact_mcnemar_p": 0.5
+    },
+    "logreg~kcelectra": {
+     "n": 12,
+     "both_yes": 8,
+     "only_logreg_yes": 2,
+     "only_kcelectra_yes": 1,
+     "both_no": 1,
+     "exact_mcnemar_p": 1.0
+    }
+   },
+   "blanks": [
+    {
+     "example_id": "comments-generation_development-hate-01",
+     "path": "kcelectra",
+     "value": "",
+     "reason": "사유 기록 없음",
+     "memo": ""
+    },
+    {
+     "example_id": "comments-generation_development-hate-03",
+     "path": "kcelectra",
+     "value": "",
+     "reason": "사유 기록 없음",
+     "memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+    }
+   ]
+  },
+  "eval_new_facts": {
+   "title": "새 사실 추가 (yes = 문제 발생 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 3,
+     "no": 11,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.21428571428571427
+    },
+    "logreg": {
+     "yes": 0,
+     "no": 14,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.0
+    },
+    "kcelectra": {
+     "yes": 3,
+     "no": 11,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.21428571428571427
+    }
+   },
+   "common": {
+    "n": 14,
+    "example_ids": [
+     "comments-generation_development-none-01",
+     "comments-generation_development-none-02",
+     "comments-generation_development-none-03",
+     "comments-generation_development-none-04",
+     "comments-generation_development-none-05",
+     "comments-generation_development-offensive-01",
+     "comments-generation_development-offensive-02",
+     "comments-generation_development-offensive-03",
+     "comments-generation_development-offensive-04",
+     "comments-generation_development-offensive-05",
+     "comments-generation_development-hate-01",
+     "comments-generation_development-hate-03",
+     "comments-generation_development-hate-04",
+     "comments-generation_development-hate-05"
+    ],
+    "excluded_example_ids": [],
+    "llm_only": {
+     "yes": 3,
+     "yes_rate": 0.21428571428571427
+    },
+    "logreg": {
+     "yes": 0,
+     "yes_rate": 0.0
+    },
+    "kcelectra": {
+     "yes": 3,
+     "yes_rate": 0.21428571428571427
+    }
+   },
+   "pairwise": {
+    "llm_only~logreg": {
+     "n": 14,
+     "both_yes": 0,
+     "only_llm_only_yes": 3,
+     "only_logreg_yes": 0,
+     "both_no": 11,
+     "exact_mcnemar_p": 0.25
+    },
+    "llm_only~kcelectra": {
+     "n": 14,
+     "both_yes": 2,
+     "only_llm_only_yes": 1,
+     "only_kcelectra_yes": 1,
+     "both_no": 10,
+     "exact_mcnemar_p": 1.0
+    },
+    "logreg~kcelectra": {
+     "n": 14,
+     "both_yes": 0,
+     "only_logreg_yes": 0,
+     "only_kcelectra_yes": 3,
+     "both_no": 11,
+     "exact_mcnemar_p": 0.25
+    }
+   },
+   "blanks": []
+  }
+ },
+ "policy_meaning_crosstab": {
+  "n": 12,
+  "example_ids": [
+   "comments-generation_development-none-01",
+   "comments-generation_development-none-02",
+   "comments-generation_development-none-03",
+   "comments-generation_development-none-04",
+   "comments-generation_development-none-05",
+   "comments-generation_development-offensive-01",
+   "comments-generation_development-offensive-02",
+   "comments-generation_development-offensive-03",
+   "comments-generation_development-offensive-04",
+   "comments-generation_development-offensive-05",
+   "comments-generation_development-hate-04",
+   "comments-generation_development-hate-05"
+  ],
+  "llm_only": {
+   "policy_yes__meaning_yes": 3,
+   "policy_no__meaning_yes": 4,
+   "policy_no__meaning_no": 2,
+   "policy_yes__meaning_no": 3
+  },
+  "logreg": {
+   "policy_yes__meaning_yes": 5,
+   "policy_no__meaning_yes": 5,
+   "policy_yes__meaning_no": 1,
+   "policy_no__meaning_no": 1
+  },
+  "kcelectra": {
+   "policy_yes__meaning_yes": 6,
+   "policy_yes__meaning_no": 3,
+   "policy_no__meaning_yes": 3
+  }
+ },
+ "human_eval_by_reference_label": {
+  "eval_policy_compliance": {
+   "llm_only": {
+    "none": {
+     "yes": 2,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 3,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 1,
+     "evaluated": 4
+    }
+   },
+   "logreg": {
+    "none": {
+     "yes": 4,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 2,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 0,
+     "evaluated": 4
+    }
+   },
+   "kcelectra": {
+    "none": {
+     "yes": 5,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 3,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 2,
+     "evaluated": 4
+    }
+   }
+  },
+  "eval_meaning_preserved": {
+   "llm_only": {
+    "none": {
+     "yes": 4,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 1,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 4,
+     "evaluated": 4
+    }
+   },
+   "logreg": {
+    "none": {
+     "yes": 5,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 4,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 3,
+     "evaluated": 4
+    }
+   },
+   "kcelectra": {
+    "none": {
+     "yes": 5,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 2,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 2,
+     "evaluated": 2
+    }
+   }
+  },
+  "eval_new_facts": {
+   "llm_only": {
+    "none": {
+     "yes": 0,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 3,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 0,
+     "evaluated": 4
+    }
+   },
+   "logreg": {
+    "none": {
+     "yes": 0,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 0,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 0,
+     "evaluated": 4
+    }
+   },
+   "kcelectra": {
+    "none": {
+     "yes": 0,
+     "evaluated": 5
+    },
+    "offensive": {
+     "yes": 3,
+     "evaluated": 5
+    },
+    "hate": {
+     "yes": 0,
+     "evaluated": 4
+    }
+   }
+  }
+ },
+ "unchanged_outputs": {
+  "llm_only": {
+   "count": 2,
+   "by_reference_label": {
+    "none": 1,
+    "hate": 1
+   },
+   "items": [
+    {
+     "example_id": "comments-generation_development-none-03",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-hate-03",
+     "reference_label": "hate",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    }
+   ]
+  },
+  "logreg": {
+   "count": 7,
+   "by_reference_label": {
+    "none": 3,
+    "offensive": 2,
+    "hate": 2
+   },
+   "items": [
+    {
+     "example_id": "comments-generation_development-none-03",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-none-04",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-none-05",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-offensive-01",
+     "reference_label": "offensive",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-offensive-03",
+     "reference_label": "offensive",
+     "applied_policy_label": "hate",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-hate-01",
+     "reference_label": "hate",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-hate-03",
+     "reference_label": "hate",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    }
+   ]
+  },
+  "kcelectra": {
+   "count": 7,
+   "by_reference_label": {
+    "none": 4,
+    "offensive": 2,
+    "hate": 1
+   },
+   "items": [
+    {
+     "example_id": "comments-generation_development-none-02",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-none-03",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-none-04",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-none-05",
+     "reference_label": "none",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "yes",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-offensive-03",
+     "reference_label": "offensive",
+     "applied_policy_label": "hate",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-offensive-05",
+     "reference_label": "offensive",
+     "applied_policy_label": "none",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    },
+    {
+     "example_id": "comments-generation_development-hate-05",
+     "reference_label": "hate",
+     "applied_policy_label": "hate",
+     "eval_policy_compliance": "no",
+     "eval_meaning_preserved": "yes",
+     "eval_new_facts": "no"
+    }
+   ]
+  }
+ },
+ "out_of_scope_values": [
+  {
+   "source_run": "dev15_qwen3_logreg01",
+   "example_id": "comments-generation_development-hate-02",
+   "path": "logreg",
+   "status": "success",
+   "reason": "다른 경로가 완료되지 않아 비교 대상 아님",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "source_run": "dev15_qwen3_01",
+   "example_id": "comments-generation_development-hate-02",
+   "path": "kcelectra",
+   "status": "success",
+   "reason": "다른 경로가 완료되지 않아 비교 대상 아님",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_new_facts": "no"
+   }
+  }
+ ],
+ "metrics": {
+  "input_tokens": {
+   "llm_only": {
+    "n": 14,
+    "mean": 867.1428571428571,
+    "median": 862.5,
+    "min": 847,
+    "max": 897
+   },
+   "logreg": {
+    "n": 14,
+    "mean": 474.7857142857143,
+    "median": 471.0,
+    "min": 439,
+    "max": 545
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 486.7142857142857,
+    "median": 491.0,
+    "min": 439,
+    "max": 545
+   }
+  },
+  "output_tokens": {
+   "llm_only": {
+    "n": 14,
+    "mean": 54.92857142857143,
+    "median": 53.0,
+    "min": 24,
+    "max": 104
+   },
+   "logreg": {
+    "n": 14,
+    "mean": 51.07142857142857,
+    "median": 45.5,
+    "min": 24,
+    "max": 118
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 62.42857142857143,
+    "median": 59.0,
+    "min": 24,
+    "max": 136
+   }
+  },
+  "classification_seconds": {
+   "llm_only": null,
+   "logreg": {
+    "n": 14,
+    "mean": 0.0007391071454289236,
+    "median": 0.0006891499942867085,
+    "min": 0.000637400007690303,
+    "max": 0.0010375999991083518
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.018246471428158526,
+    "median": 0.01750539999920875,
+    "min": 0.015032600000267848,
+    "max": 0.024532299998099916
+   }
+  },
+  "llm_seconds": {
+   "llm_only": {
+    "n": 14,
+    "mean": 0.944185500000458,
+    "median": 0.8960551000018313,
+    "min": 0.3211804000020493,
+    "max": 1.714246399998956
+   },
+   "logreg": {
+    "n": 14,
+    "mean": 0.8110806714290187,
+    "median": 0.754666000000725,
+    "min": 0.3734291000000667,
+    "max": 1.8251923999923747
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.9227326571422704,
+    "median": 0.8359181499981787,
+    "min": 0.4482002000004286,
+    "max": 1.5445806000061566
+   }
+  },
+  "total_seconds": {
+   "llm_only": {
+    "n": 14,
+    "mean": 0.9443296000016355,
+    "median": 0.8962103000012576,
+    "min": 0.32131420000223443,
+    "max": 1.7143993999998202
+   },
+   "logreg": {
+    "n": 14,
+    "mean": 0.8119409500047498,
+    "median": 0.7554493000061484,
+    "min": 0.374177800011239,
+    "max": 1.8260505000071134
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.9411555428570344,
+    "median": 0.853396900001826,
+    "min": 0.4654372999939369,
+    "max": 1.5693016000004718
+   }
+  }
+ },
+ "per_example": [
+  {
+   "example_id": "comments-generation_development-none-01",
+   "reference_label": "none",
+   "input_text": "드라마는 연장하면 잼 없어요 선희와송기장이해피앤딩되게해주세요",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "드라마는 연장하면 잼 없어요 선희와 송기장이 해피앤딩되게 해주세요",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.6658855711369063,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "드라마는 연장하면 잼 없어요 선희와 송기장이 해피앤딩되게 해주세요",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9633595943450928,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "드라마는 연장하면 잼 없어요 선희와 송기장이 해피앤딩되게 해주세요",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-02",
+   "reference_label": "none",
+   "input_text": "어쨌든 변제 의무가 없는 김영희가 나서서 피해자와 원만하게 합의했으니 잘한건 맞지 뭘 욕을 못해서 안달인지. 피해 당사자도 합의한 건데.",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "어쨌든 변제 의무가 없는 김영희가 나서서 피해자와 원만하게 합의했으니 잘한 것 같고, 피해 당사자도 합의한 건데요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.36922042406630673,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "어쨌든 변제 의무가 없는 김영희가 나서서 피해자와 원만하게 합의했으니 잘한 것 같아요. 피해 당사자도 합의한 건데요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9569807648658752,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "어쨌든 변제 의무가 없는 김영희가 나서서 피해자와 원만하게 합의했으니 잘한건 맞지 뭘 욕을 못해서 안달인지. 피해 당사자도 합의한 건데.",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-03",
+   "reference_label": "none",
+   "input_text": "댓글이 없다니 1등",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "댓글이 없다니 1등",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.3856461741109198,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "댓글이 없다니 1등",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9175901412963867,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "댓글이 없다니 1등",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-04",
+   "reference_label": "none",
+   "input_text": "남자측 욕하지마세요",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "남자 측의 욕을 피해주세요",
+    "next_steps": [
+     "이 문장을 다시 확인해 보세요",
+     "비속어나 불쾌한 표현이 없도록 수정해 주세요"
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": "명령조가 피해달라는 요구로 바뀜"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.39618347889630745,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "남자측 욕하지마세요",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9359111189842224,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "남자측 욕하지마세요",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-05",
+   "reference_label": "none",
+   "input_text": "김수찬 아자~~",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "김수찬 아자",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "문장부호가 사라짐"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.5556465277466561,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "김수찬 아자~~",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9744199514389038,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "김수찬 아자~~",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-01",
+   "reference_label": "offensive",
+   "input_text": "한혜진 진짜 지루해서 채널 돌렸다 하차해라",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "한혜진 채널을 지루해서 끊었어요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "채널 돌렸다는 관용어구가 해당 인물의 채널로 바뀜"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.42557282115110523,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "한혜진 진짜 지루해서 채널 돌렸다 하차해라",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.722418487071991,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "한혜진 채널이 지루해서 하차하려고 합니다",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "채널 돌렸다는 관용어구가 해당 인물의 채널로 바뀜"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-02",
+   "reference_label": "offensive",
+   "input_text": "여자는 역시 꾸미기전과 후가 하늘과땅차이....진짜미인은 청바지에 싸구려 면티만 입어도 빛이나더라",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "여자는 역시 꾸미기 전과 후가 하늘과 땅 차이입니다. 진짜 미인은 청바지에 싸구려 면티만 입어도 빛나는 것 같아요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.46719862787743915,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "여자는 꾸미기 전과 후가 하늘과 땅 차이가 있다며, 진짜 미인은 청바지에 싸구려 면티만 입어도 빛나는 것 같다고 말합니다.",
+    "next_steps": [
+     "이 표현을 다시 살펴보고, 차별적 또는 혐오적인 내용이 없도록 조정하세요.",
+     "여성의 외모나 선택에 대해 존중하는 표현을 사용하도록 수정하세요."
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.5874379277229309,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "여자는 꾸미기 전과 후의 차이가 큼을 알 수 있었습니다. 진짜 미인은 단순한 옷차림으로도 아름다움을 뽐낼 수 있음을 느낍니다.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "면티와 청바지를 단순한 옷으로 새로운 정보를 적음"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-03",
+   "reference_label": "offensive",
+   "input_text": "돼지같은 것들은...다 이유가 있다~*",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "돼지같은 것들은...다른 이유가 있을 수 있습니다~",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "돼지같다는 것 자체가 비하적인 목적이 강함"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.5433881372113872,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "돼지같은 것들은...다 이유가 있다~*",
+    "next_steps": [
+     "이 표현을 다시 쓰고, 개인이나 집단을 향한 차별이나 혐오를 담지 않도록 수정해 보세요."
+    ],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9179040193557739,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "돼지같은 것들은...다 이유가 있다~*",
+    "next_steps": [
+     "이 표현을 다시 쓰고, 개인이나 집단을 향한 차별이나 혐오를 담지 않도록 조정해 보세요."
+    ],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-04",
+   "reference_label": "offensive",
+   "input_text": "위너인줄.. 진짜 기자 기사좀 똑바로 쓰지..근데저런 인성이 안좋은 일반인 결혼 기사도 써주나???",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "위너인줄요, 기자로서 기사가 정확하게 쓰이도록 노력해 주시기 바랍니다. 그런 인성의 일반인 결혼 기사도 함께 써 주실 수 있나요?",
+    "next_steps": [
+     "기사 작성 시 인성과 정중함을 고려해 보세요.",
+     "기사 내용에 대해 더 정중하고 공손한 표현을 사용해 보세요."
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.5950539421750264,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "위너인줄요, 기자로서 기사에 정중하게 다뤄주실 수 있나요? 그런 인성의 일반인 결혼 기사도 함께 써주실 수 있나요?",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.8149362206459045,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "위너인줄요, 기자로서 기사 내용을 더 정중하고 책임감 있게 작성해 주시면 좋겠습니다. 그런 인성에 대한 기사도 함께 보여주실 수 있나요?",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-05",
+   "reference_label": "offensive",
+   "input_text": "김태희는 연기가 발전이없네 뭔가를 기대한 사람이 무색하네",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "김태희의 연기 발전이 없어 보이는데, 기대를 품은 사람에게는 무색할 수 있네요",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.48933246433616273,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "김태희의 연기 발전이 부족하다는 점을 걱정스럽게 생각합니다.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.5208956599235535,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "김태희는 연기가 발전이없네 뭔가를 기대한 사람이 무색하네",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-01",
+   "reference_label": "hate",
+   "input_text": "박해미정도 글래머면 이혼하고 재결합까지도 얼마안걸릴듯 아직도섹시해서 돈있는영감님들사이에선 최고의인기녀지",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "박해미가 글래머하다고 생각하면, 이혼 후 재결합까지는 그리 오래 걸리지 않을 것 같아요. 아직도 섹시하고 돈 있는 영감님들 사이에서 최고의 인기녀라고 할 수 있겠네요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.39528814862855893,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "박해미정도 글래머면 이혼하고 재결합까지도 얼마안걸릴듯 아직도섹시해서 돈있는영감님들사이에선 최고의인기녀지",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.5393169522285461,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "이혼하고 재결합까지도 얼마안걸릴듯이라는 표현은 특정 개인을 향한 차별적이고 혐오적인 내용을 포함하고 있습니다. 해당 표현을 제거하고, 중립적인 의견으로 다시 작성해 주세요.",
+    "next_steps": [
+     "'박해미정도 글래머면'이라는 표현을 제거하고, 중립적인 언어로 다시 쓰기",
+     "개인을 향한 비방이나 차별적인 표현이 포함되지 않도록 검토하기"
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-02",
+   "reference_label": "hate",
+   "input_text": "폭풍 짜리몽땅 됬노‼️‼️‼️",
+   "compared": false,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "incomplete",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": null,
+    "applied_policy_label": null,
+    "answer": null,
+    "next_steps": null,
+    "unchanged_output": false,
+    "eval_policy_compliance": "",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "",
+    "eval_memo": ""
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.545481485260393,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "이 표현은 개인이나 집단을 향한 혐오나 차별을 담고 있어 적절하지 않습니다. 원래 의도한 내용을 유지하면서 중립적으로 바꾸면 좋습니다.",
+    "next_steps": [
+     "이 표현을 다른 말로 바꾸어 다시 작성해 보세요.",
+     "예를 들어 '강한 기분이 들었어요'처럼 중립적인 표현을 사용해 보세요."
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.49798351526260376,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "이 표현은 개인이나 집단을 향한 혐오나 차별을 담고 있어 적절하지 않습니다. 원래 의도된 내용을 유지하면서 중립적으로 다시 쓰는 것이 필요합니다.",
+    "next_steps": [
+     "이 댓글을 '폭풍 짜리몽땅 됬노'에서 '폭풍이 일어나는 상황을 표현한 것처럼 보이지만, 그 내용이 혐오나 차별을 포함할 수 있으므로 다시 생각해 보세요.',"
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-03",
+   "reference_label": "hate",
+   "input_text": "또 어묵 쳐먹었나요?",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "또 어묵 쳐먹었나요?",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.40349279192773074,
+    "llm_label": "none",
+    "applied_policy_label": "none",
+    "answer": "또 어묵 쳐먹었나요?",
+    "next_steps": [],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.8500113487243652,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "이 댓글은 혐오 또는 차별적 표현이 아니며, 중립적인 의견을 담고 있습니다. 원문과 같은 내용을 그대로 유지합니다.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-04",
+   "reference_label": "hate",
+   "input_text": "한녀들원래 부러우면 이렇게댓글다는거냐?ㅋㅋ",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "한 여성들의 경우 부러움을 표현할 때 이렇게 댓글을 달지 말아야 할 수도 있어요.",
+    "next_steps": [
+     "이런 표현을 다시 생각해 보세요.",
+     "더 정중하고 존중하는 말로 바꾸는 것이 좋습니다."
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "한녀는 한 여성들이 아니라 한국 여성이라고 표현해야 함"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.384058414481266,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "여러분이 부러워할 만한 점이 있다면 그걸 공유해 주시면 좋겠습니다.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": "비꼬는 질문이 정보 공유 요청으로 바뀌어 원문의 취지가 달라짐"
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9238629341125488,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "한 여성들의 경우 부러움을 표현할 때 이렇게 댓글을 달지 말아야 할 수도 있어요.",
+    "next_steps": [
+     "이 댓글을 다시 작성하여 여성에 대한 차별적 표현을 제거하세요.",
+     "원문의 의도를 유지하면서도 존중을 담아 표현해 보세요."
+    ],
+    "unchanged_output": false,
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "한녀는 한 여성들이 아니라 한국 여성이라고 표현해야 함"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-05",
+   "reference_label": "hate",
+   "input_text": "아무리 재밌고 잘나가던 프로도 계집들이 참여하는 순간 노잼 억지웃음 제조기로 변한다 명심해라 계집들이 노잼의 원인이다",
+   "compared": true,
+   "llm_only": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": null,
+    "classifier_confidence": null,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "아무리 재밌고 잘나가던 프로도 계집들이 참여하는 순간 노잼이 되고, 억지웃음을 만드는 상황이 생기게 되므로 주의해 주세요. 계집들이 노잼의 원인일 수 있습니다.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "logreg": {
+    "source_run": "dev15_qwen3_logreg01",
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.3514457716500548,
+    "llm_label": "offensive",
+    "applied_policy_label": "offensive",
+    "answer": "아무리 재미있고 잘나가던 프로라도 계집들이 참여하는 순간은 자연스럽지 않은 웃음으로 바뀌기 쉽습니다. 이 점을 명심해 주세요.",
+    "next_steps": [],
+    "unchanged_output": false,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원문에도 '명심해라'가 있어 '명심해 주세요'는 새로운 정보가 아님 (2026-10-15 정정: 새 사실 추가 yes→no)"
+   },
+   "kcelectra": {
+    "source_run": "dev15_qwen3_01",
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9240081310272217,
+    "llm_label": "hate",
+    "applied_policy_label": "hate",
+    "answer": "아무리 재밌고 잘나가던 프로도 계집들이 참여하는 순간 노잼 억지웃음 제조기로 변한다 명심해라 계집들이 노잼의 원인이다",
+    "next_steps": [
+     "이 표현을 다시 작성하여, 계집들이라는 표현을 중립적으로 바꾸고, 비판적인 내용을 제거해 보세요.",
+     "원문의 핵심 주장인 '노잼'과 '억지웃음'은 유지하면서, 개인이나 집단을 향한 차별적 표현을 피하세요."
+    ],
+    "unchanged_output": true,
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   }
+  }
+ ],
+ "notes": [
+  "평가자 1명, 개발 예제 15개의 예비 결과다.",
+  "비율의 분모는 항목마다 비교 경로 모두에 yes/no가 적힌 예제 수(common.n)다. 빈칸은 no로 세지 않는다.",
+  "exact_mcnemar_p는 표본이 작아 참고용이다.",
+  "실행 시각이 다른 source_run의 시간 값은 같은 조건의 측정이 아니다."
+ ]
+}

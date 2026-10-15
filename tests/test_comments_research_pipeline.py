@@ -207,6 +207,27 @@ def test_missing_classifier_is_unavailable_and_not_replaced():
     assert len(calls) == 2
 
 
+def test_selected_runs_and_records_only_chosen_paths():
+    predicts, calls = [], []
+    record = research.run_comparison(
+        TEXT, LLM, fake_classifiers("logreg", "kcelectra"),
+        call=fake_call({"llm_only": answer("hate"), "classifier": answer("offensive")}, calls),
+        predict=fake_predict({"logreg": "offensive", "kcelectra": "hate"}, predicts),
+        selected=["logreg"],
+    )
+    assert [p["path"] for p in record["paths"]] == ["logreg"]
+    assert record["selected"] == ["logreg"] and record["executed"] == ["logreg"]
+    assert [name for name, _ in predicts] == ["logreg"]  # 다른 분류기는 부르지 않는다
+    assert record["classifier_calls"] == {"logreg": 1, "kcelectra": 0}
+    assert [c[1] for c in calls] == ["classifier"]  # LLM은 logreg 경로에서 한 번만
+    assert record["paths"][0]["status"] == "success" and record["paths"][0]["executed_order"] == 1
+    summary = research.summarize([record])
+    assert summary["logreg"]["runs"] == 1
+    assert summary["llm_only"]["excluded"] is True and summary["llm_only"]["unavailable"] == 0
+    with pytest.raises(ValueError):
+        research.run_comparison(TEXT, LLM, fake_classifiers(), selected=[])
+
+
 def test_order_controls_execution_and_results_map_back_to_paths():
     record, _, calls = run(
         {"llm_only": answer("hate"), "classifier": answer("offensive")},

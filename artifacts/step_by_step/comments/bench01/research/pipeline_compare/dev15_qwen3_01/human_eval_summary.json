@@ -1,0 +1,774 @@
+{
+ "run": "dev15_qwen3_01",
+ "eval_file": "results_eval.csv",
+ "alignment": {
+  "rows": 45,
+  "matched_by": [
+   "example_id",
+   "path"
+  ],
+  "mismatches": []
+ },
+ "paths_compared": [
+  "llm_only",
+  "kcelectra"
+ ],
+ "excluded_paths": {
+  "logreg": {
+   "unavailable": 15
+  }
+ },
+ "statuses": {
+  "llm_only": {
+   "counts": {
+    "success": 14,
+    "incomplete": 1
+   },
+   "completed": 14,
+   "ran": 15,
+   "completion_rate": 0.9333333333333333,
+   "not_success": [
+    {
+     "example_id": "comments-generation_development-hate-02",
+     "status": "incomplete",
+     "error": {
+      "stage": "generation",
+      "type": "IncompleteGeneration",
+      "message": "LLM이 생성 미완료를 보고했습니다."
+     }
+    }
+   ]
+  },
+  "logreg": {
+   "counts": {
+    "unavailable": 15
+   },
+   "completed": 0,
+   "ran": 0,
+   "completion_rate": null,
+   "not_success": []
+  },
+  "kcelectra": {
+   "counts": {
+    "success": 15
+   },
+   "completed": 15,
+   "ran": 15,
+   "completion_rate": 1.0,
+   "not_success": []
+  }
+ },
+ "compared_example_ids": [
+  "comments-generation_development-none-01",
+  "comments-generation_development-none-02",
+  "comments-generation_development-none-03",
+  "comments-generation_development-none-04",
+  "comments-generation_development-none-05",
+  "comments-generation_development-offensive-01",
+  "comments-generation_development-offensive-02",
+  "comments-generation_development-offensive-03",
+  "comments-generation_development-offensive-04",
+  "comments-generation_development-offensive-05",
+  "comments-generation_development-hate-01",
+  "comments-generation_development-hate-03",
+  "comments-generation_development-hate-04",
+  "comments-generation_development-hate-05"
+ ],
+ "human_eval": {
+  "eval_policy_compliance": {
+   "title": "정책 준수 (yes 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 6,
+     "no": 8,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.42857142857142855
+    },
+    "kcelectra": {
+     "yes": 10,
+     "no": 4,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.7142857142857143
+    }
+   },
+   "paired": {
+    "n": 14,
+    "llm_only_yes": 6,
+    "kcelectra_yes": 10,
+    "both_yes": 6,
+    "only_llm_only_yes": 0,
+    "only_kcelectra_yes": 4,
+    "both_no": 4,
+    "exact_mcnemar_p": 0.125,
+    "excluded_example_ids": []
+   },
+   "blanks": []
+  },
+  "eval_meaning_preserved": {
+   "title": "의미 보존 (yes 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 9,
+     "no": 5,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.6428571428571429
+    },
+    "kcelectra": {
+     "yes": 9,
+     "no": 3,
+     "blank": 2,
+     "other": 0,
+     "evaluated": 12,
+     "yes_rate": 0.75
+    }
+   },
+   "paired": {
+    "n": 12,
+    "llm_only_yes": 7,
+    "kcelectra_yes": 9,
+    "both_yes": 7,
+    "only_llm_only_yes": 0,
+    "only_kcelectra_yes": 2,
+    "both_no": 3,
+    "exact_mcnemar_p": 0.5,
+    "excluded_example_ids": [
+     "comments-generation_development-hate-01",
+     "comments-generation_development-hate-03"
+    ]
+   },
+   "blanks": [
+    {
+     "example_id": "comments-generation_development-hate-01",
+     "path": "kcelectra",
+     "value": "",
+     "reason": "사유 기록 없음",
+     "memo": ""
+    },
+    {
+     "example_id": "comments-generation_development-hate-03",
+     "path": "kcelectra",
+     "value": "",
+     "reason": "사유 기록 없음",
+     "memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+    }
+   ]
+  },
+  "eval_new_facts": {
+   "title": "새 사실 추가 (yes = 문제 발생 비율)",
+   "per_path": {
+    "llm_only": {
+     "yes": 3,
+     "no": 11,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.21428571428571427
+    },
+    "kcelectra": {
+     "yes": 3,
+     "no": 11,
+     "blank": 0,
+     "other": 0,
+     "evaluated": 14,
+     "yes_rate": 0.21428571428571427
+    }
+   },
+   "paired": {
+    "n": 14,
+    "llm_only_yes": 3,
+    "kcelectra_yes": 3,
+    "both_yes": 2,
+    "only_llm_only_yes": 1,
+    "only_kcelectra_yes": 1,
+    "both_no": 10,
+    "exact_mcnemar_p": 1.0,
+    "excluded_example_ids": []
+   },
+   "blanks": []
+  }
+ },
+ "out_of_scope_values": [
+  {
+   "example_id": "comments-generation_development-none-01",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-02",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-03",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-04",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-05",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-01",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_memo": "채널 돌렸다는 관용어구가 해당 인물의 채널로 바뀜"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-02",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-04",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-05",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_memo": "김태희라는 인물에 대한 공격적인 발언이 그대로 나옴"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-02",
+   "path": "kcelectra",
+   "status": "success",
+   "reason": "상대 경로가 성공하지 않아 비교 대상 아님",
+   "values": {
+    "eval_policy_compliance": "yes",
+    "eval_new_facts": "no"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-04",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_memo": "한녀는 한 여성들이 아니라 한국 여성이라고 표현해야 함"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-05",
+   "path": "logreg",
+   "status": "unavailable",
+   "reason": "실행 안 함(모델 미준비), 출력 없음",
+   "values": {
+    "eval_memo": "계집이라는 혐오 표현이 남아있음"
+   }
+  }
+ ],
+ "metrics": {
+  "input_tokens": {
+   "llm_only": {
+    "n": 14,
+    "mean": 867.1428571428571,
+    "median": 862.5,
+    "min": 847,
+    "max": 897
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 486.7142857142857,
+    "median": 491.0,
+    "min": 439,
+    "max": 545
+   },
+   "paired_diff_kcelectra_minus_llm_only": {
+    "n": 14,
+    "mean": -380.42857142857144,
+    "median": -391.0,
+    "min": -408,
+    "max": -341
+   }
+  },
+  "output_tokens": {
+   "llm_only": {
+    "n": 14,
+    "mean": 54.92857142857143,
+    "median": 53.0,
+    "min": 24,
+    "max": 104
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 62.42857142857143,
+    "median": 59.0,
+    "min": 24,
+    "max": 136
+   },
+   "paired_diff_kcelectra_minus_llm_only": {
+    "n": 14,
+    "mean": 7.5,
+    "median": 0.5,
+    "min": -40,
+    "max": 59
+   }
+  },
+  "classification_seconds": {
+   "llm_only": null,
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.018246471428158526,
+    "median": 0.01750539999920875,
+    "min": 0.015032600000267848,
+    "max": 0.024532299998099916
+   },
+   "paired_diff_kcelectra_minus_llm_only": null
+  },
+  "llm_seconds": {
+   "llm_only": {
+    "n": 14,
+    "mean": 0.944185500000458,
+    "median": 0.8960551000018313,
+    "min": 0.3211804000020493,
+    "max": 1.714246399998956
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.9227326571422704,
+    "median": 0.8359181499981787,
+    "min": 0.4482002000004286,
+    "max": 1.5445806000061566
+   },
+   "paired_diff_kcelectra_minus_llm_only": {
+    "n": 14,
+    "mean": -0.021452842858187587,
+    "median": 0.04173194999748375,
+    "min": -0.7519279999978608,
+    "max": 0.6990094000066165
+   }
+  },
+  "total_seconds": {
+   "llm_only": {
+    "n": 14,
+    "mean": 0.9443296000016355,
+    "median": 0.8962103000012576,
+    "min": 0.32131420000223443,
+    "max": 1.7143993999998202
+   },
+   "kcelectra": {
+    "n": 14,
+    "mean": 0.9411555428570344,
+    "median": 0.853396900001826,
+    "min": 0.4654372999939369,
+    "max": 1.5693016000004718
+   },
+   "paired_diff_kcelectra_minus_llm_only": {
+    "n": 14,
+    "mean": -0.003174057144600998,
+    "median": 0.05777634999685688,
+    "min": -0.7348145000069053,
+    "max": 0.7235279999949853
+   }
+  }
+ },
+ "per_example": [
+  {
+   "example_id": "comments-generation_development-none-01",
+   "reference_label": "none",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9633595943450928,
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-02",
+   "reference_label": "none",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9569807648658752,
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-03",
+   "reference_label": "none",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9175901412963867,
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-04",
+   "reference_label": "none",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": "명령조가 피해달라는 요구로 바뀜"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9359111189842224,
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-none-05",
+   "reference_label": "none",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "문장부호가 사라짐"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.9744199514389038,
+    "llm_label": "none",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-01",
+   "reference_label": "offensive",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "채널 돌렸다는 관용어구가 해당 인물의 채널로 바뀜"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.722418487071991,
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "채널 돌렸다는 관용어구가 해당 인물의 채널로 바뀜"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-02",
+   "reference_label": "offensive",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.5874379277229309,
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "면티와 청바지를 단순한 옷으로 새로운 정보를 적음"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-03",
+   "reference_label": "offensive",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "돼지같다는 것 자체가 비하적인 목적이 강함"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9179040193557739,
+    "llm_label": "hate",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-04",
+   "reference_label": "offensive",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "offensive",
+    "classifier_confidence": 0.8149362206459045,
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "no",
+    "eval_new_facts": "yes",
+    "eval_memo": "인성이 안좋은 일반인의 기사를 써달라는 댓글이 아님. 판단오류"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-offensive-05",
+   "reference_label": "offensive",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "none",
+    "classifier_confidence": 0.5208956599235535,
+    "llm_label": "none",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-01",
+   "reference_label": "hate",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.5393169522285461,
+    "llm_label": "hate",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-02",
+   "reference_label": "hate",
+   "compared": false,
+   "llm_only": {
+    "status": "incomplete",
+    "llm_label": null,
+    "eval_policy_compliance": "",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "",
+    "eval_memo": ""
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.49798351526260376,
+    "llm_label": "hate",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": ""
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-03",
+   "reference_label": "hate",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "none",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.8500113487243652,
+    "llm_label": "hate",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "",
+    "eval_new_facts": "no",
+    "eval_memo": "기사 맥락에 따라 해석이 달라짐. 댓글 문장만으로는 offensive/hate 구분이 어려움."
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-04",
+   "reference_label": "hate",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "한녀는 한 여성들이 아니라 한국 여성이라고 표현해야 함"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9238629341125488,
+    "llm_label": "hate",
+    "eval_policy_compliance": "yes",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "한녀는 한 여성들이 아니라 한국 여성이라고 표현해야 함"
+   }
+  },
+  {
+   "example_id": "comments-generation_development-hate-05",
+   "reference_label": "hate",
+   "compared": true,
+   "llm_only": {
+    "status": "success",
+    "llm_label": "offensive",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   },
+   "kcelectra": {
+    "status": "success",
+    "classifier_label": "hate",
+    "classifier_confidence": 0.9240081310272217,
+    "llm_label": "hate",
+    "eval_policy_compliance": "no",
+    "eval_meaning_preserved": "yes",
+    "eval_new_facts": "no",
+    "eval_memo": "원래 의견은 유지했으나 공격적인 어조가 충분히 완화되지 않음"
+   }
+  }
+ ],
+ "notes": [
+  "평가자 1명, 개발 예제 15개의 예비 결과다.",
+  "비율의 분모는 그 경로에서 yes/no가 적힌 건수다. 빈칸은 no로 세지 않는다.",
+  "exact_mcnemar_p는 표본이 작아 참고용이다."
+ ]
+}

@@ -2,7 +2,8 @@
 
 경로
 - llm_only:  LLM 단독. 분류 모델을 부르지 않고, 세 라벨의 정의와 정책을 모두 주어 LLM이 라벨을 고른다.
-- logreg:    로지스틱 회귀 + LLM. step03 기준 모델(TF-IDF+LogisticRegression)의 판정과 그 라벨의 정책을 준다.
+- logreg:    로지스틱 회귀 + LLM. step03 기준 모델(TF-IDF+LogisticRegression, research_lr01/baseline)의
+             판정과 그 라벨의 정책을 준다.
 - kcelectra: KcELECTRA + LLM. 선택 모델(bench01/kcelectra-base_lr2e5_s44)의 판정과 그 라벨의 정책을 준다.
 
 서비스 코드와 공통 엔진은 바꾸지 않는다. 연구용으로 새로 둔 것은 다음뿐이다.
@@ -54,9 +55,12 @@ REGISTERED_LLMS = {
 DEFAULT_LLM = "qwen3-4b"
 
 # 분류기 실험 폴더(config.json과 가중치가 있는 폴더). 가중치는 git에 없으므로 .env로 바꿀 수 있다.
-LEARNER_ROOT = ROOT / "artifacts" / "step_by_step" / "comments" / "bench01"
+COMMENTS_ROOT = ROOT / "artifacts" / "step_by_step" / "comments"
+LEARNER_ROOT = COMMENTS_ROOT / "bench01"
 CLASSIFIER_RUNS = {
-    "logreg": Path(os.getenv("RESEARCH_LOGREG_RUN") or LEARNER_ROOT / "baseline"),
+    # bench01/baseline은 학습 기록만 있고 모델 파일이 없다. 같은 데이터·설정으로 step03을 다시 실행한
+    # research_lr01/baseline을 쓴다(bench01의 학습 결과·포인터·선택 모델은 그대로 둔다).
+    "logreg": Path(os.getenv("RESEARCH_LOGREG_RUN") or COMMENTS_ROOT / "research_lr01" / "baseline"),
     "kcelectra": Path(os.getenv("RESEARCH_KCELECTRA_RUN") or LEARNER_ROOT / "kcelectra-base_lr2e5_s44"),
 }
 
@@ -272,7 +276,7 @@ def load_classifiers(runs=None, loader=load_run):
     baseline.joblib은 TfidfVectorizer와 LogisticRegression을 묶은 sklearn Pipeline이라 학습 때 전처리를 그대로 쓴다.
     """
     loaded = {}
-    for name, run in (runs or CLASSIFIER_RUNS).items():
+    for name, run in (CLASSIFIER_RUNS if runs is None else runs).items():
         info = {"name": name, "run_dir": str(run), "available": False, "error": None,
                 "unavailable_code": None}
         try:
@@ -322,20 +326,29 @@ def _raw_label(raw_text):
     return value if isinstance(value, str) else None
 
 
-def run_comparison(text, llm_key, classifiers, order=None, call=call_llm, predict=predict_text):
-    """세 경로를 compare() 한 번으로 실행하고 경로별 기록을 돌려준다."""
+def run_comparison(
+    text, llm_key, classifiers, order=None, call=call_llm, predict=predict_text, selected=None
+):
+    """세 경로를 compare() 한 번으로 실행하고 경로별 기록을 돌려준다.
+
+    selected를 주면 그 경로만 실행하고 기록한다(예: 이미 실행한 경로를 빼고 한 경로만 추가 실행).
+    선택하지 않은 경로는 기록의 paths에 넣지 않는다. 생략하면 세 경로 모두다.
+    """
     if llm_key not in REGISTERED_LLMS:
         raise KeyError(f"등록되지 않은 LLM입니다: {llm_key}")
     order = list(order or PATH_IDS)
     if sorted(order) != sorted(PATH_IDS):
         raise ValueError(f"order는 {', '.join(PATH_IDS)}를 한 번씩 담아야 합니다.")
+    selected = list(PATH_IDS) if selected is None else [p for p in PATH_IDS if p in selected]
+    if not selected:
+        raise ValueError(f"selected에는 {', '.join(PATH_IDS)} 중 하나 이상이 있어야 합니다.")
     paths = {path["id"]: path for path in PATHS}
 
     def usable(path_id):
         name = paths[path_id]["classifier"]
         return name is None or (name in classifiers and classifiers[name]["bundle"] is not None)
 
-    executed = [path_id for path_id in order if usable(path_id)]
+    executed = [path_id for path_id in order if path_id in selected and usable(path_id)]
     verdicts = {name: [] for name in classifiers}
 
     def counting(name):
@@ -397,7 +410,7 @@ def run_comparison(text, llm_key, classifiers, order=None, call=call_llm, predic
             "llm_call": call_info,
             "result": result,  # 공통 파이프라인 결과 항목 그대로
         }
-    for path_id in PATH_IDS:
+    for path_id in selected:
         if path_id not in records:
             name = paths[path_id]["classifier"]
             info = classifiers.get(name, {}).get("info", {})
@@ -431,12 +444,13 @@ def run_comparison(text, llm_key, classifiers, order=None, call=call_llm, predic
         "service_policy_version": connect.POLICY_VERSION,
         "classifiers": {name: entry["info"] for name, entry in classifiers.items()},
         "order": order,
+        "selected": selected,
         "executed": executed,
         "classifier_calls": {name: len(items) for name, items in verdicts.items()},
         "pipeline": {
             key: output[key] for key in ("schema_version", "service_id", "policy_version", "total_seconds")
         },
-        "paths": [records[path_id] for path_id in PATH_IDS],
+        "paths": [records[path_id] for path_id in selected],
     }
 
 
