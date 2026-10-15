@@ -86,6 +86,7 @@ src/
     research/               같은 구성 + export(JSON·CSV 내보내기)
   hooks/useSingleFlight.ts  실행 중 중복 요청 무시, 취소
   components/               Mock/API 띠, 입력란, 실행 버튼, 상태 요약, 확신도 막대, 어절 비교
+  lib/                      format(확신도 %·초·토큰 표시), diff(어절 비교). 처음 파일이 git에 빠져 호출 규격에 맞춰 재구현함
   features/comments/        댓글 검수 탭
   features/nli/             보고서 검수 탭 (문장 카드, 개발 확인용 실행 기록 PipelineLog)
   features/research/        파이프라인 비교 탭 (경로 카드, 사람 평가 입력, 세션 통계)
