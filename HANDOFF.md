@@ -13,13 +13,15 @@
 | 항목 | 상태 | 자세히 |
 |---|---|---|
 | 댓글 세 경로 비교 (LLM 단독 / 로지스틱 회귀 + LLM / KcELECTRA + LLM) | 구현·개발 예제 15개 실험·사람 평가 완료 (회사 PC, 2026-10-15) | 2.1, 3절 |
-| 보고서 세 경로 비교 (LLM 단독 / 로지스틱 회귀 + LLM / RoBERTa + LLM) | 구현·계약 테스트 완료 (클라우드). **실제 모델·LLM 실행은 미완료** | 2.2절 |
+| 보고서 세 경로 비교 (LLM 단독 / 로지스틱 회귀 + LLM / RoBERTa + LLM) | 구현·계약 테스트 완료 (클라우드). **RoBERTa·실제 LLM 실행은 미완료** | 2.2절 |
+| NLI 로지스틱 회귀 재현 학습 `research_lr01/baseline` | 학습·재로딩·기존 기록 대조·연구 경로 연결 완료 (클라우드, 2026-10-16). 모델 파일은 git 제외, ZIP 백업 | 2.2, 4절 |
+| 댓글 사람 평가 기준 문서 | `comments-eval-criteria-v1` 작성, 최종 평가 설정에서 참조 | 6절 |
 | 통합 프론트: 파이프라인 비교 탭의 댓글·보고서 선택 | 구현, Mock 화면·실제 API(모델 없음) 연결 확인 (클라우드) | 2.3절 |
 | 프론트 `frontend/src/lib/` 누락 | 재구현 완료, 원격 반영됨 (`178d645`) | 2.3절 |
 | 커밋된 파일만 있는 새 작업 폴더 검사 | 프론트 빌드·두 Python 테스트·연구 API 시작 확인 (클라우드) | 2.4절 |
 | 최종 평가 | 후보·실행 설정·평가 기준만 준비 (**실행 안 함**) | 6절 |
 | 집 PC Windows 설치·빌드·테스트 | **아직 미확인** | 7절 1~3단계 |
-| 실제 서비스 추론·통합 시연 | **미완료 — 모델 백업 없음** | 5절, 7절 4~8단계 |
+| 실제 서비스 추론·통합 시연 | **미완료 — 회사 PC 모델 백업(KcELECTRA·RoBERTa 등) 없음** | 5절, 7절 4~8단계 |
 
 ## 0. 저장소와 브랜치
 
@@ -29,7 +31,7 @@
 |---|---|---|---|
 | 통합 프론트 | `feature/integrated-frontend` | `integrated-frontend/frontend/` | **내 브랜치.** `origin/main`(34914e2)에서 시작 |
 | 댓글 연구 + 댓글 서비스 | `feature/comments-pipeline-research` | `comments-research/` | **내 브랜치.** 팀원 댓글 브랜치 `dfd8672`에서 시작 |
-| 보고서 연구 + NLI 서비스 | `feature/nli-pipeline-research` | `nli-research/` | **내 브랜치 (2026-10-16 새로 만듦).** 팀원 NLI 브랜치 `9c3bd85`에서 시작해 **파일만 추가**(기존 파일 수정 없음). NLI 서비스(8001)와 보고서 연구 API(8003)를 이 폴더에서 같이 띄울 수 있다 |
+| 보고서 연구 + NLI 서비스 | `feature/nli-pipeline-research` | `nli-research/` | **내 브랜치 (2026-10-16 새로 만듦).** 팀원 NLI 브랜치 `9c3bd85`에서 시작해 **파일만 추가**(`9c3bd85`의 파일은 수정 없음). NLI 서비스(8001)와 보고서 연구 API(8003)를 이 폴더에서 같이 띄울 수 있다 |
 | 댓글 서비스 원본 | `feature/add-common-pipeline-in-comments` (`dfd8672`) | — | 팀원 브랜치. 수정하지 않음 |
 | NLI 서비스 원본 | `feature/nli-wanwi-common-pipeline` (`9c3bd85`) | (선택) `nli-wanwi/` detached | 팀원 브랜치. **수정하지 않음** |
 | NLI 이전 방식 | `feature/add-common-pipeline-in-nli` (`2549169`) | — | `compare()` 미사용, 프론트와 형식이 맞지 않아 쓰지 않음 |
@@ -37,8 +39,8 @@
 - main 병합, PR 생성, 강제 푸시, 팀원 브랜치 수정은 하지 않았습니다.
 - 각 내 브랜치의 최신 커밋이 이 문서를 고친 커밋입니다. 그 앞의 코드 커밋:
   - 프론트: `178d645`(src/lib 재구현) → `caca2ee`(보고서 비교 화면)
-  - 댓글 연구: `0c9c71c`·`4c527bf`(HANDOFF) → `090dfeb`(최종 평가 후보·설정, 테스트 실제 호출 차단)
-  - 보고서 연구: `65fed90`(세 경로 비교 기능) → `4502e97`(평가 기준·집계·최종 평가 설정)
+  - 댓글 연구: `0c9c71c`·`4c527bf`(HANDOFF) → `090dfeb`(최종 평가 후보·설정, 테스트 실제 호출 차단) → `9b71c28`(사람 평가 기준 v1)
+  - 보고서 연구: `65fed90`(세 경로 비교 기능) → `4502e97`(평가 기준·집계·최종 평가 설정) → `c0112d7`(로지스틱 회귀 재현 학습·연결)
 
 ## 1. 서비스·포트·실행 명령
 
@@ -72,6 +74,7 @@
   validation 정확도 0.5500, Macro F1 0.5294, 원래 기록과 840건 예측까지 같음. bench01의 포인터·선택 모델은 그대로.
 - 개발 예제 15개로 실험 두 개와 사람 평가(평가자 1명, 정정 1건 반영). 결과는 3절.
 - 2026-10-16: 최종 평가 후보·설정 준비(6절), 연구 테스트에 실제 LLM·모델 호출 차단(시도하면 테스트 실패).
+- 2026-10-16: 사람 평가 기준 문서 `docs/COMMENTS_EVAL_CRITERIA.md`(`comments-eval-criteria-v1`). 6절.
 
 ### 2.2 보고서 연구 (`feature/nli-pipeline-research`, 2026-10-16 새로 만듦)
 
@@ -82,6 +85,16 @@
   (서비스 `common_adapter.build_prompt`는 LLM 단독을 거부하므로 연구용 프롬프트·파서를 따로 둠)
 - 로지스틱 회귀 + LLM: `nli/train_baseline.py` 형식(PairTfidf, labels.json 순서, `baseline.joblib`+`config.json`)의 실제 예측 라벨 지시·실제 확률.
   댓글 모델은 쓰지 않는다(`dataset: klue_nli`가 아니면 적재 실패로 기록).
+  - 기본 모델: `artifacts/step_by_step/klue_nli/research_lr01/baseline/` (`NLI_RESEARCH_LOGREG_RUN`으로 바꿀 수 있음).
+    `wanwi/baseline`에는 기록만 있고 모델 파일이 없어서, 사용자 허락으로 **한 번** 같은 데이터·설정으로 다시 학습했다
+    (2026-10-16, 클라우드 Linux, `nli/train_research_baseline.py`가 기존 `train_baseline()`에 연구 폴더를 넘김).
+    train만 학습, validation 검증, test·최종 후보 미사용. 기록·재현 명령: 그 폴더의 `README.md`, `run_metadata.json`, `reproduction_check.json`.
+  - 재로딩: validation 2,504쌍 예측·확률 완전히 같음, 클래스 0/1/2 = entailment/neutral/contradiction, 연구 경로 적재 ↔ 일괄 예측 불일치 0.
+  - 기존 `wanwi/baseline` 기록과 대조(튜닝 안 함): config 8개·특징 수 400,000·학습 22,494행·sklearn 1.9.1·accuracy 0.579073… **같음**.
+    macro F1 0.5791712 → 0.5791868(차이 1.56e-05), 혼동 행렬, 오답 목록(양쪽에만 있는 행 13개씩) **다름** — 2,504행 중 33행 예측이 다르다.
+    다른 행은 상위 두 확률 차이가 작은(중앙값 0.0061) 거의 동점 행이었다(관찰값, 원인 확정 아님). 데이터 해시·기존 모델 파일은 기존 기록에 없어 비교 불가.
+  - 연결: `NLI_RESEARCH_PRELOAD=1`로 8003을 켜면 logreg `ready`, roberta `model_not_ready`, `available_paths` = `llm_only`, `logreg`.
+    직접 분류 결과가 `model.predict`와 같음. 생성 호출은 하지 않았다. 서비스(`/check`) 설정은 바꾸지 않았다.
 - RoBERTa + LLM: 선택 체크포인트 `roberta_lr2e5_ep6`과 `temperature.json`(T=2.77)을 `predictor.Checker`로 사용.
 - 출력은 `label`·`explanation`·`suggestion`을 엄격히 검사하고, 원본 응답·실패 단계를 남긴다. 분류기와 다른 라벨은 `label` 단계 오류.
 - 연구용 API 8003: 모델 없이 시작, 없는 경로는 `model_not_ready`, 선택한 경로의 모델만 처음 쓸 때 불러옴, `paths`·`order` 선택.
@@ -104,19 +117,22 @@
 
 | 대상 | 결과 |
 |---|---|
-| 보고서 연구 `tests/` (기존 112 + 연구 35) | 147 passed |
-| 댓글 연구 `tests/test_comments_research_pipeline.py` | 21 passed (기존 18 + 실제 호출 차단·후보 3) |
+| 보고서 연구 `tests/` (기존 112 + 연구 35 + 재현 학습 도구 5) | 152 passed |
+| 댓글 연구 `tests/test_comments_research_pipeline.py` | 29 passed (기존 21 + 평가 기준 연결·예비 평가 파일 해시·기준 사례 값 8) |
 | 댓글 그 밖의 테스트 (common_pipeline, comments_common_pipeline, comments_console, lesson_service, classification_evaluation) | 188 passed, 1 skipped (streamlit 미설치) |
-| 실행하지 않은 테스트 | `test_lesson_training.py`, `test_experiment_storage.py` (임시 폴더에서 작은 모델을 학습 — 학습 금지 지시로 제외) |
+| 댓글 학습 테스트 `test_lesson_training.py`, `test_experiment_storage.py` | 10-16 앞 작업에서는 제외. 마지막 작업에서 `tests/` 전체를 실행하면서 **함께 실행됨** — 테스트 임시 폴더에서 작은 모델만 학습, 저장소 파일 변화 없음 확인. 전체 259 passed, 1 skipped |
 | 프론트 typecheck·lint·build | 통과 |
 | 프론트 Mock 화면 (Playwright) | 보고서 비교 27/27, 기존 화면 17/17 (콘솔 오류·백엔드 요청 없음) |
 | 실제 보고서 연구 API (모델 없음) | 시작, `available_paths: [llm_only]`, 두 분류기 `model_not_ready`. 프론트 API 모드에서 proxy로 설정·예제 조회와 미준비 안내 확인 (비교 실행은 안 함 = LLM 호출 없음) |
-| 커밋된 파일만 있는 새 worktree | 프론트 `npm ci`→typecheck·lint·build, 보고서 연구 147 passed, 댓글 209 passed·1 skipped, 보고서 연구 API 시작 |
+| 커밋된 파일만 있는 새 worktree (`caca2ee`·`090dfeb`·`4502e97` 기준) | 프론트 `npm ci`→typecheck·lint·build, 보고서 연구 147 passed, 댓글 209 passed·1 skipped, 보고서 연구 API 시작 |
+| 커밋된 파일만 있는 새 worktree (`c0112d7`·`9b71c28`, `baseline.joblib` 없음) | 보고서 연구 152 passed, 댓글 217 passed·1 skipped(학습 테스트 두 파일 제외) — 테스트가 실제 모델 파일 유무와 무관함을 확인 |
 | `.gitignore` | 새 파일 모두 추적됨, 무시된 것은 캐시·venv·.env·node_modules·dist뿐 |
 
 - 테스트의 실제 호출 차단: 보고서 연구는 `tests/conftest.py`, 댓글 연구는 테스트 파일의 autouse fixture가 socket 연결·`from_pretrained`
   (보고서는 실제 생성 호출도)를 막고, 시도가 있으면 엔진이 오류를 기록해 넘겨도 테스트 끝에 실패시킨다.
-- 로지스틱 회귀 적재는 임시 소형 PairTfidf 분류기(테스트 안에서만 만드는 가짜, 실제 모델 아님)로 형식을 확인했다.
+- 테스트의 로지스틱 회귀는 임시 소형 PairTfidf 분류기(테스트 안에서만 만드는 가짜, 실제 모델 아님)이다. 테스트는 실제 체크포인트 유무와
+  관계없이 같은 결과가 나오고, 보고서 연구 conftest는 `artifacts/step_by_step/klue_nli`가 테스트 전후 같은지도 확인한다.
+- 실제 재현 모델(`research_lr01`)의 적재·분류 확인은 테스트가 아니라 2.2절의 직접 확인이다(클라우드).
 
 ## 3. 댓글 실험 결과 (회사 PC, 2026-10-15, 정정본)
 
@@ -153,7 +169,8 @@
 | 같은 `checkpoint/`의 `config.json` 등 5개 | 1,020 / 132 / 1,310,690 / 1,323 / 449,581 | git의 `kcelectra-base_lr2e5_s44/checkpoint_sha256.json` | 같음 |
 | `nli-research/artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/model.safetensors` | 442,505,820 | `64ff1d19d81bab6082f8264f436500d1a910d48d4e40d8dd6926ade6a6c73d08` | NLI 서비스·보고서 연구 RoBERTa |
 | 같은 `checkpoint/`의 `config.json` 등 5개 | 978 / 1,022 / 752,097 / 1,374 / 248,477 | `522a1439…247c` / `a627d4e2…4555` / `eb59c6c5…27bf` / `e4ac45e7…6c91` / `1ad4978b…cb39` (전체 값은 백업 폴더 README.txt) | 같음 |
-| `nli-research/artifacts/step_by_step/klue_nli/wanwi/baseline/baseline.joblib` | — | — | 보고서 연구 로지스틱 회귀. **회사 PC 백업 목록에 없다** |
+| `nli-research/artifacts/step_by_step/klue_nli/research_lr01/baseline/baseline.joblib` | 13,504,068 | `48cff5e1cb0124970159fea4e989730f1bc811f1d20c25a1c61605ced903150d` | 보고서 연구 로지스틱 회귀 (2026-10-16 클라우드 재현 학습, 2.2절) |
+| `nli-research/artifacts/step_by_step/klue_nli/wanwi/baseline/baseline.joblib` | — | — | 원래 모델. 회사 PC 백업 목록에 없고 아직 어디서도 받지 못했다(쓰지 않음) |
 
 **로컬 백업 (회사 PC, 직접 옮겨야 함):** `C:\Users\donoo\handoff_models_20261015\`
 
@@ -165,14 +182,25 @@
 
 - `nli-wanwi_models.zip`은 원래 `nli-wanwi/` 루트에 풀도록 만들었다. 보고서 연구 브랜치는 NLI 서비스 파일을 그대로 갖고 있으므로
   `nli-research/` 루트에 풀면 같은 상대 경로가 된다(ZIP 안 경로를 클라우드에서 열어 보지는 못함 — 풀고 나서 7절 4단계 해시로 위치를 확인한다).
-- 백업에 없는 것: `.env`(3절의 한 줄은 직접 만든다), `.venv`, `node_modules`, Ollama 모델(`ollama pull`, 회사 PC digest `0edcdef34593…ba0`, 2,497,293,803 bytes),
-  NLI 로지스틱 회귀 `baseline.joblib`.
+- 백업에 없는 것: `.env`(3절의 한 줄은 직접 만든다), `.venv`, `node_modules`, Ollama 모델(`ollama pull`, 회사 PC digest `0edcdef34593…ba0`, 2,497,293,803 bytes).
+
+**NLI 로지스틱 회귀 재현 모델 백업 (클라우드에서 만듦, 대화 첨부파일):** `nli_research_lr01_baseline.zip`
+
+| 파일 | 크기 (bytes) | SHA-256 |
+|---|---|---|
+| `nli_research_lr01_baseline.zip` | 8,064,362 | `2586b4cc40c904a0ba4076eadc94d5c2eb16c7a29aa42e3587552e66d5771e9d` |
+
+- 받은 곳: 이 작업을 한 Claude 대화(2026-10-16)의 첨부파일. 클라우드 컨테이너는 사라지므로 **그 첨부파일이 유일한 사본**이다. 받아서 위 해시를 확인하고 보관한다.
+- 내용: `README.txt`(풀기 안내), `SHA256SUMS.txt`, `artifacts/step_by_step/klue_nli/research_lr01/baseline/`의 `baseline.joblib`(PairTfidf + 분류기 한 Pipeline)과
+  `config.json`·`run_metadata.json`·`reproduction_check.json` 등 기록. 기록 파일은 git에도 있다(같은 내용).
+- **`nli-research/` 루트에서 푼다**(ZIP 안 경로가 저장소 루트 기준). 풀고 나서 `baseline.joblib` 해시를 위 표와 대조한다(클라우드에서 풀어 해시·적재 확인함).
 
 ## 5. 모델이 없어 확인하지 못한 것
 
-- 모델 파일·백업 ZIP의 SHA-256 대조
+- 회사 PC 모델 파일·백업 ZIP의 SHA-256 대조
 - 댓글 서비스(8000)·NLI 서비스(8001) 시작 (각각 KcELECTRA·RoBERTa 없으면 시작 단계에서 멈춤)
-- 댓글 연구 로지스틱 회귀·KcELECTRA 경로, 보고서 연구 로지스틱 회귀·RoBERTa 경로의 실제 추론
+- 댓글 연구 로지스틱 회귀·KcELECTRA 경로, 보고서 연구 RoBERTa 경로의 실제 추론
+  (보고서 연구 로지스틱 회귀는 재현 모델로 클라우드에서 적재·분류 확인 — 집 PC Windows에서는 미확인)
 - 실제 LLM 생성 (LLM 단독 포함), 보고서 세 경로의 실제 비교 결과, 화면 세 탭의 실제 응답(통합 시연)
 - GPU가 없을 때 실제 모델이 CPU로 추론되는지 (torch 자체는 CPU로 import·테스트 동작 확인)
 - 파이프라인 비교 화면에서 로지스틱 회귀까지 세 경로가 실제로 실행되는지 (댓글·보고서 모두)
@@ -186,16 +214,23 @@
   - `test_holdout_sample` 24건(라벨별 8): `test.csv`에서 `generation_eval` 기사 23개를 빼고 기사당 1건. 분류기 최종 평가에는 쓴 분할, LLM 생성 기록은 git에 없음.
   - `generation_eval` 24건: **이미 사용함** — bench01 `comparisons/final01`(같은 qwen3·같은 KcELECTRA)·`final02`·`review_rules01`. 재현·비교용.
   - (바로잡음) 이전 HANDOFF의 "test와 generation_eval로는 아무 것도 실행하지 않았다"는 이 연구 세션 범위에서만 맞다.
-- 설정: `data/comments_research/final_eval_config.json` (`prepared_not_run`, 실행 명령·사전 조건)
-- 평가 기준: 기존 그대로 — `eval_policy_compliance`(정책 준수, yes가 좋음), `eval_meaning_preserved`(의미 보존, yes가 좋음),
-  `eval_new_facts`(새 사실 추가, yes가 문제), `eval_memo`. yes/no/빈칸. 더 자세한 기준 문서는 없고 새로 만들지 않았다.
+- 설정: `data/comments_research/final_eval_config.json` (`prepared_not_run`, 실행 명령·사전 조건, `evaluation.criteria_doc`·`criteria_version`)
+- 평가 열은 기존 그대로: `eval_policy_compliance`(정책 준수, yes가 좋음), `eval_meaning_preserved`(의미 보존, yes가 좋음),
+  `eval_new_facts`(새 사실 추가, yes가 문제), `eval_memo`. yes/no/빈칸.
+- **평가 기준: `docs/COMMENTS_EVAL_CRITERIA.md`, 버전 `comments-eval-criteria-v1`** (2026-10-16). 1절 근거(서비스 정책·라벨 정의·
+  생성 데이터 `required_points`·`forbidden_claims`·`rubric_note` 원문)와 2절 해석을 나눴고, 근거가 약한 해석은 "미확정"으로 표시했다.
+  - 정책 준수 = 참고 라벨의 처리 정책을 지켰는지(분류 정답 여부 아님). 의미 보존 = 대상·핵심 의견·취지(문제 표현을 그대로 돌려주면 정책 no·의미 yes 가능).
+    새 사실 = 새 사실·주장만(말투 변경·바꿔 쓰기·정책상 재작성 안내는 아님). 남길 의견이 없어 재작성을 요청한 행의 의미 보존은 N/A(빈칸+메모 이유).
+    출력 없는 행은 네 칸 모두 빈칸, 판단 불가도 빈칸+이유(no로 세지 않음).
+  - 미확정: `none`에서 띄어쓰기만 정리한 답을 yes로 볼지(예비 평가 관행은 yes), 정당한 부정적 의견과 모욕의 세부 경계 — 팀 결정, 바꾸면 버전을 올린다.
+  - dev15 예비 평가본·점수는 바꾸지 않았다(테스트가 파일 해시를 고정). 기준 문서의 사례는 그 평가에 실제로 적힌 값이다.
 
 **보고서** (`feature/nli-pipeline-research`)
 - 후보: `data/nli_research/final_eval_candidates.jsonl` (`nli/build_research_pairs.py`, seed 고정)
   - `klue_test_sample` 30쌍(라벨별 10): KLUE test(공식 dev)에서 group_id 중복 없이. 분류기 최종 평가(`results/test_results.md`)에는 썼고 LLM 실행 기록은 git에 없음. 회의록 문체가 아님.
   - `stress2_eval2` 30쌍: **이미 사용함** (`compare_prompts.py` eval2). 회의록 문체, neutral 없음, 라벨은 `compare_two.STRESS_EXPECTED`.
   - `data/llm_compare`의 네 파일은 모든 split이 이전 실험에 쓰였다. 사용 이력 없는 회의록형 최종 평가가 필요하면 사람이 새 쌍을 써야 한다(만들지 않음).
-- 설정: `data/nli_research/final_eval_config.json` (`prepared_not_run`)
+- 설정: `data/nli_research/final_eval_config.json` (`prepared_not_run`). 사전 조건의 로지스틱 회귀는 `research_lr01/baseline.joblib`(4절 해시)
 - 평가 기준: `docs/NLI_RESEARCH_EVAL.md` — 근거 충실성, 판정과 설명의 일치, 수정안 타당성, 새 사실 추가(yes = 문제), 메모.
   평가 시트는 원문·근거·주장·출력을 한 행에 두고 경로를 가린다(`build_research_eval_sheet.py`). 출력이 없는 행의 평가 칸은 비운다.
   집계 `summarize_research_eval.py`(참고 라벨 일치율은 자동 계산으로 따로).
@@ -219,7 +254,7 @@ git diff origin/feature/integrated-frontend origin/feature/comments-pipeline-res
 git diff origin/feature/integrated-frontend origin/feature/nli-pipeline-research -- HANDOFF.md
 ```
 
-- 기준: 세 브랜치 모두 최신이 HANDOFF 커밋이고 그 앞이 `caca2ee`·`090dfeb`·`4502e97`. 두 `git diff`는 출력 없음.
+- 기준: 세 브랜치 모두 최신이 HANDOFF 커밋이고 그 앞 코드 커밋이 `caca2ee`(프론트)·`9b71c28`(댓글)·`c0112d7`(보고서). 두 `git diff`는 출력 없음.
 - 이미 받아 둔 저장소면 `git fetch origin` 후 각 작업 폴더에서 `git pull --ff-only`. 예전 `nli-wanwi` detached 폴더는 없어도 된다.
 
 **2단계 — 프론트 (모델 불필요, 집 PC 미확인)**
@@ -251,8 +286,9 @@ uv run python -m pytest -q tests/
 uv run python nli/research_api.py   # 다른 창에서 curl.exe -s http://127.0.0.1:8003/research/options → 확인 후 Ctrl+C
 ```
 
-- 기준: torch `2.11.0+cu128`(GPU 없으면 `False`여도 진행), 댓글 연구 21 passed, 보고서 연구 147 passed,
+- 기준: torch `2.11.0+cu128`(GPU 없으면 `False`여도 진행), 댓글 연구 29 passed, 보고서 연구 152 passed,
   8003 `available_paths`가 `["llm_only"]`이고 두 분류기 `model_not_ready`(모델을 넣기 전).
+- 댓글 `tests/` 전체를 돌리면 `test_lesson_training.py`·`test_experiment_storage.py`가 임시 폴더에서 작은 모델을 학습한다. 원하지 않으면 그 두 파일을 `--ignore`로 뺀다.
 - `uv sync --locked`가 실패하면 lock을 고치지 말고 기록한다.
 
 **4단계 — 모델 백업 반영 (백업 ZIP 필요)**
@@ -260,16 +296,20 @@ uv run python nli/research_api.py   # 다른 창에서 curl.exe -s http://127.0.
 ```powershell
 Get-FileHash <백업폴더>\comments-research_models.zip -Algorithm SHA256
 Get-FileHash <백업폴더>\nli-wanwi_models.zip -Algorithm SHA256
+Get-FileHash <받은폴더>\nli_research_lr01_baseline.zip -Algorithm SHA256
 cd ../comments-research; tar -xf <백업폴더>\comments-research_models.zip
 cd ../nli-research;      tar -xf <백업폴더>\nli-wanwi_models.zip
+tar -xf <받은폴더>\nli_research_lr01_baseline.zip      # nli-research 루트에서
+Get-FileHash artifacts/step_by_step/klue_nli/research_lr01/baseline/baseline.joblib -Algorithm SHA256
 Get-FileHash ../comments-research/artifacts/step_by_step/comments/research_lr01/baseline/baseline.joblib -Algorithm SHA256
 Get-FileHash ../comments-research/artifacts/step_by_step/comments/bench01/kcelectra-base_lr2e5_s44/checkpoint/model.safetensors -Algorithm SHA256
 Get-FileHash artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/model.safetensors -Algorithm SHA256
 ```
 
 - 기준: 4절 표와 같음(대소문자 무시). **다르면 멈춘다.** 재학습하거나 다른 모델로 바꾸지 않는다.
-- NLI 로지스틱 회귀 `wanwi/baseline/baseline.joblib`은 백업에 없다. 팀원에게 받거나 `nli/train_baseline.py`로 다시 학습할지 **사용자에게 묻는다**
-  (없으면 보고서 연구의 로지스틱 회귀 경로는 계속 `model_not_ready`로 표시된다).
+- NLI 로지스틱 회귀는 재현 모델 ZIP(4절)을 쓴다. ZIP을 풀지 않으면 보고서 연구의 로지스틱 회귀 경로는 `model_not_ready`로 표시된다.
+  ZIP이 없어 다시 학습해야 하면 `uv run python nli/train_research_baseline.py`(새 `research_lr02` 폴더에 저장, 덮어쓰지 않음)이지만
+  **사용자에게 먼저 묻는다.** 다시 학습한 모델은 `research_lr01`과 해시·행별 예측이 다를 수 있다.
 
 **5단계 — Ollama**: `ollama pull qwen3:4b-instruct-2507-q4_K_M` → `ollama list`의 ID `0edcdef34593`, 약 2.5 GB.
 
@@ -297,13 +337,16 @@ Get-FileHash artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/
 - Node v22.22.0(회사 PC v24.21.0), Linux, GPU 없음.
 
 **남은 문제·결정할 일:**
-1. NLI 로지스틱 회귀 `baseline.joblib` 확보 방법 (받기 / 다시 학습) — 사용자 결정.
+1. NLI 로지스틱 회귀: 재현 모델 `research_lr01`은 기존 `wanwi/baseline` 기록과 33/2,504행 예측이 다르다(accuracy는 같음).
+   이 모델로 연구를 진행할지, 원래 모델 파일을 팀원에게 받아 바꿀지 — 사용자 결정. 원인(실행 환경 차이 등)은 확인하지 못했다.
 2. 보고서 최종 평가 데이터: 사용 이력 없는 회의록형 쌍을 새로 쓸지, KLUE test 표본(문체 다름)으로 할지 — 사용자 결정.
 3. 사람 평가: 평가자 1명·가림 기록 없음(댓글). 다음부터 경로를 가린 시트와 가능하면 평가자 2명.
 4. 재구현한 `frontend/src/lib/` 두 파일은 처음 파일과 코드가 같다는 보장이 없다(시간 없음 `-`, 토큰 한쪽만, 천 단위 쉼표, 어절 비교 생략 한도 250,000은 이번에 정함).
 5. 병합·PR 여부, 팀원 NLI 브랜치(`9c3bd85`)와의 정리, 두 서비스의 기본 포트가 모두 8000인 문제(팀 합의).
 6. 댓글 서비스 기본 모델 `gemma4:e4b`로는 확인하지 않음. 프론트 보고서 검수의 "상용 실패 시 대체" 체크박스는 로컬 LLM에서도 값이 전송됨(동작 문제 없음, 선택 사항).
 7. 팀원 테스트 파일 `tests/test_nli_common_adapter.py`의 ruff import 정렬 경고 1건(기존 그대로, 수정하지 않음).
+8. 댓글 평가 기준 v1의 미확정 항목(6절) — 팀 결정. 바꾸면 버전을 올리고 최종 평가 설정의 `criteria_version`도 바꾼다.
+9. 재현 학습 모델 ZIP은 대화 첨부파일에만 있다. 받아서 팀 공유 저장소 등 git 밖에 보관해야 한다.
 
 **이번에 정한 구현 방식 (기록):**
 - 보고서 연구 프롬프트는 서비스 프롬프트에서 출력 형식 줄·판정 라벨 줄·LLM 단독용 규칙 2와 [판정]·[지시] 줄만 바꾼다. 서비스 문구가 바뀌면 실패로 알린다.
@@ -321,3 +364,4 @@ Get-FileHash artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/
 - 2026-10-16 클라우드 사전 점검: 원격 커밋 확인, 데이터 지문(train·validation·labels)이 실행 기록과 같음, KcELECTRA 파일 해시가
   `checkpoint_sha256.json`과 같음(문서끼리 대조), 사람 평가 재집계 재현, 연구 API·서비스의 모델 없는 시작 동작 확인.
 - 프론트 `src/lib` 재구현과 원격 반영은 GitHub 앱 권한 설정 뒤 푸시함(처음에는 403).
+- 2026-10-16 (클라우드) NLI 로지스틱 회귀 재현 학습 1회(사용자 허락), 연구 경로 연결, ZIP 백업. 댓글 평가 기준 v1. 실제 LLM 호출·최종 평가는 하지 않음.
