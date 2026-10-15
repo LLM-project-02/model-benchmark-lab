@@ -1,7 +1,7 @@
 """연구용: 근거·주장 쌍 예제로 세 경로를 비교하고 JSON·CSV로 저장한다.
 
-- 입력: 기본은 data/nli_research/dev_pairs.jsonl (개발용). --examples로 다른 쌍 파일을 줄 수 있다.
-  최종 평가 후보(data/nli_research/final_eval_candidates.jsonl)는 사람이 실행 설정을 확정한 뒤에만 쓴다.
+- 입력: 기본은 data/nli_research/dev_pairs.jsonl (개발용). --examples·--candidate-set으로 다른 쌍 파일의 한 묶음을 준다.
+  최종 평가 후보(data/nli_research/final_eval_candidates.jsonl, 설정 final_eval_config.json)는 사람이 확정한 뒤에만 쓴다.
 - 모델 입력은 evidence·claim뿐이다. 참고 라벨·원문·메모는 기록에만 남긴다.
 - 분류기는 선택한 경로에 필요한 것만 불러오고, 불러올 때 한 번 미리 추론해 측정에서 뺀다.
   LLM 워밍업 1회는 따로 기록하고 측정에서 뺀다.
@@ -43,13 +43,13 @@ def rotated_order(index, available=research.PATH_IDS):
 
 
 def run(name, llm=research.DEFAULT_LLM, paths=research.PATH_IDS, limit=None, examples_file=None,
-        output_root=OUTPUT_ROOT, registry=None, call=None, log=print):
+        candidate_set=None, output_root=OUTPUT_ROOT, registry=None, call=None, log=print):
     out_dir = Path(output_root) / name
     if out_dir.exists():
         raise SystemExit(f"결과 폴더가 이미 있습니다: {out_dir}")
     examples_file = Path(examples_file or research.DEV_EXAMPLES)
     selected = [path_id for path_id in research.PATH_IDS if path_id in paths]
-    examples = research.load_examples(examples_file)[:limit]
+    examples = research.load_examples(examples_file, candidate_set)[:limit]
     registry = registry or research.ClassifierRegistry()
 
     log("실행 경로: " + ", ".join(selected))
@@ -78,6 +78,7 @@ def run(name, llm=research.DEFAULT_LLM, paths=research.PATH_IDS, limit=None, exa
             examples_file.resolve().relative_to(research.ROOT).as_posix()
             if examples_file.resolve().is_relative_to(research.ROOT) else str(examples_file)
         ),
+        "candidate_set": candidate_set,
         "llm": {"key": llm, **research.REGISTERED_LLMS[llm]},
         "selected_paths": selected,
         "generation_config": research.generation_config(llm),
@@ -104,8 +105,10 @@ def main():
     parser.add_argument("--paths", nargs="+", choices=research.PATH_IDS, default=list(research.PATH_IDS),
                         help="실행할 경로 (기본: 세 경로 모두). 선택하지 않은 경로의 모델은 불러오지 않는다")
     parser.add_argument("--examples", default=None, help="근거·주장 쌍 JSONL (기본: 개발용 dev_pairs.jsonl)")
+    parser.add_argument("--candidate-set", default=None, help="예제 파일에서 고를 후보 묶음 (최종 평가 후보 파일용)")
     args = parser.parse_args()
-    run(args.name, llm=args.llm, paths=args.paths, limit=args.limit, examples_file=args.examples)
+    run(args.name, llm=args.llm, paths=args.paths, limit=args.limit, examples_file=args.examples,
+        candidate_set=args.candidate_set)
 
 
 if __name__ == "__main__":

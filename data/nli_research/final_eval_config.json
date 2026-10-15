@@ -1,0 +1,59 @@
+{
+  "schema": "nli-research-final-eval-config/v1",
+  "status": "prepared_not_run",
+  "prepared_at": "2026-10-16",
+  "note": "준비만 했다. 최종 평가는 실행하지 않았다. 모델 반영·사전 조건 확인과 사용자 결정 뒤에만 실행한다.",
+  "service": "nli",
+  "unit": "근거 문장(evidence) 한 개 + 검증할 주장(claim) 한 개. 근거 검색 없음",
+  "candidates_file": "data/nli_research/final_eval_candidates.jsonl",
+  "candidates_builder": "nli/build_research_pairs.py",
+  "candidate_sets": {
+    "klue_test_sample": {
+      "role": "주 후보 (LLM 실행 기록 없음)",
+      "rows": 30,
+      "labels": {"entailment": 10, "neutral": 10, "contradiction": 10},
+      "selection": "data/klue_nli/test.csv(KLUE 공식 dev)에서 라벨별 10건, seed 20261016, group_id(같은 premise 묶음) 중복 없음",
+      "prior_usage": "분류기 최종 평가(nli/evaluate_final.py → results/test_results.md)에 사용함. LLM 실행 기록은 git에서 찾지 못함(로컬 실행은 확인 불가) — 미사용으로 단정하지 않음",
+      "caveat": "회의록 문체가 아니다(KLUE: 위키·뉴스·리뷰 등). RoBERTa·기준 모델의 test 지표가 이미 공개되어 있다"
+    },
+    "stress2_eval2": {
+      "role": "이전 사용 데이터 — 회의록 문체 참고·재현용",
+      "rows": 30,
+      "labels": {"contradiction": 20, "entailment": 10, "neutral": 0},
+      "label_rule": "expected_label이 없어 group으로 정함 (nli/compare_two.py STRESS_EXPECTED: 위험→contradiction, 대조→entailment)",
+      "prior_usage": "nli/compare_prompts.py --split eval2 (results/llm_compare/prompt_compare_eval2_*)에 사용함",
+      "caveat": "이미 결과를 본 데이터라 새 최종 평가로 보기 어렵다. neutral이 없다"
+    }
+  },
+  "not_available": "data/llm_compare의 네 파일은 모든 split이 이전 실험에 쓰였다. 사용 이력이 없는 회의록형 최종 평가가 필요하면 사람이 새 근거·주장 쌍을 작성해야 한다(README의 '실험마다 새 문제' 원칙). 이번에는 만들지 않았다.",
+  "run": {
+    "script": "nli/run_research_compare.py",
+    "commands": [
+      "uv run python nli/run_research_compare.py final_klue_qwen3_01 --examples data/nli_research/final_eval_candidates.jsonl --candidate-set klue_test_sample",
+      "uv run python nli/run_research_compare.py final_stress2_qwen3_01 --examples data/nli_research/final_eval_candidates.jsonl --candidate-set stress2_eval2"
+    ],
+    "llm": "qwen3-4b",
+    "paths": ["llm_only", "logreg", "roberta"],
+    "order": "예제마다 실행할 수 있는 경로 순서를 한 칸씩 돌린다 (rotated_order)",
+    "warmup": "분류기는 처음 불러올 때 1회 추론, LLM은 워밍업 1회 — 둘 다 측정에서 제외",
+    "generation_config": "research_pipeline.generation_config('qwen3-4b') — 서비스(common_adapter.make_generate, ollama)와 같은 temperature 0·max_tokens 512, 재시도 0, 대체 없음",
+    "repetitions": 1,
+    "output_root": "artifacts/step_by_step/klue_nli/wanwi/research/pipeline_compare/"
+  },
+  "preconditions": [
+    "RoBERTa 체크포인트 artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/ (model.safetensors SHA-256 64ff1d19…3d08, HANDOFF.md 5절)",
+    "로지스틱 회귀 artifacts/step_by_step/klue_nli/wanwi/baseline/baseline.joblib — 회사 PC 백업 목록(HANDOFF.md 5절)에 없다. 파일을 따로 받거나 nli/train_baseline.py로 다시 학습할지는 사용자 결정",
+    "Ollama 모델 qwen3:4b-instruct-2507-q4_K_M (ID 0edcdef34593)",
+    "실행 커밋을 기록 (git rev-parse HEAD)",
+    "/research/options(또는 실행 로그)에서 세 경로가 모두 실행 가능 — 모델 미준비 경로가 있으면 실행하지 않고 원인부터 해결"
+  ],
+  "evaluation": {
+    "criteria_doc": "docs/NLI_RESEARCH_EVAL.md",
+    "columns": ["eval_evidence_faithful", "eval_label_explanation_consistent", "eval_suggestion_valid", "eval_new_facts", "eval_memo"],
+    "values": "yes / no / 빈칸. 출력이 없는 행은 비워 둔다",
+    "sheet": "uv run python nli/build_research_eval_sheet.py <실행 이름>  (경로를 A·B·C로 가림, eval_key.csv 따로)",
+    "summary": "uv run python nli/summarize_research_eval.py <실행 이름> --eval-file eval_sheet_<평가자>.csv",
+    "automatic": "출력 판정과 참고 라벨의 일치율은 집계 스크립트가 따로 계산한다 (사람 평가 아님)",
+    "recommendations": ["평가자 2명이 따로 평가", "합의본은 따로 만들고 원래 평가본은 고치지 않는다"]
+  }
+}

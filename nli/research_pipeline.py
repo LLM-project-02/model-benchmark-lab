@@ -732,9 +732,16 @@ def to_csv(records):
     return buffer.getvalue()
 
 
-def load_examples(path=DEV_EXAMPLES):
-    """근거·주장 쌍 예제. evidence·claim만 모델 입력이고, 참고 라벨·원문·메모는 기록에만 남긴다."""
+def load_examples(path=DEV_EXAMPLES, candidate_set=None):
+    """근거·주장 쌍 예제. evidence·claim만 모델 입력이고, 참고 라벨·원문·메모는 기록에만 남긴다.
+
+    최종 평가 후보 파일(final_eval_candidates.jsonl)은 candidate_set으로 한 묶음만 고른다.
+    """
     rows = [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()]
+    if candidate_set is not None:
+        rows = [row for row in rows if row.get("candidate_set") == candidate_set]
+        if not rows:
+            raise ValueError(f"후보 묶음이 없습니다: {candidate_set}")
     return [
         {
             "id": row["id"],

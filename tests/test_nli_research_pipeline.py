@@ -533,3 +533,60 @@ def test_eval_sheet_blinds_paths_and_leaves_no_output_rows_blank():
         else:
             assert row["eval_target"].startswith("no") and row["explanation"] == ""
     assert {row["reference_label"] for row in key} == {"contradiction"}
+
+
+def test_runner_candidate_set_filters_final_candidates(tmp_path):
+    path = ROOT / "data" / "nli_research" / "final_eval_candidates.jsonl"
+    assert len(research.load_examples(path, "klue_test_sample")) == 30
+    with pytest.raises(ValueError):
+        research.load_examples(path, "없는 묶음")
+    out = runner.run("final01", paths=["llm_only"], examples_file=path, candidate_set="stress2_eval2", limit=2,
+                     output_root=tmp_path, registry=FakeRegistry(available=()), call=fake_call(REPLIES),
+                     log=lambda *_: None)
+    saved = json.loads((out / "results.json").read_text(encoding="utf-8"))
+    assert saved["candidate_set"] == "stress2_eval2" and len(saved["records"]) == 2
+    assert saved["records"][0]["example"]["id"].startswith("stress2-")
+
+
+def test_summarize_eval_counts_yes_no_and_rejects_edited_content(tmp_path):
+    import build_research_eval_sheet as sheet_builder
+    import summarize_research_eval as summarizer
+
+    examples = tmp_path / "pairs.jsonl"
+    examples.write_text("\n".join(json.dumps(
+        {"id": f"p{i}", "evidence": EVIDENCE, "claim": f"{CLAIM} {i}", "reference_label": "contradiction"},
+        ensure_ascii=False) for i in range(2)), encoding="utf-8")
+    replies = dict(REPLIES, llm_only="깨진 응답")  # LLM 단독은 출력 없음
+    out = runner.run("s01", examples_file=examples, output_root=tmp_path, registry=FakeRegistry(),
+                     call=fake_call(replies), log=lambda *_: None)
+    results = json.loads((out / "results.json").read_text(encoding="utf-8"))
+    sheet, key = sheet_builder.build(results, blind=True, seed=1)
+    def as_rows(rows):  # CSV로 읽은 것처럼 문자열로
+        return [{k: "" if v is None else str(v) for k, v in row.items()} for row in rows]
+
+    original, key = as_rows(sheet), as_rows(key)
+    paths = {row["sheet_row"]: row["path"] for row in key}
+    filled = []
+    for row in original:
+        row = dict(row)
+        if paths[row["sheet_row"]] == "roberta":
+            row.update(eval_evidence_faithful="yes", eval_new_facts="no")
+        elif paths[row["sheet_row"]] == "logreg":
+            row.update(eval_evidence_faithful="no", eval_new_facts="yes", eval_suggestion_valid="maybe")
+        else:
+            row.update(eval_evidence_faithful="yes")  # 출력이 없는 행의 값은 집계하지 않는다
+        filled.append(row)
+    summary = summarizer.summarize(original, filled, key)
+    roberta, logreg, llm_only = (summary["per_path"][p] for p in ("roberta", "logreg", "llm_only"))
+    assert roberta["criteria"]["eval_evidence_faithful"] == {**roberta["criteria"]["eval_evidence_faithful"],
+                                                             "yes": 2, "no": 0, "n": 2, "rate": 1.0}
+    assert logreg["criteria"]["eval_new_facts"]["yes"] == 2 and logreg["criteria"]["eval_suggestion_valid"]["n"] == 0
+    assert llm_only["with_output"] == 0 and llm_only["criteria"]["eval_evidence_faithful"]["n"] == 0
+    assert len(summary["issues"]["values_without_output"]) == 2 and len(summary["issues"]["invalid_values"]) == 2
+    assert roberta["reference_label_agreement"] == {**roberta["reference_label_agreement"], "n": 2, "agree": 2}
+    # LLM 단독이 출력을 못 낸 예제는 세 경로 공통 비교에서 빠진다
+    assert summary["common"]["eval_evidence_faithful"]["example_ids"] == []
+    edited = [dict(row) for row in filled]
+    edited[0]["explanation"] = "고친 설명"
+    with pytest.raises(ValueError):
+        summarizer.summarize(original, edited, key)
