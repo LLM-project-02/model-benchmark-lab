@@ -26,8 +26,12 @@ NLI 응답 필드는 `results/service_tests/`의 실제 응답(01 정상, 02 판
 ```text
 브라우저 ── POST /api/nli/check ──────────▶ Vite proxy ── POST /check ─────▶ NLI 서비스 (NLI_API_TARGET, 기본 127.0.0.1:8001)
         ├─ POST /api/comments/generate ──▶ Vite proxy ── POST /generate ──▶ 댓글 서비스 (COMMENTS_API_TARGET, 기본 127.0.0.1:8000)
-        └─ /api/research/* ──────────────▶ Vite proxy ── /research/* ─────▶ 연구용 비교 API (RESEARCH_API_TARGET, 기본 127.0.0.1:8002)
+        ├─ /api/research/* ──────────────▶ Vite proxy ── /research/* ─────▶ 댓글 연구용 비교 API (RESEARCH_API_TARGET, 기본 127.0.0.1:8002)
+        └─ /api/nli-research/* ──────────▶ Vite proxy ── /research/* ─────▶ 보고서 연구용 비교 API (NLI_RESEARCH_API_TARGET, 기본 127.0.0.1:8003)
 ```
+
+- `/api/nli/`와 `/api/nli-research/`는 접두어가 겹치지 않습니다(끝의 `/`까지 비교). 2026-10-16 클라우드에서 실제 보고서 연구용 API(모델 없음)를
+  proxy 뒤에 두고 `/api/nli-research/options`·`/examples`가 8003으로, `/api/nli/health`가 8001로 따로 가는 것을 확인했습니다.
 
 - 호출: `src/api/<서비스>/client.ts` — Mock/API 모드 선택, 상태 코드 해석
 - 변환: `src/api/<서비스>/adapter.ts` — 서버 원본 응답 → 화면 데이터. 필수 필드가 없으면 "응답 형식이 예상과 다름"
@@ -118,7 +122,14 @@ uv run python steps/step10_serve_api.py
 
 # 연구용 비교 API (feature/comments-pipeline-research 작업 폴더 루트, 8002)
 uv run python scripts/comments_research_api.py
+
+# 보고서 연구용 비교 API (feature/nli-pipeline-research 작업 폴더 루트, 8003) — 모델 없이도 켜진다
+uv run python nli/research_api.py
 ```
+
+- 보고서 연구용 API는 모델 파일이 없어도 시작합니다. 로지스틱 회귀(`wanwi/baseline/baseline.joblib`)·RoBERTa 체크포인트가 없으면
+  `/research/options`에서 `model_not_ready`로 알리고 LLM 단독만 실행할 수 있습니다. 분류기는 그 경로를 처음 실행할 때 불러옵니다.
+  요청 본문은 `{evidence, claim, llm, order, paths}`이며 응답은 `nli-research-compare/v1` 기록입니다(`src/api/nliResearch/adapter.ts` 주석).
 
 - 댓글 서비스는 `.env`에 `LEARNER=bench01`이 있어야 bench01이 고른 분류 모델(`selected.json`)을 씁니다. 분류 체크포인트는 git에 없습니다.
 - 댓글 서비스의 로컬 생성 모델 기본값은 `gemma4:e4b`(`steps/lesson_settings.py`, `OLLAMA_MODEL`)인데 이 PC에는 설치되어 있지 않습니다.

@@ -34,10 +34,15 @@ export const config = {
     mode: readMode(import.meta.env.VITE_NLI_MODE, 'api'),
     baseUrl: readBaseUrl(import.meta.env.VITE_NLI_API_BASE, '/api/nli'),
   } satisfies ServiceConfig,
-  // 파이프라인 비교(연구용 API, comments_research_api.py)
+  // 파이프라인 비교 · 댓글(연구용 API, comments_research_api.py, 기본 8002)
   research: {
     mode: readMode(import.meta.env.VITE_RESEARCH_MODE, 'api'),
     baseUrl: readBaseUrl(import.meta.env.VITE_RESEARCH_API_BASE, '/api/research'),
+  } satisfies ServiceConfig,
+  // 파이프라인 비교 · 보고서(연구용 API, feature/nli-pipeline-research의 nli/research_api.py, 기본 8003)
+  nliResearch: {
+    mode: readMode(import.meta.env.VITE_NLI_RESEARCH_MODE, 'api'),
+    baseUrl: readBaseUrl(import.meta.env.VITE_NLI_RESEARCH_API_BASE, '/api/nli-research'),
   } satisfies ServiceConfig,
   // 서버를 켠 뒤 첫 요청은 로컬 모델을 올리느라 오래 걸린다 (댓글 콘솔도 300초 사용).
   requestTimeoutMs: readPositiveInt(import.meta.env.VITE_REQUEST_TIMEOUT_MS, 300_000),

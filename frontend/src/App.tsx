@@ -2,14 +2,22 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { config, type ApiMode } from './config'
 import { CommentsPanel } from './features/comments/CommentsPanel'
 import { NliPanel } from './features/nli/NliPanel'
-import { ResearchPanel } from './features/research/ResearchPanel'
+import { ResearchTab } from './features/research/ResearchTab'
 
 type TabId = 'comments' | 'nli' | 'research'
 
-const TABS: Array<{ id: TabId; label: string; mode: ApiMode }> = [
-  { id: 'comments', label: '댓글 검수', mode: config.comments.mode },
-  { id: 'nli', label: '보고서 검수', mode: config.nli.mode },
-  { id: 'research', label: '파이프라인 비교', mode: config.research.mode },
+const TABS: Array<{ id: TabId; label: string }> = [
+  { id: 'comments', label: '댓글 검수' },
+  { id: 'nli', label: '보고서 검수' },
+  { id: 'research', label: '파이프라인 비교' },
+]
+
+// 머리글에 서비스별 연결 방식을 보여 준다. 파이프라인 비교는 댓글·보고서 연구용 API가 따로 있다.
+const MODES: Array<{ label: string; mode: ApiMode }> = [
+  { label: '댓글 검수', mode: config.comments.mode },
+  { label: '보고서 검수', mode: config.nli.mode },
+  { label: '댓글 비교', mode: config.research.mode },
+  { label: '보고서 비교', mode: config.nliResearch.mode },
 ]
 
 function tabFromHash(): TabId {
@@ -28,7 +36,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    const anyMock = TABS.some((item) => item.mode === 'mock')
+    const anyMock = MODES.some((item) => item.mode === 'mock')
     document.title = `${anyMock ? '[Mock] ' : ''}AI 검수 콘솔`
   }, [])
 
@@ -57,8 +65,8 @@ export default function App() {
             <p>댓글 순화 검수와 보고서 사실 확인을 한 화면에서 실행합니다.</p>
           </div>
           <ul className="mode-summary" aria-label="서비스 연결 방식">
-            {TABS.map((item) => (
-              <li key={item.id}>
+            {MODES.map((item) => (
+              <li key={item.label}>
                 {item.label}
                 <span className={`mode-tag mode-tag--${item.mode} mode-tag--small`}>
                   {item.mode === 'mock' ? 'MOCK' : 'API'}
@@ -98,7 +106,7 @@ export default function App() {
           <NliPanel />
         </section>
         <section role="tabpanel" id="panel-research" aria-labelledby="tab-research" hidden={tab !== 'research'}>
-          <ResearchPanel />
+          <ResearchTab />
         </section>
       </main>
     </div>

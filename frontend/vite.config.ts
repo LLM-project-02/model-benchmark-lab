@@ -16,8 +16,10 @@ const DEFAULT_NLI_TARGET = 'http://127.0.0.1:8001'
 // timeout은 쉬는 연결에만 적용되고, 응답을 기다리는 긴 요청은 끊지 않는다.
 const backendAgent = new Agent({ keepAlive: true, timeout: 4000 })
 
-// 연구용 파이프라인 비교 API (댓글 연구 브랜치의 scripts/comments_research_api.py)
+// 연구용 파이프라인 비교 API: 댓글(feature/comments-pipeline-research의 scripts/comments_research_api.py)과
+// 보고서(feature/nli-pipeline-research의 nli/research_api.py). 두 서버 모두 /research/* 경로를 쓴다.
 const DEFAULT_RESEARCH_TARGET = 'http://127.0.0.1:8002'
+const DEFAULT_NLI_RESEARCH_TARGET = 'http://127.0.0.1:8003'
 
 function proxyTo(prefix: string, target: string, targetPrefix = ''): ProxyOptions {
   return {
@@ -35,6 +37,12 @@ export default defineConfig(({ mode }) => {
     '/api/comments/': proxyTo('/api/comments', env.COMMENTS_API_TARGET || DEFAULT_COMMENTS_TARGET),
     '/api/nli/': proxyTo('/api/nli', env.NLI_API_TARGET || DEFAULT_NLI_TARGET),
     '/api/research/': proxyTo('/api/research', env.RESEARCH_API_TARGET || DEFAULT_RESEARCH_TARGET, '/research'),
+    // /api/nli-research/compare -> {NLI_RESEARCH_API_TARGET}/research/compare ('/api/nli/'와 겹치지 않는다)
+    '/api/nli-research/': proxyTo(
+      '/api/nli-research',
+      env.NLI_RESEARCH_API_TARGET || DEFAULT_NLI_RESEARCH_TARGET,
+      '/research',
+    ),
   }
 
   return {

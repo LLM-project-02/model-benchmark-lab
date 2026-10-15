@@ -7,6 +7,9 @@ interface ImportMetaEnv {
   /** 파이프라인 비교 탭. 기본 api */
   readonly VITE_RESEARCH_MODE?: string
   readonly VITE_RESEARCH_API_BASE?: string
+  /** 파이프라인 비교 탭의 보고서(NLI) 비교. 기본 api */
+  readonly VITE_NLI_RESEARCH_MODE?: string
+  readonly VITE_NLI_RESEARCH_API_BASE?: string
   /** 브라우저가 요청할 주소. 기본은 Vite proxy 경로(/api/comments, /api/nli) */
   readonly VITE_COMMENTS_API_BASE?: string
   readonly VITE_NLI_API_BASE?: string

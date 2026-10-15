@@ -1808,3 +1808,45 @@ pre {
 .session span {
   flex: 1 1 auto;
 }
+
+/* 파이프라인 비교: 댓글·보고서 선택과 보고서 비교 입력 */
+.research-tab {
+  display: grid;
+  gap: 14px;
+}
+
+.research-target {
+  max-width: 360px;
+}
+
+.research-target .mode-tag--small {
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.path-select {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.path-select legend {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.pair-view {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: grid;
+  gap: 6px;
+  line-height: 1.6;
+}
+
+.pair-view p {
+  margin: 0;
+}

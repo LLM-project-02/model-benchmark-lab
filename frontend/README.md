@@ -12,6 +12,12 @@
   사람 평가 입력, 세션 통계, JSON·CSV 내보내기. 백엔드는 `feature/comments-pipeline-research`의 `scripts/comments_research_api.py`
   (실행·설정: 그 브랜치의 `docs/COMMENTS_RESEARCH_COMPARE.md`, 개발 proxy `RESEARCH_API_TARGET` 기본 `http://127.0.0.1:8002`).
   서버가 실행할 수 없다고 알린 경로(모델 미준비 등)는 "실행 안 함"으로 표시하고 측정값은 "해당 없음", 통계에서 뺍니다.
+  - 탭 위의 **비교 대상**에서 **댓글 / 보고서**를 고릅니다. 두 화면은 따로 유지되어 바꿔도 입력·기록·평가가 남습니다.
+  - **보고서** 비교 (2026-10-16 추가, 기본 API 모드): 근거 문장·검증할 주장 한 쌍을 직접 넣고 LLM 단독 / 로지스틱 회귀 + LLM /
+    RoBERTa + LLM의 판정·확률·설명·수정안을 나란히 비교합니다. 실행할 경로를 고를 수 있고, 사람 평가는 근거 충실성·판정과 설명의
+    일치·수정안 타당성·새 사실 추가 네 항목(출력이 없는 경로는 비활성)입니다. 백엔드는 `feature/nli-pipeline-research`의
+    `nli/research_api.py` (그 브랜치의 `docs/NLI_RESEARCH_COMPARE.md`, 개발 proxy `NLI_RESEARCH_API_TARGET` 기본 `http://127.0.0.1:8003`).
+    CSV 열은 그 백엔드의 `research_pipeline.CSV_COLUMNS`와 같습니다. 댓글 비교의 CSV 형식은 바꾸지 않았습니다.
 
 Mock 모드는 화면 상단 줄무늬 띠·`MOCK` 배지·문서 제목 `[Mock]`으로 표시합니다.
 분류·생성 모델은 프론트에서 직접 부르지 않고 항상 백엔드 API를 거칩니다.
@@ -71,6 +77,19 @@ Mock 응답은 실제 서버 응답과 같은 모양(상태 코드 + 본문)이�
 | 생성 미완료 | `status: incomplete` (토큰 한도) | 설명이 끊긴 문장 (`status: incomplete`) |
 | 요청 실패 | HTTP 502 생성 실패 / HTTP 422 / 서버 연결 실패 | 설명 LLM 연결 실패(HTTP 200, `status: error`) / HTTP 503 / HTTP 422 / 서버 연결 실패 |
 
+파이프라인 비교 탭의 Mock 시나리오 (댓글 / 보고서):
+
+| 분류 | 댓글 비교 | 보고서 비교 |
+|---|---|---|
+| 정상 | 두 경로 성공(로지스틱 회귀는 모델 미준비) | 세 경로 성공 |
+| 검토 필요 | 라벨 불일치 / 형식 오류(label 누락) | 라벨 불일치 / 형식 오류(label 누락) |
+| 생성 미완료 | KcELECTRA 경로 토큰 한도 | RoBERTa 경로 토큰 한도 |
+| 모델 미준비 | (모든 시나리오에서 로지스틱 회귀) | 로지스틱 회귀·RoBERTa 파일 없음 — LLM 단독만 실행 |
+| 요청 실패 | LLM 연결 실패 / 서버 연결 실패 | LLM 연결 실패 / 서버 연결 실패 |
+
+파이프라인 비교 Mock의 판정·문장·확률은 고정 예시입니다. **시간·토큰은 측정한 적이 없으므로 만들어 넣지 않고 "기록 없음"으로 둡니다**
+(2026-10-16부터 댓글 비교 Mock도 같음). Mock 결과는 실제 모델 성능이 아닙니다.
+
 ## 구조
 
 ```text
@@ -83,13 +102,15 @@ src/
     validation.ts           입력 검사 (빈 입력·공백만·최대 글자 수, Python과 같은 글자 수 기준)
     comments/               model(화면 데이터) · adapter(응답 변환) · client(호출) · mock(시나리오)
     nli/                    같은 구성
-    research/               같은 구성 + export(JSON·CSV 내보내기)
+    research/               같은 구성 + export(JSON·CSV 내보내기) — 댓글 비교
+    nliResearch/            같은 구성 — 보고서 비교 (CSV 열은 nli/research_pipeline.CSV_COLUMNS와 같음)
   hooks/useSingleFlight.ts  실행 중 중복 요청 무시, 취소
   components/               Mock/API 띠, 입력란, 실행 버튼, 상태 요약, 확신도 막대, 어절 비교
   lib/                      format(확신도 %·초·토큰 표시), diff(어절 비교). 처음 파일이 git에 빠져 호출 규격에 맞춰 재구현함
   features/comments/        댓글 검수 탭
   features/nli/             보고서 검수 탭 (문장 카드, 개발 확인용 실행 기록 PipelineLog)
-  features/research/        파이프라인 비교 탭 (경로 카드, 사람 평가 입력, 세션 통계)
+  features/research/        파이프라인 비교 탭: ResearchTab(댓글·보고서 선택), ResearchPanel·PathCard(댓글),
+                            NliResearchPanel·NliPathCard(보고서), SessionStats(공통 통계), pathFormat(공통 표시)
 ```
 
 ## 화면 원칙

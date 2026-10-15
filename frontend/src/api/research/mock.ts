@@ -1,5 +1,6 @@
 // 파이프라인 비교 Mock. 서버 기록(comments-research-compare/v1)과 같은 모양을 만들어 실제 모드와 같은 adapter를 거친다.
-// 판정·생성 문장은 시나리오별 고정 예시다. 입력 댓글과 실행 순서만 요청에서 가져온다.
+// 판정·생성 문장·확률은 시나리오별 고정 예시다. 시간·토큰은 측정한 적이 없으므로 만들어 넣지 않고 null(기록 없음)로 둔다.
+// 입력 댓글과 실행 순서만 요청에서 가져온다.
 
 import { isRecord, type TransportRequest } from '../http'
 import type { MockReply, MockScenario } from '../mockTransport'
@@ -88,11 +89,7 @@ function pathRecord(path: (typeof PATHS)[number], outcome: Outcome, position: nu
     : (outcome.raw ?? null)
   const llmFailed = outcome.status === 'error' && outcome.stage === 'llm'
   const applied = isClassifier ? classifierLabel : outcome.status === 'success' ? outcome.label : null
-  const timings = {
-    classification_seconds: isClassifier ? (path.id === 'logreg' ? 0.004 : 0.024) : null,
-    llm_seconds: llmFailed ? 0.011 : 1.12,
-    total_seconds: (isClassifier ? 0.03 : 0.002) + (llmFailed ? 0.011 : 1.12),
-  }
+  const timings = { classification_seconds: null, llm_seconds: null, total_seconds: null }
   let rawLabel: string | null = null
   try {
     const parsed: unknown = raw ? JSON.parse(raw) : null
@@ -116,8 +113,8 @@ function pathRecord(path: (typeof PATHS)[number], outcome: Outcome, position: nu
     raw_label: rawLabel,
     prompt: '(Mock) 서버가 실제로 보낸 프롬프트가 여기에 표시됩니다.',
     llm_call: {
-      model: llmFailed ? null : LLM.model, provider: 'ollama', latency_seconds: timings.llm_seconds,
-      load_seconds: llmFailed ? null : 0.12, finish_reason: llmFailed ? 'error' : outcome.status === 'incomplete' ? 'length' : 'stop',
+      model: llmFailed ? null : LLM.model, provider: 'ollama', latency_seconds: null,
+      load_seconds: null, finish_reason: llmFailed ? 'error' : outcome.status === 'incomplete' ? 'length' : 'stop',
       generation_complete: outcome.status === 'success' || outcome.status === 'error' ? !llmFailed : false,
       error: llmFailed ? 'ConnectError' : null, error_detail: null,
     },
@@ -133,7 +130,7 @@ function pathRecord(path: (typeof PATHS)[number], outcome: Outcome, position: nu
       service_output: outcome.status === 'success' ? { label: outcome.label, answer: outcome.answer, next_steps: outcome.steps ?? [] } : null,
       generation: llmFailed
         ? { raw_text: null, model_id: null, input_tokens: null, output_tokens: null, generation_complete: null, request_attempts: null }
-        : { raw_text: raw, model_id: LLM.model, input_tokens: isClassifier ? 470 : 880, output_tokens: outcome.status === 'incomplete' ? 512 : 58,
+        : { raw_text: raw, model_id: LLM.model, input_tokens: null, output_tokens: null,
             generation_complete: outcome.status !== 'incomplete', request_attempts: 1 },
       llm_invocations: 1,
       timings,
@@ -170,7 +167,7 @@ function buildRecord(request: TransportRequest, spec: ScenarioSpec) {
       logreg: executed.includes('logreg') ? 1 : 0,
       kcelectra: executed.includes('kcelectra') ? 1 : 0,
     },
-    pipeline: { schema_version: 2, service_id: 'comments-research', policy_version: POLICY_VERSION, total_seconds: 3.4 },
+    pipeline: { schema_version: 2, service_id: 'comments-research', policy_version: POLICY_VERSION, total_seconds: null },
     paths,
   }
 }

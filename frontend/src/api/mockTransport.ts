@@ -8,7 +8,7 @@ export type MockReply =
 
 export interface MockScenario<TId extends string = string> {
   id: TId
-  group: '정상' | '검토 필요' | '생성 미완료' | '요청 실패'
+  group: '정상' | '검토 필요' | '생성 미완료' | '모델 미준비' | '요청 실패'
   name: string
   description: string
   reply: (request: TransportRequest) => MockReply

@@ -1,11 +1,27 @@
-import { PATH_STATUS_LABELS, UNAVAILABLE_LABELS, type ResearchPathResult, type SessionEntry } from '../../api/research/model'
+import type { ResponseSource } from '../../api/http'
+import { PATH_STATUS_LABELS, UNAVAILABLE_LABELS, type PathStatus } from '../../api/research/model'
+import { NOT_APPLICABLE } from './pathFormat'
 
-const PATHS = [
+/** 댓글 비교의 기본 경로. 보고서 비교는 paths로 넘긴다. */
+const COMMENT_PATHS = [
   { id: 'llm_only', title: 'LLM 단독' },
   { id: 'logreg', title: '로지스틱 회귀 + LLM' },
   { id: 'kcelectra', title: 'KcELECTRA + LLM' },
 ]
-const NOT_APPLICABLE = '해당 없음'
+
+/** 통계에 필요한 경로 결과 필드 (댓글·보고서 경로 결과가 모두 갖는다) */
+interface StatsPath {
+  id: string
+  status: PathStatus
+  unavailableCode: string | null
+  timings: { classification: number | null; llm: number | null; total: number | null }
+  tokens: { input: number | null; output: number | null }
+}
+
+interface StatsEntry {
+  source: ResponseSource
+  run: { paths: StatsPath[] }
+}
 
 function mean(values: number[]): number | null {
   return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null
@@ -23,7 +39,7 @@ function cell(values: Array<number | null>, digits: number, unit: string, total:
  * 이번 화면에서 실행한 비교의 경로별 통계. 실행하지 않은 경로(모델 미준비 등)는 통계에서 빼고 '해당 없음'으로 둔다.
  * 품질 점수는 만들지 않고 상태 개수와 측정값 평균만 낸다. 실제 실행(API)이 있으면 그것만, 없으면 Mock만 센다.
  */
-export function SessionStats({ entries }: { entries: SessionEntry[] }) {
+export function SessionStats({ entries, paths = COMMENT_PATHS }: { entries: StatsEntry[]; paths?: Array<{ id: string; title: string }> }) {
   const real = entries.filter((entry) => entry.source.mode === 'api')
   const counted = real.length > 0 ? real : entries
   const mode = real.length > 0 ? 'API(실제 실행)' : 'Mock'
@@ -47,9 +63,9 @@ export function SessionStats({ entries }: { entries: SessionEntry[] }) {
             </tr>
           </thead>
           <tbody>
-            {PATHS.map((path) => {
+            {paths.map((path) => {
               const items = counted.flatMap((entry) => entry.run.paths.filter((item) => item.id === path.id))
-              const ran: ResearchPathResult[] = items.filter((item) => item.status !== 'unavailable')
+              const ran: StatsPath[] = items.filter((item) => item.status !== 'unavailable')
               if (ran.length === 0) {
                 const code = items[0]?.unavailableCode ?? ''
                 return (
@@ -64,7 +80,7 @@ export function SessionStats({ entries }: { entries: SessionEntry[] }) {
               const statuses = Object.entries(
                 ran.reduce<Record<string, number>>((acc, item) => ({ ...acc, [item.status]: (acc[item.status] ?? 0) + 1 }), {}),
               )
-                .map(([status, n]) => `${PATH_STATUS_LABELS[status as ResearchPathResult['status']] ?? status} ${n}`)
+                .map(([status, n]) => `${PATH_STATUS_LABELS[status as PathStatus] ?? status} ${n}`)
                 .join(' · ')
               return (
                 <tr key={path.id}>
@@ -83,7 +99,7 @@ export function SessionStats({ entries }: { entries: SessionEntry[] }) {
         </table>
       </div>
       <p className="muted small">
-        평균은 값이 기록된 실행만으로 냅니다(괄호는 값이 있는 건수). 품질 점수는 만들지 않으며 정책 준수·의미 보존은 사람 평가 열을 보세요.
+        평균은 값이 기록된 실행만으로 냅니다(괄호는 값이 있는 건수). 품질 점수는 만들지 않으며 품질은 사람 평가 열을 보세요.
       </p>
     </section>
   )

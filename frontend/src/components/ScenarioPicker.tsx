@@ -9,7 +9,7 @@ interface ScenarioPickerProps<TId extends string> {
   onFillSample: () => void
 }
 
-const GROUP_ORDER: MockScenario['group'][] = ['정상', '검토 필요', '생성 미완료', '요청 실패']
+const GROUP_ORDER: MockScenario['group'][] = ['정상', '검토 필요', '생성 미완료', '모델 미준비', '요청 실패']
 
 export function ScenarioPicker<TId extends string>({
   scenarios,

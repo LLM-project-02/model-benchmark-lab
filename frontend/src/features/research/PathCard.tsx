@@ -6,24 +6,7 @@ import {
   type ResearchPathResult,
 } from '../../api/research/model'
 import { percent } from '../../lib/format'
-
-const NOT_APPLICABLE = '해당 없음'
-
-function sec(value: number | null, digits: number): string {
-  return value === null ? '기록 없음' : `${value.toFixed(digits)}초`
-}
-
-function count(value: number | null): string {
-  return value === null ? '기록 없음' : value.toLocaleString('ko-KR')
-}
-
-const STATUS_CLASS: Record<string, string> = {
-  success: 'state--success',
-  error: 'state--error',
-  incomplete: 'state--incomplete',
-  unavailable: 'state--skipped',
-  unknown: 'state--unknown',
-}
+import { count, NOT_APPLICABLE, sec, STATUS_CLASS } from './pathFormat'
 
 const EVAL_FIELDS: Array<{ key: 'policyCompliance' | 'meaningPreserved' | 'newFacts'; label: string }> = [
   { key: 'policyCompliance', label: '정책 준수' },
