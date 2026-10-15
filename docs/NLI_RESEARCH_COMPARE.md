@@ -84,7 +84,7 @@ uv run python nli/build_research_pairs.py
 
 ## 확인한 것 (2026-10-16, Linux 클라우드, GPU 없음 — 집 PC Windows 아님)
 
-- `tests/` 147 passed (기존 112 + 연구 35). 연구 테스트는 가짜 분류기·가짜 생성 호출을 쓰고, conftest가 socket·
+- `tests/` 152 passed (기존 112 + 연구 35 + 재현 학습 도구 5). 연구 테스트는 가짜 분류기·가짜 생성 호출을 쓰고, conftest가 socket·
   `from_pretrained`·실제 생성 호출을 막아 시도하면 실패한다. 로지스틱 회귀 적재는 임시 소형 PairTfidf 분류기로 확인했다(실제 모델 아님).
 - 실제 API를 모델 없이 켬: 정상 시작, `available_paths`는 `llm_only`뿐, 두 분류기 `model_not_ready`.
 - 통합 프론트 Mock·API 모드 화면 확인(그 브랜치 커밋 기록).
@@ -92,6 +92,7 @@ uv run python nli/build_research_pairs.py
 ## 확인하지 못한 것
 
 - 실제 RoBERTa 추론, 실제 LLM 생성, 세 경로 실제 비교 결과 — RoBERTa 체크포인트·Ollama가 없다.
+- 집 PC Windows에서의 실행.
 
 ## 로지스틱 회귀 재현 학습 (2026-10-16, 클라우드)
 
@@ -102,4 +103,5 @@ uv run python nli/build_research_pairs.py
   (거의 동점인 행 — 관찰값, 원인 확정 아님). 튜닝하지 않았다.
 - 연결 확인: `NLI_RESEARCH_PRELOAD=1`로 API를 켜면 `/research/options`에서 logreg `ready`, roberta `model_not_ready`,
   `available_paths` = `llm_only`, `logreg`. 같은 레지스트리로 직접 분류한 라벨이 `model.predict`와 같음. 생성 호출은 하지 않았다.
-- 집 PC Windows에서의 실행.
+- 테스트(`tests/test_nli_research_baseline.py`)는 임시 폴더의 작은 가짜 데이터로 학습 도구 로직만 확인한다. 실제 모델 파일이 있든 없든 결과가 같고,
+  conftest가 테스트 전후 `artifacts/step_by_step/klue_nli`가 바뀌지 않았는지 확인한다.
