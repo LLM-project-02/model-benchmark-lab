@@ -215,3 +215,50 @@ cd ../integrated-frontend/frontend; npm ci
    - `frontend`에서 `npm run typecheck`, `npm run lint`, `npm run build`
 3. 서비스 네 개(3절)를 켜고 화면 세 탭을 열어 봅니다. 특히 6절 1번(파이프라인 비교 세 경로 화면)을 확인합니다.
 4. 그다음 6절의 남은 일 중 무엇을 할지 사용자에게 물어 진행합니다.
+
+## 8. 모델 백업 없이 한 사전 점검 (2026-10-16 KST, 클라우드 세션)
+
+모델 백업 ZIP 없이 git의 코드·실험 결과만으로 할 수 있는 검사를 Linux 클라우드 컨테이너(GPU 없음)에서 했습니다.
+집 PC 자체의 재구성은 아직입니다. 모델을 대체하거나 새로 학습하지 않았습니다.
+이 절은 연구 브랜치의 HANDOFF.md에만 추가했습니다(`feature/integrated-frontend`의 사본은 그대로).
+
+**확인한 것:**
+
+- 원격 최신 커밋이 문서와 같음: `497bc66`(연구), `3e0fb2f`(프론트), `9c3bd85`(NLI). 두 브랜치의 HANDOFF.md도 같았습니다.
+- 4절 worktree 구성(NLI는 detached), `.env`의 `LEARNER=bench01`
+- `uv sync --locked`: torch를 뺀 의존성은 lock 그대로 설치됨(연구·NLI 모두)
+  - torch는 이 컨테이너의 네트워크 정책이 `download-r2.pytorch.org`를 막아 lock의 `2.11.0+cu128`을 받지 못했습니다.
+  - 검사용으로만 PyPI의 `torch==2.11.0`(cu130 빌드, CPU로 동작)을 venv에 넣었습니다. `uv.lock`·`pyproject.toml`은 바꾸지 않았습니다.
+- 데이터 지문: `data/comments/`의 train·validation·labels SHA-256이 실행 기록(`data_sha256`)과 같음
+- 5절의 KcELECTRA 파일 SHA-256이 git의 `checkpoint_sha256.json`과 같음(문서끼리 대조. 실제 파일 대조는 아님)
+- 사람 평가 재집계(LLM 호출 없음)
+  - `dev15_qwen3_logreg01`(정정본): 커밋된 `human_eval_summary.json`과 내용이 완전히 같음
+  - `dev15_qwen3_01`: 수치(비율·McNemar p)는 같고, 커밋된 파일이 이전 버전 스크립트 형식이라 키 이름만 다름
+- pytest
+  - 연구: `tests/test_comments_research_pipeline.py` 18 passed(회사 PC와 같음)
+  - 그 밖의 댓글 테스트(common_pipeline, comments_common_pipeline, comments_console, lesson_service, classification_evaluation): 188 passed, 1 skipped(streamlit 미설치, `ui` 그룹)
+  - NLI: `tests/test_common_pipeline.py` 101 passed, `tests/test_nli_common_adapter.py` 11 passed
+  - 실행하지 않음: `test_lesson_training.py`, `test_experiment_storage.py`(임시 폴더에서 작은 모델을 학습하는 테스트라 "새로 학습하지 않음" 지시에 따라 제외)
+- 연구 API(8002)를 모델 없이 켬: 정상 시작, `/research/options`에서 logreg·kcelectra가 `model_not_ready`, 실행 가능은 `llm_only`뿐
+  - `/research/compare`는 logreg·kcelectra를 `unavailable`로 남기고 다른 모델로 바꾸지 않음. llm_only는 Ollama가 없어 `error`
+- 프론트: `npm ci`(Node 22.22.0), `npm run lint` 통과
+
+**새로 찾은 문제 — 프론트 빌드 실패 (모델과 무관):**
+
+- `frontend/src/lib/format.ts`와 `frontend/src/lib/diff.ts`가 git에 없습니다. 루트 `.gitignore`의 Python용 `lib/` 규칙에 걸려 커밋되지 않았습니다.
+  - 그래서 `npm run typecheck`·`npm run build`가 TS2307(모듈 없음) 10건으로 실패하고, 개발 서버도 뜨지 않습니다.
+  - 쓰는 이름: `format`의 `percent`·`seconds`·`tokens`, `diff`의 `diffWords`·`DiffToken`
+  - 원격의 어느 브랜치에도 없습니다. 회사 PC의 `integrated-frontend/frontend/src/lib/`를 옮겨야 합니다.
+  - 고치려면 `feature/integrated-frontend`에서 `.gitignore`에 `!frontend/src/lib/`를 더하고 두 파일을 커밋합니다(브랜치 수정은 사용자 결정).
+
+**모델 파일이 없어 하지 못한 것:**
+
+| 항목 | 막힌 이유 |
+|---|---|
+| 5절 모델 파일·ZIP의 SHA-256 대조 | 백업 ZIP 없음 |
+| 댓글 서비스(8000) 시작 | 시작 때 KcELECTRA를 읽음 → `FileNotFoundError: 저장된 가중치가 없습니다` |
+| NLI 서비스(8001) 시작 | RoBERTa `checkpoint/` 없음 → `HFValidationError: Repo id must be…`로 보이지만 원인은 폴더 없음 |
+| 연구 API의 logreg·kcelectra 경로, 6절 1번(세 경로 화면) | `baseline.joblib`, KcELECTRA `checkpoint/` 없음 |
+| 실제 생성(LLM 단독 포함), 서비스 응답 확인 | Ollama와 `qwen3:4b-instruct-2507-q4_K_M` 없음(받지 않음) |
+| GPU 없이 실제 모델 추론이 CPU로 되는지 | 모델 없음. torch 자체는 CPU로 import·테스트 동작 확인 |
+| 화면 세 탭 실제 API 연결 | 위 서비스들 + 프론트 `src/lib/` 누락 |
