@@ -7,7 +7,7 @@
 | 경로 | 분류 | LLM에 주는 것 |
 |---|---|---|
 | `llm_only` LLM 단독 | 없음 (분류기를 부르지 않음) | 세 라벨의 정의와 지시를 모두 주고 label을 고르게 한다. 가짜 판정·확신도 없음 |
-| `logreg` 로지스틱 회귀 + LLM | `wanwi/baseline/baseline.joblib` (PairTfidf + LogisticRegression) | 실제 예측 라벨의 지시와 실제 확률(서비스와 같은 세 자리 확신도) |
+| `logreg` 로지스틱 회귀 + LLM | `research_lr01/baseline/baseline.joblib` (PairTfidf + LogisticRegression, `wanwi/baseline`과 같은 설정으로 재현 학습) | 실제 예측 라벨의 지시와 실제 확률(서비스와 같은 세 자리 확신도) |
 | `roberta` RoBERTa + LLM | `wanwi/roberta_lr2e5_ep6/checkpoint` + `temperature.json`(T=2.77) | 같음 |
 
 ## 파일
@@ -20,6 +20,8 @@
 | `nli/build_research_pairs.py` | `data/nli_research/dev_pairs.jsonl`(개발 14건), `final_eval_candidates.jsonl`(후보 60건) 생성 |
 | `nli/build_research_eval_sheet.py` | 사람 평가 시트(원문·근거·주장·출력 한 행, 경로 가림) |
 | `nli/summarize_research_eval.py` | 채운 평가 시트 집계 |
+| `nli/train_research_baseline.py` | 로지스틱 회귀 재현 학습(기존 `train_baseline()`에 연구 폴더를 줌)·기록·기존 기록 대조 |
+| `artifacts/step_by_step/klue_nli/research_lr01/baseline/` | 재현 학습 결과 기록(git), `baseline.joblib`(git 아님, ZIP 백업) — 그 폴더의 `README.md` |
 | `data/nli_research/final_eval_config.json` | 최종 평가 실행 설정 (`prepared_not_run`) |
 | `docs/NLI_RESEARCH_EVAL.md` | 사람 평가 기준 |
 | `tests/test_nli_research_pipeline.py`, `tests/conftest.py` | 계약 테스트. 실제 모델·LLM·네트워크 호출을 막는다 |
@@ -44,6 +46,8 @@
 - 필요한 파일이 없으면 `model_not_ready`(어떤 파일이 없는지 함께), 파일은 있지만 적재·라벨 확인이 실패하면 `load_failed`.
   그 경로는 `unavailable`로 기록하고 실행하지 않으며, 다른 모델이나 Mock 결과로 대신하지 않는다. 통계에서도 뺀다(값은 null).
 - 선택하지 않은 경로(`--paths`, API의 `paths`)는 기록하지 않고 모델도 불러오지 않는다. LLM 단독만 고르면 체크포인트가 필요 없다.
+- 로지스틱 회귀 기본 폴더는 `research_lr01/baseline`이다(`wanwi/baseline`은 기록만 있고 모델 파일이 없다). 모델 파일은 git에 없고
+  백업 ZIP `nli_research_lr01_baseline.zip`(대화 첨부, 저장소 루트에서 풀기)으로 옮긴다.
 - 확인한 파일: 로지스틱 회귀 `config.json`+`baseline.joblib`, RoBERTa `config.json`+`temperature.json`+`checkpoint/config.json`+`checkpoint/model.safetensors`.
 - 경로는 `.env`의 `NLI_RESEARCH_LOGREG_RUN`, `NLI_RESEARCH_ROBERTA_RUN`으로 바꿀 수 있다.
 
@@ -87,6 +91,15 @@ uv run python nli/build_research_pairs.py
 
 ## 확인하지 못한 것
 
-- 실제 RoBERTa·로지스틱 회귀 추론, 실제 LLM 생성, 세 경로 실제 비교 결과 — 모델 파일·Ollama가 없다.
-- NLI 로지스틱 회귀 `baseline.joblib`은 회사 PC 백업 목록에도 없다(HANDOFF.md 5절). 받거나 다시 학습할지는 사용자 결정.
+- 실제 RoBERTa 추론, 실제 LLM 생성, 세 경로 실제 비교 결과 — RoBERTa 체크포인트·Ollama가 없다.
+
+## 로지스틱 회귀 재현 학습 (2026-10-16, 클라우드)
+
+- 사용자가 한 번의 학습을 허용해 `uv run python nli/train_research_baseline.py`로 `research_lr01/baseline`에 학습했다
+  (train만 학습, validation 검증, test·최종 후보 미사용). 결과·대조: 그 폴더의 `README.md`, `reproduction_check.json`.
+- 재로딩: 예측·확률 완전히 같음, 클래스 0/1/2 = entailment/neutral/contradiction.
+- 기존 `wanwi/baseline` 기록과: 설정·특징 수·accuracy 같음, macro F1(차이 1.56e-05)·혼동 행렬·오답 목록 다름, 2,504행 중 33행 예측 다름
+  (거의 동점인 행 — 관찰값, 원인 확정 아님). 튜닝하지 않았다.
+- 연결 확인: `NLI_RESEARCH_PRELOAD=1`로 API를 켜면 `/research/options`에서 logreg `ready`, roberta `model_not_ready`,
+  `available_paths` = `llm_only`, `logreg`. 같은 레지스트리로 직접 분류한 라벨이 `model.predict`와 같음. 생성 호출은 하지 않았다.
 - 집 PC Windows에서의 실행.

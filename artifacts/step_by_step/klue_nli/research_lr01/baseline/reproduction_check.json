@@ -1,0 +1,363 @@
+{
+  "schema": "nli-research-baseline-check/v1",
+  "reload": {
+    "predictions_equal": true,
+    "probabilities_equal": true,
+    "probabilities_max_abs_diff": 0.0,
+    "probability_rows_sum_to_1": true,
+    "rows": 2504,
+    "pipeline_steps": [
+      "pairtfidf:PairTfidf",
+      "logisticregression:LogisticRegression"
+    ],
+    "classes": [
+      0,
+      1,
+      2
+    ],
+    "labels_json_order": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "config_labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "class_label_mapping": {
+      "0": "entailment",
+      "1": "neutral",
+      "2": "contradiction"
+    },
+    "class_label_mapping_ok": true,
+    "label2id_roundtrip_ok": true
+  },
+  "research_loader": {
+    "rows": 200,
+    "label_mismatches": 0,
+    "probability_mismatches": 0,
+    "probability_max_abs_diff": 0.0,
+    "note": "일괄 예측(검증 전체)과 한 쌍씩 예측(연구 경로)의 비교",
+    "bundle_labels": [
+      "entailment",
+      "neutral",
+      "contradiction"
+    ],
+    "identity": {
+      "model_id": "artifacts/step_by_step/klue_nli/research_lr01/baseline/baseline.joblib",
+      "run_id": "baseline",
+      "kind": "baseline",
+      "temperature": null
+    }
+  },
+  "final_candidates_overlap": {
+    "checked": true,
+    "candidates": 60,
+    "overlap_with_train": 0
+  },
+  "original_comparison": {
+    "available": true,
+    "original_dir": "artifacts/step_by_step/klue_nli/wanwi/baseline",
+    "config": {
+      "kind": {
+        "original": "baseline",
+        "new": "baseline",
+        "same": true
+      },
+      "dataset": {
+        "original": "klue_nli",
+        "new": "klue_nli",
+        "same": true
+      },
+      "input": {
+        "original": "premise + hypothesis pair",
+        "new": "premise + hypothesis pair",
+        "same": true
+      },
+      "labels": {
+        "original": [
+          "entailment",
+          "neutral",
+          "contradiction"
+        ],
+        "new": [
+          "entailment",
+          "neutral",
+          "contradiction"
+        ],
+        "same": true
+      },
+      "ngram_range": {
+        "original": [
+          2,
+          5
+        ],
+        "new": [
+          2,
+          5
+        ],
+        "same": true
+      },
+      "max_features": {
+        "original": 100000,
+        "new": 100000,
+        "same": true
+      },
+      "features": {
+        "original": "[premise, hypothesis, |premise-hypothesis|, premise*hypothesis]",
+        "new": "[premise, hypothesis, |premise-hypothesis|, premise*hypothesis]",
+        "same": true
+      },
+      "seed": {
+        "original": 42,
+        "new": 42,
+        "same": true
+      }
+    },
+    "validation_metrics": {
+      "accuracy": {
+        "original": 0.579073482428115,
+        "new": 0.579073482428115,
+        "same": true,
+        "abs_diff": 0.0
+      },
+      "macro_f1": {
+        "original": 0.5791712434895152,
+        "new": 0.5791868071218641,
+        "same": false,
+        "abs_diff": 1.5563632348891687e-05
+      },
+      "per_class": {
+        "entailment": {
+          "precision": {
+            "original": 0.5707814269535674,
+            "new": 0.5694915254237288,
+            "same": false
+          },
+          "recall": {
+            "original": 0.5867287543655413,
+            "new": 0.5867287543655413,
+            "same": true
+          },
+          "f1-score": {
+            "original": 0.5786452353616532,
+            "new": 0.5779816513761468,
+            "same": false
+          },
+          "support": {
+            "original": 859.0,
+            "new": 859.0,
+            "same": true
+          }
+        },
+        "neutral": {
+          "precision": {
+            "original": 0.5402843601895735,
+            "new": 0.5409252669039146,
+            "same": false
+          },
+          "recall": {
+            "original": 0.5714285714285714,
+            "new": 0.5714285714285714,
+            "same": true
+          },
+          "f1-score": {
+            "original": 0.5554202192448234,
+            "new": 0.5557586837294333,
+            "same": false
+          },
+          "support": {
+            "original": 798.0,
+            "new": 798.0,
+            "same": true
+          }
+        },
+        "contradiction": {
+          "precision": {
+            "original": 0.6306306306306306,
+            "new": 0.6314432989690721,
+            "same": false
+          },
+          "recall": {
+            "original": 0.5785123966942148,
+            "new": 0.5785123966942148,
+            "same": true
+          },
+          "f1-score": {
+            "original": 0.603448275862069,
+            "new": 0.6038200862600123,
+            "same": false
+          },
+          "support": {
+            "original": 847.0,
+            "new": 847.0,
+            "same": true
+          }
+        }
+      },
+      "confusion_matrix": {
+        "original": [
+          [
+            504,
+            218,
+            137
+          ],
+          [
+            192,
+            456,
+            150
+          ],
+          [
+            187,
+            170,
+            490
+          ]
+        ],
+        "new": [
+          [
+            504,
+            219,
+            136
+          ],
+          [
+            192,
+            456,
+            150
+          ],
+          [
+            189,
+            168,
+            490
+          ]
+        ],
+        "same": false
+      }
+    },
+    "validation_errors": {
+      "original_rows": 1054,
+      "new_rows": 1054,
+      "same_ids_and_predictions": false,
+      "only_in_original": [
+        "klue-nli-v1_train_02124",
+        "klue-nli-v1_train_02611",
+        "klue-nli-v1_train_04959",
+        "klue-nli-v1_train_09234",
+        "klue-nli-v1_train_09853",
+        "klue-nli-v1_train_13529",
+        "klue-nli-v1_train_17306",
+        "klue-nli-v1_train_19858",
+        "klue-nli-v1_train_20161",
+        "klue-nli-v1_train_20828",
+        "klue-nli-v1_train_22287",
+        "klue-nli-v1_train_24400",
+        "klue-nli-v1_train_24456"
+      ],
+      "only_in_new": [
+        "klue-nli-v1_train_00305",
+        "klue-nli-v1_train_02212",
+        "klue-nli-v1_train_03598",
+        "klue-nli-v1_train_05569",
+        "klue-nli-v1_train_08921",
+        "klue-nli-v1_train_09855",
+        "klue-nli-v1_train_11184",
+        "klue-nli-v1_train_11814",
+        "klue-nli-v1_train_12365",
+        "klue-nli-v1_train_21019",
+        "klue-nli-v1_train_22461",
+        "klue-nli-v1_train_23722",
+        "klue-nli-v1_train_24969"
+      ]
+    },
+    "row_predictions": {
+      "method": "기존 오답 목록 + 나머지는 정답으로 되살린 행별 예측과 새 예측 비교",
+      "rows": 2504,
+      "differing_rows": 33,
+      "differing_ids": [
+        "klue-nli-v1_train_00305",
+        "klue-nli-v1_train_02124",
+        "klue-nli-v1_train_02212",
+        "klue-nli-v1_train_02611",
+        "klue-nli-v1_train_03598",
+        "klue-nli-v1_train_04789",
+        "klue-nli-v1_train_04959",
+        "klue-nli-v1_train_05569",
+        "klue-nli-v1_train_08921",
+        "klue-nli-v1_train_09234",
+        "klue-nli-v1_train_09853",
+        "klue-nli-v1_train_09855",
+        "klue-nli-v1_train_11037",
+        "klue-nli-v1_train_11184",
+        "klue-nli-v1_train_11814",
+        "klue-nli-v1_train_12365",
+        "klue-nli-v1_train_13529",
+        "klue-nli-v1_train_14920",
+        "klue-nli-v1_train_17306",
+        "klue-nli-v1_train_19858"
+      ]
+    },
+    "training_summary": {
+      "method": {
+        "original": "tfidf_char_ngram_pair_logistic_regression",
+        "new": "tfidf_char_ngram_pair_logistic_regression",
+        "same": true
+      },
+      "selection_split": {
+        "original": "validation",
+        "new": "validation",
+        "same": true
+      },
+      "train_rows": {
+        "original": 22494,
+        "new": 22494,
+        "same": true
+      },
+      "features": {
+        "original": 400000,
+        "new": 400000,
+        "same": true
+      },
+      "reloaded_predictions_match": {
+        "original": true,
+        "new": true,
+        "same": true
+      },
+      "sklearn_version": {
+        "original": "1.9.1",
+        "new": "1.9.1",
+        "same": true
+      }
+    },
+    "not_comparable": {
+      "train_seconds": {
+        "original": 18.14565230003791,
+        "new": 36.21081806899997,
+        "note": "실행 환경이 달라 비교 대상이 아님"
+      },
+      "cpu_inference_ms_per_text": {
+        "original": 0.07640718850277411,
+        "new": 0.1526249768370651,
+        "note": "실행 환경이 달라 비교 대상이 아님"
+      },
+      "data_sha256": "비교 불가 — 기존 기록에 데이터 해시가 없다 (데이터·기존 기록·학습 코드는 같은 커밋 c02c9c9에서 들어왔다)",
+      "package_versions_except_sklearn": "비교 불가 — 기존 기록에는 sklearn 버전만 있다",
+      "validation_probabilities": "비교 불가 — 기존 기록에 행별 확률이 없다",
+      "model_file": "비교 불가 — 기존 baseline.joblib이 없다"
+    }
+  },
+  "diagnostics": {
+    "solver": "lbfgs",
+    "n_iter": [
+      69
+    ],
+    "max_iter": 1000,
+    "converged_before_max_iter": true,
+    "top2_probability_gap": {
+      "all_rows_median": 0.2874438459550053,
+      "differing_rows": 33,
+      "differing_rows_median": 0.006142415009547819,
+      "differing_rows_max": 0.0639475251005504,
+      "note": "기존 기록과 다른 행이 상위 두 확률이 거의 같은 행인지 보는 관찰값. 원인을 확정하지 않는다"
+    }
+  }
+}

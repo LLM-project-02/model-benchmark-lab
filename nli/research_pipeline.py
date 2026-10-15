@@ -3,8 +3,8 @@
 경로
 - llm_only: LLM 단독. 분류기를 부르지 않고 세 라벨의 정의와 지시를 모두 주어 LLM이 label을 고른다.
             가짜 분류 결과나 확신도는 넣지 않는다.
-- logreg:   로지스틱 회귀 + LLM. train_baseline.py의 기준 모델(PairTfidf + LogisticRegression,
-            wanwi/baseline/baseline.joblib)의 실제 예측 라벨·확률과 그 라벨의 지시를 준다.
+- logreg:   로지스틱 회귀 + LLM. train_baseline.py의 기준 모델(PairTfidf + LogisticRegression)을 같은 설정으로 다시
+            학습한 research_lr01/baseline/baseline.joblib의 실제 예측 라벨·확률과 그 라벨의 지시를 준다.
 - roberta:  RoBERTa + LLM. 선택 모델(predictor.SELECTED_RUN = roberta_lr2e5_ep6)의 체크포인트와
             온도 보정값(temperature.json)으로 계산한 실제 예측 라벨·확률과 그 라벨의 지시를 준다.
 
@@ -66,10 +66,22 @@ REGISTERED_LLMS = {
 DEFAULT_LLM = "qwen3-4b"
 
 # 분류기 실험 폴더. 가중치는 git에 없으므로 환경 변수로 바꿀 수 있다.
-CLASSIFIER_RUNS = {
-    "logreg": Path(os.getenv("NLI_RESEARCH_LOGREG_RUN") or config.LEARNER_DIR / "baseline"),
-    "roberta": Path(os.getenv("NLI_RESEARCH_ROBERTA_RUN") or config.LEARNER_DIR / SELECTED_RUN),
-}
+# 로지스틱 회귀: wanwi/baseline은 학습 기록만 있고 모델 파일이 없다. 같은 데이터·설정으로 train_baseline()을 다시 실행한
+# research_lr01/baseline을 쓴다(nli/train_research_baseline.py, 기존 기록과의 대조는 그 폴더의 reproduction_check.json).
+# wanwi의 기존 기록·RoBERTa 선택·서비스 설정은 그대로 둔다.
+DEFAULT_LOGREG_RUN = config.OUTPUT_ROOT / config.DATASET / "research_lr01" / "baseline"
+DEFAULT_ROBERTA_RUN = config.LEARNER_DIR / SELECTED_RUN
+
+
+def default_classifier_runs(env=os.environ):
+    """기본 분류기 폴더. NLI_RESEARCH_LOGREG_RUN·NLI_RESEARCH_ROBERTA_RUN으로 바꿀 수 있다."""
+    return {
+        "logreg": Path(env.get("NLI_RESEARCH_LOGREG_RUN") or DEFAULT_LOGREG_RUN),
+        "roberta": Path(env.get("NLI_RESEARCH_ROBERTA_RUN") or DEFAULT_ROBERTA_RUN),
+    }
+
+
+CLASSIFIER_RUNS = default_classifier_runs()
 
 PATHS = (
     {"id": "llm_only", "title": "LLM 단독", "classifier": None},

@@ -1,0 +1,13 @@
+{
+  "method": "tfidf_char_ngram_pair_logistic_regression",
+  "selection_split": "validation",
+  "train_rows": 22494,
+  "features": 400000,
+  "train_seconds": 36.21081806899997,
+  "device": "cpu",
+  "peak_gpu_memory_allocated_mb": null,
+  "peak_gpu_memory_reserved_mb": null,
+  "cpu_inference_ms_per_text": 0.1526249768370651,
+  "reloaded_predictions_match": true,
+  "sklearn_version": "1.9.1"
+}

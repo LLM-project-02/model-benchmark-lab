@@ -5,6 +5,8 @@
 - 연구용 생성 호출(research_pipeline.call_llm)을 막고, 분류기 폴더를 빈 임시 폴더로 바꿔
   저장소에 실제 가중치가 있어도 쓰지 않는다.
 - 공통 엔진은 LLM 함수의 예외를 결과에 기록하고 계속하므로, 막힌 시도는 따로 모아 테스트 끝에 실패시킨다.
+- 재현 학습 도구(train_research_baseline)의 결과 폴더를 임시 폴더로 바꾸고, 테스트가 저장소의
+  artifacts/step_by_step/klue_nli 아래에 폴더를 만들거나 지우면 실패시킨다.
 """
 
 import socket
@@ -39,6 +41,11 @@ def block_real_calls(monkeypatch, tmp_path_factory, request):
 
     for name in ("AutoModelForSequenceClassification", "AutoTokenizer", "AutoConfig"):
         monkeypatch.setattr(getattr(transformers, name), "from_pretrained", blocker(f"{name}.from_pretrained"))
+    trainer = sys.modules.get("train_research_baseline")
+    if trainer is not None:  # 재현 학습 도구가 저장소의 실제 결과 폴더에 쓰지 않게 한다
+        monkeypatch.setattr(trainer, "DATASET_DIR", tmp_path_factory.mktemp("klue_nli"))
+    artifacts = ROOT / "artifacts" / "step_by_step" / "klue_nli"
+    before = sorted(path.name for path in artifacts.iterdir()) if artifacts.is_dir() else []
     research = sys.modules.get("research_pipeline")
     if research is not None:
         empty = tmp_path_factory.mktemp("no_models")
@@ -47,6 +54,8 @@ def block_real_calls(monkeypatch, tmp_path_factory, request):
         )
         monkeypatch.setattr(research, "call_llm", blocker("research_pipeline.call_llm"))
     yield attempts
+    after = sorted(path.name for path in artifacts.iterdir()) if artifacts.is_dir() else []
+    assert after == before, f"테스트가 저장소 결과 폴더를 바꿨습니다: {sorted(set(after) ^ set(before))}"
     if "allow_blocked_attempts" not in request.keywords:
         assert not attempts, f"실제 모델·LLM 호출을 시도했습니다: {attempts}"
 

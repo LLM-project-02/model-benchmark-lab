@@ -42,7 +42,7 @@
   },
   "preconditions": [
     "RoBERTa 체크포인트 artifacts/step_by_step/klue_nli/wanwi/roberta_lr2e5_ep6/checkpoint/ (model.safetensors SHA-256 64ff1d19…3d08, HANDOFF.md 5절)",
-    "로지스틱 회귀 artifacts/step_by_step/klue_nli/wanwi/baseline/baseline.joblib — 회사 PC 백업 목록(HANDOFF.md 5절)에 없다. 파일을 따로 받거나 nli/train_baseline.py로 다시 학습할지는 사용자 결정",
+    "로지스틱 회귀 artifacts/step_by_step/klue_nli/research_lr01/baseline/baseline.joblib (SHA-256 48cff5e1…3150d, 2026-10-16 재현 학습, 백업 ZIP nli_research_lr01_baseline.zip). 기존 wanwi/baseline 기록과 33/2,504행 예측이 다르다(README.md)",
     "Ollama 모델 qwen3:4b-instruct-2507-q4_K_M (ID 0edcdef34593)",
     "실행 커밋을 기록 (git rev-parse HEAD)",
     "/research/options(또는 실행 로그)에서 세 경로가 모두 실행 가능 — 모델 미준비 경로가 있으면 실행하지 않고 원인부터 해결"
