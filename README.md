@@ -29,20 +29,23 @@ TODO: 한 줄 소개 (누구의 어떤 문제를 분류 모델과 생성 모델�
 
 ## 처리 흐름
 
-FastAPI 요청(text) → 저장한 분류기(예측 라벨) → LangChain(원문 + 예측 라벨별 정책으로 프롬프트 구성) → 생성 LLM(Ollama 로컬 / OpenAI API) → 응답
+FastAPI 요청(text) → 팀 공통 파이프라인(`common_pipeline.compare`): 저장한 분류기(예측 라벨) → 원문 + 예측 라벨별 정책으로 프롬프트 구성 → 생성 LLM(Ollama 로컬 / OpenAI API) → 응답 형식 검사 → 응답
 
 ## API 응답 규격
+
+악성댓글 서비스의 요청·응답 형식 전체(예시 JSON 포함)는 [docs/COMMENTS_API.md](docs/COMMENTS_API.md)에 있습니다.
 
 | 엔드포인트 | 요청 | 응답 |
 |---|---|---|
 | `GET /health` | 없음 | `{"status": "ok"}` (서버 동작만 확인) |
-| `POST /generate` | `{"text": "...", "provider": "ollama" 또는 "openai"}` (provider 생략 시 `DEFAULT_PROVIDER`) | `status`, `classification`(예측 라벨·확신도), `result`(답변 원문·시간·토큰) |
-| `POST /compare` | `{"text": "..."}` | `classification`, `results`(두 모델 결과, 각각 `status` 포함) |
+| `POST /generate` | `{"text": "...", "provider": "ollama" 또는 "openai"}` (provider 생략 시 `DEFAULT_PROVIDER`) | `status`, `classification`(예측 라벨·확신도), `result`(답변 원문·시간·토큰), `pipeline`(공통 파이프라인 결과) |
+| `POST /compare` | `{"text": "..."}` | `classification`, `results`(두 모델 결과, 각각 `status` 포함), `pipeline` |
 
 | HTTP 코드 | 뜻 |
 |---|---|
 | 200 | 분류와 생성 호출이 끝남. **답변을 그대로 써도 되는지는 `status`로 확인** |
 | 422 | 잘못된 요청 (빈 입력, 4000자 초과, 없는 provider). 분류·생성을 호출하지 않음 |
+| 500 | 분류·프롬프트 단계 실패. `detail`에 실패한 단계 |
 | 502 | 생성 모델 호출 실패. 분류 결과는 함께 반환 |
 
 | `status` | 뜻 |

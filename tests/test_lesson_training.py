@@ -143,6 +143,10 @@ def test_real_training_changes_backbone_and_head_then_reloads_identical_logits(t
     output = predict_text("배송 문의", bundle)
     assert output["label"] in labels
     assert 0 <= output["confidence"] <= 1
+    # 공통 파이프라인에 넘기는 라벨별 확률: 모든 라벨이 있고 합이 1이며 가장 큰 값이 confidence다
+    assert list(output["probabilities"]) == labels
+    assert abs(sum(output["probabilities"].values()) - 1) < 1e-6
+    assert output["probabilities"][output["label"]] == output["confidence"]
     assert output["model"]["run_name"] == selection["run_name"]
     assert output["truncated"] is False
     assert predict_text("배송 " * 50, bundle)["truncated"] is True

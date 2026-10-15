@@ -115,3 +115,10 @@ def test_batch_row_explains_why_a_comment_needs_review():
     )
     assert offline["권장 조치"] == "처리 실패"
     assert "ConnectError" in offline["오류"]
+    # 서버 안의 분류 단계 실패(500)는 판정 없이 실패로 남기고 이유를 보여 준다
+    detail = "classification 단계에서 실패했습니다 (RuntimeError)."
+    failed = app.batch_row(
+        "원문", {"code": 500, "body": {"detail": detail}, "error": None, "seconds": 0.2}
+    )
+    assert failed["권장 조치"] == "처리 실패"
+    assert failed["오류"] == f"서버 오류 (HTTP 500) {detail}"

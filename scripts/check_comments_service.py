@@ -11,6 +11,8 @@ uv run python scripts/check_comments_service.py service_check01
 3. 잘못된 입력: 빈 입력, 공백만, 글자 수 초과, 없는 provider, JSON이 아닌 본문, text 없음.
 4. 생성 모델 호출 실패: Ollama 주소만 닫힌 포트로 바꿔 서버를 다시 켜고 /generate를 보낸다.
    켜져 있는 Ollama는 끄지 않는다.
+서버는 요청마다 팀 공통 파이프라인(common_pipeline.compare)을 실행한다. 응답의 pipeline 필드가
+기존 필드(status, 분류 라벨, 모델 run_id, 고친 댓글)와 맞는지도 '맞음'에 넣어 본다.
 결과는 artifacts/.../<LEARNER>/service_checks/<이름>/에 requests.jsonl과 service_check.md로 남긴다.
 """
 
@@ -180,8 +182,66 @@ def classification_text(record):
     )
 
 
+# API의 status와 공통 파이프라인 결과 항목의 (status, error.stage)가 이루어야 하는 짝
+PIPELINE_STATUS = {
+    "ok": ("success", None),
+    "incomplete": ("incomplete", "generation"),
+    "generation_error": ("error", "llm"),
+}
+FORMAT_STAGES = {"parse_output", "output_contract", "label"}  # invalid_format에 해당하는 실패 단계
+
+
+def pipeline_rows(body):
+    """(API 결과, 파이프라인 결과 항목) 짝. /generate는 하나, /compare는 둘이다."""
+    if "results" in body:
+        return list(zip(body["results"], body["pipeline"]["results"], strict=False))
+    return [({**body["result"], "status": body["status"]}, body["pipeline"]["results"][0])]
+
+
+def pipeline_problems(record):
+    """응답의 pipeline 필드가 기존 필드와 맞는지 본다. 어긋난 점의 목록이고, 맞으면 빈 목록이다."""
+    body = record["response"]
+    if "classification" not in body:  # 422 등 분류 전에 끝난 응답
+        return []
+    if "pipeline" not in body:
+        return ["pipeline 필드 없음"]
+    pipeline = body["pipeline"]
+    problems = []
+    if (pipeline["schema_version"], pipeline["service_id"]) != (2, "comments"):
+        problems.append("schema_version·service_id")
+    if len(pipeline["results"]) != len(body.get("results", [None])):
+        problems.append("결과 개수")
+    classification = body["classification"]
+    for row, item in pipeline_rows(body):
+        stage = (item["error"] or {}).get("stage")
+        if row["status"] == "invalid_format":
+            matched = item["status"] == "error" and stage in FORMAT_STAGES
+        else:
+            matched = (item["status"], stage) == PIPELINE_STATUS[row["status"]]
+        if not matched:
+            problems.append(f"{row['provider']} status")
+        if item["llm"] != row["provider"] or item["label"] != classification["label"]:
+            problems.append(f"{row['provider']} 모델·라벨")
+        if item["classification"]["run_id"] != classification["model"]["run_id"]:
+            problems.append(f"{row['provider']} run_id")
+        if item["success"] and item["generated_text"] != json.loads(row["text"])["answer"].strip():
+            problems.append(f"{row['provider']} 고친 댓글")
+    return problems
+
+
+def pipeline_text(record):
+    """pipeline 결과 항목의 status를 짧게 적는다. 실패면 단계도 붙인다. 없으면 -."""
+    pipeline = record["response"].get("pipeline")
+    if not pipeline:
+        return "-"
+    return " / ".join(
+        item["status"] + (f" ({item['error']['stage']})" if item["error"] else "")
+        for item in pipeline["results"]
+    )
+
+
 def passed(record):
-    if record["http"] != record["expected_http"]:
+    if record["http"] != record["expected_http"] or pipeline_problems(record):
         return False
     expected = record.get("expected_status")
     if not expected:
@@ -223,6 +283,7 @@ def write_markdown(path, name, records, memory, startup, cases):
         "",
         (
             "`steps/step10_serve_api.py`를 켜고 정상 요청, 잘못된 입력, 생성 모델 호출 실패를 보낸 기록입니다. "
+            "서버는 요청마다 팀 공통 파이프라인(`common_pipeline.compare`)으로 분류와 생성을 실행합니다. "
             "요청과 응답 원문은 [requests.jsonl](requests.jsonl)에 있습니다."
         ),
         "",
@@ -240,8 +301,8 @@ def write_markdown(path, name, records, memory, startup, cases):
         "",
         "## 결과",
         "",
-        "| # | 요청 | 기대 | HTTP | 결과 | 분류(확신도) | 걸린 시간 | 맞음 |",
-        "|---:|---|---|---:|---|---|---:|:---:|",
+        "| # | 요청 | 기대 | HTTP | 결과 | 파이프라인 | 분류(확신도) | 걸린 시간 | 맞음 |",
+        "|---:|---|---|---:|---|---|---|---:|:---:|",
     ]
     for index, record in enumerate(records, start=1):
         expected = str(record["expected_http"]) + (
@@ -249,8 +310,8 @@ def write_markdown(path, name, records, memory, startup, cases):
         )
         lines.append(
             f"| {index} | {record['name']} | {expected} | {record['http']} | {outcome(record)} | "
-            f"{classification_text(record)} | {record['elapsed_seconds']:.2f}초 | "
-            f"{'예' if passed(record) else '아니오'} |"
+            f"{pipeline_text(record)} | {classification_text(record)} | "
+            f"{record['elapsed_seconds']:.2f}초 | {'예' if passed(record) else '아니오'} |"
         )
     first = next(r for r in records if r["path"] == "/generate" and r["http"] == 200)
     load = first["response"]["result"].get("load_seconds")
@@ -265,6 +326,11 @@ def write_markdown(path, name, records, memory, startup, cases):
     lines += [
         "",
         "- **맞음:** HTTP 코드와 `status`가 기대와 같은지입니다. 답변의 품질은 보지 않습니다(품질은 `comparisons/final02`).",
+        (
+            "- **파이프라인:** 응답의 `pipeline`(팀 공통 파이프라인 결과)에 적힌 결과 항목의 `status`이고, "
+            "실패면 괄호 안이 실패 단계입니다. `맞음`은 이 값이 기존 `status`, 분류 라벨, 모델 run_id, "
+            "고친 댓글과 맞는지도 봅니다."
+        ),
         (
             f"- **첫 요청:** 서버를 켠 뒤 첫 로컬 생성 요청은 {first['elapsed_seconds']:.2f}초였고, "
             f"그중 모델을 메모리에 올린 시간이 {load:.2f}초입니다. "
@@ -435,7 +501,8 @@ def main():
     for index, record in enumerate(records, start=1):
         print(
             f"{index:2d}. {record['name']}: HTTP {record['http']} ({outcome(record)}) "
-            f"{record['elapsed_seconds']:.2f}초 {'맞음' if passed(record) else '기대와 다름'}"
+            f"[{pipeline_text(record)}] {record['elapsed_seconds']:.2f}초 "
+            f"{'맞음' if passed(record) else '기대와 다름'} {', '.join(pipeline_problems(record))}"
         )
     print(
         "메모리:",

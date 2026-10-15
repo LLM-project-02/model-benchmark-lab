@@ -28,14 +28,19 @@
 
 ```
 FastAPI 요청(text)
-  → 분류 모델 KcELECTRA-base (CPU): 라벨과 확신도
+  → 팀 공통 파이프라인(common_pipeline.compare)이 아래 네 단계를 실행
+      분류 모델 KcELECTRA-base (CPU): 라벨과 확률
+      프롬프트: 라벨별 정책 + 원문 (step08 apply_policy)
+      생성 모델: 기본은 로컬 gemma4:e4b(Ollama), 요청에 provider를 적으면 OpenAI gpt-6-luna
+      응답 검사: answer, next_steps 형식 (step07 AnswerPayload)
   → 분류 확신도 검사: none인데 확신도가 0.93보다 낮으면 "확인 필요"
-  → LangChain: 라벨별 정책 + 원문으로 프롬프트를 만듦
-  → 생성 모델: 기본은 로컬 gemma4:e4b(Ollama), 요청에 provider를 적으면 OpenAI gpt-6-luna
   → 고친 댓글 다시 검사: 같은 분류 모델에 고친 댓글을 넣어 none이 아니면 "확인 필요"
   → 뜻 검사: 판정 모델 qwen3:4b-instruct(Ollama)가 원문과 고친 댓글을 비교해 뜻이 바뀌었으면 "확인 필요"
-  → 응답: status, classification, classification_check, result(answer_check, meaning_check 포함)
+  → 응답: status, classification, classification_check, result(answer_check, meaning_check 포함),
+          pipeline(공통 파이프라인 결과 원본)
 ```
+
+요청·응답 형식 전체는 [docs/COMMENTS_API.md](../../../../docs/COMMENTS_API.md)에 있습니다.
 
 "확인 필요"로 표시하는 검사가 세 가지 있습니다. 모두 답을 막지 않고 사람이 확인하도록 알리기만 합니다. 세 검사 모두 놓치는 답과 잘못 짚는 답이 있기 때문입니다(아래 "한계").
 
@@ -107,10 +112,16 @@ uv run python scripts/summarize_comments_review_rules.py review_rules01
 
 # 5. 서비스: 직접 켜서 쓰거나, 정상·실패 요청 기록을 다시 만들기
 uv run python steps/step10_serve_api.py
-uv run python scripts/check_comments_service.py service_check02
+uv run python scripts/check_comments_service.py service_check03
 
 # 6. 사용자 화면 (도전 실습 B): 5번의 서버를 켠 채로 다른 터미널에서
 uv run --group ui streamlit run scripts/comments_streamlit_app.py
+
+# 7. 팀 공통 파이프라인(common_pipeline)에 연결해 정상·오류 요청 확인 (새 이름으로 실행)
+uv run python scripts/check_comments_common_pipeline.py common_pipeline02
+
+# 8. 긴 댓글 확인: 분류 모델에 긴 글을 넣고, 일부를 실제 서버로 보낸다 (5번 서버는 끈 채로)
+uv run --group ui python scripts/check_comments_long_input.py long_comment02
 ```
 
 - 결과 폴더는 저장소에 이미 있습니다. 같은 이름으로 실행하면 덮어쓰지 않고 멈추므로, 다시 돌릴 때는 새 이름(예: `final03`)을 씁니다. test 평가(step11)는 `test_metrics.json`이 있으면 다시 돌지 않습니다.
@@ -139,6 +150,7 @@ uv run --group ui streamlit run scripts/comments_streamlit_app.py
 - **선택:** `kcelectra-base_lr2e5_s44` (beomi/KcELECTRA-base-v2022, validation Macro F1 0.707, 정확도 0.720).
 - **이유:** 댓글로 사전학습한 KcELECTRA가 시드 3개 모두에서 다른 모델보다 높았고, 점수 범위가 2위 모델(KcBERT)과 겹치지 않았습니다. 모델이 크다고 좋아지지 않았습니다(RoBERTa-large 0.666).
 - **주의:** step05 후보에는 모델마다 validation이 가장 높은 실험 1개씩 넣었습니다. 그래서 선택 모델의 validation 점수는 낙관적입니다.
+- **발표 그래프:** 모델마다 학습률 두 가지 중 validation 점수가 높은 설정을 그렸습니다. 그래서 KLUE BERT-base는 위 표의 2e-5(0.650, 시드 3개 평균)가 아니라 5e-5(0.656, 시드 1개)이고, 표에 없는 KLUE RoBERTa-small(5e-5, 0.654)도 들어 있습니다.
 
 ### 분류 최종 평가 (test 838건, 한 번)
 
@@ -231,6 +243,46 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 - 넣은 뒤에는 GPU 메모리 여유가 400~500MB뿐이라, GPU를 쓰는 다른 프로그램이 함께 돌면 모델 일부가 CPU로 밀려 더 느려질 수 있습니다.
 - 같은 12건을 여러 번 보내면 권장 조치가 한 건쯤 달라집니다. 생성 모델이 매번 조금 다른 문장을 내고(temperature 0.2), 검사 결과가 그 문장에 따라 달라지기 때문입니다.
 
+### 팀 공통 파이프라인 연결 (common_pipeline01)
+
+팀 공통 엔진(`common_pipeline`, `feature/common-pipeline-parser-support`의 44c8944)에 이 서비스의 기존 함수를 연결했습니다. 연결 코드: [scripts/comments_common_pipeline.py](../../../../scripts/comments_common_pipeline.py), 기록: [check.md](service_checks/common_pipeline01/check.md)
+
+- **연결한 함수:** 분류(KcELECTRA, 세 라벨의 확률을 반올림 전 값으로 넘김), 프롬프트(step08 `apply_policy` 그대로), LLM(step07 `call_model`: 로컬 gemma4:e4b, 상용 gpt-6-luna), 파서(step07 `AnswerPayload`). 새 파서나 새 프롬프트는 만들지 않았습니다.
+- **1차 테스트 (가짜 분류·LLM 함수로 엔진 확인):** `uv run --frozen --group dev python -m pytest -q tests/test_common_pipeline.py` 101개가 통과했습니다.
+- **정상 요청:** 라벨마다 개발 입력의 첫 댓글 3건을 로컬·상용 두 조합으로 보내 6개 모두 success였습니다. success는 호출과 형식 검사가 통과했다는 뜻이고, 내용 품질 판정은 아닙니다.
+  - LLM에 실제로 보낸 프롬프트에 예측 라벨의 정책만 들어갔고, 결과의 run_id가 `selected.json`의 선택 모델과 같았습니다.
+  - 원본 응답, 모델 ID, 토큰 수, 완료 여부, 요청 시도 수(1)가 결과에 기록됐습니다.
+- **오류 요청 8개가 모두 기대한 단계에서 막혔습니다.**
+  - 실행 전에 막힘(모델 호출 0번): 빈 입력, 글자 수 초과, 입력 필드 이름 오류, 등록하지 않은 LLM 이름
+  - 조합별로 기록: LLM 단독은 prompt, Ollama 연결 실패는 llm, 형식 강제를 끈 응답(코드 블록)은 parse_output, 토큰 한도로 잘린 응답은 incomplete
+- **지원하지 않는 것:** LLM 단독(분류기 없이 LLM이 라벨까지 고르기). 서비스 프롬프트가 라벨별 정책을 전제로 하고, `AnswerPayload`에 label 필드가 없습니다.
+- **엔진에 넣지 않은 것:** 사람 검토 검사(확신도, 다시 검사, 뜻 검사)는 FastAPI 서비스(step10)가 파이프라인 결과 뒤에 붙입니다.
+
+### 공통 파이프라인을 API에 연결 (service_check02)
+
+FastAPI 서비스(step10)의 `/generate`, `/compare`가 요청마다 공통 파이프라인을 실행하도록 바꿨습니다. 기존 응답 필드는 그대로 두고, 파이프라인 결과 원본을 `pipeline` 필드에 더했습니다. 형식: [docs/COMMENTS_API.md](../../../../docs/COMMENTS_API.md), 기록: [service_check.md](service_checks/service_check02/service_check.md)
+
+- **실제 모델로 요청 13개가 모두 기대대로 처리됐습니다.** service_check01과 같은 요청입니다. 정상 6개는 200(`ok`, 파이프라인 `success`), 잘못된 입력 6개는 422, Ollama 연결 실패는 502(`generation_error`, 파이프라인 `error (llm)`)였습니다.
+- **`pipeline`이 기존 필드와 맞는지도 봤습니다.** `pipeline`이 있는 응답 6개(결과 항목 7개) 모두 `status`, 분류 라벨, 모델 run_id, 고친 댓글이 파이프라인 결과와 같았습니다.
+- **사람 검토 검사는 그대로 돕니다.** offensive-01은 로컬·상용 모두 뜻 검사에서 "확인 필요"였습니다. hate-01의 로컬 답은 다시 검사와 뜻 검사를 통과했고, 상용 답은 게시 불가 안내라 뜻 검사를 하지 않았습니다.
+- **속도와 메모리는 연결 전과 비슷합니다.** 첫 요청 6.9초(모델 올리기 5.6초), 그다음 로컬 생성 1.3~1.9초, GPU 3.0GB(gemma4:e4b), 서버 RAM 1.1GB입니다.
+- **화면:** 새 서버에 Streamlit 화면(AppTest)을 붙여 단건 검수, 두 모델 비교, 공백 입력 안내, 탭 4개, 대량 검수(시연용 12건, 4개씩 동시, 17.1초)가 오류 없이 도는 것을 확인했습니다.
+- **바뀐 동작:** 분류나 프롬프트 단계가 실패하면 HTTP 500과 실패 단계(`detail`)를 돌려줍니다. 같은 PC의 브라우저 화면(`http://localhost:*`, `http://127.0.0.1:*`)에서 API를 부를 수 있게 CORS를 열었습니다. `/compare`는 조합마다 분류를 한 번씩 하므로 분류를 두 번 합니다(같은 입력이라 판정과 프롬프트는 같습니다).
+
+### 긴 댓글 확인 (long_comment01)
+
+서비스는 댓글을 4,000자까지 받지만, 분류 모델은 앞 128토큰(약 280자)만 읽고 학습·평가 댓글은 가장 길어도 137자(69토큰)였습니다. 긴 글을 평가한 적이 없어서 2026-10-15에 만들어 넣어 봤습니다. 결과: [README](service_checks/long_comment01/README.md), [summary.md](service_checks/long_comment01/summary.md), [그래프](service_checks/long_comment01/long_comment.png)
+
+| validation 혐오 댓글 136건(혼자 넣으면 모두 hate)을 | 악플로 판정 | 사람 검토 | 그대로 게시 |
+|---|---:|---:|---:|
+| 앞에 평범한 댓글 100자를 붙여서 | 5% | 46% | 49% |
+| 앞에 300자 이상을 붙여서 | 0% | 0% | 100% |
+| 맨 앞에 두고 뒤에 1,000자를 붙여서 | 7% | 33% | 60% |
+
+- 혐오 댓글이 앞 128토큰 안에 다 들어 있어도(100자) 거의 못 잡습니다. 분류 모델이 글 전체의 분위기로 판단하기 때문입니다. 300자를 넘으면 혐오 댓글이 잘려 아예 읽지 못합니다.
+- 실제 서버(gemma4:e4b)에 보내 보니 300자 글 5건은 모두 혐오 댓글이 든 채 '그대로 게시'였고, 1,000자 글 5건은 모두 '처리 실패'였습니다. none 지침대로 원문을 그대로 옮기다 출력 한도(512토큰)에서 답이 잘렸습니다.
+- 긴 글은 짧은 댓글을 이어 붙여 만들었으므로 진짜 긴 댓글과 다를 수 있습니다.
+
 ### 사용자 화면 (도전 실습 B)
 
 [scripts/comments_streamlit_app.py](../../../../scripts/comments_streamlit_app.py)는 업무용(B2B) 검수 콘솔처럼 꾸민 Streamlit 화면입니다. FastAPI 서버에 요청을 보내고 결과를 보여 주기만 하며, 분류와 생성은 서버가 합니다. 색과 글꼴은 `.streamlit/config.toml`의 `[theme]`에 있습니다.
@@ -248,7 +300,7 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 - **오류 안내:** 서버가 꺼져 있으면 켜는 명령을, 입력이 잘못되면(422) 한국어 안내를, 생성 모델 호출이 실패하면(502) 실패와 판정 결과를 보여 줍니다.
 - **설치:** Streamlit은 팀 공통 설치에 넣지 않고 `pyproject.toml`의 `ui` 묶음에만 넣었습니다. `uv run --group ui ...`로 실행하면 그때 설치됩니다. 다른 주소의 서버를 쓰려면 `COMMENTS_API_URL` 환경 변수로 바꿉니다.
 - **접속 범위:** `.streamlit/config.toml`에서 이 노트북(127.0.0.1)에서만 열리게 했습니다. 기본값이면 같은 네트워크의 다른 기기가 화면에 들어와 이 노트북의 OpenAI 키로 요청을 보낼 수 있습니다.
-- **확인한 것:** Streamlit AppTest로 서버가 꺼진 경우와 권장 조치 규칙을 확인했습니다. 새 코드로 서버와 화면을 따로 켜고 Edge 브라우저(Playwright, 화면 없이 실행)로 단건 검수, 두 모델 비교, 대량 검수(8건), 처리 기준, API 연동 화면을 직접 눌러 보고 화면을 찍어 확인했습니다. 검토 규칙을 넣은 뒤(2026-10-14)에도 같은 방법으로 세 가지 사람 검토 이유와 게시 보류가 화면에 나오는지 확인했고, 권장 조치 규칙은 `tests/test_comments_console.py`로도 확인합니다. 답 형식 규칙을 넣은 뒤(2026-10-15)에는 AppTest로 결과 카드에 새 경고가 나오고 두 검사 문구가 빠지는지 보고, 서버를 켜서 시연 장면 2~5의 댓글을 5번씩, 시연용 12건을 3번 보냈습니다. 권장 조치는 모두 시연 대본과 같았습니다. 장면 5는 5번 모두 사람 검토였고, 4번은 뜻 검사가, 1번은 새 규칙이 잡았습니다.
+- **확인한 것:** Streamlit AppTest로 서버가 꺼진 경우와 권장 조치 규칙을 확인했습니다. 새 코드로 서버와 화면을 따로 켜고 Edge 브라우저(Playwright, 화면 없이 실행)로 단건 검수, 두 모델 비교, 대량 검수(8건), 처리 기준, API 연동 화면을 직접 눌러 보고 화면을 찍어 확인했습니다. 검토 규칙을 넣은 뒤(2026-10-14)에도 같은 방법으로 세 가지 사람 검토 이유와 게시 보류가 화면에 나오는지 확인했고, 권장 조치 규칙은 `tests/test_comments_console.py`로도 확인합니다. 답 형식 규칙을 넣은 뒤(2026-10-15)에는 AppTest로 결과 카드에 새 경고가 나오고 두 검사 문구가 빠지는지 보고, 서버를 켜서 시연 장면 2~5의 댓글을 5번씩, 시연용 12건을 3번 보냈습니다. 장면 2~5의 권장 조치는 모두 대본과 같았습니다. 장면 5는 5번 모두 사람 검토였지만 4번은 새 규칙이, 1번만 뜻 검사가 잡았습니다(공통 파이프라인을 넣기 전의 서버에서는 반대로 4번이 뜻 검사, 1번이 새 규칙). 12건은 3번 모두 순화 후 게시와 사람 검토가 한 건씩 바뀌었습니다. 대본에 적은 흔들림이고, 새 규칙에 걸린 줄은 없었습니다.
 - **시연:** 시연 영상 대본과 대량 검수용 예시 CSV는 [demo](demo/) 폴더에 있습니다. 예시 댓글은 실제 댓글이 아니라 직접 만든 문장입니다.
 
 ## 최종 선정과 이유
@@ -259,6 +311,7 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 
 ## 한계와 개선할 점
 
+- **긴 댓글과 섞인 글을 못 잡습니다.** 평범한 글이 100자만 섞여도 혐오 댓글의 5%만 악플로 판정하고, 300자를 넘으면 잘려서 모두 그대로 게시됩니다([long_comment01](service_checks/long_comment01/README.md)). 평가 데이터가 짧은 댓글뿐이라 서비스가 받는 입력(최대 4,000자)과 달랐고, 이 차이를 2026-10-15에야 확인했습니다. 1,000자 글은 생성 단계에서 처리 실패가 납니다.
 - **hate 댓글에 약합니다.** 로컬 모델의 hate 점수가 상용보다 1.06점 낮았습니다. final02의 hate-06과 서비스 확인의 hate-01에서 혐오·성적 표현을 정중한 말로 바꿔 남겼습니다. 상용 모델은 두 경우 모두 게시를 막았습니다.
 - **나쁜 답이 그대로 게시될 수 있고, 가장 큰 원인은 분류 모델입니다.** 최종 비교 답변 96개에 고친 댓글 다시 검사를 대 보면 다음과 같습니다([rewrite_check.csv](comparisons/final02/rewrite_check.csv)와 채점 비교).
   - 채점이 4점 이하(8점 만점)인 나쁜 답 20개 가운데 7개만 "확인 필요"로 잡았습니다. 혐오 표현을 그대로 남긴 답(hate-06)과 고치지 않은 답(hate-07)은 잡았습니다.
@@ -311,6 +364,9 @@ final02에서 고친 댓글 다시 검사가 놓친 나쁜 답 13개 중 12개�
 | `.../comparisons/final02` | 로컬 vs 상용 최종 비교 |
 | `.../comparisons/review_rules01` | 나쁜 답을 사람 검토로 보내는 규칙 두 가지 (확신도 규칙, 뜻 검사) |
 | `.../service_checks/service_check01` | 서비스 정상·실패 요청 기록 |
+| `.../service_checks/common_pipeline01` | 팀 공통 파이프라인에 연결한 뒤 정상·오류 요청 기록 |
+| `.../service_checks/service_check02` | 공통 파이프라인을 API에 연결한 뒤 서비스 정상·실패 요청 기록 |
+| `.../service_checks/long_comment01` | 긴 댓글에서 혐오 표현을 잡는지 확인 (분류 모델, 실제 서버 10건) |
 
 ## 출처
 

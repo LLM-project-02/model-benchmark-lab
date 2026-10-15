@@ -40,7 +40,7 @@ explicit = true
 [tool.pytest.ini_options]
 # 새 평가·실험 저장 테스트까지 기존 테스트와 함께 수집한다.
 testpaths = ["tests"]
-pythonpath = ["steps"]
+pythonpath = [".", "steps"] # 저장소 루트의 common_pipeline도 pytest에서 import한다.
 
 [tool.ruff]
 line-length = 100
