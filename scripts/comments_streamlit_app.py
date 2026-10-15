@@ -143,6 +143,20 @@ def unclear_answer(label, result):
     return label != "none" and REFUSAL not in answer and bool(next_steps)
 
 
+def not_a_candidate(label, result):
+    """게시 후보(고친 댓글)로 볼 수 없는 답인지 본다.
+
+    고친 댓글인지 안내인지 알 수 없는 답, 그리고 뜻 검사가 원문과 뜻이 다르다고 봤거나 판정에 실패한
+    답이다. 생성 모델이 고친 댓글 대신 글쓴이에게 하는 조언이나 대답("…것이 좋겠습니다")을 쓴 경우는
+    다시 검사(표현만 봄)를 통과하고 뜻 검사에만 걸린다. 이런 답은 '생성 모델의 답'으로 보여 주고,
+    게시할지는 사람이 정한다.
+    """
+    if label == "none":
+        return False
+    meaning = result.get("meaning_check") or {}
+    return unclear_answer(label, result) or bool(meaning.get("needs_review"))
+
+
 def recommended_action(label, answer, result, classification_check=None):
     """운영자에게 보일 권장 조치를 정한다.
 
@@ -263,9 +277,9 @@ def batch_row(text, response):
             else "",
             "라벨": label,
             "분류 확신도": classification.get("confidence"),
-            # 고친 댓글인지 안내인지 알 수 없는 답은 게시할 댓글 칸을 비운다(답은 '생성 모델 답' 칸에)
+            # 게시 후보로 볼 수 없는 답은 게시할 댓글 칸을 비운다(답은 '생성 모델 답' 칸에)
             "게시할 댓글": ""
-            if unclear_answer(label, result)
+            if not_a_candidate(label, result)
             else posted_text(text, answer, action, label),
             "글쓴이 안내": notice,
             "다시 검사": f"{check['label']} ({check['confidence']:.0%})"
@@ -341,16 +355,17 @@ def show_checks(label, result, action):
     if check and check["needs_review"]:
         check_title = LABELS.get(check["label"], (check["label"],))[0]
         st.warning(
-            f"다시 검사: 고친 댓글도 분류 모델이 {check_title}({check['label']}, "
+            f"다시 검사: 생성 모델의 답도 분류 모델이 {check_title}({check['label']}, "
             f"{check['confidence']:.0%})로 봤습니다. 게시하기 전에 사람이 확인해 주세요.",
             icon=":material/person_search:",
         )
     elif check:
-        st.caption(f"다시 검사: 고친 댓글은 문제 없음(none, {check['confidence']:.0%})")
+        # 다시 검사는 욕설·혐오 같은 표현만 본다. 고친 댓글이 맞는지(뜻)는 뜻 검사가 본다
+        st.caption(f"다시 검사: 문제 표현 없음(none, {check['confidence']:.0%})")
     meaning = result.get("meaning_check")  # 고친 댓글이 원문의 뜻을 지켰는지 판정 모델이 본 결과
     if meaning and meaning["meaning_kept"] is False:
         st.warning(
-            f"뜻 검사: 고친 댓글이 원문의 뜻과 달라졌을 수 있습니다. 판정 이유: {plain(meaning['reason'])}",
+            f"뜻 검사: 생성 모델의 답이 원문의 뜻과 달라졌을 수 있습니다. 판정 이유: {plain(meaning['reason'])}",
             icon=":material/compare_arrows:",
         )
     elif meaning and meaning["needs_review"]:
@@ -383,8 +398,15 @@ def show_result(original, label, result, status, title=None, classification_chec
                 st.markdown(plain(answer))
                 for step in next_steps:
                     st.markdown(f":material/arrow_right: {plain(step)}")
-        elif unclear_answer(label, result):  # 안내일 수도 있으므로 게시할 댓글로 보이지 않는다
-            st.markdown("**생성 모델의 답** (게시할 댓글인지 글쓴이 안내인지 사람이 정합니다)")
+        elif not_a_candidate(
+            label, result
+        ):  # 고친 댓글이 아닐 수 있으므로 게시 후보로 보이지 않는다
+            if unclear_answer(label, result):
+                st.markdown("**생성 모델의 답** (게시할 댓글인지 글쓴이 안내인지 사람이 정합니다)")
+            else:
+                st.markdown(
+                    "**생성 모델의 답** (원문과 뜻이 다를 수 있어 게시할지 사람이 정합니다)"
+                )
             with st.container(border=True):
                 st.markdown(plain(answer) or "(빈 답변)")
                 for step in next_steps:

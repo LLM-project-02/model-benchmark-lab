@@ -108,8 +108,16 @@ def test_batch_row_explains_why_a_comment_needs_review():
     assert row["권장 조치"] == "사람 검토"
     assert row["검토 이유"] == "뜻이 바뀌었을 수 있음"
     assert row["뜻 검사"] == "바뀌었을 수 있음: 불만이 감사로 바뀌었다."
-    assert row["게시할 댓글"] == "고친 댓글"
+    # 뜻 검사에 걸린 답은 고친 댓글이 아닐 수 있어(조언 문장 등) 게시할 댓글 칸을 비운다
+    assert row["게시할 댓글"] == ""
+    assert row["생성 모델 답"] == "고친 댓글"
     assert row["처리 시간(초)"] == 2.5
+    # 다시 검사에만 걸린 답(뜻은 지킴)은 고친 댓글이므로 게시 후보로 남긴다
+    toxic = {**body, "result": generated(answer_check=TOXIC, meaning_check=KEPT)}
+    toxic_row = app.batch_row("원문", {"code": 200, "body": toxic, "error": None, "seconds": 2.5})
+    assert toxic_row["권장 조치"] == "사람 검토"
+    assert toxic_row["게시할 댓글"] == "고친 댓글"
+    assert app.not_a_candidate("none", generated(meaning_check=CHANGED)) is False
     offline = app.batch_row(
         "원문", {"code": None, "body": None, "error": "ConnectError", "seconds": 0.1}
     )
